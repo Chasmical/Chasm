@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Project Properties -->
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <TargetFrameworks>
+      net7.0;
+      netcoreapp3.1;
+      netstandard2.1;
+    </TargetFrameworks>
+
+    <!-- Header -->
+    <AssemblyName>Chasm.Utilities</AssemblyName>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Abbysssal</Authors>
+    <Company>$(Authors)</Company>
+    <Copyright>Copyright © Abbysssal 2023</Copyright>
+
+    <!-- Title, Description, Tags -->
+    <Title>$(AssemblyName)</Title>
+    <Description>
+      Provides various utility types and methods.
+    </Description>
+    <PackageTags>extensions utility</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Chasm.Utilities.csproj.DotSettings" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <InternalsVisibleTo Include="Chasm.Utilities.Tests" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

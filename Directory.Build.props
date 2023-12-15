@@ -1,0 +1,37 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Project Properties -->
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <!-- Targets -->
+    <TargetFrameworks>
+      net7.0;
+      netcoreapp3.1;
+      netstandard2.1
+    </TargetFrameworks>
+
+    <!-- Repository -->
+    <PackageProjectUrl>https://github.com/Chasmical/Chasm</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Chasmical/Chasm.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>main</RepositoryBranch>
+
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <NoWarn>$(NoWarn),1591</NoWarn> <!-- Suppress the 'Missing XML Documentation' warning -->
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
+    <!-- Some code analysis warnings don't work with netcoreapp3.1 as the target for some reason -->
+    <NoWarn>$(NoWarn),IDE0079</NoWarn> <!-- Suppress the 'Remove unnecessary suppression' message -->
+  </PropertyGroup>
+
+</Project>
