@@ -39,6 +39,16 @@ units.Add("meter", 1);
 units.Add("centimeter", 0.01);
 ```
 
+## `EnumerableExtensions`
+
+Contains `NotNull`, `ForEach` and `EmptyIfNull` extension methods for enumerables.
+
+```cs
+string?[] values = new string?[] { "Hello", null, " World", null, "!\n" };
+
+values.NotNull().ForEach(word => Console.Write(word));
+```
+
 ## `Enumerator`, `ReadOnlyCollection`, `ReadOnlyDictionary`
 
 Contain static `Empty<T>()` methods that returns a global empty enumerator/read-only collection/read-only dictionary.
