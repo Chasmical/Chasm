@@ -22,12 +22,14 @@ Includes overloads of `Find`, `Exists`, `ConvertAll` and other methods that use 
 string[] distinct = strings.FindAll((el, i, arr) => i == arr.IndexOf(el));
 ```
 
-Also includes some common LINQ methods optimized for arrays: `Cast`, `OfType` and `Contains`.
+Also includes some common LINQ methods optimized for arrays: `Cast`, `OfType` and `Contains`. And `Copy` for simpler shallow copying.
 
 ```cs
 object[] arr = new object[] { "Hello", "World", "!" };
 
 string[] strings = arr.Cast<string>();
+
+object[] shallowCopy = arr.Copy();
 ```
 
 ## `CollectionExtensions`

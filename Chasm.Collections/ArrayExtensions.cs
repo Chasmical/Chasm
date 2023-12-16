@@ -418,6 +418,25 @@ namespace Chasm.Collections
         }
 
         /// <summary>
+        ///   <para>Creates a shallow copy of the specified <paramref name="array"/>.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of the array.</typeparam>
+        /// <param name="array">The array to copy.</param>
+        /// <returns>A shallow copy of the <paramref name="array"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        [Pure] public static T[] Copy<T>(this T[] array)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+#if NET5_0_OR_GREATER
+            T[] copy = GC.AllocateUninitializedArray<T>(array.Length);
+#else
+            T[] copy = new T[array.Length];
+#endif
+            Array.Copy(array, 0, copy, 0, array.Length);
+            return copy;
+        }
+
+        /// <summary>
         ///   <para>Returns a <see cref="ReadOnlyCollection{T}"/> wrapper for the specified <paramref name="array"/>.</para>
         /// </summary>
         /// <typeparam name="T">The type of the elements of the array.</typeparam>
