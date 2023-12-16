@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace Chasm.Utilities
@@ -104,6 +105,67 @@ namespace Chasm.Utilities
             result2 = default;
             result3 = default;
             return returnValue;
+        }
+
+        /// <summary>
+        ///   <para>Catches and returns an exception, thrown by invoking the specified <paramref name="action"/>.</para>
+        /// </summary>
+        /// <param name="action">The delegate that can throw an exception.</param>
+        /// <returns>The caught exception, if the specified <paramref name="action"/> caused one; otherwise, <see langword="null"/>.</returns>
+        [Pure] public static Exception? Catch([InstantHandle] Action action)
+            => Catch<Exception>(action);
+        /// <summary>
+        ///   <para>Catches and returns an exception of the <typeparamref name="TException"/> type, thrown by invoking the specified <paramref name="action"/>.</para>
+        /// </summary>
+        /// <typeparam name="TException">The type of the exception to catch.</typeparam>
+        /// <param name="action">The delegate that can throw an exception of the <typeparamref name="TException"/> type.</param>
+        /// <returns>The caught <typeparamref name="TException"/>, if the specified <paramref name="action"/> caused one; otherwise, <see langword="null"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is <see langword="null"/>.</exception>
+        [Pure] public static TException? Catch<TException>([InstantHandle] Action action) where TException : Exception
+        {
+            if (action is null) throw new ArgumentNullException(nameof(action));
+            try
+            {
+                action();
+                return null;
+            }
+            catch (TException exception)
+            {
+                return exception;
+            }
+        }
+
+        /// <summary>
+        ///   <para>Catches and returns an exception, thrown by invoking the specified <paramref name="function"/>. If no exception is thrown, stores the result in the <paramref name="result"/> parameter.</para>
+        /// </summary>
+        /// <typeparam name="TResult">The return type of the delegate to invoke.</typeparam>
+        /// <param name="function">The delegate that can throw an exception.</param>
+        /// <param name="result">When this method returns, contains the return value of the specified <paramref name="function"/>, if no exception was thrown, or <see langword="default"/> otherwise.</param>
+        /// <returns>The caught exception, if the specified <paramref name="function"/> caused one; otherwise, <see langword="null"/>.</returns>
+        [Pure] public static Exception? Catch<TResult>([InstantHandle] Func<TResult> function, out TResult? result)
+            => Catch<Exception, TResult>(function, out result);
+        /// <summary>
+        ///   <para>Catches and returns an exception of the <typeparamref name="TException"/> type, thrown by invoking the specified <paramref name="function"/>. If no exception is thrown, stores the result in the <paramref name="result"/> parameter.</para>
+        /// </summary>
+        /// <typeparam name="TException">The type of the exception to catch.</typeparam>
+        /// <typeparam name="TResult">The return type of the delegate to invoke.</typeparam>
+        /// <param name="function">The delegate that can throw an exception.</param>
+        /// <param name="result">When this method returns, contains the return value of the specified <paramref name="function"/>, if no exception was thrown, or <see langword="default"/> otherwise.</param>
+        /// <returns>The caught <typeparamref name="TException"/>, if the specified <paramref name="function"/> caused one; otherwise, <see langword="null"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="function"/> is <see langword="null"/>.</exception>
+        [Pure] public static TException? Catch<TException, TResult>([InstantHandle] Func<TResult> function, out TResult? result) where TException : Exception
+        {
+            if (function is null) throw new ArgumentNullException(nameof(function));
+            try
+            {
+                result = function();
+                return null;
+            }
+            catch (TException exception)
+            {
+                result = default;
+                return exception;
+            }
         }
 
     }
