@@ -27,3 +27,17 @@ catch (Exception caught) { result = null; ex = caught; }
 // Using Util.Catch:
 var ex = Util.Catch(doSomething, out object? result);
 ```
+
+`Util.Is` can be used to assign a type-casted value to an existing variable.
+
+```cs
+// Commonly written as:
+if (a is string textA) { /* ... */ }
+else if (b is string textB) { /* ... */ }
+else if (c is string textC) { /* ... */ }
+
+// Using Util.Is:
+if (a is string text) { /* ... */ }
+else if (Util.Is(b, out text)) { /* ... */ }
+else if (Util.Is(c, out text)) { /* ... */ }
+```

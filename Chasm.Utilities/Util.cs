@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -166,6 +167,25 @@ namespace Chasm.Utilities
                 result = default;
                 return exception;
             }
+        }
+
+        /// <summary>
+        ///   <para>Determines whether the specified <paramref name="obj"/> is compatible with type <typeparamref name="T"/>.</para>
+        /// </summary>
+        /// <typeparam name="T">The type to test the specified <paramref name="obj"/> against.</typeparam>
+        /// <param name="obj">The object to test against type <typeparamref name="T"/>.</param>
+        /// <param name="cast">When this method returns, contains the specified <paramref name="obj"/> cast to type <typeparamref name="T"/>, if the value is compatible with it, or <see langword="default"/> otherwise.</param>
+        /// <returns><see langword="true"/>, if the specified <paramref name="obj"/> is compatible with type <typeparamref name="T"/>; otherwise, <see langword="false"/>.</returns>
+        [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Is<T>(object? obj, [NotNullWhen(true)] out T? cast)
+        {
+            if (obj is T t)
+            {
+                cast = t;
+                return true;
+            }
+            cast = default;
+            return false;
         }
 
     }
