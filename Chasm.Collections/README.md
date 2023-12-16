@@ -22,10 +22,12 @@ Includes overloads of `Find`, `Exists`, `ConvertAll` and other methods that use 
 string[] distinct = strings.FindAll((el, i, arr) => i == arr.IndexOf(el));
 ```
 
-Also includes a `Contains` method:
+Also includes some common LINQ methods optimized for arrays: `Cast`, `OfType` and `Contains`.
 
 ```cs
-bool result = distinct.Contains("21");
+object[] arr = new object[] { "Hello", "World", "!" };
+
+string[] strings = arr.Cast<string>();
 ```
 
 ## `CollectionExtensions`

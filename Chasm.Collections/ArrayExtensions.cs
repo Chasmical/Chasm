@@ -359,6 +359,65 @@ namespace Chasm.Collections
             => Array.IndexOf(array, value) != -1;
 
         /// <summary>
+        ///   <para>Casts the elements of the specified one-dimensional, zero-based <paramref name="array"/> to the specified type.</para>
+        /// </summary>
+        /// <typeparam name="TOutput">The type to cast the elements of the <paramref name="array"/> to.</typeparam>
+        /// <param name="array">The one-dimensional, zero-based array to cast the elements of.</param>
+        /// <returns>An array that contains each element of the source <paramref name="array"/> cast to the specified type.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        /// <exception cref="RankException"><paramref name="array"/> is multidimensional.</exception>
+        /// <exception cref="InvalidCastException">An element in the <paramref name="array"/> cannot be cast to type <typeparamref name="TOutput"/>.</exception>
+        [Pure] public static TOutput[] Cast<TOutput>(this Array array)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (array.Rank != 1) throw new RankException($"{nameof(array)} is multidimensional.");
+            if (array.GetLowerBound(0) != 0) throw new ArgumentException($"{nameof(array)} is not zero-based.");
+
+            TOutput[] result = new TOutput[array.Length];
+            if (array is object[] objectArray)
+            {
+                for (int i = 0; i < objectArray.Length; i++)
+                    result[i] = (TOutput)objectArray[i];
+            }
+            else
+            {
+                for (int i = 0; i < array.Length; i++)
+                    result[i] = (TOutput)array.GetValue(i)!;
+            }
+            return result;
+        }
+        /// <summary>
+        ///   <para>Filters the elements of the specified one-dimensional, zero-based <paramref name="array"/> based on the specified type.</para>
+        /// </summary>
+        /// <typeparam name="TOutput">The type to filter the elements of the <paramref name="array"/> on.</typeparam>
+        /// <param name="array">The one-dimensional, zero-based array whose elements to filter.</param>
+        /// <returns>An array that contains elements from the source <paramref name="array"/> of type <typeparamref name="TOutput"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        /// <exception cref="RankException"><paramref name="array"/> is multidimensional.</exception>
+        /// <exception cref="ArgumentException"><paramref name="array"/> is not zero-based.</exception>
+        [Pure] public static TOutput[] OfType<TOutput>(this Array array)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (array.Rank != 1) throw new RankException($"{nameof(array)} is multidimensional.");
+            if (array.GetLowerBound(0) != 0) throw new ArgumentException($"{nameof(array)} is not zero-based.");
+
+            List<TOutput> list = new();
+            if (array is object[] objectArray)
+            {
+                for (int i = 0; i < objectArray.Length; i++)
+                    if (objectArray[i] is TOutput output)
+                        list.Add(output);
+            }
+            else
+            {
+                for (int i = 0; i < array.Length; i++)
+                    if (array.GetValue(i) is TOutput output)
+                        list.Add(output);
+            }
+            return list.ToArray();
+        }
+
+        /// <summary>
         ///   <para>Returns a <see cref="ReadOnlyCollection{T}"/> wrapper for the specified <paramref name="array"/>.</para>
         /// </summary>
         /// <typeparam name="T">The type of the elements of the array.</typeparam>
