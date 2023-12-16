@@ -51,34 +51,182 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindIndex{T}(T[], Predicate{T})"/>
         [Pure] public static int FindIndex<T>(this T[] array, [InstantHandle] Predicate<T> predicate)
             => Array.FindIndex(array, predicate);
+        /// <inheritdoc cref="Array.FindIndex{T}(T[], Predicate{T})"/>
+        [Pure] public static int FindIndex<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = 0; i < array.Length; i++)
+                if (predicate(array[i], i))
+                    return i;
+            return -1;
+        }
+        /// <inheritdoc cref="Array.FindIndex{T}(T[], Predicate{T})"/>
+        [Pure] public static int FindIndex<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = 0; i < array.Length; i++)
+                if (predicate(array[i], i, array))
+                    return i;
+            return -1;
+        }
 
         /// <inheritdoc cref="Array.FindLastIndex{T}(T[], Predicate{T})"/>
         [Pure] public static int FindLastIndex<T>(this T[] array, [InstantHandle] Predicate<T> predicate)
             => Array.FindLastIndex(array, predicate);
+        /// <inheritdoc cref="Array.FindLastIndex{T}(T[], Predicate{T})"/>
+        [Pure] public static int FindLastIndex<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = array.Length - 1; i >= 0; i--)
+                if (predicate(array[i], i))
+                    return i;
+            return -1;
+        }
+        /// <inheritdoc cref="Array.FindLastIndex{T}(T[], Predicate{T})"/>
+        [Pure] public static int FindLastIndex<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = array.Length - 1; i >= 0; i--)
+                if (predicate(array[i], i, array))
+                    return i;
+            return -1;
+        }
 
         /// <inheritdoc cref="Array.Exists{T}(T[], Predicate{T})"/>
         [Pure] public static bool Exists<T>(this T[] array, [InstantHandle] Predicate<T> predicate)
             => Array.Exists(array, predicate);
+        /// <inheritdoc cref="Array.Exists{T}(T[], Predicate{T})"/>
+        [Pure] public static bool Exists<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
+            => FindIndex(array, predicate) != -1;
+        /// <inheritdoc cref="Array.Exists{T}(T[], Predicate{T})"/>
+        [Pure] public static bool Exists<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
+            => FindIndex(array, predicate) != -1;
 
         /// <inheritdoc cref="Array.TrueForAll{T}(T[], Predicate{T})"/>
         [Pure] public static bool TrueForAll<T>(this T[] array, [InstantHandle] Predicate<T> predicate)
             => Array.TrueForAll(array, predicate);
+        /// <inheritdoc cref="Array.TrueForAll{T}(T[], Predicate{T})"/>
+        [Pure] public static bool TrueForAll<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = 0; i < array.Length; i++)
+                if (!predicate(array[i], i))
+                    return false;
+            return true;
+        }
+        /// <inheritdoc cref="Array.TrueForAll{T}(T[], Predicate{T})"/>
+        [Pure] public static bool TrueForAll<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = 0; i < array.Length; i++)
+                if (!predicate(array[i], i, array))
+                    return false;
+            return true;
+        }
 
         /// <inheritdoc cref="Array.Find{T}(T[], Predicate{T})"/>
         [Pure] public static T? Find<T>(this T[] array, [InstantHandle] Predicate<T> predicate)
             => Array.Find(array, predicate);
+        /// <inheritdoc cref="Array.Find{T}(T[], Predicate{T})"/>
+        [Pure] public static T? Find<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = 0; i < array.Length; i++)
+                if (predicate(array[i], i))
+                    return array[i];
+            return default;
+        }
+        /// <inheritdoc cref="Array.Find{T}(T[], Predicate{T})"/>
+        [Pure] public static T? Find<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = 0; i < array.Length; i++)
+                if (predicate(array[i], i, array))
+                    return array[i];
+            return default;
+        }
 
         /// <inheritdoc cref="Array.FindLast{T}(T[], Predicate{T})"/>
         [Pure] public static T? FindLast<T>(this T[] array, [InstantHandle] Predicate<T> predicate)
             => Array.FindLast(array, predicate);
+        /// <inheritdoc cref="Array.FindLast{T}(T[], Predicate{T})"/>
+        [Pure] public static T? FindLast<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = array.Length - 1; i >= 0; i--)
+                if (predicate(array[i], i))
+                    return array[i];
+            return default;
+        }
+        /// <inheritdoc cref="Array.FindLast{T}(T[], Predicate{T})"/>
+        [Pure] public static T? FindLast<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            for (int i = array.Length - 1; i >= 0; i--)
+                if (predicate(array[i], i, array))
+                    return array[i];
+            return default;
+        }
 
         /// <inheritdoc cref="Array.FindAll{T}(T[], Predicate{T})"/>
         [Pure] public static T[] FindAll<T>(this T[] array, [InstantHandle] Predicate<T> predicate)
             => Array.FindAll(array, predicate);
+        /// <inheritdoc cref="Array.FindAll{T}(T[], Predicate{T})"/>
+        [Pure] public static T[] FindAll<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            List<T> list = new();
+            for (int i = 0; i < array.Length; i++)
+                if (predicate(array[i], i))
+                    list.Add(array[i]);
+            return list.ToArray();
+        }
+        /// <inheritdoc cref="Array.FindAll{T}(T[], Predicate{T})"/>
+        [Pure] public static T[] FindAll<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            List<T> list = new();
+            for (int i = 0; i < array.Length; i++)
+                if (predicate(array[i], i, array))
+                    list.Add(array[i]);
+            return list.ToArray();
+        }
 
         /// <inheritdoc cref="Array.ConvertAll{TInput, TOutput}(TInput[], Converter{TInput, TOutput})"/>
         [Pure] public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array, [InstantHandle] Converter<TInput, TOutput> converter)
             => Array.ConvertAll(array, converter);
+        /// <inheritdoc cref="Array.ConvertAll{TInput, TOutput}(TInput[], Converter{TInput, TOutput})"/>
+        [Pure] public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array, [InstantHandle] Func<TInput, int, TOutput> converter)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (converter is null) throw new ArgumentNullException(nameof(converter));
+            TOutput[] result = new TOutput[array.Length];
+            for (int i = 0; i < array.Length; i++)
+                result[i] = converter(array[i], i);
+            return result;
+        }
+        /// <inheritdoc cref="Array.ConvertAll{TInput, TOutput}(TInput[], Converter{TInput, TOutput})"/>
+        [Pure] public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array, [InstantHandle] Func<TInput, int, TInput[], TOutput> converter)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (converter is null) throw new ArgumentNullException(nameof(converter));
+            TOutput[] result = new TOutput[array.Length];
+            for (int i = 0; i < array.Length; i++)
+                result[i] = converter(array[i], i, array);
+            return result;
+        }
 
         /// <inheritdoc cref="Array.Clear(Array)"/>
         public static void Clear(this Array array)
@@ -167,6 +315,22 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.ForEach{T}(T[], Action{T})"/>
         public static void ForEach<T>(this T[] array, [InstantHandle] Action<T> action)
             => Array.ForEach(array, action);
+        /// <inheritdoc cref="Array.ForEach{T}(T[], Action{T})"/>
+        public static void ForEach<T>(this T[] array, [InstantHandle] Action<T, int> action)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (action is null) throw new ArgumentNullException(nameof(action));
+            for (int i = 0; i < array.Length; i++)
+                action(array[i], i);
+        }
+        /// <inheritdoc cref="Array.ForEach{T}(T[], Action{T})"/>
+        public static void ForEach<T>(this T[] array, [InstantHandle] Action<T, int, T[]> action)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (action is null) throw new ArgumentNullException(nameof(action));
+            for (int i = 0; i < array.Length; i++)
+                action(array[i], i, array);
+        }
 
     }
 }
