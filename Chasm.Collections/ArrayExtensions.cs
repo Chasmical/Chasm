@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 
 namespace Chasm.Collections
@@ -330,6 +331,44 @@ namespace Chasm.Collections
             if (action is null) throw new ArgumentNullException(nameof(action));
             for (int i = 0; i < array.Length; i++)
                 action(array[i], i, array);
+        }
+
+        // Note: Do not support multidimensional arrays in the Contains method.
+        //       Both Array.IndexOf and IList.Contains don't handle that case.
+
+        /// <summary>
+        ///   <para>Determines whether the specified one-dimensional <paramref name="array"/> contains the specified <paramref name="value"/>.</para>
+        /// </summary>
+        /// <param name="array">The one-dimensional array to search.</param>
+        /// <param name="value">The object to locate in <paramref name="array"/>.</param>
+        /// <returns><see langword="true"/>, if <paramref name="value"/> was found in the <paramref name="array"/>; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        /// <exception cref="RankException"><paramref name="array"/> is multidimensional.</exception>
+        [Pure] public static bool Contains(this Array array, object? value)
+            => Array.IndexOf(array, value) != -1;
+        /// <summary>
+        ///   <para>Determines whether the specified one-dimensional <paramref name="array"/> contains the specified <paramref name="value"/>.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of the array.</typeparam>
+        /// <param name="array">The one-dimensional, zero-based array to search.</param>
+        /// <param name="value">The object to locate in <paramref name="array"/>.</param>
+        /// <returns><see langword="true"/>, if <paramref name="value"/> was found in the <paramref name="array"/>; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        /// <exception cref="RankException"><paramref name="array"/> is multidimensional.</exception>
+        [Pure] public static bool Contains<T>(this T[] array, T value)
+            => Array.IndexOf(array, value) != -1;
+
+        /// <summary>
+        ///   <para>Returns a <see cref="ReadOnlyCollection{T}"/> wrapper for the specified <paramref name="array"/>.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of the array.</typeparam>
+        /// <param name="array">The array to wrap.</param>
+        /// <returns>The <see cref="ReadOnlyCollection{T}"/> wrapper for the specified <paramref name="array"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        [Pure] public static ReadOnlyCollection<T> AsReadOnly<T>(this T[] array)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            return array.Length != 0 ? new ReadOnlyCollection<T>(array) : ReadOnlyCollection.Empty<T>();
         }
 
     }
