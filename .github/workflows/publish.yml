@@ -13,6 +13,7 @@ on:
         type: choice
         options:
         - Chasm.Utilities
+        - Chasm.Collections
 
 jobs:
   publish-package:
