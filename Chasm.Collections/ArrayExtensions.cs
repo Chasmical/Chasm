@@ -345,7 +345,7 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
         /// <exception cref="RankException"><paramref name="array"/> is multidimensional.</exception>
         [Pure] public static bool Contains(this Array array, object? value)
-            => Array.IndexOf(array, value) != -1;
+            => Array.IndexOf(array, value) != array.GetLowerBound(0) - 1;
         /// <summary>
         ///   <para>Determines whether the specified one-dimensional <paramref name="array"/> contains the specified <paramref name="value"/>.</para>
         /// </summary>
