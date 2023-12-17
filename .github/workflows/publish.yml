@@ -14,6 +14,7 @@ on:
         options:
         - Chasm.Utilities
         - Chasm.Collections
+        - Chasm.SemanticVersioning
 
 jobs:
   publish-package:
