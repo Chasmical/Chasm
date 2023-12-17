@@ -5,15 +5,16 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net7.0;
-      netcoreapp1.0;
-      netstandard1.0;
-      net45;
+      netcoreapp2.1;
+      netstandard2.1;
     </TargetFrameworks>
     <!--
       |            Target Frameworks            | - Justification
       |===============|================|========|==============================
       | net7.0        |                |        | - latest API, for use in IDE
-      | netcoreapp1.0 | netstandard1.0 | net45  | - lowest supported API
+      | netcoreapp2.1 | netstandard2.1 |        | - lowest supported API
+
+      TODO: consider lowering target versions
     -->
 
     <!-- Header -->
