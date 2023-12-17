@@ -28,8 +28,13 @@
 
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(TargetFramework)'!='net7.0'">
     <NoWarn>$(NoWarn),1591</NoWarn> <!-- Suppress the 'Missing XML Documentation' warning -->
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'!='net7.0'">
+    <!-- Suppress the 'XML comment has cref attribute that could not be resolved' warning -->
+    <!-- Suppress the 'Incorrect signature in XML comment' warning -->
+    <NoWarn>$(NoWarn),1574,1580</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
     <!-- Some code analysis warnings don't work with netcoreapp3.1 as the target for some reason -->
