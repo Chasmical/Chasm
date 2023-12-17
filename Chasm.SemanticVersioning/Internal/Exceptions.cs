@@ -24,5 +24,7 @@
         public const string PreReleaseInvalid = "The pre-release identifier must only contain [A-Za-z0-9-] characters.";
         public const string BuildMetadataInvalid = "The build metadata identifier must only contain [A-Za-z0-9-] characters.";
 
+        public const string PreReleaseNotNumeric = "The pre-release identifier is not numeric.";
+
     }
 }
