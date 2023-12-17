@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 
 namespace Chasm.Collections
@@ -19,7 +18,12 @@ namespace Chasm.Collections
 
         private static class EmptyCollection<T>
         {
-            internal static readonly ReadOnlyCollection<T> Instance = new(Array.Empty<T>());
+            internal static readonly ReadOnlyCollection<T> Instance
+#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_3_OR_GREATER || NET46_OR_GREATER
+                = new(System.Array.Empty<T>());
+#else
+                = new(new T[0]);
+#endif
         }
     }
 }

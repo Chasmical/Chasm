@@ -36,6 +36,7 @@ namespace Chasm.Collections
             dictionary.Add(entry.Key, entry.Value);
         }
 
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET47_OR_GREATER
 #pragma warning disable CS1573, CS1712
         /// <summary>
         ///   <para>Adds a tuple of the specified values to the collection.</para>
@@ -74,6 +75,7 @@ namespace Chasm.Collections
         public static void Add<T1, T2, T3, T4, T5, T6, T7>(this ICollection<(T1, T2, T3, T4, T5, T6, T7)> list, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
             => (list ?? throw new ArgumentNullException(nameof(list))).Add((t1, t2, t3, t4, t5, t6, t7));
 #pragma warning restore CS1573, CS1712
+#endif
 
     }
 }

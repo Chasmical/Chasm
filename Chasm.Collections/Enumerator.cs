@@ -24,13 +24,6 @@ namespace Chasm.Collections
         /// <returns>An empty enumerator.</returns>
         [Pure] public static IEnumerator<T> Empty<T>()
             => EmptyEnumerator<T>.Instance;
-        /// <summary>
-        ///   <para>Returns an empty asynchronous enumerator.</para>
-        /// </summary>
-        /// <typeparam name="T">The type of the elements to enumerate.</typeparam>
-        /// <returns>An empty asynchronous enumerator.</returns>
-        [Pure] public static IAsyncEnumerator<T> EmptyAsync<T>()
-            => EmptyAsyncEnumerator<T>.Instance;
 
         private sealed class EmptyEnumerator : IEnumerator
         {
@@ -52,6 +45,16 @@ namespace Chasm.Collections
             void IEnumerator.Reset() { }
             void IDisposable.Dispose() { }
         }
+
+#if NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        ///   <para>Returns an empty asynchronous enumerator.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements to enumerate.</typeparam>
+        /// <returns>An empty asynchronous enumerator.</returns>
+        [Pure] public static IAsyncEnumerator<T> EmptyAsync<T>()
+            => EmptyAsyncEnumerator<T>.Instance;
+
         private sealed class EmptyAsyncEnumerator<T> : IAsyncEnumerator<T>
         {
             public static readonly IAsyncEnumerator<T> Instance = new EmptyAsyncEnumerator<T>();
@@ -63,6 +66,7 @@ namespace Chasm.Collections
             ValueTask<bool> IAsyncEnumerator<T>.MoveNextAsync()
                 => new ValueTask<bool>(false);
         }
+#endif
 
     }
 }

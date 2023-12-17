@@ -205,9 +205,28 @@ namespace Chasm.Collections
             return list.ToArray();
         }
 
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET20_OR_GREATER
         /// <inheritdoc cref="Array.ConvertAll{TInput, TOutput}(TInput[], Converter{TInput, TOutput})"/>
         [Pure] public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array, [InstantHandle] Converter<TInput, TOutput> converter)
             => Array.ConvertAll(array, converter);
+
+        /// <inheritdoc cref="ConvertAll{TInput, TOutput}(TInput[], Converter{TInput, TOutput})"/>
+        [Obsolete("Prefer the overload with Converter<TInput, TOutput> parameter.")]
+#endif
+        [Pure] public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array, [InstantHandle] Func<TInput, TOutput> converter, bool _ = true)
+        {
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET20_OR_GREATER
+            return Array.ConvertAll(array, new Converter<TInput, TOutput>(converter));
+#else
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (converter is null) throw new ArgumentNullException(nameof(converter));
+            TOutput[] result = new TOutput[array.Length];
+            for (int i = 0; i < array.Length; i++)
+                result[i] = converter(array[i]);
+            return result;
+#endif
+        }
+
         /// <inheritdoc cref="Array.ConvertAll{TInput, TOutput}(TInput[], Converter{TInput, TOutput})"/>
         [Pure] public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array, [InstantHandle] Func<TInput, int, TOutput> converter)
         {
@@ -245,10 +264,31 @@ namespace Chasm.Collections
 
         /// <inheritdoc cref="Array.Fill{T}(T[], T)"/>
         public static void Fill<T>(this T[] array, T value)
-            => Array.Fill(array, value);
+        {
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            Array.Fill(array, value);
+#else
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            Fill(array, value, 0, array.Length);
+#endif
+        }
         /// <inheritdoc cref="Array.Fill{T}(T[], T, int, int)"/>
         public static void Fill<T>(this T[] array, T value, int startIndex, int count)
-            => Array.Fill(array, value, startIndex, count);
+        {
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            Array.Fill(array, value, startIndex, count);
+#else
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            const string outOfRangeMsg = "Index was out of range. Must be non-negative and less than or equal to the size of the collection.";
+            if (startIndex < 0 || startIndex > array.Length) throw new ArgumentOutOfRangeException(nameof(startIndex), outOfRangeMsg);
+            const string outOfRangeMsg2 = "Count must be positive and count must refer to a location within the string/array/collection.";
+            if (count < 0 || startIndex > array.Length - count) throw new ArgumentOutOfRangeException(nameof(count), outOfRangeMsg2);
+
+            int end = startIndex + count;
+            for (int i = startIndex; i < end; i++)
+                array[i] = value;
+#endif
+        }
 
         /// <inheritdoc cref="Array.Reverse(Array)"/>
         public static void Reverse(this Array array)
@@ -315,7 +355,16 @@ namespace Chasm.Collections
 
         /// <inheritdoc cref="Array.ForEach{T}(T[], Action{T})"/>
         public static void ForEach<T>(this T[] array, [InstantHandle] Action<T> action)
-            => Array.ForEach(array, action);
+        {
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET20_OR_GREATER
+            Array.ForEach(array, action);
+#else
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (action is null) throw new ArgumentNullException(nameof(action));
+            for (int i = 0; i < array.Length; i++)
+                action(array[i]);
+#endif
+        }
         /// <inheritdoc cref="Array.ForEach{T}(T[], Action{T})"/>
         public static void ForEach<T>(this T[] array, [InstantHandle] Action<T, int> action)
         {
