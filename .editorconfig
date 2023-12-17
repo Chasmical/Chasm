@@ -20,3 +20,5 @@ insert_final_newline = true
 
 # Disable 'Use expression body for method' message
 dotnet_diagnostic.IDE0022.severity = none
+
+spelling_exclusion_path = .\exclusion.dic
