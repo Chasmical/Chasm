@@ -31,7 +31,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Collections</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <Authors>Abbysssal</Authors>
     <Company>$(Authors)</Company>
     <Copyright>Copyright © Abbysssal 2023</Copyright>
