@@ -22,7 +22,9 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryBranch>main</RepositoryBranch>
 
+    <!-- Wanna support as many target frameworks as possible -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <NuGetAudit>false</NuGetAudit>
 
   </PropertyGroup>
 

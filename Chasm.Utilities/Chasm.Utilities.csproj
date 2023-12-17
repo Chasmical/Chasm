@@ -5,10 +5,18 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net7.0;
-      netcoreapp3.1;
+      netcoreapp3.0;
+      netcoreapp1.0;
       netstandard2.1;
+      netstandard1.0;
+      net45;
     </TargetFrameworks>
-
+    <!--
+      net7.0 - latest API, for use in IDE
+      netstandard2.1 || netcoreapp3.0 - NotNullWhenAttribute
+      netstandard1.0 || netcoreapp1.0 || net45 - lowest supported API
+    -->
+    
     <!-- Header -->
     <AssemblyName>Chasm.Utilities</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
