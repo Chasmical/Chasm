@@ -92,5 +92,21 @@ namespace Chasm.SemanticVersioning
             return true;
         }
 
+        public static bool TryCopyTo(this string text, Span<char> destination, out int charsWritten)
+        {
+            if (text.Length > destination.Length)
+            {
+                charsWritten = 0;
+                return false;
+            }
+            charsWritten = text.Length;
+            text
+#if !NET6_0_OR_GREATER
+                .AsSpan()
+#endif
+                .CopyTo(destination);
+            return true;
+        }
+
     }
 }

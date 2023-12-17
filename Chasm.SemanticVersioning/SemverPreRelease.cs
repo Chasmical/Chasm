@@ -6,9 +6,9 @@ namespace Chasm.SemanticVersioning
     /// <summary>
     ///   <para>Represents a valid semantic version pre-release identifier, compliant to the SemVer 2.0.0 specification.</para>
     /// </summary>
-    public readonly struct SemverPreRelease : IEquatable<SemverPreRelease>, IComparable, IComparable<SemverPreRelease>
+    public readonly partial struct SemverPreRelease : IEquatable<SemverPreRelease>, IComparable, IComparable<SemverPreRelease>
 #if NET7_0_OR_GREATER
-                                            , System.Numerics.IComparisonOperators<SemverPreRelease, SemverPreRelease, bool>
+                                                    , System.Numerics.IComparisonOperators<SemverPreRelease, SemverPreRelease, bool>
 #endif
     {
         private readonly string? text;
@@ -179,12 +179,5 @@ namespace Chasm.SemanticVersioning
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <=(SemverPreRelease left, SemverPreRelease right)
             => left.CompareTo(right) <= 0;
-
-        [Pure] public override string ToString()
-            => text ?? ((uint)number).ToString();
-
-        [Pure] public static SemverPreRelease Parse(ReadOnlySpan<char> text)
-            => throw new NotImplementedException();
-
     }
 }
