@@ -7,6 +7,9 @@ namespace Chasm.SemanticVersioning
     ///   <para>Represents a valid semantic version pre-release identifier, compliant to the SemVer 2.0.0 specification.</para>
     /// </summary>
     public readonly struct SemverPreRelease : IEquatable<SemverPreRelease>, IComparable, IComparable<SemverPreRelease>
+#if NET7_0_OR_GREATER
+                                            , System.Numerics.IComparisonOperators<SemverPreRelease, SemverPreRelease, bool>
+#endif
     {
         private readonly string? text;
         private readonly int number;
@@ -35,6 +38,42 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="ArgumentException"><paramref name="identifier"/> is not a valid semantic version pre-release identifier.</exception>
         public SemverPreRelease(ReadOnlySpan<char> identifier)
             => this = Parse(identifier);
+
+        /// <summary>
+        ///   <para>Defines an implicit conversion of a 32-bit signed integer to a numeric pre-release identifier.</para>
+        /// </summary>
+        /// <param name="identifier">The 32-bit signed integer to convert.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="identifier"/> is less than 0.</exception>
+        [Pure] public static implicit operator SemverPreRelease(int identifier) => new SemverPreRelease(identifier);
+        /// <summary>
+        ///   <para>Defines an implicit conversion of a string to an alphanumeric pre-release identifier.</para>
+        /// </summary>
+        /// <param name="identifier">The string to convert.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="identifier"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="identifier"/> is not a valid semantic version pre-release identifier.</exception>
+        [Pure] public static implicit operator SemverPreRelease(string identifier) => new SemverPreRelease(identifier);
+        /// <summary>
+        ///   <para>Defines an implicit conversion of a read-only span of characters to an alphanumeric pre-release identifier.</para>
+        /// </summary>
+        /// <param name="identifier">The read-only span of characters to convert.</param>
+        /// <exception cref="ArgumentException"><paramref name="identifier"/> is not a valid semantic version pre-release identifier.</exception>
+        [Pure] public static implicit operator SemverPreRelease(ReadOnlySpan<char> identifier) => new SemverPreRelease(identifier);
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a numeric pre-release identifier to a 32-bit signed integer.</para>
+        /// </summary>
+        /// <param name="preRelease">The numeric pre-release identifier to convert.</param>
+        /// <exception cref="InvalidOperationException"><paramref name="preRelease"/> is not numeric.</exception>
+        [Pure] public static explicit operator int(SemverPreRelease preRelease) => preRelease.AsNumber;
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a pre-release identifier to a string.</para>
+        /// </summary>
+        /// <param name="preRelease">The pre-release identifier to convert.</param>
+        [Pure] public static explicit operator string(SemverPreRelease preRelease) => preRelease.ToString();
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a pre-release identifier to a read-only span of characters.</para>
+        /// </summary>
+        /// <param name="preRelease">The pre-release identifier to convert.</param>
+        [Pure] public static explicit operator ReadOnlySpan<char>(SemverPreRelease preRelease) => preRelease.ToString();
 
         /// <summary>
         ///   <para>Determines whether the pre-release identifier is numeric.</para>
@@ -141,7 +180,10 @@ namespace Chasm.SemanticVersioning
         [Pure] public static bool operator <=(SemverPreRelease left, SemverPreRelease right)
             => left.CompareTo(right) <= 0;
 
-        public static SemverPreRelease Parse(ReadOnlySpan<char> text)
+        [Pure] public override string ToString()
+            => text ?? ((uint)number).ToString();
+
+        [Pure] public static SemverPreRelease Parse(ReadOnlySpan<char> text)
             => throw new NotImplementedException();
 
     }
