@@ -41,3 +41,15 @@ if (a is string text) { /* ... */ }
 else if (Util.Is(b, out text)) { /* ... */ }
 else if (Util.Is(c, out text)) { /* ... */ }
 ```
+
+`Util.With` can be used to invoke functions while `using` a `IDisposable`:
+
+```cs
+// Commonly written as:
+string? firstLine;
+using (StreamReader reader = File.OpenText(path))
+    firstLine = reader.ReadLine();
+
+// Using Util.With:
+string? firstLine = With(File.OpenText(path), reader => reader.ReadLine());
+```

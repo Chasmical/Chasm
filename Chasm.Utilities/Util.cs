@@ -188,5 +188,33 @@ namespace Chasm.Utilities
             return false;
         }
 
+        /// <summary>
+        ///   <para>Invokes the specified <paramref name="function"/> while <see langword="using"/> the specified <paramref name="disposable"/>.</para>
+        /// </summary>
+        /// <typeparam name="TResult">The return type of the specified <paramref name="function"/>.</typeparam>
+        /// <param name="disposable">The <see cref="IDisposable"/> to use.</param>
+        /// <param name="function">The function to invoke.</param>
+        /// <returns>The result of invoking the specified <paramref name="function"/>.</returns>
+        [Pure, MustUseReturnValue]
+        public static TResult With<TResult>(IDisposable disposable, [InstantHandle] Func<TResult> function)
+        {
+            using (disposable)
+                return function();
+        }
+        /// <summary>
+        ///   <para>Invokes the specified <paramref name="function"/> while <see langword="using"/> the specified <paramref name="disposable"/>.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IDisposable"/> to use.</typeparam>
+        /// <typeparam name="TResult">The return type of the specified <paramref name="function"/>.</typeparam>
+        /// <param name="disposable">The <see cref="IDisposable"/> to use.</param>
+        /// <param name="function">The function to invoke with the specified <paramref name="disposable"/>.</param>
+        /// <returns>The result of invoking the specified <paramref name="function"/>.</returns>
+        [Pure, MustUseReturnValue]
+        public static TResult With<T, TResult>(T disposable, [InstantHandle] Func<T, TResult> function) where T : IDisposable
+        {
+            using (disposable)
+                return function(disposable);
+        }
+
     }
 }
