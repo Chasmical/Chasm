@@ -24,6 +24,18 @@ namespace Chasm.SemanticVersioning
             return true;
         }
 
+        [Pure] public static ReadOnlySpan<char> Trim(ReadOnlySpan<char> text, SemverOptions options)
+        {
+            const SemverOptions bothTrim = SemverOptions.AllowLeadingWhite | SemverOptions.AllowTrailingWhite;
+            return (options & bothTrim) switch
+            {
+                bothTrim => text.Trim(),
+                SemverOptions.AllowLeadingWhite => text.TrimStart(),
+                SemverOptions.AllowTrailingWhite => text.TrimStart(),
+                _ => text,
+            };
+        }
+
         public static void ValidateBuildMetadataItem(string? identifier, [InvokerParameterName] string paramName)
         {
             if (identifier is null)
@@ -106,6 +118,18 @@ namespace Chasm.SemanticVersioning
 #endif
                 .CopyTo(destination);
             return true;
+        }
+
+        [Pure] public static int ParseNonNegativeInt32(ReadOnlySpan<char> text)
+        {
+            int result = text[0] - '0';
+            for (int i = 1, length = text.Length; i < length; i++)
+            {
+                if (result > int.MaxValue / 10) return -1;
+                result = result * 10 + (text[i] - '0');
+                if (result < 0) return -1;
+            }
+            return result;
         }
 
     }
