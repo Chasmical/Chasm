@@ -179,5 +179,6 @@ namespace Chasm.SemanticVersioning
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <=(SemverPreRelease left, SemverPreRelease right)
             => left.CompareTo(right) <= 0;
+
     }
 }

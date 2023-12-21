@@ -5,6 +5,9 @@ using JetBrains.Annotations;
 namespace Chasm.SemanticVersioning
 {
     public readonly partial struct SemverPreRelease
+#if NET7_0_OR_GREATER
+        : ISpanParsable<SemverPreRelease>
+#endif
     {
         // ReSharper disable once UnusedParameter.Local
         private SemverPreRelease(string validIdentifier, bool _)
@@ -152,6 +155,17 @@ namespace Chasm.SemanticVersioning
             bool alz = (options & SemverOptions.AllowLeadingZeroes) != 0;
             return ParseTrimmed(Utility.Trim(text, options), alz, out preRelease) is SemverErrorCode.Success;
         }
+
+#if NET7_0_OR_GREATER
+        [Pure] static SemverPreRelease IParsable<SemverPreRelease>.Parse(string s, IFormatProvider? _)
+            => Parse(s);
+        [Pure] static bool IParsable<SemverPreRelease>.TryParse(string? s, IFormatProvider? _, out SemverPreRelease preRelease)
+            => TryParse(s, out preRelease);
+        [Pure] static SemverPreRelease ISpanParsable<SemverPreRelease>.Parse(ReadOnlySpan<char> s, IFormatProvider? _)
+            => Parse(s);
+        [Pure] static bool ISpanParsable<SemverPreRelease>.TryParse(ReadOnlySpan<char> s, IFormatProvider? _, out SemverPreRelease preRelease)
+            => TryParse(s, out preRelease);
+#endif
 
     }
 }
