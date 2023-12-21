@@ -5,15 +5,16 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net7.0;
-      netcoreapp1.0;
-      netstandard1.0;
-      net45;
+      netcoreapp3.1;
+      netstandard2.1;
     </TargetFrameworks>
     <!--
       |            Target Frameworks            | - Justification
       |===============|================|========|==============================
       | net7.0        |                |        | - latest API, for use in IDE
-      | netcoreapp1.0 | netstandard1.0 | net45  | - lowest supported API
+      | netcoreapp3.1 | netstandard2.1 |        | - lowest supported API
+
+      TODO: consider lowering target versions
     -->
     
     <!-- Header -->
@@ -40,6 +41,10 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
     <InternalsVisibleTo Include="Chasm.Formatting.Tests" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
