@@ -10,10 +10,10 @@ namespace Chasm.SemanticVersioning
     /// <summary>
     ///   <para>Represents a valid semantic version, compliant to the SemVer 2.0.0 specification.</para>
     /// </summary>
-    public sealed class SemanticVersion : IEquatable<SemanticVersion>, IComparable, IComparable<SemanticVersion>
+    public sealed partial class SemanticVersion : IEquatable<SemanticVersion>, IComparable, IComparable<SemanticVersion>
 #if NET7_0_OR_GREATER
-                                        , System.Numerics.IComparisonOperators<SemanticVersion, SemanticVersion, bool>
-                                        , System.Numerics.IMinMaxValue<SemanticVersion>
+                                                , System.Numerics.IComparisonOperators<SemanticVersion, SemanticVersion, bool>
+                                                , System.Numerics.IMinMaxValue<SemanticVersion>
 #endif
     {
         /// <summary>
