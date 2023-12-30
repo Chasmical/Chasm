@@ -5,10 +5,7 @@ namespace Chasm.SemanticVersioning.Tests
 {
     public partial class SemverPreReleaseTests
     {
-        public static FixtureAdapter<ParsingFixture> ParsingFixtures { get; } = CreateParsingFixtures();
-
-        [Pure]
-        private static FixtureAdapter<ParsingFixture> CreateParsingFixtures()
+        [Pure] public static FixtureAdapter<ParsingFixture> CreateParsingFixtures()
         {
             FixtureAdapter<ParsingFixture> adapter = [];
 

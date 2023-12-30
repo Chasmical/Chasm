@@ -4,7 +4,7 @@ namespace Chasm.SemanticVersioning.Tests
 {
     public partial class SemverPreReleaseTests
     {
-        [Theory, MemberData(nameof(ParsingFixtures))]
+        [Theory, MemberData(nameof(CreateParsingFixtures))]
         public void Parsing(ParsingFixture fixture)
         {
             Output.WriteLine($"Parsing {fixture}");
