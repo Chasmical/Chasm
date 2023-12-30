@@ -31,7 +31,7 @@ namespace Chasm.SemanticVersioning.Tests
         IEnumerator<object?[]> IEnumerable<object?[]>.GetEnumerator()
         {
             foreach (TFixture fixture in fixtures)
-                yield return new object?[1] { fixture };
+                yield return [fixture];
         }
 
     }

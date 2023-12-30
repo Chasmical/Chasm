@@ -187,7 +187,7 @@ namespace Chasm.Collections
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            List<T> list = new();
+            List<T> list = [];
             for (int i = 0; i < array.Length; i++)
                 if (predicate(array[i], i))
                     list.Add(array[i]);
@@ -198,7 +198,7 @@ namespace Chasm.Collections
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-            List<T> list = new();
+            List<T> list = [];
             for (int i = 0; i < array.Length; i++)
                 if (predicate(array[i], i, array))
                     list.Add(array[i]);
@@ -450,7 +450,7 @@ namespace Chasm.Collections
             if (array.Rank != 1) throw new RankException($"{nameof(array)} is multidimensional.");
             if (array.GetLowerBound(0) != 0) throw new ArgumentException($"{nameof(array)} is not zero-based.");
 
-            List<TOutput> list = new();
+            List<TOutput> list = [];
             if (array is object[] objectArray)
             {
                 for (int i = 0; i < objectArray.Length; i++)

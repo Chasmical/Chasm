@@ -86,7 +86,7 @@ namespace Chasm.SemanticVersioning
             Minor = minor;
             Patch = patch;
 
-            _preReleases = preReleases is null ? Array.Empty<SemverPreRelease>() : preReleases.ToArray();
+            _preReleases = preReleases is null ? [] : preReleases.ToArray();
             if (buildMetadata is not null)
             {
                 string[] array = buildMetadata.ToArray();
@@ -94,7 +94,7 @@ namespace Chasm.SemanticVersioning
                     Utility.ValidateBuildMetadataItem(array[i], nameof(buildMetadata));
                 _buildMetadata = array;
             }
-            else _buildMetadata = Array.Empty<string>();
+            else _buildMetadata = [];
         }
 
         /// <summary>

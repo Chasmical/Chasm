@@ -19,6 +19,11 @@ insert_final_newline = true
 #### Code Style Options ####
 
 # Disable 'Use expression body for method' message
+# - Having method bodies is more convenient when writing code with #if directives
 dotnet_diagnostic.IDE0022.severity = none
+
+# Disable 'Use collection expression for fluent' message
+# - I think ToArray() calls are more readable than [..list]
+dotnet_diagnostic.IDE0305.severity = none
 
 spelling_exclusion_path = .\exclusion.dic

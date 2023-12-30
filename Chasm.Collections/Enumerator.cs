@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+#if NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 using System.Threading.Tasks;
+#endif
 using JetBrains.Annotations;
 
 namespace Chasm.Collections

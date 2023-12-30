@@ -89,7 +89,7 @@ namespace Chasm.SemanticVersioning
         ///   <para>Gets the numeric pre-release identifier with the value of 0.</para>
         /// </summary>
         public static SemverPreRelease Zero => default;
-        internal static readonly SemverPreRelease[] ZeroArray = { default };
+        internal static readonly SemverPreRelease[] ZeroArray = [default];
 
         /// <summary>
         ///   <para>Determines whether this pre-release identifier is equal to another specified pre-release identifier.</para>
