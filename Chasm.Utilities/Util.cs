@@ -196,7 +196,7 @@ namespace Chasm.Utilities
         /// <param name="function">The function to invoke.</param>
         /// <returns>The result of invoking the specified <paramref name="function"/>.</returns>
         [Pure, MustUseReturnValue]
-        public static TResult With<TResult>(IDisposable disposable, [InstantHandle] Func<TResult> function)
+        public static TResult With<TResult>([HandlesResourceDisposal] IDisposable disposable, [InstantHandle] Func<TResult> function)
         {
             using (disposable)
                 return function();
@@ -210,7 +210,7 @@ namespace Chasm.Utilities
         /// <param name="function">The function to invoke with the specified <paramref name="disposable"/>.</param>
         /// <returns>The result of invoking the specified <paramref name="function"/>.</returns>
         [Pure, MustUseReturnValue]
-        public static TResult With<T, TResult>(T disposable, [InstantHandle] Func<T, TResult> function) where T : IDisposable
+        public static TResult With<T, TResult>([HandlesResourceDisposal] T disposable, [InstantHandle] Func<T, TResult> function) where T : IDisposable
         {
             using (disposable)
                 return function(disposable);

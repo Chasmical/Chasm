@@ -8,6 +8,7 @@ namespace Chasm.Utilities
     /// <summary>
     ///   <para>Represents a <see cref="IDisposable"/>, that invokes an action when disposed.</para>
     /// </summary>
+    [MustDisposeResource]
     public class DelegateDisposable : IDisposable
     {
         private Action? disposeAction;
@@ -39,7 +40,7 @@ namespace Chasm.Utilities
         /// <param name="dispose">The action that is invoked when the returned <see cref="DelegateDisposable"/> is disposed.</param>
         /// <returns>A <see cref="DelegateDisposable"/> that will call <paramref name="dispose"/> when it's disposed.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="setup"/> or <paramref name="dispose"/> is <see langword="null"/>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MustDisposeResource, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DelegateDisposable Create([InstantHandle] Action setup, Action dispose)
         {
             if (setup is null || dispose is null)
