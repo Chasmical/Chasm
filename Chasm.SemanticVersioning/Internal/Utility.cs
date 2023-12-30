@@ -31,7 +31,7 @@ namespace Chasm.SemanticVersioning
             {
                 bothTrim => text.Trim(),
                 SemverOptions.AllowLeadingWhite => text.TrimStart(),
-                SemverOptions.AllowTrailingWhite => text.TrimStart(),
+                SemverOptions.AllowTrailingWhite => text.TrimEnd(),
                 _ => text,
             };
         }
