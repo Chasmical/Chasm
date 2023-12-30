@@ -40,7 +40,7 @@
     <None Remove="Chasm.Formatting.csproj.DotSettings" />
     <None Include="README.md" Pack="true" PackagePath="\" />
     <InternalsVisibleTo Include="Chasm.Formatting.Tests" />
-    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">

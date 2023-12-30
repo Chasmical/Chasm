@@ -51,7 +51,7 @@
     <None Remove="Chasm.Collections.csproj.DotSettings" />
     <None Include="README.md" Pack="true" PackagePath="\" />
     <InternalsVisibleTo Include="Chasm.Collections.Tests" />
-    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
