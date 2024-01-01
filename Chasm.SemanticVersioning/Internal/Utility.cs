@@ -5,15 +5,26 @@ namespace Chasm.SemanticVersioning
 {
     internal static class Utility
     {
-        [Pure] public static bool IsValidCharacter(char c) => (uint)c - '0' < 10u || (uint)c - 'A' < 26u || (uint)c - 'a' < 26u || c == '-';
-        [Pure] public static bool IsLetter(char c) => (uint)c - 'A' < 26u || (uint)c - 'a' < 26u;
-        [Pure] public static bool IsDigit(char c) => (uint)c - '0' < 10u;
+        [Pure] public static bool IsValidCharacter(char c)
+        {
+#if NET7_0_OR_GREATER
+            return char.IsAsciiLetter(c) || char.IsAsciiDigit(c) || c == '-';
+#else
+            return ((uint)c | ' ') - 'a' <= 'z' - 'a' || (uint)c - '0' <= '9' - '0' || c == '-';
+#endif
+        }
 
         [Pure] public static bool IsNumeric(ReadOnlySpan<char> text)
         {
             for (int i = 0, length = text.Length; i < length; i++)
+            {
+#if NET7_0_OR_GREATER
+                if (!char.IsAsciiDigit(text[i]))
+#else
                 if ((uint)text[i] - '0' >= 10u)
+#endif
                     return false;
+            }
             return true;
         }
         [Pure] public static bool AllValidCharacters(ReadOnlySpan<char> str)
@@ -118,18 +129,6 @@ namespace Chasm.SemanticVersioning
 #endif
                 .CopyTo(destination);
             return true;
-        }
-
-        [Pure] public static int ParseNonNegativeInt32(ReadOnlySpan<char> text)
-        {
-            int result = text[0] - '0';
-            for (int i = 1, length = text.Length; i < length; i++)
-            {
-                if (result > int.MaxValue / 10) return -1;
-                result = result * 10 + (text[i] - '0');
-                if (result < 0) return -1;
-            }
-            return result;
         }
 
     }

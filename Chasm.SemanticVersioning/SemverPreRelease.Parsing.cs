@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Chasm.Utilities;
 using JetBrains.Annotations;
 
@@ -15,15 +16,15 @@ namespace Chasm.SemanticVersioning
 
         [Pure] private static SemverErrorCode ParseInitial(ReadOnlySpan<char> text, bool allowLeadingZeroes, out int result)
         {
-            if (text.IsEmpty) return Util.Fail(SemverErrorCode.PreReleaseEmpty, out result);
+            result = -1;
+            if (text.IsEmpty) return SemverErrorCode.PreReleaseEmpty;
             if (Utility.IsNumeric(text))
             {
                 if (!allowLeadingZeroes && text[0] == '0' && text.Length > 1)
-                    return Util.Fail(SemverErrorCode.PreReleaseLeadingZeroes, out result);
-                result = Utility.ParseNonNegativeInt32(text);
-                return result == -1 ? SemverErrorCode.PreReleaseTooBig : SemverErrorCode.Success;
+                    return SemverErrorCode.PreReleaseLeadingZeroes;
+                if (!int.TryParse(text, NumberStyles.None, null, out result))
+                    return SemverErrorCode.PreReleaseTooBig;
             }
-            result = -1;
             return SemverErrorCode.Success;
         }
         [Pure] internal static SemverErrorCode ParseTrimmed(ReadOnlySpan<char> text, bool allowLeadingZeroes, out SemverPreRelease preRelease)
@@ -85,7 +86,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="preRelease">When this method returns, contains the <see cref="SemverPreRelease"/> structure equivalent to the pre-release identifier specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="default"/> if the conversion failed.</param>
         /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool TryParse(string? text, out SemverPreRelease preRelease)
-            => text is null ? Util.Fail(out preRelease) : ParseTrimmed(text, false, out preRelease) is SemverErrorCode.Success;
+            => ParseTrimmed(text.AsSpan(), false, out preRelease) is SemverErrorCode.Success;
         /// <summary>
         ///   <para>Tries to convert the specified read-only span of characters representing a pre-release identifier to an equivalent <see cref="SemverPreRelease"/> structure, and returns a value indicating whether the conversion was successful.</para>
         /// </summary>
