@@ -14,6 +14,9 @@ tab_width = 4
 end_of_line = lf
 insert_final_newline = true
 
+# Spell checker exclusions
+spelling_exclusion_path = .\exclusion.dic
+
 
 
 #### Code Style Options ####
@@ -22,8 +25,14 @@ insert_final_newline = true
 # - Having method bodies is more convenient when writing code with #if directives
 dotnet_diagnostic.IDE0022.severity = none
 
+# Disable 'Slice can be simplified' message
+# - Not all target frameworks support ranges, and using the range syntax doesn't have any significant benefits
+dotnet_diagnostic.IDE0057.severity = none
+
 # Disable 'Use collection expression for fluent' message
 # - I think ToArray() calls are more readable than [..list]
 dotnet_diagnostic.IDE0305.severity = none
 
-spelling_exclusion_path = .\exclusion.dic
+# Disable 'Use ArgumentNullException.ThrowIfNull' message
+# - It was only introduced in .NET 6, and I want to support older targets
+dotnet_diagnostic.CA1510.severity = none

@@ -28,9 +28,6 @@
 
   </PropertyGroup>
 
-  <PropertyGroup>
-    <NoWarn>$(NoWarn),IDE0057</NoWarn> <!-- Suppress the 'Slice can be simplified' message (not all targets support ranges) -->
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(TargetFramework)'!='net8.0'">
     <NoWarn>$(NoWarn),1591</NoWarn> <!-- Suppress the 'Missing XML Documentation' warning -->
   </PropertyGroup>
