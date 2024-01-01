@@ -1,9 +1,22 @@
+using System;
 using Xunit;
 
 namespace Chasm.SemanticVersioning.Tests
 {
     public partial class SemverPreReleaseTests
     {
+        [Fact]
+        public void ParsingNull()
+        {
+            Assert.Throws<ArgumentNullException>(static () => SemverPreRelease.Parse(null!));
+            Assert.Throws<ArgumentNullException>(static () => SemverPreRelease.Parse(null!, SemverOptions.Loose));
+            Assert.Throws<ArgumentNullException>(static () => TestUtil.Parse<SemverPreRelease>(null!));
+
+            Assert.False(SemverPreRelease.TryParse(null, out _));
+            Assert.False(SemverPreRelease.TryParse(null, SemverOptions.Loose, out _));
+            Assert.False(TestUtil.TryParse<SemverPreRelease>(null!, out _));
+        }
+
         [Theory, MemberData(nameof(CreateParsingFixtures))]
         public void Parsing(ParsingFixture fixture)
         {
@@ -13,7 +26,9 @@ namespace Chasm.SemanticVersioning.Tests
             SemverOptions options = fixture.Options;
 
             fixture.Test(() => SemverPreRelease.Parse(source, options));
+            fixture.Test(() => SemverPreRelease.Parse(source.AsSpan(), options));
             fixture.Test(SemverPreRelease.TryParse(source, options, out SemverPreRelease preRelease), preRelease);
+            fixture.Test(SemverPreRelease.TryParse(source.AsSpan(), options, out preRelease), preRelease);
 
             if (options is SemverOptions.Strict)
             {
