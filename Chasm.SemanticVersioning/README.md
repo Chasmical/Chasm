@@ -4,19 +4,29 @@ A semantic versioning library focused on functionality and performance.
 
 ## To-do List
 
-- `SemanticVersion` parsing;
-  - Strict SemVer 2.0.0 parsing;
-  - Loose parsing with options;
-  - Option to allow remove empty pre-releases/build metadata;
-  - Option to allow older syntax `1.2.3beta5`;
-  - Option to parse only a part of the source text;
-- Advanced `SemanticVersion` formatting (`M.m.p-rrr+ddd`);
-- `node-semver` version ranges:
-  - Class `PartialVersion`;
-    - Basic implementation;
-    - Parsing and formatting partial versions;
-  - Classes `VersionRange`, `ComparatorSet`, `Comparator`;
-    - Basic implementation;
-    - Primitive version comparators;
-    - Advanced version comparators;
-    - Parsing of version ranges and its components;
+### v2.0.0 milestones
+
+- [x] `SemanticVersion` class;
+- [x] `SemverPreRelease` struct;
+- [x] `SemverPreRelease` parsing and formatting;
+- [x] `SemanticVersion` strict parsing;
+- [ ] `SemanticVersion` loose parsing;
+
+### Extra functionality
+
+- [ ] Use more efficient formatting (Chasm.Formatting);
+- [ ] Advanced `SemanticVersion` formatting (`M.m.p-rrr+ddd`);
+- [ ] `SemanticVersionBuilder` class;
+- [ ] `BuildMetadataComparer` class;
+- [ ] Advanced `SemverPreRelease` formatting, maybe?;
+- [ ] `SemverPreRelease.ParseMultiple/Many` method;
+- [ ] Option to ignore empty pre-releases/build metadata during parsing;
+- [ ] Option to allow an older version syntax, like `1.2.3beta5`;
+
+### `node-semver` version ranges
+
+- [ ] Classes `PartialVersion`, `VersionRange`, `ComparatorSet`, `Comparator`;
+- [ ] Primitive version comparators;
+- [ ] Advanced version comparators;
+- [ ] `PartialVersion` parsing and formatting;
+- [ ] Parsing of version ranges and its components;
