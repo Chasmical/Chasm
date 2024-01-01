@@ -42,6 +42,7 @@
     <InternalsVisibleTo Include="Chasm.SemanticVersioning.Tests" />
     <ProjectReference Include="..\Chasm.Utilities\Chasm.Utilities.csproj" />
     <ProjectReference Include="..\Chasm.Collections\Chasm.Collections.csproj" />
+    <ProjectReference Include="..\Chasm.Formatting\Chasm.Formatting.csproj" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 

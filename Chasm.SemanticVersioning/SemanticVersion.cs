@@ -111,6 +111,19 @@ namespace Chasm.SemanticVersioning
         public bool HasBuildMetadata => _buildMetadata.Length != 0;
 
         /// <summary>
+        ///   <para>Gets a read-only span of the semantic version's pre-release identifiers.</para>
+        /// </summary>
+        /// <returns>A read-only span of the semantic version's pre-release identifiers.</returns>
+        public ReadOnlySpan<SemverPreRelease> GetPreReleases()
+            => _preReleases;
+        /// <summary>
+        ///   <para>Gets a read-only span of the semantic version's build metadata identifiers.</para>
+        /// </summary>
+        /// <returns>A read-only span of the semantic version's build metadata identifiers.</returns>
+        public ReadOnlySpan<string> GetBuildMetadata()
+            => _buildMetadata;
+
+        /// <summary>
         ///   <para>Gets the minimum possible valid semantic version, <c>0.0.0-0</c>.</para>
         /// </summary>
         public static SemanticVersion MinValue { get; } = new SemanticVersion(0, 0, 0, SemverPreRelease.ZeroArray, null);

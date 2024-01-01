@@ -1,5 +1,6 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
+using Chasm.Formatting;
+using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
 {
@@ -33,6 +34,14 @@ namespace Chasm.SemanticVersioning
                 if (!IsValidCharacter(str[i]))
                     return false;
             return true;
+        }
+
+        [Pure] public static ReadOnlySpan<char> ReadSemverIdentifier(this scoped ref SpanParser parser)
+        {
+            int start = parser.position;
+            while (parser.position < parser.length && IsValidCharacter(parser.source[parser.position]))
+                parser.position++;
+            return parser.source.Slice(start, parser.position - start);
         }
 
         [Pure] public static ReadOnlySpan<char> Trim(ReadOnlySpan<char> text, SemverOptions options)
