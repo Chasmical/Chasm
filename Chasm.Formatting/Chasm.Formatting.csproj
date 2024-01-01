@@ -5,18 +5,20 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net7.0;
-      netcoreapp3.1;
+      net6.0;
+      netcoreapp2.1;
       netstandard2.1;
     </TargetFrameworks>
     <!--
       |            Target Frameworks            | - Justification
       |===============|================|========|==============================
       | net7.0        |                |        | - latest API, for use in IDE
-      | netcoreapp3.1 | netstandard2.1 |        | - lowest supported API
+      | net6.0        |                |        | - advanced string formatting
+      | netcoreapp2.1 | netstandard2.1 |        | - lowest supported API
 
       TODO: consider lowering target versions
     -->
-    
+
     <!-- Header -->
     <AssemblyName>Chasm.Formatting</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>

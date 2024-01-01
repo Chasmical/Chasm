@@ -377,7 +377,7 @@ namespace Chasm.Formatting
                 int start = Math.Max(pos - distance, 0);
                 int finish = Math.Min(pos + distance, src.Length);
 
-#if NET7_0
+#if NET6_0_OR_GREATER
                 ReadOnlySpan<char> leftEllipsis = start > 0 ? "…" : ReadOnlySpan<char>.Empty;
                 ReadOnlySpan<char> left = src.Slice(start, pos - start);
                 ReadOnlySpan<char> pointer = pos < src.Length ? src[pos].ToString() : ReadOnlySpan<char>.Empty;
@@ -395,18 +395,18 @@ namespace Chasm.Formatting
                 Span<char> buffer = stackalloc char[totalMaxLength];
                 if (start > 0) buffer[i++] = '…';
 
-                left.CopyTo(buffer[i..]);
+                left.CopyTo(buffer.Slice(i));
                 i += left.Length;
 
                 buffer[i++] = '⟨';
                 if (pos < src.Length) buffer[i++] = src[pos];
                 buffer[i++] = '⟩';
 
-                right.CopyTo(buffer[i..]);
+                right.CopyTo(buffer.Slice(i));
                 i += right.Length;
 
                 if (finish < src.Length) buffer[i++] = '…';
-                return new string(buffer[..i]);
+                return new string(buffer.Slice(i));
 #endif
             }
         }

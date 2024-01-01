@@ -72,7 +72,7 @@ namespace Chasm.Formatting
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(ReadOnlySpan<char> text)
         {
-            text.CopyTo(buffer[pos..]);
+            text.CopyTo(buffer.Slice(pos));
             pos += text.Length;
         }
 
