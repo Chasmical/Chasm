@@ -5,6 +5,8 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net8.0;
+      net7.0;
+      net5.0;
       netcoreapp2.1;
       netstandard2.1;
     </TargetFrameworks>
@@ -12,6 +14,8 @@
       |            Target Frameworks            | - Justification
       |===============|================|========|==============================
       | net8.0        |                |        | - latest API, for use in IDE
+      | net7.0        |                |        | - IParsable/ISpanParsable
+      | net5.0        |                |        | - ISpanFormattable
       | netcoreapp2.1 | netstandard2.1 |        | - lowest supported API
 
       TODO: consider lowering target versions

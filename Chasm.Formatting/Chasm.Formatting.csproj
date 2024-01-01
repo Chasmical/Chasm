@@ -6,6 +6,7 @@
     <TargetFrameworks>
       net8.0;
       net6.0;
+      net5.0;
       netcoreapp2.1;
       netstandard2.1;
     </TargetFrameworks>
@@ -13,7 +14,8 @@
       |            Target Frameworks            | - Justification
       |===============|================|========|==============================
       | net8.0        |                |        | - latest API, for use in IDE
-      | net6.0        |                |        | - advanced string formatting
+      | net6.0        |                |        | - advanced string formatting, tuple overload of Math.DivRem
+      | net5.0        |                |        | - SkipLocalsInit
       | netcoreapp2.1 | netstandard2.1 |        | - lowest supported API
 
       TODO: consider lowering target versions

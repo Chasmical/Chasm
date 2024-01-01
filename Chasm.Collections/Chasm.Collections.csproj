@@ -5,6 +5,8 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net8.0;
+      net6.0;
+      net5.0;
       netcoreapp3.0;
       netcoreapp2.0;
       netcoreapp1.0;
@@ -20,6 +22,8 @@
       |            Target Frameworks            | - Justification
       |===============|================|========|==============================
       | net8.0        |                |        | - latest API, for use in IDE
+      | net6.0        |                |        | - Array.Clear
+      | net5.0        |                |        | - GC.AllocateUninitializedArray
       | netcoreapp3.0 | netstandard2.1 |        | - IAsyncEnumerator
       | netcoreapp2.0 | netstandard2.0 | net47  | - ValueTuple
       | netcoreapp2.0 | netstandard2.1 |        | - Array.Fill
