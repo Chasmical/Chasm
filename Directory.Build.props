@@ -11,9 +11,9 @@
 
     <!-- Targets -->
     <TargetFrameworks>
-      net7.0;
+      net8.0;
       netcoreapp3.1;
-      netstandard2.1
+      netstandard2.1;
     </TargetFrameworks>
 
     <!-- Repository -->
@@ -31,10 +31,10 @@
   <PropertyGroup>
     <NoWarn>$(NoWarn),IDE0057</NoWarn> <!-- Suppress the 'Slice can be simplified' message (not all targets support ranges) -->
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(TargetFramework)'!='net7.0'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(TargetFramework)'!='net8.0'">
     <NoWarn>$(NoWarn),1591</NoWarn> <!-- Suppress the 'Missing XML Documentation' warning -->
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'!='net7.0'">
+  <PropertyGroup Condition="'$(TargetFramework)'!='net8.0'">
     <!-- Suppress the 'XML comment has cref attribute that could not be resolved' warning -->
     <!-- Suppress the 'Incorrect signature in XML comment' warning -->
     <NoWarn>$(NoWarn),1574,1580</NoWarn>

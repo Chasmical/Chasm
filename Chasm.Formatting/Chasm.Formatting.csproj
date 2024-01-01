@@ -4,7 +4,7 @@
     <!-- Project Properties -->
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
-      net7.0;
+      net8.0;
       net6.0;
       netcoreapp2.1;
       netstandard2.1;
@@ -12,7 +12,7 @@
     <!--
       |            Target Frameworks            | - Justification
       |===============|================|========|==============================
-      | net7.0        |                |        | - latest API, for use in IDE
+      | net8.0        |                |        | - latest API, for use in IDE
       | net6.0        |                |        | - advanced string formatting
       | netcoreapp2.1 | netstandard2.1 |        | - lowest supported API
 
