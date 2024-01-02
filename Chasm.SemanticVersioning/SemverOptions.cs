@@ -49,6 +49,10 @@ namespace Chasm.SemanticVersioning
         ///   <para>Specifies that there could be unrelated to semantic versioning characters at some point in the string. Parsing is stopped at first such character, and the result is determined by the contents of the string preceding it.</para>
         /// </summary>
         AllowLeftovers              = 1 << 8,
+        /// <summary>
+        ///   <para>Allows specifying pre-release identifiers in an old-style fashion. For example, <c>4.0.0alpha2beta7</c> is resolved as having <c>alpha</c>, <c>2</c>, <c>beta</c> and <c>7</c> as pre-release identifiers.</para>
+        /// </summary>
+        OptionalPreReleaseSeparator = 1 << 9,
 
         /// <summary>
         ///   <para>Specifies all parsing options, to be able to parse normally invalid semantic versions.</para>

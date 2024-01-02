@@ -21,7 +21,7 @@ You're probably wondering "Why should I use this library instead of any other mo
 - [ ] Advanced `SemverPreRelease` formatting, maybe?;
 - [ ] `SemverPreRelease.ParseMultiple/Many` method;
 - [ ] Option to ignore empty pre-releases/build metadata during parsing;
-- [ ] Option to allow an older version syntax, like `1.2.3beta5`;
+- [x] Option to allow an older version syntax, like `1.2.3beta5`;
 
 ### `node-semver` version ranges
 

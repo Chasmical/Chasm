@@ -133,6 +133,11 @@ namespace Chasm.SemanticVersioning.Tests
             New("1.2.3-alpha+$$$", options).Throws(Exceptions.BuildMetadataEmpty);
             New("1.2.3-gamma+123$$$", options).Returns(1, 2, 3, "gamma", "+123").ButStrictThrows(Exceptions.Leftovers);
 
+            // Optional pre-release separator
+            options = SemverOptions.OptionalPreReleaseSeparator;
+            New("1.2.3alpha", options).Returns(1, 2, 3, "alpha").ButStrictThrows(Exceptions.Leftovers);
+            New("1.2.3alpha5b70", options).Returns(1, 2, 3, "alpha", 5, "b", 70).ButStrictThrows(Exceptions.Leftovers);
+
 
 
             // All options

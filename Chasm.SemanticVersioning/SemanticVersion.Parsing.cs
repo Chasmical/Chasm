@@ -169,6 +169,23 @@ namespace Chasm.SemanticVersioning
                 while (parser.Skip('.'));
                 preReleases = list.ToArray();
             }
+            else if ((options & SemverOptions.OptionalPreReleaseSeparator) != 0
+                  && parser.TryPeek(out char next) && Utility.IsValidCharacter(next))
+            {
+                List<SemverPreRelease> list = [];
+                do
+                {
+                    bool isDigit = (uint)next - '0' < 10u;
+                    if (next == '-') return SemverErrorCode.PreReleaseInvalid;
+                    read = isDigit ? parser.ReadAsciiDigits() : parser.ReadAsciiLetters();
+                    SemverErrorCode code = SemverPreRelease.ParseValidated(read, allowLeadingZeroes, out SemverPreRelease preRelease);
+                    if (code is not SemverErrorCode.Success) return code;
+                    list.Add(preRelease);
+                    if (innerWhite) parser.SkipWhitespaces();
+                }
+                while (parser.TryPeek(out next) && Utility.IsValidCharacter(next));
+                preReleases = list.ToArray();
+            }
 
             string[]? buildMetadata = null;
             if (parser.Skip('+'))
