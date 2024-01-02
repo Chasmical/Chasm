@@ -60,11 +60,7 @@ namespace Chasm.Formatting
         public readonly bool OnAsciiLetter
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                uint c = Current;
-                return c - 'a' < 26 || c - 'A' < 26;
-            }
+            get => ((uint)Current | ' ') - 'a' <= 'z' - 'a';
         }
 
         /// <summary>
@@ -334,7 +330,7 @@ namespace Chasm.Formatting
         public ReadOnlySpan<char> ReadAsciiLetters()
         {
             int start = position;
-            while (position < length && ((uint)source[position] - 'a' < 26u || (uint)source[position] - 'A' < 26u))
+            while (position < length && ((uint)source[position] | ' ') - 'a' <= 'z' - 'a')
                 position++;
             return source.Slice(start, position - start);
         }
