@@ -1,5 +1,8 @@
 # Chasm.Utilities Changelog
 
+### v2.3.3
+- ✨ Added `static DelegateDisposable.Create<TState>(Func<TState>, Action<TState>)`;
+
 ### v2.3.2
 - 🧩 Retargeted to: `net8.0`, `netcoreapp3.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`;
 
