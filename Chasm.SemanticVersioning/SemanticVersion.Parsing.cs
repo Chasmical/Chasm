@@ -134,14 +134,14 @@ namespace Chasm.SemanticVersioning
             {
                 if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.MinorLeadingZeroes;
                 if (!int.TryParse(read, NumberStyles.None, null, out minor))
-                    return SemverErrorCode.MajorTooBig;
+                    return SemverErrorCode.MinorTooBig;
                 if (innerWhite) parser.SkipWhitespaces();
 
                 if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadAsciiDigits()).IsEmpty)
                 {
                     if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.PatchLeadingZeroes;
                     if (!int.TryParse(read, NumberStyles.None, null, out patch))
-                        return SemverErrorCode.MajorTooBig;
+                        return SemverErrorCode.PatchTooBig;
                     if (innerWhite) parser.SkipWhitespaces();
 
                 }
