@@ -138,6 +138,15 @@ namespace Chasm.SemanticVersioning.Tests
             New("1.2.3alpha", options).Returns(1, 2, 3, "alpha").ButStrictThrows(Exceptions.Leftovers);
             New("1.2.3alpha5b70", options).Returns(1, 2, 3, "alpha", 5, "b", 70).ButStrictThrows(Exceptions.Leftovers);
 
+            // Remove empty pre-releases
+            options = SemverOptions.RemoveEmptyPreReleases;
+            New("1.2.3-alpha..", options).Returns(1, 2, 3, "alpha").ButStrictThrows(Exceptions.PreReleaseEmpty);
+            New("1.2.3-..4.", options).Returns(1, 2, 3, 4).ButStrictThrows(Exceptions.PreReleaseEmpty);
+            // Remove empty build metadata
+            options = SemverOptions.RemoveEmptyBuildMetadata;
+            New("1.2.3+test-build..", options).Returns(1, 2, 3, "+test-build").ButStrictThrows(Exceptions.BuildMetadataEmpty);
+            New("1.2.3+..007.", options).Returns(1, 2, 3, "+007").ButStrictThrows(Exceptions.BuildMetadataEmpty);
+
 
 
             // All options

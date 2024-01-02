@@ -20,7 +20,7 @@ You're probably wondering "Why should I use this library instead of any other mo
 - [x] `BuildMetadataComparer` class;
 - [ ] Advanced `SemverPreRelease` formatting, maybe?;
 - [ ] `SemverPreRelease.ParseMultiple/Many` method;
-- [ ] Option to ignore empty pre-releases/build metadata during parsing;
+- [x] Option to ignore empty pre-releases/build metadata during parsing;
 - [x] Option to allow an older version syntax, like `1.2.3beta5`;
 
 ### `node-semver` version ranges
@@ -71,7 +71,9 @@ var version = new SemanticVersion(1, 2, 3, pre);
 `SemverOptions` specifies a bunch of different semantic version parsing options.
 
 ```cs
-var options = SemverOptions.AllowVersionPrefix | SemverOptions.AllowInnerWhite | SemverOptions.OptionalMinor;
-var version = SemanticVersion.Parse("v2 - alpha");
+var options = SemverOptions.AllowVersionPrefix | SemverOptions.AllowInnerWhite
+            | SemverOptions.OptionalMinor | SemverOptions.RemoveEmptyPreReleases;
+
+var version = SemanticVersion.Parse("v2 -. .alpha.", options);
 // Parsed as "2.0.0-alpha"
 ```

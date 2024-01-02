@@ -155,12 +155,17 @@ namespace Chasm.SemanticVersioning
             SemverPreRelease[]? preReleases = null;
             if (parser.Skip('-'))
             {
+                bool removeEmpty = (options & SemverOptions.RemoveEmptyPreReleases) != 0;
                 List<SemverPreRelease> list = [];
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
                     read = parser.ReadSemverIdentifier();
-                    if (read.IsEmpty) return SemverErrorCode.PreReleaseEmpty;
+                    if (read.IsEmpty)
+                    {
+                        if (removeEmpty) continue;
+                        return SemverErrorCode.PreReleaseEmpty;
+                    }
                     SemverErrorCode code = SemverPreRelease.ParseValidated(read, allowLeadingZeroes, out SemverPreRelease preRelease);
                     if (code is not SemverErrorCode.Success) return code;
                     list.Add(preRelease);
@@ -190,12 +195,17 @@ namespace Chasm.SemanticVersioning
             string[]? buildMetadata = null;
             if (parser.Skip('+'))
             {
+                bool removeEmpty = (options & SemverOptions.RemoveEmptyBuildMetadata) != 0;
                 List<string> list = [];
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
                     read = parser.ReadSemverIdentifier();
-                    if (read.IsEmpty) return SemverErrorCode.BuildMetadataEmpty;
+                    if (read.IsEmpty)
+                    {
+                        if (removeEmpty) continue;
+                        return SemverErrorCode.BuildMetadataEmpty;
+                    }
                     list.Add(new string(read));
                     if (innerWhite) parser.SkipWhitespaces();
                 }
