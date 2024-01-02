@@ -1,0 +1,41 @@
+# Chasm.Utilities Changelog
+
+### v2.3.2
+- 🧩 Retargeted to: `net8.0`, `netcoreapp3.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`;
+
+### v2.3.1
+- ⬆️ Upgraded `JetBrains.Annotations` from 2023.2.0 to 2023.3.0;
+- 🧑‍💻 Added `[MustDisposeResource]`, `[HandlesResourceDisposal]` code analysis attributes;
+
+### v2.3.0
+- ✨ Added `class DelegateDisposable : IDisposable`;
+- ✨ Added `DelegateDisposable(Action)`;
+- ✨ Added `DelegateDisposable.Dispose()`;
+- ✨ Added `DelegateDisposable.Dispose(bool)`;
+- ✨ Added `static DelegateDisposable.Create(Action, Action)`;
+- ✨ Added `static class ReaderWriterLockSlimExtensions`;
+- ✨ Added `ReaderWriterLockSlimExtensions.WithReaderLock(this ReaderWriterLockSlim)`;
+- ✨ Added `ReaderWriterLockSlimExtensions.WithUpgradeableReaderLock(this ReaderWriterLockSlim)`;
+- ✨ Added `ReaderWriterLockSlimExtensions.WithWriterLock(this ReaderWriterLockSlim)`;
+
+### v2.2.0
+- 🧩 Retargeted to: `net7.0`, `netcoreapp3.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`;
+- ✨ Added `Util.With<TResult>(IDisposable, Func<TResult>)`;
+- ✨ Added `Util.With<T>(T, Func<T, TResult>)`;
+
+### v2.1.0
+- ✨ Added `Util.Catch(Action)`;
+- ✨ Added `Util.Catch<TResult>(Func<TResult>, out TResult?)`;
+- ✨ Added `Util.Catch<TException>(Action)`;
+- ✨ Added `Util.Catch<TException, TResult>(Func<TResult>, out TResult?)`;
+- ✨ Added `Util.Is<T>(object?, out T?)`;
+
+### v2.0.0
+- 🧩 Targets: `net7.0`, `netcoreapp3.1`, `netstandard2.1`;
+- ✨ Added `static class Util`;
+- ✨ Added `Util.Fail<T>(out T?)`;
+- ✨ Added `Util.Fail<T1, T2>(out T1?, out T2?)`;
+- ✨ Added `Util.Fail<T1, T2, T3>(out T1?, out T2?, out T3?)`;
+- ✨ Added `Util.Fail<TReturn, T>(TReturn, out T?)`;
+- ✨ Added `Util.Fail<TReturn, T1, T2>(TReturn, out T1?, out T2?)`;
+- ✨ Added `Util.Fail<TReturn, T1, T2, T3>(TReturn, out T1?, out T2?, out T3?)`;
