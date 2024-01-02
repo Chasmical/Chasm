@@ -45,6 +45,10 @@ namespace Chasm.SemanticVersioning
         ///   <para>Allows omitting the patch version component. Example: <c>1.2-nightly.456</c>.</para>
         /// </summary>
         OptionalPatch               = 1 << 7,
+        /// <summary>
+        ///   <para>Specifies that there could be unrelated to semantic versioning characters at some point in the string. Parsing is stopped at first such character, and the result is determined by the contents of the string preceding it.</para>
+        /// </summary>
+        AllowLeftovers              = 1 << 8,
 
         /// <summary>
         ///   <para>Specifies all parsing options, to be able to parse normally invalid semantic versions.</para>

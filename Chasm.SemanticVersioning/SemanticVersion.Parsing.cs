@@ -97,7 +97,107 @@ namespace Chasm.SemanticVersioning
         {
             version = null;
 
-            throw new NotImplementedException();
+            if ((options & SemverOptions.AllowLeadingWhite) != 0)
+                parser.SkipWhitespaces();
+
+            bool innerWhite = (options & SemverOptions.AllowInnerWhite) != 0;
+
+            if ((options & SemverOptions.AllowEqualsPrefix) != 0 && parser.Skip('='))
+            {
+                if (innerWhite) parser.SkipWhitespaces();
+            }
+            if ((options & SemverOptions.AllowVersionPrefix) != 0 && parser.SkipAny('v', 'V'))
+            {
+                if (innerWhite) parser.SkipWhitespaces();
+            }
+
+            bool allowLeadingZeroes = (options & SemverOptions.AllowLeadingZeroes) != 0;
+
+            ReadOnlySpan<char> read = parser.ReadAsciiDigits();
+            if (read.IsEmpty) return SemverErrorCode.MajorNotFound;
+            if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.MajorLeadingZeroes;
+            if (!int.TryParse(read, NumberStyles.None, null, out int major))
+                return SemverErrorCode.MajorTooBig;
+            if (innerWhite) parser.SkipWhitespaces();
+
+            static bool SkipAndWhitespace(ref SpanParser parser, char c, bool skipWhitespace)
+            {
+                bool res = parser.Skip(c);
+                if (res && skipWhitespace) parser.SkipWhitespaces();
+                return res;
+            }
+
+            int minor = 0;
+            int patch = 0;
+
+            if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadAsciiDigits()).IsEmpty)
+            {
+                if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.MinorLeadingZeroes;
+                if (!int.TryParse(read, NumberStyles.None, null, out minor))
+                    return SemverErrorCode.MajorTooBig;
+                if (innerWhite) parser.SkipWhitespaces();
+
+                if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadAsciiDigits()).IsEmpty)
+                {
+                    if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.PatchLeadingZeroes;
+                    if (!int.TryParse(read, NumberStyles.None, null, out patch))
+                        return SemverErrorCode.MajorTooBig;
+                    if (innerWhite) parser.SkipWhitespaces();
+
+                }
+                else if ((options & SemverOptions.OptionalPatch) == 0)
+                    return SemverErrorCode.PatchNotFound;
+
+            }
+            else if ((options & SemverOptions.OptionalMinor) == 0)
+                return SemverErrorCode.MinorNotFound;
+
+            SemverPreRelease[]? preReleases = null;
+            if (parser.Skip('-'))
+            {
+                List<SemverPreRelease> list = [];
+                do
+                {
+                    if (innerWhite) parser.SkipWhitespaces();
+                    read = parser.ReadSemverIdentifier();
+                    if (read.IsEmpty) return SemverErrorCode.PreReleaseEmpty;
+                    SemverErrorCode code = SemverPreRelease.ParseValidated(read, allowLeadingZeroes, out SemverPreRelease preRelease);
+                    if (code is not SemverErrorCode.Success) return code;
+                    list.Add(preRelease);
+                    if (innerWhite) parser.SkipWhitespaces();
+                }
+                while (parser.Skip('.'));
+                preReleases = list.ToArray();
+            }
+
+            string[]? buildMetadata = null;
+            if (parser.Skip('+'))
+            {
+                List<string> list = [];
+                do
+                {
+                    if (innerWhite) parser.SkipWhitespaces();
+                    read = parser.ReadSemverIdentifier();
+                    if (read.IsEmpty) return SemverErrorCode.BuildMetadataEmpty;
+                    list.Add(new string(read));
+                    if (innerWhite) parser.SkipWhitespaces();
+                }
+                while (parser.Skip('.'));
+                buildMetadata = list.ToArray();
+            }
+
+            if ((options & SemverOptions.AllowTrailingWhite) != 0)
+            {
+                if (!innerWhite) parser.SkipWhitespaces();
+            }
+            else if (innerWhite)
+                parser.UndoSkippingWhitespace();
+
+            if ((options & SemverOptions.AllowLeftovers) == 0 && parser.CanRead())
+                return SemverErrorCode.Leftovers;
+
+            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, default);
+            return SemverErrorCode.Success;
         }
 
         /// <summary>
