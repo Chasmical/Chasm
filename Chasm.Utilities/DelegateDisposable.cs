@@ -48,6 +48,21 @@ namespace Chasm.Utilities
             setup();
             return new DelegateDisposable(dispose);
         }
+        /// <summary>
+        ///   <para>Runs the <paramref name="setup"/> action, and returns a <see cref="DelegateDisposable"/>, that will call <paramref name="dispose"/> with a state argument returned by <paramref name="setup"/> when it's disposed.</para>
+        /// </summary>
+        /// <param name="setup">The action that is invoked immediately and returns a state argument.</param>
+        /// <param name="dispose">The action that is invoked with a state argument returned by <paramref name="setup"/> when the returned <see cref="DelegateDisposable"/> is disposed.</param>
+        /// <returns>A <see cref="DelegateDisposable"/> that will call <paramref name="dispose"/> with a state argument returned by <paramref name="setup"/> when it's disposed.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="setup"/> or <paramref name="dispose"/> is <see langword="null"/>.</exception>
+        [MustDisposeResource, MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelegateDisposable Create<TState>([InstantHandle] Func<TState> setup, Action<TState> dispose)
+        {
+            if (setup is null || dispose is null)
+                throw new ArgumentNullException(setup is null ? nameof(setup) : nameof(dispose));
+            TState arg = setup();
+            return new DelegateDisposable(() => dispose(arg));
+        }
 
     }
 }
