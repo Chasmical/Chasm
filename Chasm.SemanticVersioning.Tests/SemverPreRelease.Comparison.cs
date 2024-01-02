@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using Xunit;
 // ReSharper disable SuspiciousTypeConversion.Global
 
@@ -10,14 +9,15 @@ namespace Chasm.SemanticVersioning.Tests
         [Fact]
         public void Comparison()
         {
-            SemverPreRelease[] fixtures = CreateComparisonFixtures();
+            SemverPreRelease[] fixtures1 = CreateComparisonFixtures();
+            SemverPreRelease[] fixtures2 = CreateComparisonFixtures();
             SemverPreRelease a = default, b = default;
 
             try
             {
-                for (int i = 0; i < fixtures.Length; i++)
+                for (int i = 0; i < fixtures1.Length; i++)
                 {
-                    a = fixtures[i];
+                    a = fixtures1[i];
 
                     // Test Equals and CompareTo against null
                     Assert.False(((object)a).Equals(null));
@@ -30,9 +30,9 @@ namespace Chasm.SemanticVersioning.Tests
                     Assert.Throws<ArgumentException>(() => ((IComparable)a).CompareTo(0));
 
                     // Test against other pre-release identifiers
-                    for (int j = 0; j < fixtures.Length; j++)
+                    for (int j = 0; j < fixtures2.Length; j++)
                     {
-                        b = fixtures[j];
+                        b = fixtures2[j];
 
                         // Test Equals and CompareTo implementations
                         Assert.Equal(i.Equals(j), a.Equals(b));
@@ -40,6 +40,8 @@ namespace Chasm.SemanticVersioning.Tests
                         // As specified by IComparable, CompareTo doesn't necessarily return -1 or 1 on inequality
                         Assert.Equal(i.CompareTo(j), Math.Sign(a.CompareTo(b)));
                         Assert.Equal(i.CompareTo(j), Math.Sign(((IComparable)a).CompareTo(b)));
+                        // Make sure the hash code is consistent
+                        Assert.Equal(i == j, a.GetHashCode() == b.GetHashCode());
 
                         // Test overloaded operators
                         Assert.Equal(i == j, a == b);
@@ -58,32 +60,5 @@ namespace Chasm.SemanticVersioning.Tests
                 throw;
             }
         }
-
-        [Pure] public static SemverPreRelease[] CreateComparisonFixtures() =>
-        [
-            "0",
-            "1",
-            "3",
-            "10",
-            "100",
-            "293",
-            "1000",
-            "2147483647",
-            "--0",
-            "--alpha",
-            "-0",
-            "-1",
-            "-1024",
-            "-32",
-            "GAMMA",
-            "alpha",
-            "alpha0",
-            "alpha1",
-            "alpha10",
-            "alpha2",
-            "gamma",
-            "omega",
-            "rc",
-        ];
     }
 }
