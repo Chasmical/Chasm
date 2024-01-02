@@ -4,7 +4,7 @@ Provides various utility types and methods.
 
 ## `Util`
 
-Contains `Fail` and `Catch` utility methods, that can be used to shorten common branch code. *(or... you could also just not use the auto-formatting, and write everything in a single line, but that's not my style)*
+Contains various utility methods, that can be used to shorten common branch code. *(or... you could also just not use the auto-formatting, and write everything in a single line, but that's not my style)*
 
 `Util.Fail` sets all `out` parameters to `default` and returns either `false` or a specified return value. Especially useful for parsing.
 
@@ -52,4 +52,40 @@ using (StreamReader reader = File.OpenText(path))
 
 // Using Util.With:
 string? firstLine = With(File.OpenText(path), reader => reader.ReadLine());
+```
+
+## `DelegateDisposable`
+
+`DelegateDisposable` is a `IDisposable` interface implementation that invokes an action on disposal.
+
+```cs
+store.Subscribe(listenerFunc);
+var listener = new DelegateDisposable(() => store.Unsubscribe(listenerFunc));
+
+// Or like this, functional programming style:
+var listener = DelegateDisposable.Create(
+    () => store.Subscribe(listenerFunc),
+    () => store.Unsubscribe(listenerFunc)
+);
+```
+
+`ReaderWriterLockSlimExtensions` makes use of this class.
+
+```cs
+ReaderWriterLockSlim rwl = new();
+
+// Commonly written as:
+try
+{
+    rwl.EnterReadLock();
+    /* ... */
+}
+finally
+{
+    rwl.ExitReadLock();
+}
+
+// Using ReaderWriterLockSlimExtensions:
+using (rwl.WithReaderLock())
+    /* ... */
 ```
