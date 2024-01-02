@@ -17,7 +17,7 @@ You're probably wondering "Why should I use this library instead of any other mo
 - [ ] Use more efficient formatting (Chasm.Formatting);
 - [ ] Advanced `SemanticVersion` formatting (`M.m.p-rrr+ddd`);
 - [ ] `SemanticVersionBuilder` class;
-- [ ] `BuildMetadataComparer` class;
+- [x] `BuildMetadataComparer` class;
 - [ ] Advanced `SemverPreRelease` formatting, maybe?;
 - [ ] `SemverPreRelease.ParseMultiple/Many` method;
 - [ ] Option to ignore empty pre-releases/build metadata during parsing;
@@ -43,7 +43,19 @@ Console.WriteLine($"{a} < {b} = {a < b}");
 // 1.0.0-alpha.8 < 1.2-pre = true
 ```
 
-**Note that the default comparison doesn't account for build metadata!**
+**Note that the default comparison doesn't account for build metadata!** For build metadata-sensitive comparison, use `BuildMetadataComparer`.
+
+```cs
+var a = SemanticVersion.Parse("1.2.3-4");
+var b = SemanticVersion.Parse("1.2.3-4+BUILD");
+
+Console.WriteLine($"{a} == {b} = {a == b}");
+// 1.2.3-4 == 1.2.3-4+BUILD = true
+
+var cmp = BuildMetadataComparer.Instance;
+Console.WriteLine($"{a} === {b} = {cmp.Equals(a, b)}");
+// 1.2.3-4 === 1.2.3-4+BUILD = false
+```
 
 ## `SemverPreRelease`
 
