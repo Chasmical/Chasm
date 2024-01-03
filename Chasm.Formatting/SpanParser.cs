@@ -362,6 +362,15 @@ namespace Chasm.Formatting
                 position++;
             return source.Slice(start, position - start);
         }
+        /// <inheritdoc cref="ReadWhile(Func{char,bool})"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe ReadOnlySpan<char> ReadWhile([InstantHandle] delegate*<char, bool> predicate)
+        {
+            int start = position;
+            while (position < length && predicate(source[position]))
+                position++;
+            return source.Slice(start, position - start);
+        }
         /// <summary>
         ///   <para>Reads a sequence of characters not satisfying the specified <paramref name="predicate"/>, and moves past the read sequence.</para>
         /// </summary>
@@ -369,6 +378,15 @@ namespace Chasm.Formatting
         /// <returns>The read sequence of characters.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<char> ReadUntil([InstantHandle] Func<char, bool> predicate)
+        {
+            int start = position;
+            while (position < length && !predicate(source[position]))
+                position++;
+            return source.Slice(start, position - start);
+        }
+        /// <inheritdoc cref="ReadUntil(Func{char,bool})"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe ReadOnlySpan<char> ReadUntil([InstantHandle] delegate*<char, bool> predicate)
         {
             int start = position;
             while (position < length && !predicate(source[position]))
