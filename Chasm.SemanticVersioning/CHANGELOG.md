@@ -1,5 +1,54 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.2.0
+- ✨ Added `sealed class SemanticVersionBuilder`;
+- ✨ Added `SemanticVersionBuilder.Major`;
+- ✨ Added `SemanticVersionBuilder.Minor`;
+- ✨ Added `SemanticVersionBuilder.Patch`;
+- ✨ Added `SemanticVersionBuilder.PreReleases`;
+- ✨ Added `SemanticVersionBuilder.BuildMetadata`;
+- ✨ Added `SemanticVersionBuilder()`;
+- ✨ Added `SemanticVersionBuilder(int, int, int)`;
+- ✨ Added `SemanticVersionBuilder(int, int, int, IEnumerable<SemverPreRelease>?)`;
+- ✨ Added `SemanticVersionBuilder(int, int, int, IEnumerable<SemverPreRelease>?, IEnumerable<string>?)`;
+- ✨ Added `SemanticVersionBuilder(SemanticVersion)`;
+- ✨ Added `SemanticVersionBuilder.WithMajor(int)`;
+- ✨ Added `SemanticVersionBuilder.WithMinor(int)`;
+- ✨ Added `SemanticVersionBuilder.WithPatch(int)`;
+- ✨ Added `SemanticVersionBuilder.AppendPreRelease(SemverPreRelease)`;
+- ✨ Added `SemanticVersionBuilder.ClearPreReleases()`;
+- ✨ Added `SemanticVersionBuilder.AppendBuildMetadata(string)`;
+- ✨ Added `SemanticVersionBuilder.ClearBuildMetadata()`;
+- ✨ Added `SemanticVersionBuilder.ToVersion()`;
+- ✨ Added `SemanticVersionBuilder.ToString()`;
+- ✨ Added `sealed class SemanticVersionBuilder.PreReleaseCollection : Collection<SemverPreRelease>`;
+- ✨ Added `SemanticVersionBuilder.PreReleaseCollection(SemanticVersionBuilder)`;
+- ✨ Added `sealed class SemanticVersionBuilder.BuildMetadataCollection : Collection<string>`;
+- ✨ Added `SemanticVersionBuilder.BuildMetadataCollection(SemanticVersionBuilder)`;
+- ✨ Added `SemanticVersionBuilder.IncrementMajor()`;
+- ✨ Added `SemanticVersionBuilder.IncrementMinor()`;
+- ✨ Added `SemanticVersionBuilder.IncrementPatch()`;
+- ✨ Added `SemanticVersionBuilder.IncrementPreMajor()`;
+- ✨ Added `SemanticVersionBuilder.IncrementPreMajor(SemverPreRelease)`;
+- ✨ Added `SemanticVersionBuilder.IncrementPreMinor()`;
+- ✨ Added `SemanticVersionBuilder.IncrementPreMinor(SemverPreRelease)`;
+- ✨ Added `SemanticVersionBuilder.IncrementPrePatch()`;
+- ✨ Added `SemanticVersionBuilder.IncrementPrePatch(SemverPreRelease)`;
+- ✨ Added `SemanticVersionBuilder.IncrementPreRelease()`;
+- ✨ Added `SemanticVersionBuilder.IncrementPreRelease(SemverPreRelease)`;
+- ✨ Added `SemanticVersionBuilder.Increment(IncrementType)`;
+- ✨ Added `SemanticVersionBuilder.Increment(IncrementType, SemverPreRelease)`;
+- ✨ Added `enum IncrementType : byte`;
+- ✨ Added `IncrementType.None`;
+- ✨ Added `IncrementType.Major`;
+- ✨ Added `IncrementType.Minor`;
+- ✨ Added `IncrementType.Patch`;
+- ✨ Added `IncrementType.PreMajor`;
+- ✨ Added `IncrementType.PreMinor`;
+- ✨ Added `IncrementType.PrePatch`;
+- ✨ Added `IncrementType.PreRelease`;
+- ⚡️ Significantly improved `SemanticVersion` formatting performance;
+
 ### v2.1.0
 - ✨ Added `sealed class BuildMetadataComparer`;
 - ✨ Added `static BuildMetadataComparer.Instance`;

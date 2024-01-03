@@ -14,7 +14,7 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 ### Extra functionality
 
-- [ ] Use more efficient formatting (Chasm.Formatting);
+- [x] Use more efficient formatting (Chasm.Formatting);
 - [ ] Advanced `SemanticVersion` formatting (`M.m.p-rrr+ddd`);
 - [x] `SemanticVersionBuilder` class;
 - [x] `BuildMetadataComparer` class;
