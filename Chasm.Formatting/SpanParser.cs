@@ -394,6 +394,13 @@ namespace Chasm.Formatting
             return source.Slice(start, position - start);
         }
 
+        public ReadOnlySpan<char> ReadRemaining()
+        {
+            int start = position;
+            position = length;
+            return source.Slice(start, length - start);
+        }
+
         private readonly string DebuggerDisplay
         {
             get
