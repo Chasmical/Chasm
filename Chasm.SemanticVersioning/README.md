@@ -16,7 +16,7 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 - [ ] Use more efficient formatting (Chasm.Formatting);
 - [ ] Advanced `SemanticVersion` formatting (`M.m.p-rrr+ddd`);
-- [ ] `SemanticVersionBuilder` class;
+- [x] `SemanticVersionBuilder` class;
 - [x] `BuildMetadataComparer` class;
 - [ ] Advanced `SemverPreRelease` formatting, maybe?;
 - [ ] `SemverPreRelease.ParseMultiple/Many` method;
@@ -76,4 +76,27 @@ var options = SemverOptions.AllowVersionPrefix | SemverOptions.AllowInnerWhite
 
 var version = SemanticVersion.Parse("v2 -. .alpha.", options);
 // Parsed as "2.0.0-alpha"
+```
+
+### `SemanticVersionBuilder`
+
+`SemanticVersionBuilder` can be used to manipulate semantic versions step by step.
+
+```cs
+var builder = new SemanticVersionBuilder(1, 2, 3);
+
+builder
+    .WithPatch(7)
+    .AppendPreRelease("alpha");
+    .AppendPreRelease(0);
+
+var a = builder.ToVersion(); // 1.2.7-alpha.0
+
+builder.IncrementPatch();
+
+var b = builder.ToVersion(); // 1.2.8
+
+builder.Increment(IncrementType.PreMinor, "beta");
+
+var c = builder.ToVersion(); // 1.3.0-beta.0
 ```

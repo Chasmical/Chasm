@@ -62,7 +62,8 @@ namespace Chasm.SemanticVersioning
         /// <param name="patch">The semantic version's patch version component.</param>
         /// <param name="preReleases">A collection of the semantic version's pre-release identifiers.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="major"/>, <paramref name="minor"/> or <paramref name="patch"/> is less than 0.</exception>
-        public SemanticVersion(int major, int minor, int patch, [InstantHandle] IEnumerable<SemverPreRelease>? preReleases)
+        public SemanticVersion(int major, int minor, int patch,
+                               [InstantHandle] IEnumerable<SemverPreRelease>? preReleases)
             : this(major, minor, patch, preReleases, null) { }
 
         /// <summary>
