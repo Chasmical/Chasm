@@ -38,7 +38,7 @@ jobs:
       - name: Compile ${{ inputs.project }}
         run: |
           mkdir __out
-          dotnet pack ${{ inputs.project }} -c Release -o __out --no-restore
+          dotnet pack ${{ inputs.project }} -c Release -o __out -p:WorkflowPublishingPackage=true --no-restore
 
       - name: Publish ${{ inputs.project }} to NuGet
         run: |

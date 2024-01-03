@@ -63,28 +63,33 @@ namespace Chasm.SemanticVersioning
 
         [Pure] public override string ToString() => SpanBuilder.Format(this);
 
-        //[Pure] internal string ToStringWithStringBuilder()
-        //{
-        //    System.Text.StringBuilder sb = new();
-        //    sb.Append((uint)Major).Append('.').Append((uint)Minor).Append('.').Append((uint)Patch);
+#if NOT_PUBLISHING_PACKAGE
+        // Note: This method is only used in benchmarks.
+        // See here: /Chasm.SemanticVersioning.Benchmarks/SpanBuilderVsStringBuilder.cs
 
-        //    SemverPreRelease[] preReleases = _preReleases;
-        //    if (preReleases.Length != 0)
-        //    {
-        //        sb.Append('-').Append(preReleases[0]);
-        //        for (int i = 1; i < preReleases.Length; i++)
-        //            sb.Append('.').Append(preReleases[i]);
-        //    }
-        //    string[] buildMetadata = _buildMetadata;
-        //    if (buildMetadata.Length != 0)
-        //    {
-        //        sb.Append('+').Append(buildMetadata[0]);
-        //        for (int i = 1; i < buildMetadata.Length; i++)
-        //            sb.Append('.').Append(buildMetadata[i]);
-        //    }
+        [Pure] internal string ToStringWithStringBuilder()
+        {
+            System.Text.StringBuilder sb = new();
+            sb.Append((uint)Major).Append('.').Append((uint)Minor).Append('.').Append((uint)Patch);
 
-        //    return sb.ToString();
-        //}
+            SemverPreRelease[] preReleases = _preReleases;
+            if (preReleases.Length != 0)
+            {
+                sb.Append('-').Append(preReleases[0]);
+                for (int i = 1; i < preReleases.Length; i++)
+                    sb.Append('.').Append(preReleases[i]);
+            }
+            string[] buildMetadata = _buildMetadata;
+            if (buildMetadata.Length != 0)
+            {
+                sb.Append('+').Append(buildMetadata[0]);
+                for (int i = 1; i < buildMetadata.Length; i++)
+                    sb.Append('.').Append(buildMetadata[i]);
+            }
+
+            return sb.ToString();
+        }
+#endif
 
     }
 }

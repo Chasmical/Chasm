@@ -41,4 +41,11 @@
     <NoWarn>$(NoWarn),IDE0079</NoWarn> <!-- Suppress the 'Remove unnecessary suppression' message -->
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(WorkflowPublishingPackage)'==''">
+    <DefineConstants>$(DefineConstants);NOT_PUBLISHING_PACKAGE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(WorkflowPublishingPackage)'!=''">
+    <DefineConstants>$(DefineConstants);PUBLISHING_PACKAGE</DefineConstants>
+  </PropertyGroup>
+
 </Project>
