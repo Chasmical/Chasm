@@ -1,5 +1,11 @@
 # Chasm.Formatting Changelog
 
+### v2.1.0
+- ✨ Added `SpanParser.ReadUntil(char)`;
+- ✨ Added `SpanParser.ReadWhile(delegate*<char, bool>)`;
+- ✨ Added `SpanParser.ReadUntil(delegate*<char, bool>)`;
+- ⚡️ Improved ASCII letter reading performance for `SpanParser`;
+
 ### v2.0.2
 - 🧩 Retargeted to: `net8.0`, `net6.0`, `net5.0`, `netcoreapp2.1`, `netstandard2.1`;
 
