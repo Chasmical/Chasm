@@ -1,0 +1,11 @@
+<Project>
+
+  <!-- To prevent Directory.Build.props from leaking into compiled benchmarks' projects -->
+
+  <PropertyGroup>
+    <LangVersion>preview</LangVersion>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <NuGetAudit>false</NuGetAudit>
+  </PropertyGroup>
+
+</Project>

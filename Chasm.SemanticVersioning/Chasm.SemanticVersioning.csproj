@@ -44,6 +44,7 @@
     <None Remove="Chasm.SemanticVersioning.csproj.DotSettings" />
     <None Include="README.md" Pack="true" PackagePath="\" />
     <InternalsVisibleTo Include="Chasm.SemanticVersioning.Tests" />
+    <InternalsVisibleTo Include="Chasm.SemanticVersioning.Benchmarks" />
     <ProjectReference Include="..\Chasm.Utilities\Chasm.Utilities.csproj" />
     <ProjectReference Include="..\Chasm.Collections\Chasm.Collections.csproj" />
     <ProjectReference Include="..\Chasm.Formatting\Chasm.Formatting.csproj" />
