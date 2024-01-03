@@ -114,13 +114,13 @@ namespace Chasm.SemanticVersioning
         ///   <para>Gets a read-only span of the semantic version's pre-release identifiers.</para>
         /// </summary>
         /// <returns>A read-only span of the semantic version's pre-release identifiers.</returns>
-        public ReadOnlySpan<SemverPreRelease> GetPreReleases()
+        [Pure] public ReadOnlySpan<SemverPreRelease> GetPreReleases()
             => _preReleases;
         /// <summary>
         ///   <para>Gets a read-only span of the semantic version's build metadata identifiers.</para>
         /// </summary>
         /// <returns>A read-only span of the semantic version's build metadata identifiers.</returns>
-        public ReadOnlySpan<string> GetBuildMetadata()
+        [Pure] public ReadOnlySpan<string> GetBuildMetadata()
             => _buildMetadata;
 
         /// <summary>

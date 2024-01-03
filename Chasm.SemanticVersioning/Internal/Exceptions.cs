@@ -74,10 +74,6 @@ namespace Chasm.SemanticVersioning
             _ => throw new ArgumentException($"{code} error code is not supposed to have a message."),
         };
 
-        [Pure, MustUseReturnValue]
-        public static ArgumentException Exception(this SemverErrorCode code, [InvokerParameterName] string parameterName)
-            => new ArgumentException(code.GetMessage(), parameterName);
-
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TReturn ReturnOrThrow<TReturn>(this SemverErrorCode code, TReturn? returnValue, [InvokerParameterName] string parameterName)
         {
