@@ -92,8 +92,8 @@ namespace Chasm.Formatting
         public void Append(uint number)
         {
             pos += CalculateLength(number);
-            fixed (char* ptr = &buffer[pos])
-                FillDigits(ptr, number);
+            fixed (char* ptr = buffer)
+                FillDigits(ptr + pos, number);
         }
         /// <summary>
         ///   <para>Appends the string representation of the specified 32-bit signed integer to the builder.</para>
