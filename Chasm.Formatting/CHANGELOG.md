@@ -1,5 +1,8 @@
 # Chasm.Formatting Changelog
 
+### v2.1.1
+- 🚑️ Fixed IndexOutOfRangeException when formatting a number at the end;
+
 ### v2.1.0
 - ✨ Added `SpanParser.ReadUntil(char)`;
 - ✨ Added `SpanParser.ReadWhile(delegate*<char, bool>)`;
