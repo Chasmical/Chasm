@@ -67,7 +67,8 @@ namespace Chasm.SemanticVersioning
         // Note: This method is only used in benchmarks.
         // See here: /Chasm.SemanticVersioning.Benchmarks/SpanBuilderVsStringBuilder.cs
 
-        [Pure] internal string ToStringWithStringBuilder()
+        [Pure, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        internal string ToStringWithStringBuilder()
         {
             System.Text.StringBuilder sb = new();
             sb.Append((uint)Major).Append('.').Append((uint)Minor).Append('.').Append((uint)Patch);

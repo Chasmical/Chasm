@@ -20,7 +20,9 @@ namespace Chasm.SemanticVersioning.Tests
                     a = fixtures1[i];
 
                     // Test Equals and CompareTo against null
+                    Assert.False(a.Equals(null));
                     Assert.False(((object)a).Equals(null));
+                    Assert.Equal(1, a.CompareTo(null));
                     Assert.Equal(1, ((IComparable)a).CompareTo(null));
 
                     // Make sure they don't work with objects of other types

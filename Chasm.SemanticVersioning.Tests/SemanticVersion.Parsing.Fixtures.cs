@@ -137,6 +137,8 @@ namespace Chasm.SemanticVersioning.Tests
             options = SemverOptions.OptionalPreReleaseSeparator;
             New("1.2.3alpha", options).Returns(1, 2, 3, "alpha").ButStrictThrows(Exceptions.Leftovers);
             New("1.2.3alpha5b70", options).Returns(1, 2, 3, "alpha", 5, "b", 70).ButStrictThrows(Exceptions.Leftovers);
+            New("1.2.3alpha-3", options).Throws(Exceptions.PreReleaseInvalid); // '-' is invalid here
+            New("1.2.3alpha007", options).Throws(Exceptions.PreReleaseLeadingZeroes);
 
             // Remove empty pre-releases
             options = SemverOptions.RemoveEmptyPreReleases;
