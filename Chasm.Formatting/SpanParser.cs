@@ -336,6 +336,20 @@ namespace Chasm.Formatting
         }
 
         /// <summary>
+        ///   <para>Reads a sequence of characters not equal to the specified <paramref name="character"/>, and moves past the read sequence.</para>
+        /// </summary>
+        /// <param name="character">The character to stop reading at.</param>
+        /// <returns>The read sequence of characters.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<char> ReadUntil(char character)
+        {
+            int start = position;
+            while (position < length && source[position] != character)
+                position++;
+            return source.Slice(start, position - start);
+        }
+
+        /// <summary>
         ///   <para>Reads a sequence of characters satisfying the specified <paramref name="predicate"/>, and moves past the read sequence.</para>
         /// </summary>
         /// <param name="predicate">The function that defines the characters to read.</param>
