@@ -61,32 +61,30 @@ namespace Chasm.SemanticVersioning
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
 
-        [Pure] public override string ToString()
-        {
-            return SpanBuilder.Format(this);
+        [Pure] public override string ToString() => SpanBuilder.Format(this);
 
-            // TODO: benchmark SpanBuilder against StringBuilder
+        //[Pure] internal string ToStringWithStringBuilder()
+        //{
+        //    System.Text.StringBuilder sb = new();
+        //    sb.Append((uint)Major).Append('.').Append((uint)Minor).Append('.').Append((uint)Patch);
 
-            //StringBuilder sb = new();
-            //sb.Append((uint)Major).Append('.').Append((uint)Minor).Append('.').Append((uint)Patch);
+        //    SemverPreRelease[] preReleases = _preReleases;
+        //    if (preReleases.Length != 0)
+        //    {
+        //        sb.Append('-').Append(preReleases[0]);
+        //        for (int i = 1; i < preReleases.Length; i++)
+        //            sb.Append('.').Append(preReleases[i]);
+        //    }
+        //    string[] buildMetadata = _buildMetadata;
+        //    if (buildMetadata.Length != 0)
+        //    {
+        //        sb.Append('+').Append(buildMetadata[0]);
+        //        for (int i = 1; i < buildMetadata.Length; i++)
+        //            sb.Append('.').Append(buildMetadata[i]);
+        //    }
 
-            //SemverPreRelease[] preReleases = _preReleases;
-            //if (preReleases.Length != 0)
-            //{
-            //    sb.Append('-').Append(preReleases[0]);
-            //    for (int i = 1; i < preReleases.Length; i++)
-            //        sb.Append('.').Append(preReleases[i]);
-            //}
-            //string[] buildMetadata = _buildMetadata;
-            //if (buildMetadata.Length != 0)
-            //{
-            //    sb.Append('+').Append(buildMetadata[0]);
-            //    for (int i = 1; i < buildMetadata.Length; i++)
-            //        sb.Append('.').Append(buildMetadata[i]);
-            //}
-
-            //return sb.ToString();
-        }
+        //    return sb.ToString();
+        //}
 
     }
 }
