@@ -1,5 +1,16 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.1.0
+- ✨ Added `sealed class BuildMetadataComparer`;
+- ✨ Added `static BuildMetadataComparer.Instance`;
+- ✨ Added `BuildMetadataComparer.Compare(SemanticVersion?, SemanticVersion?)`;
+- ✨ Added `BuildMetadataComparer.Equals(SemanticVersion?, SemanticVersion?)`;
+- ✨ Added `BuildMetadataComparer.GetHashCode(SemanticVersion?)`;
+- ✨ Added `SemverOptions.OptionalPreReleaseSeparator`;
+- ✨ Added `SemverOptions.RemoveEmptyPreReleases`;
+- ✨ Added `SemverOptions.RemoveEmptyBuildMetadata`;
+- ✨ Implemented the above options in `SemanticVersion` parsing methods.
+
 ### v2.0.0
 - 🧩 Targets: `net8.0`, `net7.0`, `net6.0`, `netcoreapp2.1`, `netstandard2.1`.
 - ✨ Added `sealed class SemanticVersion : IEquatable<SemanticVersion>, IComparable, IComparable<SemanticVersion>, IComparisonOperators<SemanticVersion, SemanticVersion, bool>, IMinMaxValue<SemanticVersion>, ISpanParsable<SemanticVersion>`;
