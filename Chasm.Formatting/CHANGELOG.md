@@ -1,5 +1,9 @@
 # Chasm.Formatting Changelog
 
+### v2.2.1
+- 🚑️ Removed `SpanBuilder.TryFormat(ISpanBuildableFormat, ReadOnlySpan<char>, Span<char>, out int)`;
+- 🚑️ Added `SpanBuilder.TryFormat(ISpanBuildableFormat, Span<char>, out int, ReadOnlySpan<char>)`;
+
 ### v2.2.0
 - ✨ Added `SpanParser.ReadRemaining()`;
 - ✨ Added `SpanBuilder.TryFormat(ISpanBuildable, Span<char>, out int)`;
