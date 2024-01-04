@@ -1,5 +1,10 @@
 # Chasm.Formatting Changelog
 
+### v2.2.0
+- ✨ Added `SpanParser.ReadRemaining()`;
+- ✨ Added `SpanBuilder.TryFormat(ISpanBuildable, Span<char>, out int)`;
+- ✨ Added `SpanBuilder.TryFormat(ISpanBuildableFormat, ReadOnlySpan<char>, Span<char>, out int)`;
+
 ### v2.1.1
 - 🚑️ Fixed IndexOutOfRangeException when formatting a number at the end;
 

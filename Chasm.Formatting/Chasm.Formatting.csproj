@@ -24,7 +24,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Formatting</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.1.1</Version>
+    <Version>2.2.0</Version>
     <Authors>Abbysssal</Authors>
     <Company>$(Authors)</Company>
     <Copyright>Copyright © Abbysssal 2023</Copyright>
