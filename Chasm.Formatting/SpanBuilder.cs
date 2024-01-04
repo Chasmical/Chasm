@@ -232,7 +232,7 @@ namespace Chasm.Formatting
         /// <param name="destination">The span in which to write the specified <paramref name="buildable"/>'s value formatted as a span of characters.</param>
         /// <param name="charsWritten">When this method returns, contains the number of characters that were written in <paramref name="destination"/>.</param>
         /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
-        public static bool TryFormat(ISpanBuildableFormat buildable, ReadOnlySpan<char> format, Span<char> destination, out int charsWritten)
+        public static bool TryFormat(ISpanBuildableFormat buildable, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format)
         {
             int length = buildable.CalculateLength(format);
             if (destination.Length >= length)
