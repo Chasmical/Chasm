@@ -203,6 +203,50 @@ namespace Chasm.Formatting
             // ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess
             => string.Create(length, action, BuildActionDelegate);
 
+        /// <summary>
+        ///   <para>Tries to format the value of the specified <paramref name="buildable"/> into the provided span of characters.</para>
+        /// </summary>
+        /// <param name="buildable">The <see cref="ISpanBuildable"/> instance.</param>
+        /// <param name="destination">The span in which to write the specified <paramref name="buildable"/>'s value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, contains the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
+        public static bool TryFormat(ISpanBuildable buildable, Span<char> destination, out int charsWritten)
+        {
+            int length = buildable.CalculateLength();
+            if (destination.Length >= length)
+            {
+                SpanBuilder sb = new SpanBuilder(destination);
+                buildable.BuildString(ref sb);
+                if (sb.pos != length) throw new InvalidOperationException();
+                charsWritten = length;
+                return true;
+            }
+            charsWritten = 0;
+            return false;
+        }
+        /// <summary>
+        ///   <para>Tries to format the value of the specified <paramref name="buildable"/> into the provided span of characters.</para>
+        /// </summary>
+        /// <param name="buildable">The <see cref="ISpanBuildable"/> instance.</param>
+        /// <param name="format">A span containing the characters that represent a standard or custom format string that defines the acceptable format for <paramref name="destination"/>.</param>
+        /// <param name="destination">The span in which to write the specified <paramref name="buildable"/>'s value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, contains the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
+        public static bool TryFormat(ISpanBuildableFormat buildable, ReadOnlySpan<char> format, Span<char> destination, out int charsWritten)
+        {
+            int length = buildable.CalculateLength(format);
+            if (destination.Length >= length)
+            {
+                SpanBuilder sb = new SpanBuilder(destination);
+                buildable.BuildString(ref sb, format);
+                if (sb.pos != length) throw new InvalidOperationException();
+                charsWritten = length;
+                return true;
+            }
+            charsWritten = 0;
+            return false;
+        }
+
         private static readonly SpanAction<char, ISpanBuildable> BuildSimpleDelegate = BuildSimple;
         private static readonly SpanAction<char, FormatInfo> BuildFormatDelegate = BuildFormat;
         private static readonly SpanAction<char, SpanBuilderAction> BuildActionDelegate = BuildAction;
