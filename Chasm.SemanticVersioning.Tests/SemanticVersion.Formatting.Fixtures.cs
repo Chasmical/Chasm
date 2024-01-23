@@ -21,6 +21,25 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
+            // Simple component-only formats
+            New("1.2.3", "M.m.p").Returns("1.2.3");
+            New("1.2.3-alpha+meta", "M.m.p").Returns("1.2.3");
+            // Mixed-up component-only formats
+            New("12.34.56", "p.m.M+M-p").Returns("56.34.12+12-56");
+
+            // Optional components
+            New("1.2.0-rc", "M.mm.pp-rr").Returns("1.2-rc");
+            New("1.0.3-rc", "M.mm.pp-rr").Returns("1.0.3-rc");
+            New("1.0.0-rc", "M.mm.pp-rr").Returns("1-rc");
+
+            // Quoted escaped text
+            New("1.2.3-rc.05b+meta", "'M.m.p-rr+dd:' M.m.p-rr+dd").Returns("M.m.p-rr+dd: 1.2.3-rc.05b+meta");
+            New("1.2.3-rc.05b+meta", "\"M.m.p-rr+dd:\" M.m.p-rr+dd").Returns("M.m.p-rr+dd: 1.2.3-rc.05b+meta");
+
+            // Indexed identifiers
+            New("0.0.0-0.1.2.3.4.5", "r0 r4 r3 r r r r").Returns("0 4 3 4 5"); // last two 'r' are extra
+            New("0.0.0---abc-.-52.0xF2AB", "r0.r1+r2+r3").Returns("--abc-.-52+0xF2AB"); // last 'r3' is extra
+
             return adapter;
         }
 

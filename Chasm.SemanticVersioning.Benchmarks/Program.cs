@@ -7,7 +7,7 @@ namespace Chasm.SemanticVersioning.Benchmarks
     {
         public static void Main()
         {
-            //BenchmarkRunner.Run<SpanBuilderVsStringBuilderBenchmarks>();
+            BenchmarkRunner.Run<SpanBuilderVsStringBuilderBenchmarks>();
 
             Console.ReadKey();
         }

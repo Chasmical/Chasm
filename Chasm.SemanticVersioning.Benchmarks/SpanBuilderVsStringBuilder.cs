@@ -20,26 +20,49 @@ namespace Chasm.SemanticVersioning.Benchmarks
         public SemanticVersion Sample4 = new(120, 3392, 2011, ["alpha", 7, "beta", 448]);
         public SemanticVersion Sample5 = new(1128504242, 391237410, 289013141, ["alpha", 2323787, "beta", 4122248], ["dev", "007-BUILD"]);
 
+        //[Benchmark, BenchmarkCategory("SpanBuilder")]
+        //public void SpanBuilder1() { for (int i = 0; i < 1000; i++) Sample1.ToString(); }
+        //[Benchmark, BenchmarkCategory("StringBuilder")]
+        //public void StringBuilder1() { for (int i = 0; i < 1000; i++) Sample1.ToStringWithStringBuilder(); }
+        //[Benchmark, BenchmarkCategory("SpanBuilder")]
+        //public void SpanBuilder2() { for (int i = 0; i < 1000; i++) Sample2.ToString(); }
+        //[Benchmark, BenchmarkCategory("StringBuilder")]
+        //public void StringBuilder2() { for (int i = 0; i < 1000; i++) Sample2.ToStringWithStringBuilder(); }
+        //[Benchmark, BenchmarkCategory("SpanBuilder")]
+        //public void SpanBuilder3() { for (int i = 0; i < 1000; i++) Sample3.ToString(); }
+        //[Benchmark, BenchmarkCategory("StringBuilder")]
+        //public void StringBuilder3() { for (int i = 0; i < 1000; i++) Sample3.ToStringWithStringBuilder(); }
+        //[Benchmark, BenchmarkCategory("SpanBuilder")]
+        //public void SpanBuilder4() { for (int i = 0; i < 1000; i++) Sample4.ToString(); }
+        //[Benchmark, BenchmarkCategory("StringBuilder")]
+        //public void StringBuilder4() { for (int i = 0; i < 1000; i++) Sample4.ToStringWithStringBuilder(); }
+        //[Benchmark, BenchmarkCategory("SpanBuilder")]
+        //public void SpanBuilder5() { for (int i = 0; i < 1000; i++) Sample5.ToString(); }
+        //[Benchmark, BenchmarkCategory("StringBuilder")]
+        //public void StringBuilder5() { for (int i = 0; i < 1000; i++) Sample5.ToStringWithStringBuilder(); }
+
+        private const string Format = "M.m.p-rr+dd";
+
         [Benchmark, BenchmarkCategory("SpanBuilder")]
-        public void SpanBuilder1() { for (int i = 0; i < 1000; i++) Sample1.ToString(); }
+        public void FormatSpanBuilder1() { for (int i = 0; i < 1000; i++) Sample1.ToString(Format); }
         [Benchmark, BenchmarkCategory("StringBuilder")]
-        public void StringBuilder1() { for (int i = 0; i < 1000; i++) Sample1.ToStringWithStringBuilder(); }
+        public void FormatStringBuilder1() { for (int i = 0; i < 1000; i++) Sample1.ToStringWithStringBuilder(Format); }
         [Benchmark, BenchmarkCategory("SpanBuilder")]
-        public void SpanBuilder2() { for (int i = 0; i < 1000; i++) Sample2.ToString(); }
+        public void FormatSpanBuilder2() { for (int i = 0; i < 1000; i++) Sample2.ToString(Format); }
         [Benchmark, BenchmarkCategory("StringBuilder")]
-        public void StringBuilder2() { for (int i = 0; i < 1000; i++) Sample2.ToStringWithStringBuilder(); }
+        public void FormatStringBuilder2() { for (int i = 0; i < 1000; i++) Sample2.ToStringWithStringBuilder(Format); }
         [Benchmark, BenchmarkCategory("SpanBuilder")]
-        public void SpanBuilder3() { for (int i = 0; i < 1000; i++) Sample3.ToString(); }
+        public void FormatSpanBuilder3() { for (int i = 0; i < 1000; i++) Sample3.ToString(Format); }
         [Benchmark, BenchmarkCategory("StringBuilder")]
-        public void StringBuilder3() { for (int i = 0; i < 1000; i++) Sample3.ToStringWithStringBuilder(); }
+        public void FormatStringBuilder3() { for (int i = 0; i < 1000; i++) Sample3.ToStringWithStringBuilder(Format); }
         [Benchmark, BenchmarkCategory("SpanBuilder")]
-        public void SpanBuilder4() { for (int i = 0; i < 1000; i++) Sample4.ToString(); }
+        public void FormatSpanBuilder4() { for (int i = 0; i < 1000; i++) Sample4.ToString(Format); }
         [Benchmark, BenchmarkCategory("StringBuilder")]
-        public void StringBuilder4() { for (int i = 0; i < 1000; i++) Sample4.ToStringWithStringBuilder(); }
+        public void FormatStringBuilder4() { for (int i = 0; i < 1000; i++) Sample4.ToStringWithStringBuilder(Format); }
         [Benchmark, BenchmarkCategory("SpanBuilder")]
-        public void SpanBuilder5() { for (int i = 0; i < 1000; i++) Sample5.ToString(); }
+        public void FormatSpanBuilder5() { for (int i = 0; i < 1000; i++) Sample5.ToString(Format); }
         [Benchmark, BenchmarkCategory("StringBuilder")]
-        public void StringBuilder5() { for (int i = 0; i < 1000; i++) Sample5.ToStringWithStringBuilder(); }
+        public void FormatStringBuilder5() { for (int i = 0; i < 1000; i++) Sample5.ToStringWithStringBuilder(Format); }
 
     }
 }
@@ -57,7 +80,6 @@ AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
   .NET 7.0      : .NET 7.0.14 (7.0.1423.51910), X64 RyuJIT AVX2
   .NET 8.0      : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX2
   .NET Core 3.1 : .NET Core 3.1.32 (CoreCLR 4.700.22.55902, CoreFX 4.700.22.56512), X64 RyuJIT AVX2
-
 
 ```
 | Method         | Job           | Runtime       | Mean      | Error    | StdDev   | Gen0     | Allocated |
@@ -121,5 +143,29 @@ AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
 | StringBuilder5 | .NET 7.0      | .NET 7.0      | 220.81 μs | 0.828 μs | 0.775 μs | 114.7461 |  937.5 KB |
 | StringBuilder5 | .NET 8.0      | .NET 8.0      | 199.47 μs | 2.116 μs | 1.875 μs | 114.7461 |  937.5 KB |
 | StringBuilder5 | .NET Core 3.1 | .NET Core 3.1 | 381.01 μs | 1.979 μs | 1.851 μs | 114.7461 |  937.5 KB |
+
+```
+
+BenchmarkDotNet v0.13.11, Windows 11 (10.0.22631.2861/23H2/2023Update/SunValley3)
+AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
+.NET SDK 8.0.100
+  [Host]   : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX2
+  .NET 8.0 : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX2
+
+Job=.NET 8.0  Runtime=.NET 8.0  
+
+```
+| Method               | Mean      | Error    | StdDev   | Gen0     | Allocated |
+|--------------------- |----------:|---------:|---------:|---------:|----------:|
+| FormatSpanBuilder1   |  62.42 μs | 0.798 μs | 0.747 μs |   3.7842 |  31.25 KB |
+| FormatSpanBuilder2   |  67.78 μs | 0.647 μs | 0.605 μs |   4.7607 |  39.06 KB |
+| FormatSpanBuilder3   |  92.89 μs | 0.667 μs | 0.591 μs |   6.5918 |  54.69 KB |
+| FormatSpanBuilder4   | 123.97 μs | 1.657 μs | 1.550 μs |  10.4980 |  85.94 KB |
+| FormatSpanBuilder5   | 158.50 μs | 1.263 μs | 1.182 μs |  20.0195 | 164.06 KB |
+| FormatStringBuilder1 |  46.76 μs | 0.652 μs | 0.578 μs |  16.2354 | 132.81 KB |
+| FormatStringBuilder2 |  58.51 μs | 0.981 μs | 0.918 μs |  20.9961 | 171.88 KB |
+| FormatStringBuilder3 |  87.78 μs | 0.922 μs | 0.862 μs |  39.1846 | 320.31 KB |
+| FormatStringBuilder4 | 121.55 μs | 1.457 μs | 1.362 μs |  54.4434 | 445.31 KB |
+| FormatStringBuilder5 | 215.67 μs | 1.695 μs | 1.586 μs | 114.7461 |  937.5 KB |
 
 */
