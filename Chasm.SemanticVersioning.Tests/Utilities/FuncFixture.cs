@@ -27,22 +27,41 @@ namespace Chasm.SemanticVersioning.Tests
         public abstract void AssertResult(T? result);
         public virtual void AssertException(Exception? exception)
         {
-            Assert.IsType(ExceptionType!, exception);
-            if (ExceptionMessage is not null)
-                Assert.StartsWith(ExceptionMessage, exception.Message);
+            Assert.Multiple(
+                () => Assert.IsType(ExceptionType!, exception),
+                () =>
+                {
+                    if (ExceptionMessage is not null && exception is not null)
+                        Assert.StartsWith(ExceptionMessage, exception.Message);
+                }
+            );
         }
 
         public void Test([InstantHandle] Func<T> func)
         {
             Exception? exception = Util.Catch(func, out T? result);
-            Assert.Equal(IsValid, exception is null);
+            if (IsValid)
+            {
+                if (exception is not null) Assert.Fail("Expected the test to succeed, but an exception was raised:\n" + exception);
+            }
+            else
+            {
+                if (exception is null) Assert.Fail("Expected the test to fail, but a result was returned:\n" + result);
+            }
             if (exception is null) AssertResult(result);
             else AssertException(exception);
         }
         public void Test(bool success, T? result)
         {
-            Assert.Equal(IsValid, success);
-            if (success) AssertResult(result);
+            if (IsValid)
+            {
+                if (!success) Assert.Fail("Expected the test to succeed, but it failed.");
+                AssertResult(result);
+            }
+            else
+            {
+                if (success) Assert.Fail("Expected the test to fail, but a result was returned:\n" + result);
+            }
         }
 
         protected TExtender Extend<TExtender>() where TExtender : IFixtureExtender<IFuncFixture<T>>, new()
