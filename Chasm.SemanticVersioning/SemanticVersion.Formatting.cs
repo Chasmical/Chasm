@@ -172,6 +172,7 @@ namespace Chasm.SemanticVersioning
                                 separator = read;
                                 continue;
                             case '\\':
+                                if (!parser.CanRead()) throw new FormatException();
                                 parser.Skip();
                                 goto default;
                             default:
@@ -304,6 +305,7 @@ namespace Chasm.SemanticVersioning
                                 break;
                             case '\\':
                                 // append the following character as is
+                                if (!parser.CanRead()) throw new FormatException();
                                 sb.Append(parser.Read());
                                 break;
                             case '.' or '-' or '+' or '_' or ' ':
@@ -332,11 +334,55 @@ namespace Chasm.SemanticVersioning
         /// <returns>The SemVer 2.0.0 compliant string representation of this semantic version.</returns>
         [Pure] public override string ToString() => SpanBuilder.Format(this);
 
+        /// <summary>
+        ///   <para>Converts this semantic version to its equivalent string representation, using the specified <paramref name="format"/>.</para>
+        /// </summary>
+        /// <remarks>
+        ///   <para>
+        ///     <c>M</c>, <c>m</c>, <c>p</c> - major/minor/patch version components.<br/>
+        ///     <c>rr</c> - all pre-release identifiers, <c>dd</c> - all build metadata identifiers.<br/>
+        ///     The standard, SemVer 2.0.0, format is <c>M.m.p-rr+dd</c>.<br/>
+        ///   </para>
+        ///   <para>
+        ///     <c>mm</c> - optional minor component, which is omitted if both minor and patch components are zero.<br/>
+        ///     <c>pp</c> - optional patch component, which is omitted if it's zero.<br/>
+        ///     <c>r</c>, <c>d</c> - the next pre-release/build metadata identifier, that comes after the last one specified.<br/>
+        ///     <c>r0</c>, <c>r1</c>, …, <c>d0</c>, <c>d1</c>, … - the pre-release/build metadata identifier at the specified index.<br/>
+        ///     <c>rr</c>, <c>dd</c> - all of the pre-release/build metadata identifiers that come after the last specified identifier.<br/>
+        ///   </para>
+        ///   <para>
+        ///     <c>\Majo\r</c> - backslash-escaped character. Backslash itself can be escaped as well.<br/>
+        ///     <c>'map'</c>, <c>"Arr!"</c> - quote-escaped sequence of characters. Backslash can't escape closing quote characters.<br/>
+        ///     <c>.</c>, <c>-</c>, <c>+</c>, <c>_</c>, <c> </c> - separator characters. When preceding an omitted identifier, the separator is omitted as well.<br/>
+        ///   </para>
+        ///   <para>
+        ///     <a href="https://github.com/Chasmical/Chasm/tree/main/Chasm.SemanticVersioning#advanced-semanticversion-formatting">See more details and examples in Chasm.SemanticVersioning README.</a><br/>
+        ///   </para>
+        /// </remarks>
+        /// <param name="format">The format to use.</param>
+        /// <returns>The string representation of this semantic version, as specified by <paramref name="format"/>.</returns>
+        /// <exception cref="FormatException">TODO</exception>
         [Pure] public string ToString(string? format) => ToString(format.AsSpan());
+        /// <inheritdoc cref="ToString(string?)"/>
         [Pure] public string ToString(ReadOnlySpan<char> format) => SpanBuilder.Format(this, format);
 
+        /// <summary>
+        ///   <para>Tries to format this semantic version into the provided span of characters.</para>
+        /// </summary>
+        /// <param name="destination">When this method returns, this semantic version formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
         public bool TryFormat(Span<char> destination, out int charsWritten)
             => SpanBuilder.TryFormat(this, destination, out charsWritten);
+        /// <summary>
+        ///   <para>Tries to format this semantic version into the provided span of characters.</para>
+        /// </summary>
+        /// <remarks><inheritdoc cref="ToString(string?)" path='/remarks' /></remarks>
+        /// <param name="destination">When this method returns, this semantic version formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="format">The format to use.</param>
+        /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="FormatException">TODO</exception>
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format)
             => SpanBuilder.TryFormat(this, destination, out charsWritten, format);
 
@@ -348,7 +394,7 @@ namespace Chasm.SemanticVersioning
 #endif
 
 #if NOT_PUBLISHING_PACKAGE
-        // Note: This method is only used in benchmarks.
+        // Note: These methods are only used in benchmarks.
         // See here: /Chasm.SemanticVersioning.Benchmarks/SpanBuilderVsStringBuilder.cs
 
         [Pure, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
@@ -487,6 +533,7 @@ namespace Chasm.SemanticVersioning
                                 break;
                             case '\\':
                                 // append the following character as is
+                                if (!parser.CanRead()) throw new FormatException();
                                 sb.Append(parser.Read());
                                 break;
                             case '.' or '-' or '+' or '_' or ' ':
