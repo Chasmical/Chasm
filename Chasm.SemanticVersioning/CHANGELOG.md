@@ -1,5 +1,13 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.3.0
+- ✨ Implemented advanced semantic version formatting;
+- ✨ Implemented `ISpanFormattable` and `IFormattable` methods in `SemanticVersion`;
+- ✨ Added `SemanticVersion.ToString(string?)`;
+- ✨ Added `SemanticVersion.ToString(ReadOnlySpan<char>)`;
+- ✨ Added `SemanticVersion.TryFormat(Span<char>, out int)`;
+- ✨ Added `SemanticVersion.TryFormat(Span<char>, out int, ReadOnlySpan<char>)`;
+
 ### v2.2.0
 - ✨ Added `sealed class SemanticVersionBuilder`;
 - ✨ Added `SemanticVersionBuilder.Major`;
