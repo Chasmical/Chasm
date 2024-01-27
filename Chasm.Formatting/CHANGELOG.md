@@ -1,5 +1,12 @@
 # Chasm.Formatting Changelog
 
+### v2.3.0
+- ✨ Added `static class FormattingExtensions`;
+- ✨ Added `FormattingExtensions.TryCopyTo(this string, Span<char>, out int)`;
+- ✨ Added `FormattingExtensions.TryCopyTo<T>(this Span<T>, Span<T>, out int)`;
+- ✨ Added `FormattingExtensions.TryCopyTo<T>(this ReadOnlySpan<T>, Span<T>, out int)`;
+- 🧑‍💻 Improved debugger displays of `SpanParser` and `SpanBuilder`;
+
 ### v2.2.1
 - 🚑️ Removed `SpanBuilder.TryFormat(ISpanBuildableFormat, ReadOnlySpan<char>, Span<char>, out int)`;
 - 🚑️ Added `SpanBuilder.TryFormat(ISpanBuildableFormat, Span<char>, out int, ReadOnlySpan<char>)`;
