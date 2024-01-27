@@ -105,7 +105,7 @@ namespace Chasm.Formatting
         public void Append(int number)
         {
             if (number >= 0) Append((uint)number);
-            else AppendNegative((uint)-unchecked((uint)number));
+            else AppendNegative((uint)-number);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AppendNegative(uint number)
