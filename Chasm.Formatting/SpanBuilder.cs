@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -11,6 +12,7 @@ namespace Chasm.Formatting
 #if NET5_0_OR_GREATER
     [SkipLocalsInit]
 #endif
+    [DebuggerDisplay($"{{{nameof(DebuggerDisplay)}}}")]
     public unsafe ref struct SpanBuilder
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -112,6 +114,17 @@ namespace Chasm.Formatting
             pos += CalculateLength(number) + 1;
             fixed (char* ptr = &buffer[pos])
                 FillDigits(ptr, number);
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly string DebuggerDisplay
+        {
+            get
+            {
+                char[] display = buffer.ToArray();
+                Array.Fill(display, '\u25a1', pos, display.Length - pos);
+                return new string(display);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -8,7 +8,7 @@ namespace Chasm.Formatting
     /// <summary>
     ///   <para>Represents a parser, that sequentially reads characters from a read-only span of characters.</para>
     /// </summary>
-    [DebuggerDisplay($"{nameof(DebuggerDisplay)}")]
+    [DebuggerDisplay($"{{{nameof(DebuggerDisplay)}}}")]
 #if NET5_0_OR_GREATER
     [SkipLocalsInit]
 #endif
@@ -49,6 +49,7 @@ namespace Chasm.Formatting
         /// <summary>
         ///   <para>Determines whether the current character is an ASCII digit.</para>
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public readonly bool OnAsciiDigit
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -57,6 +58,7 @@ namespace Chasm.Formatting
         /// <summary>
         ///   <para>Determines whether the current character is a lowercase or uppercase ASCII letter.</para>
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public readonly bool OnAsciiLetter
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -394,6 +396,11 @@ namespace Chasm.Formatting
             return source.Slice(start, position - start);
         }
 
+        /// <summary>
+        ///   <para>Reads the remaining sequence of characters, and moves to the end.</para>
+        /// </summary>
+        /// <returns>The remaining sequence of characters.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<char> ReadRemaining()
         {
             int start = position;
@@ -401,6 +408,7 @@ namespace Chasm.Formatting
             return source.Slice(start, length - start);
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly string DebuggerDisplay
         {
             get
@@ -408,7 +416,7 @@ namespace Chasm.Formatting
                 int pos = position;
                 ReadOnlySpan<char> src = source;
 
-                const int distance = 8;
+                const int distance = 15;
                 int start = Math.Max(pos - distance, 0);
                 int finish = Math.Min(pos + distance, src.Length);
 
