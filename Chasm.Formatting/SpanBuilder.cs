@@ -93,9 +93,9 @@ namespace Chasm.Formatting
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(uint number)
         {
-            pos += CalculateLength(number);
-            fixed (char* ptr = buffer)
-                FillDigits(ptr + pos, number);
+            int length = CalculateLength(number);
+            FillDigits(buffer.Slice(pos, length), number);
+            pos += length;
         }
         /// <summary>
         ///   <para>Appends the string representation of the specified 32-bit signed integer to the builder.</para>
@@ -104,16 +104,12 @@ namespace Chasm.Formatting
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(int number)
         {
-            if (number >= 0) Append((uint)number);
-            else AppendNegative((uint)-number);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void AppendNegative(uint number)
-        {
-            buffer[pos] = '-';
-            pos += CalculateLength(number) + 1;
-            fixed (char* ptr = &buffer[pos])
-                FillDigits(ptr, number);
+            if (number < 0)
+            {
+                buffer[pos++] = '-';
+                number = -number;
+            }
+            Append((uint)number);
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -128,8 +124,9 @@ namespace Chasm.Formatting
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void FillDigits(char* end, uint number)
+        private static void FillDigits(Span<char> dest, uint number)
         {
+            int pos = dest.Length;
             do
             {
 #if NET6_0_OR_GREATER
@@ -141,7 +138,7 @@ namespace Chasm.Formatting
                 uint rem = number - div * 10u;
                 number = div;
 #endif
-                *--end = (char)('0' + rem);
+                dest[--pos] = (char)('0' + rem);
             }
             while (number != 0u);
         }

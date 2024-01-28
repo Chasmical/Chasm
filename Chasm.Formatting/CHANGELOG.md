@@ -1,5 +1,8 @@
 # Chasm.Formatting Changelog
 
+### v2.3.1
+- ⚡️ Improved `SpanBuilder.Append(int)`'s performance a bit;
+
 ### v2.3.0
 - ✨ Added `static class FormattingExtensions`;
 - ✨ Added `FormattingExtensions.TryCopyTo(this string, Span<char>, out int)`;
