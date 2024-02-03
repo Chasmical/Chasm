@@ -2,10 +2,10 @@
 {
     public enum PrimitiveOperator : byte
     {
-        GreaterThan,
-        GreaterThanOrEqual,
-        LessThan,
-        LessThanOrEqual,
         Equal,
+        GreaterThan,
+        LessThan,
+        GreaterThanOrEqual,
+        LessThanOrEqual,
     }
 }

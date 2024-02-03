@@ -28,8 +28,8 @@ namespace Chasm.SemanticVersioning.Ranges
 
         internal readonly SemverPreRelease[] _preReleases;
         internal readonly string[] _buildMetadata;
-        private ReadOnlyCollection<SemverPreRelease>? _preReleasesReadonly;
-        private ReadOnlyCollection<string>? _buildMetadataReadonly;
+        internal ReadOnlyCollection<SemverPreRelease>? _preReleasesReadonly;
+        internal ReadOnlyCollection<string>? _buildMetadataReadonly;
 
         /// <summary>
         ///   <para>Gets a read-only collection of the partial version's pre-release identifiers.</para>
