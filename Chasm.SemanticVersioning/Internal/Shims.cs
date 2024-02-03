@@ -4,5 +4,6 @@ namespace System.Diagnostics.CodeAnalysis
 {
 #pragma warning disable CS9113 // Parameter is unread.
     internal class NotNullWhenAttribute(bool _) : Attribute;
+    internal class NotNullIfNotNullAttribute(string _) : Attribute;
 }
 #endif

@@ -52,6 +52,7 @@ namespace Chasm.SemanticVersioning
         PreReleaseEmpty         = PRERELEASE     | EMPTY,
         BuildMetadataEmpty      = BUILD_METADATA | EMPTY,
 
+        ComponentInvalid        = COMPONENT      | INVALID,
         PreReleaseInvalid       = PRERELEASE     | INVALID,
         BuildMetadataInvalid    = BUILD_METADATA | INVALID,
 

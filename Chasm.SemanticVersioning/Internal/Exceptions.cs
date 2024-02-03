@@ -32,9 +32,11 @@ namespace Chasm.SemanticVersioning
         public const string BuildMetadataEmpty = "The build metadata identifier cannot be empty.";
         public const string BuildMetadataNull = "The build metadata identifiers cannot be null.";
 
+        public const string ComponentInvalid = "The partial version component must be either numeric or a wildcard character.";
         public const string PreReleaseInvalid = "The pre-release identifier must only contain [A-Za-z0-9-] characters.";
         public const string BuildMetadataInvalid = "The build metadata identifier must only contain [A-Za-z0-9-] characters.";
 
+        public const string ComponentNotNumeric = "The version component is not numeric.";
         public const string PreReleaseNotNumeric = "The pre-release identifier is not numeric.";
 
         public const string Leftovers = "Encountered an invalid semantic version character during parsing.";

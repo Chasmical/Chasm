@@ -36,11 +36,22 @@ namespace Chasm.SemanticVersioning
             return true;
         }
 
-        [Pure] public static ReadOnlySpan<char> ReadSemverIdentifier(this scoped ref SpanParser parser)
+        public static ReadOnlySpan<char> ReadSemverIdentifier(this scoped ref SpanParser parser)
         {
             int start = parser.position;
             while (parser.position < parser.length && IsValidCharacter(parser.source[parser.position]))
                 parser.position++;
+            return parser.source.Slice(start, parser.position - start);
+        }
+        public static ReadOnlySpan<char> ReadPartialComponent(this scoped ref SpanParser parser)
+        {
+            int start = parser.position;
+            while (parser.position < parser.length)
+            {
+                char next = parser.source[parser.position];
+                if ((uint)next - '0' >= 10u && next is not ('x' or 'X' or '*')) break;
+                parser.position++;
+            }
             return parser.source.Slice(start, parser.position - start);
         }
 
