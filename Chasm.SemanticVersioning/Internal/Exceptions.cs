@@ -39,6 +39,10 @@ namespace Chasm.SemanticVersioning
 
         public const string Leftovers = "Encountered an invalid semantic version character during parsing.";
 
+        public const string ComparatorsNull = "The version comparators cannot be null.";
+        public const string ComparatorSetsNull = "The version comparator sets cannot be null.";
+        public const string EmptyVersionRange = "The version range must contain at least one comparator set.";
+
         [Pure] public static string GetMessage(this SemverErrorCode code) => code switch
         {
             SemverErrorCode.MajorNotFound => MajorNotFound,
