@@ -18,10 +18,10 @@ You're probably wondering "Why should I use this library instead of any other mo
 - [x] Advanced `SemanticVersion` formatting (`M.m.p-rr+dd`);
 - [x] `SemanticVersionBuilder` class;
 - [x] `BuildMetadataComparer` class;
-- [ ] Advanced `SemverPreRelease` formatting, maybe?;
-- [ ] `SemverPreRelease.ParseMultiple/Many` method;
 - [x] Option to ignore empty pre-releases/build metadata during parsing;
 - [x] Option to allow an older version syntax, like `1.2.3beta5`;
+- [ ] `SemverPreRelease.ParseMultiple/Many` method;
+- [ ] Advanced `SemverPreRelease` formatting, maybe?;
 
 ### `node-semver` version ranges
 
@@ -30,6 +30,12 @@ You're probably wondering "Why should I use this library instead of any other mo
 - [ ] Advanced version comparators;
 - [ ] `PartialVersion` parsing and formatting;
 - [ ] Parsing of version ranges and its components;
+- [ ] Operators (union `|`, intersection `&`, absolute complement `~`);
+- [ ] Simplify and desugar methods;
+- [ ] IsSubset/Superset methods;
+- [ ] Coercing versions?
+- [ ] Diffing versions?
+- [ ] Decrementing versions?
 
 ## `SemanticVersion`
 
