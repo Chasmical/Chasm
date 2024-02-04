@@ -45,6 +45,9 @@ namespace Chasm.SemanticVersioning
         public const string ComparatorSetsNull = "The version comparator sets cannot be null.";
         public const string EmptyVersionRange = "The version range must contain at least one comparator set.";
 
+        public const string MajorOmitted = "The major version component cannot be omitted.";
+        public const string MinorOmitted = "The minor version component cannot be omitted, if the patch component isn't.";
+
         [Pure] public static string GetMessage(this SemverErrorCode code) => code switch
         {
             SemverErrorCode.MajorNotFound => MajorNotFound,
