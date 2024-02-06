@@ -37,6 +37,7 @@ namespace Chasm.SemanticVersioning
         public const string BuildMetadataInvalid = "The build metadata identifier must only contain [A-Za-z0-9-] characters.";
 
         public const string ComponentNotNumeric = "The version component is not numeric.";
+        public const string ComponentNotWildcard = "The version component is not a wildcard.";
         public const string PreReleaseNotNumeric = "The pre-release identifier is not numeric.";
 
         public const string Leftovers = "Encountered an invalid semantic version character during parsing.";

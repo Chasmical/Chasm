@@ -3,6 +3,9 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
+    /// <summary>
+    ///   <para>Represents a valid <c>node-semver</c> partial version component.</para>
+    /// </summary>
     public readonly partial struct PartialComponent : IEquatable<PartialComponent>, IComparable, IComparable<PartialComponent>
 #if NET7_0_OR_GREATER
                                                     , System.Numerics.IEqualityOperators<PartialComponent, PartialComponent, bool>
@@ -63,7 +66,12 @@ namespace Chasm.SemanticVersioning.Ranges
         ///   <para>Gets the partial version component's numeric value, if it's numeric; otherwise, throws an exception.</para>
         /// </summary>
         /// <exception cref="InvalidOperationException">The partial version component is not numeric.</exception>
-        public int AsNumber => _value >= 0 ? _value : throw new InvalidOperationException(Exceptions.ComponentNotNumeric);
+        public int AsNumber => _value > -1 ? _value : throw new InvalidOperationException(Exceptions.ComponentNotNumeric);
+        /// <summary>
+        ///   <para>Gets the partial version component's wildcard character, if it's a wildcard; otherwise, throws an exception.</para>
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The partial version component is not a wildcard.</exception>
+        public char AsWildcard => _value < -1 ? (char)-_value : throw new InvalidOperationException(Exceptions.ComponentNotWildcard);
 
         /// <summary>
         ///   <para>Returns the partial version component's numeric value, if it's numeric; otherwise, returns <c>0</c>.</para>
@@ -140,14 +148,16 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="left">The first partial version component to compare.</param>
         /// <param name="right">The second partial version component to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public static bool operator ==(PartialComponent left, PartialComponent right) => left.Equals(right);
+        [Pure] public static bool operator ==(PartialComponent left, PartialComponent right)
+            => left.Equals(right);
         /// <summary>
         ///   <para>Determines whether two specified partial version components are not equal.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
         /// </summary>
         /// <param name="left">The first partial version component to compare.</param>
         /// <param name="right">The second partial version component to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public static bool operator !=(PartialComponent left, PartialComponent right) => !left.Equals(right);
+        [Pure] public static bool operator !=(PartialComponent left, PartialComponent right)
+            => !left.Equals(right);
 
     }
 }

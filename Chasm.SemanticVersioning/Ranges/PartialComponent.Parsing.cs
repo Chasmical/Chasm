@@ -179,5 +179,6 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] static bool ISpanParsable<PartialComponent>.TryParse(ReadOnlySpan<char> s, IFormatProvider? _, out PartialComponent preRelease)
             => TryParse(s, out preRelease);
 #endif
+
     }
 }
