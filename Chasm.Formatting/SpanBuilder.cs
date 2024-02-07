@@ -175,7 +175,7 @@ namespace Chasm.Formatting
         /// <returns>The length of the string representation of the specified 32-bit signed integer.</returns>
         [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CalculateLength(int value)
-            => value >= 0 ? CalculateLength((uint)value) : CalculateLength((uint)-unchecked((uint)value)) + 1;
+            => value >= 0 ? CalculateLength((uint)value) : CalculateLength((uint)-value) + 1;
 
         /// <summary>
         ///   <para>Returns the string representation of the specified <paramref name="buildable"/> instance.</para>
