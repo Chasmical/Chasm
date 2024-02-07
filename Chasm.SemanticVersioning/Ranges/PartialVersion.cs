@@ -8,6 +8,9 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
+    /// <summary>
+    ///   <para>Represents a valid <c>node-semver</c> partial version.</para>
+    /// </summary>
     public sealed partial class PartialVersion : IEquatable<PartialVersion>, IComparable, IComparable<PartialVersion>
 #if NET7_0_OR_GREATER
                                                , System.Numerics.IEqualityOperators<PartialVersion, PartialVersion, bool>
@@ -95,6 +98,20 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="PartialVersion"/> class using the specified <paramref name="systemVersion"/>'s <see cref="Version.Major"/>, <see cref="Version.Minor"/> and <see cref="Version.Build"/> version components (build component may be omitted, revision component is ignored).</para>
+        /// </summary>
+        /// <param name="systemVersion">The <see cref="Version"/> object to get the partial version components from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="systemVersion"/> is <see langword="null"/>.</exception>
+        public PartialVersion(Version systemVersion)
+        {
+            if (systemVersion is null) throw new ArgumentNullException(nameof(systemVersion));
+            Major = new PartialComponent(systemVersion.Major, default);
+            Minor = new PartialComponent(systemVersion.Minor, default);
+            Patch = new PartialComponent(systemVersion.Build, default);
+            _preReleases = [];
+            _buildMetadata = [];
+        }
+        /// <summary>
         ///   <para>Initializes a new instance of the <see cref="PartialVersion"/> class using the specified <paramref name="semanticVersion"/>'s major, minor and patch version components and pre-release and build metadata identifiers.</para>
         /// </summary>
         /// <param name="semanticVersion">The semantic version to get the partial version components and identifiers from.</param>
@@ -109,6 +126,50 @@ namespace Chasm.SemanticVersioning.Ranges
             _preReleasesReadonly = semanticVersion._preReleasesReadonly;
             _buildMetadata = semanticVersion._buildMetadata;
             _buildMetadataReadonly = semanticVersion._buildMetadataReadonly;
+        }
+
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a <see cref="Version"/> to a partial version using the specified <paramref name="systemVersion"/>'s <see cref="Version.Major"/>, <see cref="Version.Minor"/> and <see cref="Version.Build"/> version components (build component may be omitted, revision component is ignored).</para>
+        /// </summary>
+        /// <param name="systemVersion">The <see cref="Version"/> object to convert.</param>
+        [Pure] [return: NotNullIfNotNull(nameof(systemVersion))]
+        public static explicit operator PartialVersion?(Version? systemVersion)
+            => systemVersion is null ? null : new PartialVersion(systemVersion);
+        /// <summary>
+        ///   <para>Defines an implicit conversion of a semantic version to a partial version.</para>
+        /// </summary>
+        /// <param name="semanticVersion">The semantic version to convert.</param>
+        [Pure] [return: NotNullIfNotNull(nameof(semanticVersion))]
+        public static implicit operator PartialVersion?(SemanticVersion? semanticVersion)
+            => semanticVersion is null ? null : new PartialVersion(semanticVersion);
+
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a partial version to a <see cref="Version"/>, replacing wildcards in major and minor components with zeroes, and in patch component with -1 (undefined, or omitted).</para>
+        /// </summary>
+        /// <param name="partialVersion">The partial version to convert.</param>
+        [Pure] [return: NotNullIfNotNull(nameof(partialVersion))]
+        public static explicit operator Version?(PartialVersion? partialVersion)
+        {
+            if (partialVersion is null) return null;
+            return new Version(
+                partialVersion.Major.GetValueOrZero(),
+                partialVersion.Minor.GetValueOrZero(),
+                partialVersion.Patch.GetValueOrMinusOne()
+            );
+        }
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a partial version to a semantic version, replacing wildcards in version components with zeroes.</para>
+        /// </summary>
+        /// <param name="partialVersion">The partial version to convert.</param>
+        [Pure] [return: NotNullIfNotNull(nameof(partialVersion))]
+        public static explicit operator SemanticVersion?(PartialVersion? partialVersion)
+        {
+            if (partialVersion is null) return null;
+            return new SemanticVersion(
+                partialVersion.Major.GetValueOrZero(),
+                partialVersion.Minor.GetValueOrZero(),
+                partialVersion.Patch.GetValueOrZero()
+            );
         }
 
         /// <summary>
@@ -132,10 +193,6 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>A read-only span of the partial version's build metadata identifiers.</returns>
         [Pure] public ReadOnlySpan<string> GetBuildMetadata()
             => _buildMetadata;
-
-        [Pure] [return: NotNullIfNotNull(nameof(semanticVersion))]
-        public static implicit operator PartialVersion?(SemanticVersion? semanticVersion)
-            => semanticVersion is null ? null : new PartialVersion(semanticVersion);
 
         // TODO: Add Equals/GetHashCode/CompareTo overloads with I[Equality]Comparer<PartialComponent> parameter
 

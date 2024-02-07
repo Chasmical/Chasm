@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Chasm.Collections;
 using JetBrains.Annotations;
@@ -97,6 +98,37 @@ namespace Chasm.SemanticVersioning
             }
             else _buildMetadata = [];
         }
+
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="SemanticVersion"/> class using the specified <paramref name="systemVersion"/>'s <see cref="Version.Major"/>, <see cref="Version.Minor"/> and <see cref="Version.Build"/> components (undefined build component is turned into zero, revision component is ignored).</para>
+        /// </summary>
+        /// <param name="systemVersion">The <see cref="Version"/> object to get the semantic version components from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="systemVersion"/> is <see langword="null"/>.</exception>
+        public SemanticVersion(Version systemVersion)
+        {
+            if (systemVersion is null) throw new ArgumentNullException(nameof(systemVersion));
+            Major = systemVersion.Major;
+            Minor = systemVersion.Minor;
+            Patch = Math.Max(systemVersion.Build, 0);
+            _preReleases = [];
+            _buildMetadata = [];
+        }
+
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a <see cref="Version"/> to a semantic version using the specified <paramref name="systemVersion"/>'s <see cref="Version.Major"/>, <see cref="Version.Minor"/> and <see cref="Version.Build"/> version components (undefined build component is turned into zero, revision component is ignored).</para>
+        /// </summary>
+        /// <param name="systemVersion">The <see cref="Version"/> object to convert.</param>
+        [Pure] [return: NotNullIfNotNull(nameof(systemVersion))]
+        public static explicit operator SemanticVersion?(Version? systemVersion)
+            => systemVersion is null ? null : new SemanticVersion(systemVersion);
+
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a semantic version to a <see cref="Version"/>.</para>
+        /// </summary>
+        /// <param name="semanticVersion">The semantic version to convert.</param>
+        [Pure] [return: NotNullIfNotNull(nameof(semanticVersion))]
+        public static explicit operator Version?(SemanticVersion? semanticVersion)
+            => semanticVersion is null ? null : new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch);
 
         /// <summary>
         ///   <para>Determines whether the semantic version is considered stable, that is, has a major version component greater than zero, and has no pre-release identifiers.</para>
