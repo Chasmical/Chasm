@@ -104,20 +104,20 @@ namespace Chasm.SemanticVersioning.Ranges
 
         [Pure] internal int CalculateLength()
         {
-            // TODO: consider putting the array in a local variable
-            int length = (_comparatorSets.Length - 1) * 4; // ' || '
-            for (int i = 0, setsLength = _comparatorSets.Length; i < setsLength; i++)
-                length += _comparatorSets[i].CalculateLength();
+            ComparatorSet[] comparatorSets = _comparatorSets;
+            int length = (comparatorSets.Length - 1) * 4; // ' || '
+            for (int i = 0; i < comparatorSets.Length; i++)
+                length += comparatorSets[i].CalculateLength();
             return length;
         }
         internal void BuildString(ref SpanBuilder sb)
         {
-            // TODO: consider putting the array in a local variable
-            _comparatorSets[0].BuildString(ref sb);
-            for (int i = 1, setsLength = _comparatorSets.Length; i < setsLength; i++)
+            ComparatorSet[] comparatorSets = _comparatorSets;
+            comparatorSets[0].BuildString(ref sb);
+            for (int i = 1; i < comparatorSets.Length; i++)
             {
                 sb.Append(' ', '|', '|', ' ');
-                _comparatorSets[i].BuildString(ref sb);
+                comparatorSets[i].BuildString(ref sb);
             }
         }
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();

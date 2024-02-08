@@ -36,7 +36,7 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             if (version is null) return false;
             (PrimitiveComparator? left, PrimitiveComparator? right) = ToPrimitives();
-            return left?.IsSatisfiedBy(version) is not false && right?.IsSatisfiedBy(version) is not false;
+            return left?.IsSatisfiedBy(version) != false && right?.IsSatisfiedBy(version) != false;
         }
 
         /// <summary>
