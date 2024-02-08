@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Chasm.Collections;
+using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
@@ -113,6 +114,22 @@ namespace Chasm.SemanticVersioning
             _preReleases = [];
             _buildMetadata = [];
         }
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="SemanticVersion"/> class using the specified <paramref name="partialVersion"/>'s version components and identifiers, replacing wildcards in version components with zeroes.</para>
+        /// </summary>
+        /// <param name="partialVersion">The partial version to convert.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="partialVersion"/> is <see langword="null"/>.</exception>
+        public SemanticVersion(PartialVersion partialVersion)
+        {
+            if (partialVersion is null) throw new ArgumentNullException(nameof(partialVersion));
+            Major = partialVersion.Major.GetValueOrZero();
+            Minor = partialVersion.Minor.GetValueOrZero();
+            Patch = partialVersion.Patch.GetValueOrZero();
+            _preReleases = partialVersion._preReleases;
+            _preReleasesReadonly = partialVersion._preReleasesReadonly;
+            _buildMetadata = partialVersion._buildMetadata;
+            _buildMetadataReadonly = partialVersion._buildMetadataReadonly;
+        }
 
         /// <summary>
         ///   <para>Defines an explicit conversion of a <see cref="Version"/> to a semantic version using the specified <paramref name="systemVersion"/>'s <see cref="Version.Major"/>, <see cref="Version.Minor"/> and <see cref="Version.Build"/> version components (undefined build component is turned into zero, revision component is ignored).</para>
@@ -121,6 +138,13 @@ namespace Chasm.SemanticVersioning
         [Pure] [return: NotNullIfNotNull(nameof(systemVersion))]
         public static explicit operator SemanticVersion?(Version? systemVersion)
             => systemVersion is null ? null : new SemanticVersion(systemVersion);
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a partial version to a semantic version, replacing wildcards in version components with zeroes.</para>
+        /// </summary>
+        /// <param name="partialVersion">The partial version to convert.</param>
+        [Pure] [return: NotNullIfNotNull(nameof(partialVersion))]
+        public static explicit operator SemanticVersion?(PartialVersion? partialVersion)
+            => partialVersion is null ? null : new SemanticVersion(partialVersion);
 
         /// <summary>
         ///   <para>Defines an explicit conversion of a semantic version to a <see cref="Version"/>.</para>
