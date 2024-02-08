@@ -6,8 +6,16 @@ namespace Chasm.SemanticVersioning.Ranges
 {
     using static PrimitiveComparator;
 
+    /// <summary>
+    ///   <para>Represents a valid <c>node-semver</c> caret version comparator.</para>
+    /// </summary>
     public sealed class CaretComparator : AdvancedComparator
     {
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="CaretComparator"/> class with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The caret version comparator's operand.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         public CaretComparator(PartialVersion operand) : base(operand) { }
 
         /// <inheritdoc/>

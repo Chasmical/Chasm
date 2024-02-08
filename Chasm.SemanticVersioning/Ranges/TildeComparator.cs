@@ -6,8 +6,16 @@ namespace Chasm.SemanticVersioning.Ranges
 {
     using static PrimitiveComparator;
 
+    /// <summary>
+    ///   <para>Represents a valid <c>node-semver</c> tilde version comparator.</para>
+    /// </summary>
     public sealed class TildeComparator : AdvancedComparator
     {
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="TildeComparator"/> class with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The tilde version comparator's operand.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         public TildeComparator(PartialVersion operand) : base(operand) { }
 
         /// <inheritdoc/>
