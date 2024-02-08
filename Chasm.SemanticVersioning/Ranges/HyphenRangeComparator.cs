@@ -19,6 +19,10 @@ namespace Chasm.SemanticVersioning.Ranges
         public HyphenRangeComparator(PartialVersion from, PartialVersion to) : base(from) => To = to;
 
         /// <inheritdoc/>
+        [Pure] public override bool CanMatchPreRelease(int major, int minor, int patch)
+            => CanMatchPreRelease(From, major, minor, patch) || CanMatchPreRelease(To, major, minor, patch);
+
+        /// <inheritdoc/>
         [Pure] protected override (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives()
         {
             return (ConvertFrom(From), ConvertTo(To));
