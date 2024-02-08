@@ -25,9 +25,9 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 ### `node-semver` version ranges
 
-- [ ] Classes `PartialVersion`, `VersionRange`, `ComparatorSet`, `Comparator`;
-- [ ] Primitive version comparators;
-- [ ] Advanced version comparators;
+- [x] Classes `PartialVersion`, `VersionRange`, `ComparatorSet`, `Comparator`;
+- [x] Primitive version comparators;
+- [x] Advanced version comparators;
 - [ ] `PartialVersion` parsing and formatting;
 - [ ] Parsing of version ranges and its components;
 - [ ] Operators (union `|`, intersection `&`, absolute complement `~`);
