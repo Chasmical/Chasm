@@ -9,13 +9,24 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
+    /// <summary>
+    ///   <para>Represents a valid <c>node-semver</c> version comparator set.</para>
+    /// </summary>
     public sealed class ComparatorSet : ISpanBuildable
     {
         private readonly Comparator[] _comparators;
         private ReadOnlyCollection<Comparator>? _comparatorsReadonly;
+        /// <summary>
+        ///   <para>Gets a read-only collection of the version comparator set's version comparators.</para>
+        /// </summary>
         public ReadOnlyCollection<Comparator> Comparators
             => _comparatorsReadonly ??= _comparators.AsReadOnly();
 
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="ComparatorSet"/> class with the specified version <paramref name="comparators"/>.</para>
+        /// </summary>
+        /// <param name="comparators">The version comparator set's version comparators.</param>
+        /// <exception cref="ArgumentException"><paramref name="comparators"/> contains <see langword="null"/>.</exception>
         public ComparatorSet(params Comparator[]? comparators)
         {
             if (comparators?.Length > 0)
@@ -25,15 +36,35 @@ namespace Chasm.SemanticVersioning.Ranges
             }
             else _comparators = [];
         }
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="ComparatorSet"/> class with the specified version <paramref name="comparators"/>.</para>
+        /// </summary>
+        /// <param name="comparators">The version comparator set's version comparators.</param>
+        /// <exception cref="ArgumentException"><paramref name="comparators"/> contains <see langword="null"/>.</exception>
         public ComparatorSet([InstantHandle] IEnumerable<Comparator>? comparators)
             : this(comparators?.ToArray()) { }
 
+        /// <summary>
+        ///   <para>Defines an implicit conversion of a version comparator to a version comparator set.</para>
+        /// </summary>
+        /// <param name="comparator">The version comparator to construct a version comparator set from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparator))]
         public static implicit operator ComparatorSet?(Comparator? comparator)
             => comparator is null ? null : new ComparatorSet(comparator);
 
+        /// <summary>
+        ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version comparator set.</para>
+        /// </summary>
+        /// <param name="version">The semantic version to match.</param>
+        /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version comparator set; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool IsSatisfiedBy(SemanticVersion? version)
             => IsSatisfiedBy(version, false);
+        /// <summary>
+        ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version comparator set.</para>
+        /// </summary>
+        /// <param name="version">The semantic version to match.</param>
+        /// <param name="includePreReleases">Determines whether to treat pre-release versions like regular versions.</param>
+        /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version comparator set; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
         {
             if (version is null) return false;
@@ -73,6 +104,10 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
 
+        /// <summary>
+        ///   <para>Returns the string representation of this version comparator set.</para>
+        /// </summary>
+        /// <returns>The string representation of this version comparator set.</returns>
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 

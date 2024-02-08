@@ -5,13 +5,32 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
+    /// <summary>
+    ///   <para>Represents a valid <c>node-semver</c> primitive version comparator.</para>
+    /// </summary>
     public sealed class PrimitiveComparator : Comparator
     {
+        /// <summary>
+        ///   <para>Returns <see langword="true"/>, since this version comparator is primitive.</para>
+        /// </summary>
         public override bool IsPrimitive => true;
 
+        /// <summary>
+        ///   <para>Gets the primitive version comparator's operand.</para>
+        /// </summary>
         public SemanticVersion Operand { get; }
+        /// <summary>
+        ///   <para>Gets the primitive version comparator's operator.</para>
+        /// </summary>
         public PrimitiveOperator Operator { get; }
 
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="PrimitiveComparator"/> class with the specified <paramref name="operand"/> and <paramref name="operator"/>.</para>
+        /// </summary>
+        /// <param name="operand">The primitive version comparator's operand.</param>
+        /// <param name="operator">The primitive version comparator's operator.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidEnumArgumentException"><paramref name="operator"/> is not a valid primitive operator.</exception>
         public PrimitiveComparator(SemanticVersion operand, PrimitiveOperator @operator)
         {
             if (operand is null) throw new ArgumentNullException(nameof(operand));
@@ -44,14 +63,39 @@ namespace Chasm.SemanticVersioning.Ranges
             };
         }
 
+        /// <summary>
+        ///   <para>Creates an 'equal to' primitive version comparator with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The primitive version comparator's operand.</param>
+        /// <returns>The new 'equal to' primitive version comparator with the specified <paramref name="operand"/>.</returns>
         [Pure] public static PrimitiveComparator Equal(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.Equal);
+        /// <summary>
+        ///   <para>Creates a 'greater than' primitive version comparator with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The primitive version comparator's operand.</param>
+        /// <returns>The new 'greater than' primitive version comparator with the specified <paramref name="operand"/>.</returns>
         [Pure] public static PrimitiveComparator GreaterThan(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.GreaterThan);
+        /// <summary>
+        ///   <para>Creates a 'less than' primitive version comparator with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The primitive version comparator's operand.</param>
+        /// <returns>The new 'less than' primitive version comparator with the specified <paramref name="operand"/>.</returns>
         [Pure] public static PrimitiveComparator LessThan(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.LessThan);
+        /// <summary>
+        ///   <para>Creates a 'greater than or equal to' primitive version comparator with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The primitive version comparator's operand.</param>
+        /// <returns>The new 'greater than or equal to' primitive version comparator with the specified <paramref name="operand"/>.</returns>
         [Pure] public static PrimitiveComparator GreaterThanOrEqual(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.GreaterThanOrEqual);
+        /// <summary>
+        ///   <para>Creates a 'less than or equal to' primitive version comparator with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The primitive version comparator's operand.</param>
+        /// <returns>The new 'less than or equal to' primitive version comparator with the specified <paramref name="operand"/>.</returns>
         [Pure] public static PrimitiveComparator LessThanOrEqual(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.LessThanOrEqual);
 

@@ -9,18 +9,36 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
+    /// <summary>
+    ///   <para>Represents a valid <c>node-semver</c> version range.</para>
+    /// </summary>
     public sealed class VersionRange : ISpanBuildable
     {
         private readonly ComparatorSet[] _comparatorSets;
         private ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
+        /// <summary>
+        ///   <para>Gets a read-only collection of this version range's version comparator sets.</para>
+        /// </summary>
         public ReadOnlyCollection<ComparatorSet> ComparatorSets
             => _comparatorSetsReadonly ??= _comparatorSets.AsReadOnly();
 
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version <paramref name="comparatorSet"/>.</para>
+        /// </summary>
+        /// <param name="comparatorSet">The version range's version comparator sets.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="comparatorSet"/> is <see langword="null"/>.</exception>
         public VersionRange(ComparatorSet comparatorSet)
         {
             if (comparatorSet is null) throw new ArgumentNullException(nameof(comparatorSet));
             _comparatorSets = [comparatorSet];
         }
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version comparator sets.</para>
+        /// </summary>
+        /// <param name="firstComparatorSet">The version range's first version comparator set.</param>
+        /// <param name="otherComparatorSets">The version range's subsequent version comparator sets.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="firstComparatorSet"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="otherComparatorSets"/> contains <see langword="null"/>.</exception>
         public VersionRange(ComparatorSet firstComparatorSet, params ComparatorSet[]? otherComparatorSets)
         {
             if (firstComparatorSet is null) throw new ArgumentNullException(nameof(firstComparatorSet));
@@ -38,6 +56,12 @@ namespace Chasm.SemanticVersioning.Ranges
             else array = [firstComparatorSet];
             _comparatorSets = array;
         }
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version <paramref name="comparatorSets"/>.</para>
+        /// </summary>
+        /// <param name="comparatorSets">The version range's version comparator sets.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="comparatorSets"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="comparatorSets"/> is empty, or contains <see langword="null"/>.</exception>
         public VersionRange([InstantHandle] IEnumerable<ComparatorSet> comparatorSets)
         {
             if (comparatorSets is null) throw new ArgumentNullException(nameof(comparatorSets));
@@ -47,15 +71,34 @@ namespace Chasm.SemanticVersioning.Ranges
             _comparatorSets = array;
         }
 
+        /// <summary>
+        ///   <para>Defines an implicit conversion of a version comparator to a version range.</para>
+        /// </summary>
+        /// <param name="comparator">The version comparator to construct a version range from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparator))]
         public static implicit operator VersionRange?(Comparator? comparator)
             => comparator is null ? null : new VersionRange(new ComparatorSet(comparator));
+        /// <summary>
+        ///   <para>Defines an implicit conversion of a version comparator set to a version range.</para>
+        /// </summary>
+        /// <param name="comparatorSet">The version comparator set to construct a version range from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparatorSet))]
         public static implicit operator VersionRange?(ComparatorSet? comparatorSet)
             => comparatorSet is null ? null : new VersionRange(comparatorSet);
 
+        /// <summary>
+        ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version range.</para>
+        /// </summary>
+        /// <param name="version">The semantic version to match.</param>
+        /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version range otherwise, <see langword="false"/>.</returns>
         [Pure] public bool IsSatisfiedBy(SemanticVersion? version)
             => IsSatisfiedBy(version, false);
+        /// <summary>
+        ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version range.</para>
+        /// </summary>
+        /// <param name="version">The semantic version to match.</param>
+        /// <param name="includePreReleases">Determines whether to treat pre-release versions like regular versions.</param>
+        /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version range otherwise, <see langword="false"/>.</returns>
         [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
             => version is not null && _comparatorSets.Exists(cs => cs.IsSatisfiedBy(version, includePreReleases));
 
@@ -80,6 +123,10 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
 
+        /// <summary>
+        ///   <para>Returns the string representation of this version range.</para>
+        /// </summary>
+        /// <returns>The string representation of this version range.</returns>
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
