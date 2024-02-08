@@ -16,10 +16,8 @@ namespace Chasm.SemanticVersioning.Ranges
 
         /// <inheritdoc/>
         [Pure] public override bool CanMatchPreRelease(int major, int minor, int patch)
-            => Operand.IsPreRelease
-            && (!Operand.Major.IsNumeric || Operand.Major.GetValueOrZero() == major)
-            && (!Operand.Minor.IsNumeric || Operand.Minor.GetValueOrZero() == minor)
-            && (!Operand.Patch.IsNumeric || Operand.Patch.GetValueOrZero() == patch);
+            => CanMatchPreRelease(Operand, major, minor, patch);
+
         /// <inheritdoc/>
         [Pure] public override bool IsSatisfiedBy(SemanticVersion? version)
         {
@@ -28,7 +26,7 @@ namespace Chasm.SemanticVersioning.Ranges
             return left?.IsSatisfiedBy(version) is not false && right?.IsSatisfiedBy(version) is not false;
         }
 
-        [Pure] public (PrimitiveComparator?, PrimitiveComparator?) ToPrimitives()
+        [Pure] public (PrimitiveComparator? Left, PrimitiveComparator? Right) ToPrimitives()
             => primitives ??= ConvertToPrimitives();
 
         [Pure] protected abstract (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives();

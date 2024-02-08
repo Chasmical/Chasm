@@ -10,6 +10,14 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public abstract bool CanMatchPreRelease(int major, int minor, int patch);
         [Pure] public abstract bool IsSatisfiedBy(SemanticVersion? version);
 
+        [Pure] protected static bool CanMatchPreRelease(SemanticVersion version, int major, int minor, int patch)
+            => version.IsPreRelease && version.Major == major && version.Minor == minor && version.Patch == patch;
+        [Pure] protected static bool CanMatchPreRelease(PartialVersion version, int major, int minor, int patch)
+            => version.IsPreRelease
+            && (!version.Major.IsNumeric || version.Major.GetValueOrZero() == major)
+            && (!version.Minor.IsNumeric || version.Minor.GetValueOrZero() == minor)
+            && (!version.Patch.IsNumeric || version.Patch.GetValueOrZero() == patch);
+
         /// <inheritdoc cref="ISpanBuildable.CalculateLength"/>
         [Pure] protected internal abstract int CalculateLength();
         /// <inheritdoc cref="ISpanBuildable.BuildString"/>
