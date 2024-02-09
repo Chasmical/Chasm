@@ -67,7 +67,10 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
 
-        /// <inheritdoc/>
+        /// <summary>
+        ///   <para>Returns the string representation of this partial version.</para>
+        /// </summary>
+        /// <returns>The string representation of this partial version.</returns>
         [Pure] public override string ToString() => SpanBuilder.Format(this);
 
     }

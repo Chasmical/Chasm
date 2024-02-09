@@ -76,6 +76,7 @@ namespace Chasm.SemanticVersioning
             SemverErrorCode.PreReleaseEmpty => PreReleaseEmpty,
             SemverErrorCode.BuildMetadataEmpty => BuildMetadataEmpty,
 
+            SemverErrorCode.ComponentInvalid => ComponentInvalid,
             SemverErrorCode.PreReleaseInvalid => PreReleaseInvalid,
             SemverErrorCode.BuildMetadataInvalid => BuildMetadataInvalid,
 
@@ -87,7 +88,7 @@ namespace Chasm.SemanticVersioning
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TReturn ReturnOrThrow<TReturn>(this SemverErrorCode code, TReturn? returnValue, [InvokerParameterName] string parameterName)
         {
-            if (code is not SemverErrorCode.Success)
+            if (code != SemverErrorCode.Success)
                 throw new ArgumentException(code.GetMessage(), parameterName);
             return returnValue!;
         }

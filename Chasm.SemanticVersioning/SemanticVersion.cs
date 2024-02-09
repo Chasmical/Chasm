@@ -183,11 +183,11 @@ namespace Chasm.SemanticVersioning
         /// <summary>
         ///   <para>Gets the minimum possible valid semantic version, <c>0.0.0-0</c>.</para>
         /// </summary>
-        public static SemanticVersion MinValue { get; } = new SemanticVersion(0, 0, 0, SemverPreRelease.ZeroArray, null);
+        public static SemanticVersion MinValue { get; } = new SemanticVersion(0, 0, 0, SemverPreRelease.ZeroArray, null, default);
         /// <summary>
         ///   <para>Gets the maximum possible valid semantic version in this implementation of SemVer, <c>2147483647.2147483647.2147483647</c>.</para>
         /// </summary>
-        public static SemanticVersion MaxValue { get; } = new SemanticVersion(int.MaxValue, int.MaxValue, int.MaxValue, null, null);
+        public static SemanticVersion MaxValue { get; } = new SemanticVersion(int.MaxValue, int.MaxValue, int.MaxValue, null, null, default);
 
         /// <summary>
         ///   <para>Determines whether this semantic version is equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="BuildMetadataComparer"/>.</para>

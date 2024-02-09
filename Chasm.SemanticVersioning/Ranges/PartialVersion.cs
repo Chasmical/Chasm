@@ -74,7 +74,6 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="patch">The partial version's patch version component.</param>
         /// <param name="preReleases">A collection of the partial version's pre-release identifiers.</param>
         /// <param name="buildMetadata">A collection of the partial version's build metadata identifiers.</param>
-        /// <exception cref="ArgumentException"><paramref name="buildMetadata"/> contains <see langword="null"/> or an invalid build metadata identifier.</exception>
         /// <exception cref="ArgumentException"><paramref name="major"/> is omitted, but <paramref name="minor"/> or <paramref name="patch"/> isn't; or <paramref name="minor"/> is omitted, but <paramref name="patch"/> isn't; or <paramref name="buildMetadata"/> contains <see langword="null"/> or an invalid build metadata identifier.</exception>
         public PartialVersion(PartialComponent major, PartialComponent minor, PartialComponent patch,
                               [InstantHandle] IEnumerable<SemverPreRelease>? preReleases,

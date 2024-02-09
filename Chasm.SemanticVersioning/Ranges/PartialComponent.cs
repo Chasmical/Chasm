@@ -87,6 +87,11 @@ namespace Chasm.SemanticVersioning.Ranges
         ///   <para>Gets the partial version component with the value of <c>0</c>.</para>
         /// </summary>
         public static PartialComponent Zero => default;
+
+        // TODO: Should the PartialComponent's static properties below be simple getters?
+        // The values won't be stored anywhere, and instead will be initialized on the stack.
+        // But will the constructor's overhead be small enough to justify this change?
+
         /// <summary>
         ///   <para>Gets the lowercase X (<c>x</c>) wildcard partial version component.</para>
         /// </summary>
