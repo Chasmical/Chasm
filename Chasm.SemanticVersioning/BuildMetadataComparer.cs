@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
@@ -9,7 +10,8 @@ namespace Chasm.SemanticVersioning
     ///   <para>Compares two semantic versions for equivalence, while also taking into account their build metadata identifiers.</para>
     /// </summary>
     public sealed class BuildMetadataComparer : IComparer, IEqualityComparer,
-                                                IComparer<SemanticVersion>, IEqualityComparer<SemanticVersion>
+                                                IComparer<SemanticVersion>, IEqualityComparer<SemanticVersion>,
+                                                IComparer<PartialVersion>, IEqualityComparer<PartialVersion>
     {
         private BuildMetadataComparer() { }
 
@@ -25,8 +27,10 @@ namespace Chasm.SemanticVersioning
 
             if (a is SemanticVersion versionA && b is SemanticVersion versionB)
                 return Compare(versionA, versionB);
+            if (a is PartialVersion partialA && b is PartialVersion partialB)
+                return Compare(partialA, partialB);
 
-            throw new ArgumentException($"The object must be of type {nameof(SemanticVersion)}.");
+            throw new ArgumentException($"The object must be of type {nameof(SemanticVersion)} or {nameof(PartialVersion)}.");
         }
         [Pure] bool IEqualityComparer.Equals(object? a, object? b)
         {
@@ -35,14 +39,17 @@ namespace Chasm.SemanticVersioning
 
             if (a is SemanticVersion versionA && b is SemanticVersion versionB)
                 return Equals(versionA, versionB);
+            if (a is PartialVersion partialA && b is PartialVersion partialB)
+                return Equals(partialA, partialB);
 
-            throw new ArgumentException($"The objects must be of type {nameof(SemanticVersion)}.");
+            throw new ArgumentException($"The objects must be of type {nameof(SemanticVersion)} or {nameof(PartialVersion)}.");
         }
         [Pure] int IEqualityComparer.GetHashCode(object? obj)
         {
             if (obj is null) return 0;
             if (obj is SemanticVersion version) return GetHashCode(version);
-            throw new ArgumentException($"The object must be of type {nameof(SemanticVersion)}.", nameof(obj));
+            if (obj is PartialVersion partial) return GetHashCode(partial);
+            throw new ArgumentException($"The object must be of type {nameof(SemanticVersion)} or {nameof(PartialVersion)}.", nameof(obj));
         }
 
         /// <summary>
@@ -74,6 +81,49 @@ namespace Chasm.SemanticVersioning
         /// <param name="version">The semantic version to get a hash code for.</param>
         /// <returns>The hash code for the specified semantic version.</returns>
         [Pure] public int GetHashCode(SemanticVersion? version)
+        {
+            if (version is null) return 0;
+            if (version._buildMetadata.Length == 0) return version.GetHashCode();
+
+            HashCode hash = new HashCode();
+            hash.Add(version);
+
+            string[] buildMetadata = version._buildMetadata;
+            for (int i = 0; i < buildMetadata.Length; i++)
+                hash.Add(buildMetadata[i]);
+
+            return hash.ToHashCode();
+        }
+
+        /// <summary>
+        ///   <para>Compares two partial versions and returns an integer that indicates whether one precedes, follows or occurs in the same position in the sort order as another.<br/>Build metadata is included in this comparison. For build metadata-insensitive comparison, use <see cref="PartialVersion.CompareTo"/>.</para>
+        /// </summary>
+        /// <param name="a">The first partial version to compare.</param>
+        /// <param name="b">The second partial version to compare.</param>
+        /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
+        [Pure] public int Compare(PartialVersion? a, PartialVersion? b)
+        {
+            if (a is null) return b is null ? 0 : -1;
+            int res = a.CompareTo(b);
+            return res != 0 ? res : Utility.CompareIdentifiers(a._buildMetadata, b!._buildMetadata);
+        }
+        /// <summary>
+        ///   <para>Determines whether one partial version is equal to another partial version.<br/>Build metadata is included in this comparison. For build metadata-insensitive comparison, use <see cref="PartialVersion.Equals(PartialVersion?)"/>.</para>
+        /// </summary>
+        /// <param name="a">The first partial version to compare.</param>
+        /// <param name="b">The second partial version to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
+        [Pure] public bool Equals(PartialVersion? a, PartialVersion? b)
+        {
+            if (a is null) return b is null;
+            return a.Equals(b) && Utility.EqualsIdentifiers(a._buildMetadata, b._buildMetadata);
+        }
+        /// <summary>
+        ///   <para>Returns a hash code for the specified partial version.<br/>Build metadata is included in this comparison. For build metadata-insensitive comparison, use <see cref="PartialVersion.GetHashCode"/>.</para>
+        /// </summary>
+        /// <param name="version">The partial version to get a hash code for.</param>
+        /// <returns>The hash code for the specified partial version.</returns>
+        [Pure] public int GetHashCode(PartialVersion? version)
         {
             if (version is null) return 0;
             if (version._buildMetadata.Length == 0) return version.GetHashCode();
