@@ -96,7 +96,7 @@ var builder = new SemanticVersionBuilder(1, 2, 3);
 
 builder
     .WithPatch(7)
-    .AppendPreRelease("alpha");
+    .AppendPreRelease("alpha")
     .AppendPreRelease(0);
 
 var a = builder.ToVersion(); // 1.2.7-alpha.0
