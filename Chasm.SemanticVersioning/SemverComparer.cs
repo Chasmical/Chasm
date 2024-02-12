@@ -7,6 +7,9 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
 {
+    /// <summary>
+    ///   <para>Represents a semantic version comparison operation that uses specific comparison rules.</para>
+    /// </summary>
     public abstract class SemverComparer : IComparer, IEqualityComparer
                                          , IComparer<SemanticVersion>, IEqualityComparer<SemanticVersion>
                                          , IComparer<PartialComponent>, IEqualityComparer<PartialComponent>
@@ -51,18 +54,75 @@ namespace Chasm.SemanticVersioning
             throw new ArgumentException($"The object must be of type {supportedTypes}.", nameof(obj));
         }
 
+        /// <summary>
+        ///   <para>Compares two semantic versions and returns an integer that indicates whether one precedes, follows or occurs in the same position in the sort order as another.</para>
+        /// </summary>
+        /// <param name="a">The first semantic version to compare.</param>
+        /// <param name="b">The second semantic version to compare.</param>
+        /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
         [Pure] public abstract int Compare(SemanticVersion? a, SemanticVersion? b);
+        /// <summary>
+        ///   <para>Determines whether one semantic version is equal to another semantic version.</para>
+        /// </summary>
+        /// <param name="a">The first semantic version to compare.</param>
+        /// <param name="b">The second semantic version to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public abstract bool Equals(SemanticVersion? a, SemanticVersion? b);
+        /// <summary>
+        ///   <para>Returns a hash code for the specified semantic version.</para>
+        /// </summary>
+        /// <param name="version">The semantic version to get a hash code for.</param>
+        /// <returns>The hash code for the specified semantic version.</returns>
         [Pure] public abstract int GetHashCode(SemanticVersion? version);
 
+        /// <summary>
+        ///   <para>Compares two partial version components and returns an integer that indicates whether one precedes, follows or occurs in the same position in the sort order as another.</para>
+        /// </summary>
+        /// <param name="a">The first partial version component to compare.</param>
+        /// <param name="b">The second partial version component to compare.</param>
+        /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
         [Pure] public abstract int Compare(PartialComponent a, PartialComponent b);
+        /// <summary>
+        ///   <para>Determines whether one partial version component is equal to another partial version component.</para>
+        /// </summary>
+        /// <param name="a">The first partial version component to compare.</param>
+        /// <param name="b">The second partial version component to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public abstract bool Equals(PartialComponent a, PartialComponent b);
+        /// <summary>
+        ///   <para>Returns a hash code for the specified partial version component.</para>
+        /// </summary>
+        /// <param name="component">The partial version component to get a hash code for.</param>
+        /// <returns>The hash code for the specified partial version component.</returns>
         [Pure] public abstract int GetHashCode(PartialComponent component);
 
+        /// <summary>
+        ///   <para>Compares two partial versions and returns an integer that indicates whether one precedes, follows or occurs in the same position in the sort order as another.</para>
+        /// </summary>
+        /// <param name="a">The first partial version to compare.</param>
+        /// <param name="b">The second partial version to compare.</param>
+        /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
         [Pure] public abstract int Compare(PartialVersion? a, PartialVersion? b);
+        /// <summary>
+        ///   <para>Determines whether one partial version is equal to another partial version.</para>
+        /// </summary>
+        /// <param name="a">The first partial version to compare.</param>
+        /// <param name="b">The second partial version to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public abstract bool Equals(PartialVersion? a, PartialVersion? b);
+        /// <summary>
+        ///   <para>Returns a hash code for the specified partial version.</para>
+        /// </summary>
+        /// <param name="partial">The partial version to get a hash code for.</param>
+        /// <returns>The hash code for the specified partial version.</returns>
         [Pure] public abstract int GetHashCode(PartialVersion? partial);
 
+        /// <summary>
+        ///   <para>Returns a <see cref="SemverComparer"/> that uses the specified semantic version <paramref name="comparison"/> rules.</para>
+        /// </summary>
+        /// <param name="comparison">The semantic version comparison rules to use.</param>
+        /// <returns>A <see cref="SemverComparer"/> that uses the specified semantic version <paramref name="comparison"/> rules.</returns>
+        /// <exception cref="InvalidEnumArgumentException"><paramref name="comparison"/> is not a valid set of comparison rules.</exception>
         [Pure] public static SemverComparer FromComparison(SemverComparison comparison) => comparison switch
         {
             SemverComparison.Default => Default,
@@ -72,12 +132,24 @@ namespace Chasm.SemanticVersioning
             _ => throw new InvalidEnumArgumentException(nameof(comparison), (int)comparison, typeof(SemverComparison)),
         };
 
+        /// <summary>
+        ///   <para>Gets the default <see cref="SemverComparer"/>, that ignores the build metadata, and, when comparing partial versions, considers wildcard characters and omitted components equal.</para>
+        /// </summary>
         public static SemverComparer Default { get; }
             = new ConfigurableSemverComparer(SemverComparison.Default);
+        /// <summary>
+        ///   <para>Gets the <see cref="SemverComparer"/>, that includes the build metadata in the comparison, and, when comparing partial versions, considers wildcard characters and omitted components equal.</para>
+        /// </summary>
         public static SemverComparer IncludeBuildMetadata { get; }
             = new ConfigurableSemverComparer(SemverComparison.IncludeBuildMetadata);
+        /// <summary>
+        ///   <para>Gets the <see cref="SemverComparer"/>, that ignores the build metadata, and, when comparing partial versions, differentiates between different wildcard characters and omitted components.</para>
+        /// </summary>
         public static SemverComparer DifferentiateWildcards { get; }
             = new ConfigurableSemverComparer(SemverComparison.DifferentiateWildcards);
+        /// <summary>
+        ///   <para>Gets the <see cref="SemverComparer"/>, that includes the build metadata in the comparison, and, when comparing partial versions, differentiates between different wildcard characters and omitted components.</para>
+        /// </summary>
         public static SemverComparer IncludeBuildDiffWildcards { get; }
             = new ConfigurableSemverComparer(SemverComparison.IncludeBuildMetadata | SemverComparison.DifferentiateWildcards);
 
