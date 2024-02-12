@@ -49,7 +49,7 @@ Console.WriteLine($"{a} < {b} = {a < b}");
 // 1.0.0-alpha.8 < 1.2-pre = true
 ```
 
-**Note that the default comparison doesn't account for build metadata!** For build metadata-sensitive comparison, use `BuildMetadataComparer`.
+**Note that the default comparison doesn't account for build metadata!** For build metadata-sensitive comparison, use `SemverComparer.IncludeBuildMetadata`.
 
 ```cs
 var a = SemanticVersion.Parse("1.2.3-4");
@@ -58,7 +58,7 @@ var b = SemanticVersion.Parse("1.2.3-4+BUILD");
 Console.WriteLine($"{a} == {b} = {a == b}");
 // 1.2.3-4 == 1.2.3-4+BUILD = true
 
-var cmp = BuildMetadataComparer.Instance;
+var cmp = SemverComparer.IncludeBuildMetadata;
 Console.WriteLine($"{a} === {b} = {cmp.Equals(a, b)}");
 // 1.2.3-4 === 1.2.3-4+BUILD = false
 ```

@@ -110,28 +110,28 @@ namespace Chasm.SemanticVersioning.Ranges
         public static PartialComponent Omitted { get; } = new PartialComponent(-1, default);
 
         /// <summary>
-        ///   <para>Determines whether this partial version component is equal to another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Determines whether this partial version component is equal to another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="other">The partial version component to compare with this partial version component.</param>
         /// <returns><see langword="true"/>, if this partial version component is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(PartialComponent other)
             => _value < 0 ? other._value < 0 : _value == other._value;
         /// <summary>
-        ///   <para>Determines whether this partial version component is equal to the specified <paramref name="obj"/>.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Determines whether this partial version component is equal to the specified <paramref name="obj"/>.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="obj">The object to compare with this partial version component.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="PartialComponent"/> instance equal to this partial version component; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => obj is PartialComponent other && Equals(other);
         /// <summary>
-        ///   <para>Returns a hash code for this partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Returns a hash code for this partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <returns>A hash code for this partial version component.</returns>
         [Pure] public override int GetHashCode()
-            => Math.Max(_value, -1);
+            => GetValueOrMinusOne();
 
         /// <summary>
-        ///   <para>Compares this partial version component with another specified partial version component and returns an integer that indicates whether this partial version component precedes, follows or occurs in the same position in the sort order as the <paramref name="other"/> partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Compares this partial version component with another specified partial version component and returns an integer that indicates whether this partial version component precedes, follows or occurs in the same position in the sort order as the <paramref name="other"/> partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="other">The partial version component to compare with this partial version component.</param>
         /// <returns>&lt;0, if this partial version component precedes <paramref name="other"/> in the sort order;<br/>=0, if this partial version component occurs in the same position in the sort order as <paramref name="other"/>;<br/>&gt;0, if this partial version component follows <paramref name="other"/> in the sort order.</returns>
@@ -148,7 +148,7 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
-        ///   <para>Determines whether two specified partial version components are equal.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Determines whether two specified partial version components are equal.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="left">The first partial version component to compare.</param>
         /// <param name="right">The second partial version component to compare.</param>
@@ -156,7 +156,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public static bool operator ==(PartialComponent left, PartialComponent right)
             => left.Equals(right);
         /// <summary>
-        ///   <para>Determines whether two specified partial version components are not equal.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Determines whether two specified partial version components are not equal.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="left">The first partial version component to compare.</param>
         /// <param name="right">The second partial version component to compare.</param>

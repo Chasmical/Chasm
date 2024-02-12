@@ -182,7 +182,7 @@ namespace Chasm.SemanticVersioning.Ranges
         // TODO: Add Equals/GetHashCode/CompareTo overloads with I[Equality]Comparer<PartialComponent> parameter
 
         /// <summary>
-        ///   <para>Determines whether this partial version is equal to another specified partial version.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="BuildMetadataComparer"/>, and for version component character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Determines whether this partial version is equal to another specified partial version.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="other">The partial version to compare with this partial version.</param>
         /// <returns><see langword="true"/>, if this partial version is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
@@ -193,14 +193,14 @@ namespace Chasm.SemanticVersioning.Ranges
             return Utility.EqualsIdentifiers(_preReleases, other._preReleases);
         }
         /// <summary>
-        ///   <para>Determines whether this partial version is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="BuildMetadataComparer"/>, and for version component character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Determines whether this partial version is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="obj">The object to compare with this partial version.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="PartialVersion"/> instance equal to this partial version; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => Equals(obj as PartialVersion);
         /// <summary>
-        ///   <para>Returns a hash code for this partial version.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="BuildMetadataComparer"/>, and for version component character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Returns a hash code for this partial version.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <returns>A hash code for this partial version.</returns>
         [Pure] public override int GetHashCode()
@@ -212,14 +212,15 @@ namespace Chasm.SemanticVersioning.Ranges
             hash.Add(Minor);
             hash.Add(Patch);
 
-            for (int i = 0, length = _preReleases.Length; i < length; i++)
-                hash.Add(_preReleases[i]);
+            SemverPreRelease[] preReleases = _preReleases;
+            for (int i = 0; i < preReleases.Length; i++)
+                hash.Add(preReleases[i]);
 
             return hash.ToHashCode();
         }
 
         /// <summary>
-        ///   <para>Compares this partial version with another specified partial version and returns an integer that indicates whether this partial version precedes, follows or occurs in the same position in the sort order as the <paramref name="other"/> partial version.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="BuildMetadataComparer"/>, and for version component character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Compares this partial version with another specified partial version and returns an integer that indicates whether this partial version precedes, follows or occurs in the same position in the sort order as the <paramref name="other"/> partial version.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="other">The partial version to compare with this partial version.</param>
         /// <returns>&lt;0, if this partial version precedes <paramref name="other"/> in the sort order;<br/>=0, if this partial version occurs in the same position in the sort order as <paramref name="other"/>;<br/>&gt;0, if this partial version follows <paramref name="other"/> in the sort order.</returns>
@@ -245,7 +246,7 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
-        ///   <para>Determines whether two specified partial versions are equal.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="BuildMetadataComparer"/>, and for version component character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Determines whether two specified partial versions are equal.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="left">The first partial version to compare.</param>
         /// <param name="right">The second partial version to compare.</param>
@@ -253,7 +254,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public static bool operator ==(PartialVersion? left, PartialVersion? right)
             => left is null ? right is null : left.Equals(right);
         /// <summary>
-        ///   <para>Determines whether two specified partial versions are not equal.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="BuildMetadataComparer"/>, and for version component character-sensitive comparison, use <see cref="WildcardComponentComparer"/>.</para>
+        ///   <para>Determines whether two specified partial versions are not equal.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
         /// <param name="left">The first partial version to compare.</param>
         /// <param name="right">The second partial version to compare.</param>
