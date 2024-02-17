@@ -10,12 +10,12 @@ namespace Chasm.SemanticVersioning
 
         IdentifierMask = 0b_0000_1111,
 
-        COMPONENT      = 0b_0000_0001,
-        MAJOR          = 0b_0000_0010,
-        MINOR          = 0b_0000_0011,
-        PATCH          = 0b_0000_0100,
-        PRERELEASE     = 0b_0000_0101,
-        BUILD_METADATA = 0b_0000_0110,
+        COMPONENT      = 0b_0000_1000,
+        MAJOR          = 0b_0000_0001 | COMPONENT,
+        MINOR          = 0b_0000_0010 | COMPONENT,
+        PATCH          = 0b_0000_0011 | COMPONENT,
+        PRERELEASE     = 0b_0000_0100,
+        BUILD_METADATA = 0b_0000_0101,
 
         ErrorTypeMask  = 0b_1111_0000,
 
