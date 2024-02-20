@@ -32,22 +32,52 @@ namespace Chasm.SemanticVersioning.Ranges
             => this = Parse(character);
 
         /// <summary>
-        ///   <para>Defines an implicit conversion of a 21-bit signed integer to a numeric partial version component.</para>
+        ///   <para>Defines an implicit conversion of a 32-bit signed integer to a numeric partial version component.</para>
         /// </summary>
         /// <param name="value">The partial version component's numeric value.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is less than 0.</exception>
-        [Pure] public static implicit operator PartialComponent(int value) => new PartialComponent(value);
+        [Pure] public static implicit operator PartialComponent(int value)
+            => new PartialComponent(value);
         /// <summary>
         ///   <para>Defines an implicit conversion of a wildcard or numeric <paramref name="character"/> to a partial version component.</para>
         /// </summary>
         /// <param name="character">The wildcard or numeric character representing a partial version component.</param>
         /// <exception cref="ArgumentException"><paramref name="character"/> does not represent a valid partial version component.</exception>
-        [Pure] public static implicit operator PartialComponent(char character) => Parse(character);
+        [Pure] public static implicit operator PartialComponent(char character)
+            => Parse(character);
+        /// <summary>
+        ///   <para>Defines an implicit conversion of a nullable 32-bit signed integer to a numeric or omitted partial version component.</para>
+        /// </summary>
+        /// <param name="value">The partial version component's numeric value, or <see langword="null"/>.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is less than 0.</exception>
+        [Pure] public static implicit operator PartialComponent(int? value)
+            => new PartialComponent(value ?? -1, default);
+
         /// <summary>
         ///   <para>Defines an explicit conversion of a partial version component to a 32-bit signed integer.</para>
         /// </summary>
         /// <param name="component">The partial version component to convert.</param>
-        [Pure] public static explicit operator int(PartialComponent component) => component.GetValueOrZero();
+        [Pure] public static explicit operator int(PartialComponent component)
+            => component.GetValueOrZero();
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a partial version component to a wildcard or numeric character.</para>
+        /// </summary>
+        /// <param name="component">The partial version component to convert.</param>
+        [Pure] public static explicit operator char(PartialComponent component)
+        {
+            return component._value switch
+            {
+                -1 or >= 10 => throw new ArgumentException(Exceptions.ComponentNotSingleChar, nameof(component)),
+                < -1 => (char)-component._value,
+                _ => (char)('0' + component._value),
+            };
+        }
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a partial version component to a nullable 32-bit signed integer.</para>
+        /// </summary>
+        /// <param name="component">The partial version component to convert.</param>
+        [Pure] public static explicit operator int?(PartialComponent component)
+            => component.IsNumeric ? component._value : null;
 
         /// <summary>
         ///   <para>Determines whether the partial version component is numeric.</para>
@@ -79,7 +109,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The partial version component's numeric value, if it's numeric; otherwise, <c>0</c>.</returns>
         [Pure] public int GetValueOrZero()
             => Math.Max(_value, 0);
-        // TODO: Should GetValueOrMinusOne be public?
+        // Note: GetValueOrMinusOne() doesn't need to be public.
+        // Users can write it as (comp.IsNumeric ? (int)comp : -1) or ((int?)comp ?? -1) instead.
         [Pure] internal int GetValueOrMinusOne()
             => Math.Max(_value, -1);
 
@@ -88,26 +119,22 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         public static PartialComponent Zero => default;
 
-        // TODO: Should the PartialComponent's static properties below be simple getters?
-        // The values won't be stored anywhere, and instead will be initialized on the stack.
-        // But will the constructor's overhead be small enough to justify this change?
-
         /// <summary>
         ///   <para>Gets the lowercase X (<c>x</c>) wildcard partial version component.</para>
         /// </summary>
-        public static PartialComponent LowerX { get; } = new PartialComponent(-'x', default);
+        public static PartialComponent LowerX => new PartialComponent(-'x', default);
         /// <summary>
         ///   <para>Gets the uppercase X (<c>X</c>) wildcard partial version component.</para>
         /// </summary>
-        public static PartialComponent UpperX { get; } = new PartialComponent(-'X', default);
+        public static PartialComponent UpperX => new PartialComponent(-'X', default);
         /// <summary>
         ///   <para>Gets the star/asterisk (<c>*</c>) wildcard partial version component.</para>
         /// </summary>
-        public static PartialComponent Star { get; } = new PartialComponent(-'*', default);
+        public static PartialComponent Star => new PartialComponent(-'*', default);
         /// <summary>
         ///   <para>Gets the omitted/unspecified partial version component, which will not be displayed or output.</para>
         /// </summary>
-        public static PartialComponent Omitted { get; } = new PartialComponent(-1, default);
+        public static PartialComponent Omitted => new PartialComponent(-1, default);
 
         /// <summary>
         ///   <para>Determines whether this partial version component is equal to another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
