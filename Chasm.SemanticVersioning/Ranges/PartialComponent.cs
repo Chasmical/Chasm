@@ -8,7 +8,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// </summary>
     public readonly partial struct PartialComponent : IEquatable<PartialComponent>, IComparable, IComparable<PartialComponent>
 #if NET7_0_OR_GREATER
-                                                    , System.Numerics.IEqualityOperators<PartialComponent, PartialComponent, bool>
+                                                    , System.Numerics.IComparisonOperators<PartialComponent, PartialComponent, bool>
 #endif
     {
         internal readonly int _value;
@@ -190,6 +190,39 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(PartialComponent left, PartialComponent right)
             => !left.Equals(right);
+
+        /// <summary>
+        ///   <para>Determines whether a specified partial version component is greater than another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
+        /// </summary>
+        /// <param name="left">The first partial version component to compare.</param>
+        /// <param name="right">The second partial version component to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+        [Pure] public static bool operator >(PartialComponent left, PartialComponent right)
+            => left.CompareTo(right) > 0;
+        /// <summary>
+        ///   <para>Determines whether a specified partial version component is less than another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
+        /// </summary>
+        /// <param name="left">The first partial version component to compare.</param>
+        /// <param name="right">The second partial version component to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is less than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+        [Pure] public static bool operator <(PartialComponent left, PartialComponent right)
+            => left.CompareTo(right) < 0;
+        /// <summary>
+        ///   <para>Determines whether a specified partial version component is greater than or equal to another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
+        /// </summary>
+        /// <param name="left">The first partial version component to compare.</param>
+        /// <param name="right">The second partial version component to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+        [Pure] public static bool operator >=(PartialComponent left, PartialComponent right)
+            => left.CompareTo(right) >= 0;
+        /// <summary>
+        ///   <para>Determines whether a specified partial version component is less than or equal to another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
+        /// </summary>
+        /// <param name="left">The first partial version component to compare.</param>
+        /// <param name="right">The second partial version component to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+        [Pure] public static bool operator <=(PartialComponent left, PartialComponent right)
+            => left.CompareTo(right) <= 0;
 
     }
 }
