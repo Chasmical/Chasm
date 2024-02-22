@@ -11,8 +11,12 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Determines whether this version comparator is a <see cref="PrimitiveComparator"/>.</para>
         /// </summary>
-        // Note: Apparently, type-checking is quicker than calling an overriden getter
+        // Note: Apparently, type-checking is quicker than calling an overridden getter
         public bool IsPrimitive => this is PrimitiveComparator;
+        /// <summary>
+        ///   <para>Determines whether this version comparator is an <see cref="AdvancedComparator"/>.</para>
+        /// </summary>
+        public bool IsAdvanced => !IsPrimitive;
 
         /// <summary>
         ///   <para>Determines whether this version comparator can match a pre-release version with the specified <paramref name="major"/>, <paramref name="minor"/> and <paramref name="patch"/> version components.</para>

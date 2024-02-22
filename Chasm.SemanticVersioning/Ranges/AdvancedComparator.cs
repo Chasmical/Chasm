@@ -15,6 +15,12 @@ namespace Chasm.SemanticVersioning.Ranges
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         [Obsolete("You already know that it's not a primitive version comparator.")]
         public new bool IsPrimitive => false;
+        /// <summary>
+        ///   <para>Returns <see langword="true"/>, since this version comparator is advanced.</para>
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [Obsolete("You already know that it is an advanced version comparator.")]
+        public new bool IsAdvanced => true;
 
         /// <summary>
         ///   <para>Gets the advanced version comparator's operand.</para>
