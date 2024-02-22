@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -13,7 +14,9 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Returns <see langword="true"/>, since this version comparator is primitive.</para>
         /// </summary>
-        public override bool IsPrimitive => true;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [Obsolete("You already know that it's a primitive version comparator.")]
+        public new bool IsPrimitive => true;
 
         /// <summary>
         ///   <para>Gets the primitive version comparator's operand.</para>
