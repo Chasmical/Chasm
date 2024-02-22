@@ -22,6 +22,10 @@ namespace Chasm.SemanticVersioning.Ranges
         public ReadOnlyCollection<ComparatorSet> ComparatorSets
             => _comparatorSetsReadonly ??= _comparatorSets.AsReadOnly();
 
+        // ReSharper disable once UnusedParameter.Local
+        private VersionRange(ComparatorSet[] comparatorSets, bool _)
+            => _comparatorSets = comparatorSets;
+
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version <paramref name="comparatorSet"/>.</para>
         /// </summary>
@@ -86,6 +90,9 @@ namespace Chasm.SemanticVersioning.Ranges
         public static implicit operator VersionRange?(ComparatorSet? comparatorSet)
             => comparatorSet is null ? null : new VersionRange(comparatorSet);
 
+        // TODO: IsSugared is definitely a nice property to have, but I'm not sure about the name yet. Maybe ContainsSugar or sth?
+        internal bool IsSugared => Array.Exists(_comparatorSets, static cs => cs.IsSugared);
+
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version range.</para>
         /// </summary>
@@ -101,6 +108,17 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version range otherwise, <see langword="false"/>.</returns>
         [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
             => version is not null && _comparatorSets.Exists(cs => cs.IsSatisfiedBy(version, includePreReleases));
+
+        /// <summary>
+        ///   <para>Returns a desugared copy of this version range, that is, with advanced version comparators replaced by equivalent primitive version comparators.</para>
+        /// </summary>
+        /// <returns>A desugared copy of this version range.</returns>
+        [Pure] public VersionRange Desugar()
+        {
+            if (!IsSugared) return this;
+            ComparatorSet[] desugared = Array.ConvertAll(_comparatorSets, static cs => cs.Desugar());
+            return new VersionRange(desugared, default);
+        }
 
         /// <summary>
         ///   <para>Gets a version range that doesn't match any versions, <c>&lt;0.0.0-0</c>.</para>

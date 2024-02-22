@@ -22,6 +22,10 @@ namespace Chasm.SemanticVersioning.Ranges
         public ReadOnlyCollection<Comparator> Comparators
             => _comparatorsReadonly ??= _comparators.AsReadOnly();
 
+        // ReSharper disable once UnusedParameter.Local
+        private ComparatorSet(Comparator[] comparators, bool _)
+            => _comparators = comparators;
+
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="ComparatorSet"/> class with the specified version <paramref name="comparators"/>.</para>
         /// </summary>
@@ -52,6 +56,9 @@ namespace Chasm.SemanticVersioning.Ranges
         public static implicit operator ComparatorSet?(Comparator? comparator)
             => comparator is null ? null : new ComparatorSet(comparator);
 
+        // TODO: IsSugared is definitely a nice property to have, but I'm not sure about the name yet. Maybe ContainsSugar or sth?
+        internal bool IsSugared => Array.Exists(_comparators, static c => c.IsAdvanced);
+
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version comparator set.</para>
         /// </summary>
@@ -74,6 +81,36 @@ namespace Chasm.SemanticVersioning.Ranges
                 if (!canCompare) return false;
             }
             return _comparators.TrueForAll(c => c.IsSatisfiedBy(version));
+        }
+
+        /// <summary>
+        ///   <para>Returns a desugared copy of this version comparator set, that is, with advanced version comparators replaced by equivalent primitive version comparators.</para>
+        /// </summary>
+        /// <returns>A desugared copy of this version comparator set.</returns>
+        [Pure] public ComparatorSet Desugar()
+        {
+            if (!IsSugared) return this;
+
+            Comparator[] comparators = _comparators;
+            // TODO: There must be a way to cut back on memory allocation here
+            List<Comparator> desugared = new(comparators.Length);
+
+            for (int i = 0; i < comparators.Length; i++)
+            {
+                Comparator comparator = comparators[i];
+                if (comparator is AdvancedComparator advanced)
+                {
+                    (PrimitiveComparator? left, PrimitiveComparator? right) = advanced.ToPrimitives();
+                    if (left is not null) desugared.Add(left);
+                    if (right is not null) desugared.Add(right);
+                }
+                else
+                {
+                    desugared.Add(comparator);
+                }
+            }
+
+            return new ComparatorSet(desugared.ToArray(), default);
         }
 
         /// <summary>
