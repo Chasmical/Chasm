@@ -37,10 +37,11 @@ You're probably wondering "Why should I use this library instead of any other mo
 - [x] Classes `PartialVersion`, `VersionRange`, `ComparatorSet`, `Comparator`;
 - [x] Primitive version comparators;
 - [x] Advanced version comparators;
-- [ ] `PartialVersion` parsing and formatting;
-- [ ] Parsing of version ranges and its components;
+- [x] `PartialVersion` parsing and formatting;
+- [x] Parsing of version ranges and its components;
 - [ ] Operators (union `|`, intersection `&`, absolute complement `~`);
-- [ ] Simplify/Desugar methods;
+- [x] Desugar methods;
+- [ ] Simplify methods;
 - [ ] IsSubset/Superset methods;
 - [ ] Coercing versions?
 - [ ] Diffing versions?
