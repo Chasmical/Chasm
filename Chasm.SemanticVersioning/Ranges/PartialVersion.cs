@@ -158,6 +158,10 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
+        ///   <para>Determines whether the partial version has any wildcard or omitted version components.</para>
+        /// </summary>
+        public bool IsPartial => !Major.IsNumeric || !Minor.IsNumeric || !Patch.IsNumeric;
+        /// <summary>
         ///   <para>Determines whether the partial version has any pre-release identifiers.</para>
         /// </summary>
         public bool IsPreRelease => _preReleases.Length != 0;

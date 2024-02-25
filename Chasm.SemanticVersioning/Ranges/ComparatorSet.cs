@@ -23,7 +23,7 @@ namespace Chasm.SemanticVersioning.Ranges
             => _comparatorsReadonly ??= _comparators.AsReadOnly();
 
         // ReSharper disable once UnusedParameter.Local
-        private ComparatorSet(Comparator[] comparators, bool _)
+        internal ComparatorSet(Comparator[] comparators, bool _)
             => _comparators = comparators;
 
         /// <summary>

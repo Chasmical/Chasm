@@ -12,7 +12,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version range.</para>
     /// </summary>
-    public sealed class VersionRange : ISpanBuildable
+    public sealed partial class VersionRange : ISpanBuildable
     {
         private readonly ComparatorSet[] _comparatorSets;
         private ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
