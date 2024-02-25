@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
     public sealed partial class VersionRange
+#if NET7_0_OR_GREATER
+        : ISpanParsable<VersionRange>
+#endif
     {
         [Pure] internal static SemverErrorCode ParseLoose(ReadOnlySpan<char> text, SemverOptions options, out VersionRange? range)
         {
@@ -97,7 +101,7 @@ namespace Chasm.SemanticVersioning.Ranges
             return SemverErrorCode.Success;
         }
 
-        internal static SemverErrorCode ParseComparator(ref SpanParser parser, SemverOptions options, out Comparator? comparator)
+        [Pure] internal static SemverErrorCode ParseComparator(ref SpanParser parser, SemverOptions options, out Comparator? comparator)
         {
             comparator = null;
             SemverErrorCode code;
@@ -171,7 +175,7 @@ namespace Chasm.SemanticVersioning.Ranges
             return SemverErrorCode.Success;
         }
 
-        private static bool SkipHyphenInnerWhite(ref SpanParser parser)
+        [Pure] private static bool SkipHyphenInnerWhite(ref SpanParser parser)
         {
             int initialPos = parser.position;
             parser.SkipWhitespaces();
@@ -190,7 +194,88 @@ namespace Chasm.SemanticVersioning.Ranges
             return false;
         }
 
+        /// <summary>
+        ///   <para>Converts the specified string representation of a version range to an equivalent <see cref="VersionRange"/> instance.</para>
+        /// </summary>
+        /// <param name="text">The string containing a version range to convert.</param>
+        /// <returns>The <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid version range.</exception>
+        [Pure] public static VersionRange Parse(string text)
+            => Parse(text, SemverOptions.Strict);
+        /// <summary>
+        ///   <para>Converts the specified read-only span of characters representing a version range to an equivalent <see cref="VersionRange"/> instance.</para>
+        /// </summary>
+        /// <param name="text">The read-only span of characters containing a version range to convert.</param>
+        /// <returns>The <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid version range.</exception>
+        [Pure] public static VersionRange Parse(ReadOnlySpan<char> text)
+            => Parse(text, SemverOptions.Strict);
+        /// <summary>
+        ///   <para>Tries to convert the specified string representation of a version range to an equivalent <see cref="VersionRange"/> instance, and returns a value indicating whether the conversion was successful.</para>
+        /// </summary>
+        /// <param name="text">The string containing a version range to convert.</param>
+        /// <param name="range">When this method returns, contains the <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="null"/> if the conversion failed.</param>
+        /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
+        [Pure] public static bool TryParse(string? text, [NotNullWhen(true)] out VersionRange? range)
+            => TryParse(text, SemverOptions.Strict, out range);
+        /// <summary>
+        ///   <para>Tries to convert the specified read-only span of characters representing a version range to an equivalent <see cref="VersionRange"/> instance, and returns a value indicating whether the conversion was successful.</para>
+        /// </summary>
+        /// <param name="text">The read-only span of characters containing a version range to convert.</param>
+        /// <param name="range">When this method returns, contains the <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="null"/> if the conversion failed.</param>
+        /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
+        [Pure] public static bool TryParse(ReadOnlySpan<char> text, [NotNullWhen(true)] out VersionRange? range)
+            => TryParse(text, SemverOptions.Strict, out range);
 
+        /// <summary>
+        ///   <para>Converts the specified string representation of a version range to an equivalent <see cref="VersionRange"/> instance, using the specified parsing <paramref name="options"/>.</para>
+        /// </summary>
+        /// <param name="text">The string containing a version range to convert.</param>
+        /// <param name="options">The version range parsing options to use.</param>
+        /// <returns>The <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid version range.</exception>
+        [Pure] public static VersionRange Parse(string text, SemverOptions options)
+            => text is null ? throw new ArgumentNullException(nameof(text)) : Parse(text.AsSpan(), options);
+        /// <summary>
+        ///   <para>Converts the specified read-only span of characters representing a version range to an equivalent <see cref="VersionRange"/> instance, using the specified parsing <paramref name="options"/>.</para>
+        /// </summary>
+        /// <param name="text">The read-only span of characters containing a version range to convert.</param>
+        /// <param name="options">The version range parsing options to use.</param>
+        /// <returns>The <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid version range.</exception>
+        [Pure] public static VersionRange Parse(ReadOnlySpan<char> text, SemverOptions options)
+            => ParseLoose(text, options, out VersionRange? range).ReturnOrThrow(range, nameof(text));
+        /// <summary>
+        ///   <para>Tries to convert the specified string representation of a version range to an equivalent <see cref="VersionRange"/> instance, using the specified parsing <paramref name="options"/>, and returns a value indicating whether the conversion was successful.</para>
+        /// </summary>
+        /// <param name="text">The string containing a version range to convert.</param>
+        /// <param name="options">The version range parsing options to use.</param>
+        /// <param name="range">When this method returns, contains the <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="null"/> if the conversion failed.</param>
+        /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
+        [Pure] public static bool TryParse(string? text, SemverOptions options, [NotNullWhen(true)] out VersionRange? range)
+            => TryParse(text.AsSpan(), options, out range);
+        /// <summary>
+        ///   <para>Tries to convert the specified read-only span of characters representing a version range to an equivalent <see cref="VersionRange"/> instance, using the specified parsing <paramref name="options"/>, and returns a value indicating whether the conversion was successful.</para>
+        /// </summary>
+        /// <param name="text">The read-only span of characters containing a version range to convert.</param>
+        /// <param name="options">The version range parsing options to use.</param>
+        /// <param name="range">When this method returns, contains the <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="null"/> if the conversion failed.</param>
+        /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
+        [Pure] public static bool TryParse(ReadOnlySpan<char> text, SemverOptions options, [NotNullWhen(true)] out VersionRange? range)
+            => ParseLoose(text, options, out range) is SemverErrorCode.Success;
+
+#if NET7_0_OR_GREATER
+        [Pure] static VersionRange IParsable<VersionRange>.Parse(string s, IFormatProvider? _)
+            => Parse(s);
+        [Pure] static bool IParsable<VersionRange>.TryParse(string? s, IFormatProvider? _, [NotNullWhen(true)] out VersionRange? range)
+            => TryParse(s, out range);
+        [Pure] static VersionRange ISpanParsable<VersionRange>.Parse(ReadOnlySpan<char> s, IFormatProvider? _)
+            => Parse(s);
+        [Pure] static bool ISpanParsable<VersionRange>.TryParse(ReadOnlySpan<char> s, IFormatProvider? _, [NotNullWhen(true)] out VersionRange? range)
+            => TryParse(s, out range);
+#endif
 
     }
 }
