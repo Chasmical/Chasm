@@ -23,7 +23,7 @@ namespace Chasm.SemanticVersioning.Ranges
             => _comparatorSetsReadonly ??= _comparatorSets.AsReadOnly();
 
         // ReSharper disable once UnusedParameter.Local
-        private VersionRange(ComparatorSet[] comparatorSets, bool _)
+        internal VersionRange(ComparatorSet[] comparatorSets, bool _)
             => _comparatorSets = comparatorSets;
 
         /// <summary>
@@ -156,6 +156,19 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The string representation of this version range.</returns>
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
+
+        // TODO: intersection & operators
+
+        public static VersionRange operator |(VersionRange left, ComparatorSet right)
+            => new VersionRange([..left._comparatorSets, right], default);
+        public static VersionRange operator |(ComparatorSet left, VersionRange right)
+            => new VersionRange([left, ..right._comparatorSets], default);
+        public static VersionRange operator |(VersionRange left, VersionRange right)
+            => new VersionRange([..left._comparatorSets, ..right._comparatorSets], default);
+        // VersionRange x Comparator | operators aren't needed, since C# has nice implicit conversion resolution:
+        // Comparators can be implicitly converted into ComparatorSets without any unnecessary allocations.
+
+        // TODO: absolute complement ~ operator
 
     }
 }

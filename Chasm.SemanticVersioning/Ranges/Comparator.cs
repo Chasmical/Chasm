@@ -72,5 +72,13 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
+        public static ComparatorSet operator &(Comparator left, Comparator right)
+            => new ComparatorSet([left, right], default);
+
+        public static VersionRange operator |(Comparator left, Comparator right)
+            => new VersionRange([new ComparatorSet(left), new ComparatorSet(right)], default);
+
+        // TODO: absolute complement ~ operator (would return VersionRange)
+
     }
 }
