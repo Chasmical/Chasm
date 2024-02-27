@@ -27,7 +27,10 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         public PartialVersion Operand { get; }
 
-        private (PrimitiveComparator? left, PrimitiveComparator? right)? primitives;
+        // For convenience, the left comparator when not null is always a '>', '>=' or '=',
+        // while the right one when not null is always a '<' or '<=' comparator.
+        // This may change in the future, so don't rely on it outside of this project.
+        private (PrimitiveComparator?, PrimitiveComparator?)? primitives;
 
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="AdvancedComparator"/> class with the specified <paramref name="operand"/>.</para>
