@@ -155,6 +155,8 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
+        // TODO: Add ArgumentNullException handling
+
         public static ComparatorSet operator &(ComparatorSet left, Comparator right)
             => new ComparatorSet([..left._comparators, right], default);
         public static ComparatorSet operator &(Comparator left, ComparatorSet right)
@@ -167,7 +169,13 @@ namespace Chasm.SemanticVersioning.Ranges
         // ComparatorSet x Comparator | operators aren't needed, since C# has nice implicit conversion resolution:
         // Comparators can be implicitly converted into ComparatorSets without any unnecessary allocations.
 
-        // TODO: absolute complement ~ operator (would return VersionRange)
+        public static VersionRange operator ~(ComparatorSet comparatorSet)
+        {
+            Comparator[] comparators = comparatorSet._comparators;
+            if (comparators.Length == 0) return VersionRange.None;
+            ComparatorSet[] inverted = Array.ConvertAll(comparators, static comp => (ComparatorSet)comp);
+            return new VersionRange(inverted, default);
+        }
 
     }
 }

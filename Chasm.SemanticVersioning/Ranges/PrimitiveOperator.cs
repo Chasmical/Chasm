@@ -25,5 +25,7 @@
         ///   <para>A 'less than or equal to' operator, <c>&lt;=</c>.</para>
         /// </summary>
         LessThanOrEqual,
+
+        // TODO: Should there be an implicit equality operator? Sudden appearance of an '=' sign may be confusing.
     }
 }

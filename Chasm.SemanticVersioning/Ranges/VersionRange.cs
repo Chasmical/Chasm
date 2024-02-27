@@ -157,7 +157,14 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
-        // TODO: intersection & operators
+        // TODO: Add ArgumentNullException handling
+
+        public static VersionRange operator &(VersionRange left, ComparatorSet right)
+            => throw new NotImplementedException();
+        public static VersionRange operator &(ComparatorSet left, VersionRange right)
+            => throw new NotImplementedException();
+        public static VersionRange operator &(VersionRange left, VersionRange right)
+            => throw new NotImplementedException();
 
         public static VersionRange operator |(VersionRange left, ComparatorSet right)
             => new VersionRange([..left._comparatorSets, right], default);
@@ -168,7 +175,8 @@ namespace Chasm.SemanticVersioning.Ranges
         // VersionRange x Comparator | operators aren't needed, since C# has nice implicit conversion resolution:
         // Comparators can be implicitly converted into ComparatorSets without any unnecessary allocations.
 
-        // TODO: absolute complement ~ operator
+        public static VersionRange operator ~(VersionRange range)
+            => throw new NotImplementedException();
 
     }
 }

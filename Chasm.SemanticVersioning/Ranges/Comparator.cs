@@ -72,13 +72,60 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
+        // TODO: Add ArgumentNullException handling
+
         public static ComparatorSet operator &(Comparator left, Comparator right)
             => new ComparatorSet([left, right], default);
 
         public static VersionRange operator |(Comparator left, Comparator right)
             => new VersionRange([new ComparatorSet(left), new ComparatorSet(right)], default);
 
-        // TODO: absolute complement ~ operator (would return VersionRange)
+        public static VersionRange operator ~(Comparator comparator)
+        {
+            if (comparator is PrimitiveComparator primitive)
+            {
+                return primitive.Operator == PrimitiveOperator.Equal
+                    ? InvertEqualityPrimitive(primitive)
+                    : InvertComparisonPrimitive(primitive);
+            }
+            return InvertAdvanced((AdvancedComparator)comparator);
+
+            static VersionRange InvertAdvanced(AdvancedComparator advanced)
+            {
+                (PrimitiveComparator? left, PrimitiveComparator? right) = advanced.ToPrimitives();
+
+                // if it's represented by just a single comparator, just invert it
+                if (left is null ^ right is null)
+                    return ~(left ?? right)!;
+
+                // if both are null, it matches all versions, and, when inverted, matches nothing
+                if (left is null) return VersionRange.None;
+
+                // both are non-null
+                return new VersionRange([
+                    InvertComparisonPrimitive(left),
+                    InvertComparisonPrimitive(right!),
+                ], default);
+            }
+            static VersionRange InvertEqualityPrimitive(PrimitiveComparator primitive)
+            {
+                // =1.2.3 ⇒ <1.2.3 || >1.2.3
+                return new VersionRange([
+                    PrimitiveComparator.LessThan(primitive.Operand),
+                    PrimitiveComparator.GreaterThan(primitive.Operand),
+                ]);
+            }
+            static PrimitiveComparator InvertComparisonPrimitive(PrimitiveComparator primitive)
+            {
+                // 5 - 1 (GreaterThan)        = 4 (LessThanOrEqual)
+                // 5 - 2 (LessThan)           = 3 (GreaterThanOrEqual)
+                // 5 - 3 (GreaterThanOrEqual) = 2 (LessThan)
+                // 5 - 4 (LessThanOrEqual)    = 1 (GreaterThan)
+                return new PrimitiveComparator(primitive.Operand, 5 - primitive.Operator);
+            }
+        }
+
+
 
     }
 }
