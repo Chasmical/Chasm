@@ -94,6 +94,11 @@ namespace Chasm.SemanticVersioning.Ranges
         internal bool IsSugared => Array.Exists(_comparatorSets, static cs => cs.IsSugared);
 
         /// <summary>
+        ///   <para>Determines whether this version range is empty, that is, doesn't match any versions.</para>
+        /// </summary>
+        public bool IsEmpty => Array.TrueForAll(_comparatorSets, static cs => cs.IsEmpty);
+
+        /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version range.</para>
         /// </summary>
         /// <param name="version">The semantic version to match.</param>
@@ -160,11 +165,28 @@ namespace Chasm.SemanticVersioning.Ranges
         // TODO: Add ArgumentNullException handling
 
         public static VersionRange operator &(VersionRange left, ComparatorSet right)
-            => throw new NotImplementedException();
+        {
+            ComparatorSet[] sets = Array.ConvertAll(left._comparatorSets, cs => cs & right);
+            return new VersionRange(Array.FindAll(sets, static cs => !cs.IsEmpty), default);
+        }
         public static VersionRange operator &(ComparatorSet left, VersionRange right)
-            => throw new NotImplementedException();
+        {
+            ComparatorSet[] sets = Array.ConvertAll(right._comparatorSets, cs => left & cs);
+            return new VersionRange(Array.FindAll(sets, static cs => !cs.IsEmpty), default);
+        }
         public static VersionRange operator &(VersionRange left, VersionRange right)
-            => throw new NotImplementedException();
+        {
+            ComparatorSet[] leftSets = left._comparatorSets;
+            ComparatorSet[] rightSets = right._comparatorSets;
+            // TODO: Should this be optimized? Maybe automatically remove empty sets? But then what about other operators?
+            ComparatorSet[] sets = new ComparatorSet[leftSets.Length * rightSets.Length];
+
+            for (int i = 0; i < leftSets.Length; i++)
+                for (int j = 0; j < rightSets.Length; j++)
+                    sets[i * leftSets.Length + j] = leftSets[i] & rightSets[j];
+
+            return new VersionRange(sets, default);
+        }
 
         public static VersionRange operator |(VersionRange left, ComparatorSet right)
             => new VersionRange([..left._comparatorSets, right], default);

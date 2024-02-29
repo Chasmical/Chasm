@@ -60,6 +60,11 @@ namespace Chasm.SemanticVersioning.Ranges
         internal bool IsSugared => Array.Exists(_comparators, static c => c.IsAdvanced);
 
         /// <summary>
+        ///   <para>Determines whether this comparator set is empty, that is, doesn't match any versions.</para>
+        /// </summary>
+        public bool IsEmpty => throw new NotImplementedException();
+
+        /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version comparator set.</para>
         /// </summary>
         /// <param name="version">The semantic version to match.</param>
