@@ -114,13 +114,13 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
-        ///   <para>Gets a version comparator set that doesn't match any versions, <c>&lt;0.0.0-0</c>.</para>
+        ///   <para>Gets a version comparator set (<c>&lt;0.0.0-0</c>) that doesn't match any versions.</para>
         /// </summary>
         public static ComparatorSet None { get; } = new ComparatorSet(PrimitiveComparator.LessThan(SemanticVersion.MinValue));
         /// <summary>
-        ///   <para>Gets an empty version comparator set, that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
+        ///   <para>Gets a version comparator set (<c>*</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
         /// </summary>
-        public static ComparatorSet All { get; } = new ComparatorSet(null);
+        public static ComparatorSet All { get; } = new ComparatorSet(XRangeComparator.Equal(new PartialVersion(PartialComponent.Star)));
 
         [Pure] internal int CalculateLength()
         {

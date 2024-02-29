@@ -121,11 +121,11 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
-        ///   <para>Gets a version range that doesn't match any versions, <c>&lt;0.0.0-0</c>.</para>
+        ///   <para>Gets a version range (<c>&lt;0.0.0-0</c>) that doesn't match any versions.</para>
         /// </summary>
         public static VersionRange None { get; } = new VersionRange(ComparatorSet.None);
         /// <summary>
-        ///   <para>Gets an empty version range that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
+        ///   <para>Gets a version range (<c>*</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
         /// </summary>
         public static VersionRange All { get; } = new VersionRange(ComparatorSet.All);
 
