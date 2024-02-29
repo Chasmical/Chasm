@@ -46,12 +46,27 @@ namespace Chasm.SemanticVersioning.Ranges
             => _buildMetadataReadonly ??= _buildMetadata.AsReadOnly();
 
         /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="PartialVersion"/> class with the specified <paramref name="major"/> version component.</para>
+        /// </summary>
+        /// <param name="major">The partial version's major version component.</param>
+        /// <exception cref="ArgumentException"><paramref name="major"/> is omitted.</exception>
+        public PartialVersion(PartialComponent major)
+            : this(major, PartialComponent.Omitted, PartialComponent.Omitted, null, null) { }
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="PartialVersion"/> class with the specified <paramref name="major"/> and <paramref name="minor"/> version components.</para>
+        /// </summary>
+        /// <param name="major">The partial version's major version component.</param>
+        /// <param name="minor">The partial version's minor version component.</param>
+        /// <exception cref="ArgumentException"><paramref name="major"/> is omitted.</exception>
+        public PartialVersion(PartialComponent major, PartialComponent minor)
+            : this(major, minor, PartialComponent.Omitted, null, null) { }
+        /// <summary>
         ///   <para>Initializes a new instance of the <see cref="PartialVersion"/> class with the specified <paramref name="major"/>, <paramref name="minor"/> and <paramref name="patch"/> version components.</para>
         /// </summary>
         /// <param name="major">The partial version's major version component.</param>
         /// <param name="minor">The partial version's minor version component.</param>
         /// <param name="patch">The partial version's patch version component.</param>
-        /// <exception cref="ArgumentException"><paramref name="major"/> is omitted, but <paramref name="minor"/> or <paramref name="patch"/> isn't; or <paramref name="minor"/> is omitted, but <paramref name="patch"/> isn't.</exception>
+        /// <exception cref="ArgumentException"><paramref name="major"/> is omitted; or <paramref name="minor"/> is omitted, but <paramref name="patch"/> isn't.</exception>
         public PartialVersion(PartialComponent major, PartialComponent minor, PartialComponent patch)
             : this(major, minor, patch, null, null) { }
         /// <summary>
@@ -61,7 +76,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="minor">The partial version's minor version component.</param>
         /// <param name="patch">The partial version's patch version component.</param>
         /// <param name="preReleases">A collection of the partial version's pre-release identifiers.</param>
-        /// <exception cref="ArgumentException"><paramref name="major"/> is omitted, but <paramref name="minor"/> or <paramref name="patch"/> isn't; or <paramref name="minor"/> is omitted, but <paramref name="patch"/> isn't.</exception>
+        /// <exception cref="ArgumentException"><paramref name="major"/> is omitted; or <paramref name="minor"/> is omitted, but <paramref name="patch"/> isn't.</exception>
         public PartialVersion(PartialComponent major, PartialComponent minor, PartialComponent patch,
                               [InstantHandle] IEnumerable<SemverPreRelease>? preReleases)
             : this(major, minor, patch, preReleases, null) { }
