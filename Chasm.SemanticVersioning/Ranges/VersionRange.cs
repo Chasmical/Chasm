@@ -165,35 +165,18 @@ namespace Chasm.SemanticVersioning.Ranges
         // TODO: Add ArgumentNullException handling
 
         public static VersionRange operator &(VersionRange left, ComparatorSet right)
-        {
-            ComparatorSet[] sets = Array.ConvertAll(left._comparatorSets, cs => cs & right);
-            return new VersionRange(Array.FindAll(sets, static cs => !cs.IsEmpty), default);
-        }
+            => throw new NotImplementedException();
         public static VersionRange operator &(ComparatorSet left, VersionRange right)
-        {
-            ComparatorSet[] sets = Array.ConvertAll(right._comparatorSets, cs => left & cs);
-            return new VersionRange(Array.FindAll(sets, static cs => !cs.IsEmpty), default);
-        }
+            => throw new NotImplementedException();
         public static VersionRange operator &(VersionRange left, VersionRange right)
-        {
-            ComparatorSet[] leftSets = left._comparatorSets;
-            ComparatorSet[] rightSets = right._comparatorSets;
-            // TODO: Should this be optimized? Maybe automatically remove empty sets? But then what about other operators?
-            ComparatorSet[] sets = new ComparatorSet[leftSets.Length * rightSets.Length];
-
-            for (int i = 0; i < leftSets.Length; i++)
-                for (int j = 0; j < rightSets.Length; j++)
-                    sets[i * leftSets.Length + j] = leftSets[i] & rightSets[j];
-
-            return new VersionRange(sets, default);
-        }
+            => throw new NotImplementedException();
 
         public static VersionRange operator |(VersionRange left, ComparatorSet right)
-            => new VersionRange([..left._comparatorSets, right], default);
+            => throw new NotImplementedException();
         public static VersionRange operator |(ComparatorSet left, VersionRange right)
-            => new VersionRange([left, ..right._comparatorSets], default);
+            => throw new NotImplementedException();
         public static VersionRange operator |(VersionRange left, VersionRange right)
-            => new VersionRange([..left._comparatorSets, ..right._comparatorSets], default);
+            => throw new NotImplementedException();
         // VersionRange x Comparator | operators aren't needed, since C# has nice implicit conversion resolution:
         // Comparators can be implicitly converted into ComparatorSets without any unnecessary allocations.
 

@@ -14,8 +14,8 @@ namespace Chasm.SemanticVersioning.Ranges
     /// </summary>
     public sealed class ComparatorSet : ISpanBuildable
     {
-        private readonly Comparator[] _comparators;
-        private ReadOnlyCollection<Comparator>? _comparatorsReadonly;
+        internal readonly Comparator[] _comparators;
+        internal ReadOnlyCollection<Comparator>? _comparatorsReadonly;
         /// <summary>
         ///   <para>Gets a read-only collection of the version comparator set's version comparators.</para>
         /// </summary>
@@ -163,24 +163,19 @@ namespace Chasm.SemanticVersioning.Ranges
         // TODO: Add ArgumentNullException handling
 
         public static ComparatorSet operator &(ComparatorSet left, Comparator right)
-            => new ComparatorSet([..left._comparators, right], default);
+            => throw new NotImplementedException();
         public static ComparatorSet operator &(Comparator left, ComparatorSet right)
-            => new ComparatorSet([left, ..right._comparators], default);
+            => throw new NotImplementedException();
         public static ComparatorSet operator &(ComparatorSet left, ComparatorSet right)
-            => new ComparatorSet([..left._comparators, ..right._comparators], default);
+            => throw new NotImplementedException();
 
         public static VersionRange operator |(ComparatorSet left, ComparatorSet right)
-            => new VersionRange([left, right], default);
+            => throw new NotImplementedException();
         // ComparatorSet x Comparator | operators aren't needed, since C# has nice implicit conversion resolution:
         // Comparators can be implicitly converted into ComparatorSets without any unnecessary allocations.
 
         public static VersionRange operator ~(ComparatorSet comparatorSet)
-        {
-            Comparator[] comparators = comparatorSet._comparators;
-            if (comparators.Length == 0) return VersionRange.None;
-            ComparatorSet[] inverted = Array.ConvertAll(comparators, static comp => (ComparatorSet)comp);
-            return new VersionRange(inverted, default);
-        }
+            => throw new NotImplementedException();
 
     }
 }

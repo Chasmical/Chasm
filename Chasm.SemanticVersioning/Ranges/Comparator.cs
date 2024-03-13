@@ -1,4 +1,5 @@
-﻿using Chasm.Formatting;
+﻿using System;
+using Chasm.Formatting;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -41,21 +42,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="minor">The minor version component of a pre-release version.</param>
         /// <param name="patch">The patch version component of a pre-release version.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> is a pre-release version, and has the specified <paramref name="major"/>, <paramref name="minor"/> and <paramref name="patch"/> version components; otherwise, <see langword="false"/>.</returns>
-        [Pure] protected static bool CanMatchPreRelease(SemanticVersion version, int major, int minor, int patch)
-            => version.IsPreRelease && version.Major == major && version.Minor == minor && version.Patch == patch;
-        /// <summary>
-        ///   <para>Determines whether the specified partial <paramref name="version"/> is a pre-release version, and matches the specified <paramref name="major"/>, <paramref name="minor"/> and <paramref name="patch"/> version components (either not numeric, or equal numerically).</para>
-        /// </summary>
-        /// <param name="version">The partial version to match.</param>
-        /// <param name="major">The major version component of a pre-release version.</param>
-        /// <param name="minor">The minor version component of a pre-release version.</param>
-        /// <param name="patch">The patch version component of a pre-release version.</param>
-        /// <returns><see langword="true"/>, if the specified partial <paramref name="version"/> is a pre-release version, and has the specified <paramref name="major"/>, <paramref name="minor"/> and <paramref name="patch"/> version components (either not numeric, or equal numerically); otherwise, <see langword="false"/>.</returns>
-        [Pure] protected static bool CanMatchPreRelease(PartialVersion version, int major, int minor, int patch)
-            => version.IsPreRelease
-            && (!version.Major.IsNumeric || version.Major.GetValueOrZero() == major)
-            && (!version.Minor.IsNumeric || version.Minor.GetValueOrZero() == minor)
-            && (!version.Patch.IsNumeric || version.Patch.GetValueOrZero() == patch);
+        [Pure] protected static bool CanMatchPreRelease(SemanticVersion? version, int major, int minor, int patch)
+            => version?.IsPreRelease == true && version.Major == major && version.Minor == minor && version.Patch == patch;
 
         /// <inheritdoc cref="ISpanBuildable.CalculateLength"/>
         [Pure] protected internal abstract int CalculateLength();
@@ -75,18 +63,23 @@ namespace Chasm.SemanticVersioning.Ranges
         // TODO: Add ArgumentNullException handling
 
         public static ComparatorSet operator &(Comparator left, Comparator right)
-            => new ComparatorSet([left, right], default);
+            => throw new NotImplementedException();
 
         public static VersionRange operator |(Comparator left, Comparator right)
-            => new VersionRange([new ComparatorSet(left), new ComparatorSet(right)], default);
+            => throw new NotImplementedException();
 
         public static VersionRange operator ~(Comparator comparator)
         {
             if (comparator is PrimitiveComparator primitive)
             {
-                return primitive.Operator == PrimitiveOperator.Equal
-                    ? InvertEqualityPrimitive(primitive)
-                    : InvertComparisonPrimitive(primitive);
+                if (primitive.Operator == PrimitiveOperator.Equal)
+                    return InvertEqualityPrimitive(primitive);
+
+                // >0.0.0-0 ⇒ =0.0.0-0 (special case)
+                if (primitive.Operator == PrimitiveOperator.GreaterThan && primitive.Operand == SemanticVersion.MinValue)
+                    return new PrimitiveComparator(primitive.Operand, PrimitiveOperator.Equal);
+
+                return InvertComparisonPrimitive(primitive);
             }
             return InvertAdvanced((AdvancedComparator)comparator);
 
@@ -94,26 +87,30 @@ namespace Chasm.SemanticVersioning.Ranges
             {
                 (PrimitiveComparator? left, PrimitiveComparator? right) = advanced.ToPrimitives();
 
-                // if it's represented by just a single comparator, just invert it
-                if (left is null ^ right is null)
-                    return ~(left ?? right)!;
+                // If there's only one primitive, invert and return it
+                if (left is null)
+                    return right is null ? VersionRange.None : ~right;
+                if (right is null)
+                    return ~left;
 
-                // if both are null, it matches all versions, and, when inverted, matches nothing
-                if (left is null) return VersionRange.None;
+                // Note: no need to check for >0.0.0-0 here, as advanced comparators aren't supposed to desugar to that
 
-                // both are non-null
                 return new VersionRange([
                     InvertComparisonPrimitive(left),
-                    InvertComparisonPrimitive(right!),
+                    InvertComparisonPrimitive(right),
                 ], default);
             }
             static VersionRange InvertEqualityPrimitive(PrimitiveComparator primitive)
             {
+                // =0.0.0-0 ⇒ >0.0.0-0 (special case)
+                if (primitive.Operand == SemanticVersion.MinValue)
+                    return new VersionRange([PrimitiveComparator.GreaterThan(primitive.Operand)], default);
+
                 // =1.2.3 ⇒ <1.2.3 || >1.2.3
                 return new VersionRange([
                     PrimitiveComparator.LessThan(primitive.Operand),
                     PrimitiveComparator.GreaterThan(primitive.Operand),
-                ]);
+                ], default);
             }
             static PrimitiveComparator InvertComparisonPrimitive(PrimitiveComparator primitive)
             {
@@ -124,8 +121,6 @@ namespace Chasm.SemanticVersioning.Ranges
                 return new PrimitiveComparator(primitive.Operand, 5 - primitive.Operator);
             }
         }
-
-
 
     }
 }

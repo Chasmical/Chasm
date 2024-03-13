@@ -38,54 +38,9 @@ namespace Chasm.SemanticVersioning.Ranges
             => To = to ?? throw new ArgumentNullException(nameof(to));
 
         /// <inheritdoc/>
-        [Pure] public override bool CanMatchPreRelease(int major, int minor, int patch)
-            => CanMatchPreRelease(From, major, minor, patch) || CanMatchPreRelease(To, major, minor, patch);
-
-        /// <inheritdoc/>
         [Pure] protected override (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives()
         {
-            return (ConvertFrom(From), ConvertTo(To));
-
-            static PrimitiveComparator? ConvertFrom(PartialVersion from)
-            {
-                // x.x.x - ... ⇒ * ...
-                if (!from.Major.IsNumeric) return null;
-
-                // 1.x.x - ... ⇒ >=1.0.0 ...
-                if (!from.Minor.IsNumeric)
-                    return GreaterThanOrEqual(new SemanticVersion(from.Major.AsNumber, 0, 0, null, null, default));
-
-                // 1.2.x - ... ⇒ >=1.2.0 ...
-                if (!from.Patch.IsNumeric)
-                    return GreaterThanOrEqual(new SemanticVersion(from.Major.AsNumber, from.Minor.AsNumber, 0, null, null, default));
-
-                // 1.2.3 - ... ⇒ >=1.2.3 ...
-                return GreaterThanOrEqual(new SemanticVersion(from));
-            }
-            static PrimitiveComparator? ConvertTo(PartialVersion to)
-            {
-                // ... - x.x.x ⇒ ... *
-                if (!to.Major.IsNumeric) return null;
-
-                // ... - 1.x.x ⇒ ... <2.0.0-0
-                if (!to.Minor.IsNumeric)
-                {
-                    int major = to.Major.AsNumber;
-                    if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
-                    return LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, default));
-                }
-
-                // ... - 1.2.x ⇒ ... <1.3.0-0
-                if (!to.Patch.IsNumeric)
-                {
-                    int minor = to.Minor.AsNumber;
-                    if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
-                    return LessThan(new SemanticVersion(to.Major.AsNumber, minor + 1, 0, SemverPreRelease.ZeroArray, null, default));
-                }
-
-                // ... - 1.2.3 ⇒ ... <=1.2.3
-                return LessThanOrEqual(new SemanticVersion(to));
-            }
+            throw new NotImplementedException("Need to rewrite this one completely, just to avoid any minor inconsistencies.");
         }
 
         /// <inheritdoc/>

@@ -42,7 +42,11 @@ namespace Chasm.SemanticVersioning.Ranges
 
         /// <inheritdoc/>
         [Pure] public override bool CanMatchPreRelease(int major, int minor, int patch)
-            => CanMatchPreRelease(Operand, major, minor, patch);
+        {
+            (PrimitiveComparator? left, PrimitiveComparator? right) = ToPrimitives();
+            return left is not null && CanMatchPreRelease(left.Operand, major, minor, patch)
+                || right is not null && CanMatchPreRelease(right.Operand, major, minor, patch);
+        }
         /// <inheritdoc/>
         [Pure] public override bool IsSatisfiedBy(SemanticVersion? version)
         {
