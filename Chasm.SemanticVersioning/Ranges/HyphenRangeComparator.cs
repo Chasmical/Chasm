@@ -40,7 +40,62 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <inheritdoc/>
         [Pure] protected override (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives()
         {
-            throw new NotImplementedException("Need to rewrite this one completely, just to avoid any minor inconsistencies.");
+            return (ConvertFrom(From), ConvertTo(To));
+
+            static PrimitiveComparator? ConvertFrom(PartialVersion from)
+            {
+                // x.x.x    - ... ⇒ * ...
+                // x.x.x-rc - ... ⇒ * ...
+                // x.1.2    - ... ⇒ * ...
+                // x.1.2-rc - ... ⇒ * ...
+                // (TODO: what about unspecified minor and patch components and pre-releases here?)
+                if (!from.Major.IsNumeric) return null;
+
+                // 1.x.x    - ... ⇒ >=1.0.0    ...
+                // 1.x.x-rc - ... ⇒ >=1.0.0-rc ... (TODO: node-semver ignores pre-releases if there are unspecified components)
+                if (!from.Minor.IsNumeric)
+                    return GreaterThanOrEqual(new SemanticVersion(from));
+
+                // 1.2.x    - ... ⇒ >=1.2.0    ...
+                // 1.2.x-rc - ... ⇒ >=1.2.0-rc ... (TODO: node-semver ignores pre-releases if there are unspecified components)
+                if (!from.Patch.IsNumeric)
+                    return GreaterThanOrEqual(new SemanticVersion(from));
+
+                // 1.2.3    - ... ⇒ >=1.2.3    ...
+                // 1.2.3-rc - ... ⇒ >=1.2.3-rc ...
+                return GreaterThanOrEqual(new SemanticVersion(from));
+            }
+            static PrimitiveComparator? ConvertTo(PartialVersion to)
+            {
+                // ... - x.x.x    ⇒ ... *
+                // ... - x.x.x-rc ⇒ ... *
+                // ... - x.1.2    ⇒ ... *
+                // ... - x.1.2-rc ⇒ ... *
+                // (TODO: what about unspecified minor and patch components and pre-releases here?)
+                if (!to.Major.IsNumeric) return null;
+
+                // ... - 1.x.x    ⇒ ... <2.0.0-0
+                // ... - 1.x.x-rc ⇒ ... <2.0.0-0
+                if (!to.Minor.IsNumeric)
+                {
+                    int major = to.Major.AsNumber;
+                    if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
+                    return LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, default));
+                }
+
+                // ... - 1.2.x    ⇒ ... <1.3.0-0
+                // ... - 1.2.x-rc ⇒ ... <1.3.0-0
+                if (!to.Patch.IsNumeric)
+                {
+                    int minor = to.Minor.AsNumber;
+                    if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
+                    return LessThan(new SemanticVersion(to.Major.AsNumber, minor + 1, 0, SemverPreRelease.ZeroArray, null, default));
+                }
+
+                // ... - 1.2.3    ⇒ ... <=1.2.3
+                // ... - 1.2.3-rc ⇒ ... <=1.2.3-rc
+                return LessThanOrEqual(new SemanticVersion(to));
+            }
         }
 
         /// <inheritdoc/>
