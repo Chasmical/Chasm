@@ -108,6 +108,8 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public static PrimitiveComparator LessThanOrEqual(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.LessThanOrEqual);
 
+        public static PrimitiveComparator None { get; } = LessThan(SemanticVersion.MinValue);
+
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()
             => Operand.CalculateLength() + (Operator > PrimitiveOperator.LessThan ? 2 : 1);

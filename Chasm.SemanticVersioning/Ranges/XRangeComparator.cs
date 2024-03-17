@@ -73,7 +73,7 @@ namespace Chasm.SemanticVersioning.Ranges
             if (!Operand.Major.IsNumeric)
             {
                 if (Operator is PrimitiveOperator.GreaterThan or PrimitiveOperator.LessThan)
-                    return (null, PrimitiveComparator.LessThan(SemanticVersion.MinValue));
+                    return (null, PrimitiveComparator.None);
                 return (null, null);
             }
             // simple primitive comparators

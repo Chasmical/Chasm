@@ -121,7 +121,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Gets a version comparator set (<c>&lt;0.0.0-0</c>) that doesn't match any versions.</para>
         /// </summary>
-        public static ComparatorSet None { get; } = new ComparatorSet(PrimitiveComparator.LessThan(SemanticVersion.MinValue));
+        public static ComparatorSet None { get; } = new ComparatorSet(PrimitiveComparator.None);
         /// <summary>
         ///   <para>Gets a version comparator set (<c>*</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
         /// </summary>

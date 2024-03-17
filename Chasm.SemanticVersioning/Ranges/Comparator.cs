@@ -76,8 +76,8 @@ namespace Chasm.SemanticVersioning.Ranges
                     return InvertEqualityPrimitive(primitive);
 
                 // >0.0.0-0 ⇒ =0.0.0-0 (special case)
-                if (primitive.Operator == PrimitiveOperator.GreaterThan && primitive.Operand == SemanticVersion.MinValue)
-                    return new PrimitiveComparator(primitive.Operand, PrimitiveOperator.Equal);
+                if (primitive.Operator == PrimitiveOperator.GreaterThan && primitive.Operand.Equals(SemanticVersion.MinValue))
+                    return PrimitiveComparator.Equal(primitive.Operand);
 
                 return InvertComparisonPrimitive(primitive);
             }
@@ -87,7 +87,8 @@ namespace Chasm.SemanticVersioning.Ranges
             {
                 (PrimitiveComparator? left, PrimitiveComparator? right) = advanced.ToPrimitives();
 
-                // If there's only one primitive, invert and return it
+                // If there's only one primitive, invert and return it;
+                // that's also the case, when the left comparator is an equality one.
                 if (left is null)
                     return right is null ? VersionRange.None : ~right;
                 if (right is null)
