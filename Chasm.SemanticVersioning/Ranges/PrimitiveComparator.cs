@@ -34,7 +34,13 @@ namespace Chasm.SemanticVersioning.Ranges
         public PrimitiveOperator Operator { get; }
 
         /// <summary>
-        ///   <para>Initializes a new instance of the <see cref="PrimitiveComparator"/> class with the specified <paramref name="operand"/> and <paramref name="operator"/>.</para>
+        ///   <para>Initializes a new instance of the <see cref="PrimitiveComparator"/> class with the specified <paramref name="operand"/> and implicit equality operator.</para>
+        /// </summary>
+        /// <param name="operand">The primitive version comparator's operand.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
+        public PrimitiveComparator(SemanticVersion operand) : this(operand, PrimitiveOperator.ImplicitEqual) { }
+        /// <summary>
+        ///   <para>Initializes a new instance of the <see cref="PrimitiveComparator"/> class with the specified <paramref name="operand"/> and comparison <paramref name="operator"/>.</para>
         /// </summary>
         /// <param name="operand">The primitive version comparator's operand.</param>
         /// <param name="operator">The primitive version comparator's operator.</param>
@@ -59,16 +65,12 @@ namespace Chasm.SemanticVersioning.Ranges
             int res = version.CompareTo(Operand);
             return Operator switch
             {
-                PrimitiveOperator.Equal => res == 0,
                 PrimitiveOperator.GreaterThan => res > 0,
                 PrimitiveOperator.GreaterThanOrEqual => res >= 0,
                 PrimitiveOperator.LessThan => res < 0,
                 PrimitiveOperator.LessThanOrEqual => res <= 0,
-#if NET7_0_OR_GREATER
-                _ => throw new System.Diagnostics.UnreachableException(),
-#else
-                _ => throw new InvalidOperationException(),
-#endif
+                // PrimitiveOperator.Equal or PrimitiveOperator.ImplicitEqual
+                _ => res == 0,
             };
         }
 
@@ -112,12 +114,14 @@ namespace Chasm.SemanticVersioning.Ranges
 
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()
-            => Operand.CalculateLength() + (Operator > PrimitiveOperator.LessThan ? 2 : 1);
+            => Operand.CalculateLength() + Utility.GetOperatorLength(Operator);
         /// <inheritdoc/>
         protected internal override void BuildString(ref SpanBuilder sb)
         {
             switch (Operator)
             {
+                // case PrimitiveOperator.ImplicitEqual:
+                    // break;
                 case PrimitiveOperator.Equal:
                     sb.Append('=');
                     break;

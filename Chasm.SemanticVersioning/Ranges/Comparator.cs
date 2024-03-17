@@ -72,7 +72,7 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             if (comparator is PrimitiveComparator primitive)
             {
-                if (primitive.Operator == PrimitiveOperator.Equal)
+                if (primitive.Operator is PrimitiveOperator.ImplicitEqual or PrimitiveOperator.Equal)
                     return InvertEqualityPrimitive(primitive);
 
                 // >0.0.0-0 ⇒ =0.0.0-0 (special case)
@@ -115,11 +115,11 @@ namespace Chasm.SemanticVersioning.Ranges
             }
             static PrimitiveComparator InvertComparisonPrimitive(PrimitiveComparator primitive)
             {
-                // 5 - 1 (GreaterThan)        = 4 (LessThanOrEqual)
-                // 5 - 2 (LessThan)           = 3 (GreaterThanOrEqual)
-                // 5 - 3 (GreaterThanOrEqual) = 2 (LessThan)
-                // 5 - 4 (LessThanOrEqual)    = 1 (GreaterThan)
-                return new PrimitiveComparator(primitive.Operand, 5 - primitive.Operator);
+                // 7 - 2 (GreaterThan)        = 5 (LessThanOrEqual)
+                // 7 - 3 (LessThan)           = 4 (GreaterThanOrEqual)
+                // 7 - 4 (GreaterThanOrEqual) = 3 (LessThan)
+                // 7 - 5 (LessThanOrEqual)    = 2 (GreaterThan)
+                return new PrimitiveComparator(primitive.Operand, 7 - primitive.Operator);
             }
         }
 

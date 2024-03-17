@@ -166,8 +166,8 @@ namespace Chasm.SemanticVersioning.Ranges
                     {
                         // read it as an implicit '=' comparator
                         comparator = partial!.IsPartial
-                            ? (Comparator)new XRangeComparator(partial, PrimitiveOperator.Equal)
-                            : new PrimitiveComparator(new SemanticVersion(partial), PrimitiveOperator.Equal);
+                            ? (Comparator)new XRangeComparator(partial)
+                            : new PrimitiveComparator(new SemanticVersion(partial));
                     }
                     break;
             }

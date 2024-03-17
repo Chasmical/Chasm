@@ -6,6 +6,10 @@
     public enum PrimitiveOperator : byte
     {
         /// <summary>
+        ///   <para>A default, implicit 'equal to' operator.</para>
+        /// </summary>
+        ImplicitEqual,
+        /// <summary>
         ///   <para>An 'equal to' operator, <c>=</c>.</para>
         /// </summary>
         Equal,
@@ -25,7 +29,5 @@
         ///   <para>A 'less than or equal to' operator, <c>&lt;=</c>.</para>
         /// </summary>
         LessThanOrEqual,
-
-        // TODO: Should there be an implicit equality operator? Sudden appearance of an '=' sign may be confusing.
     }
 }

@@ -17,11 +17,11 @@ namespace Chasm.SemanticVersioning.Ranges
         public PrimitiveOperator Operator { get; }
 
         /// <summary>
-        ///   <para>Initializes a new instance of the <see cref="XRangeComparator"/> class with the specified <paramref name="operand"/>.</para>
+        ///   <para>Initializes a new instance of the <see cref="XRangeComparator"/> class with the specified <paramref name="operand"/> and implicit equality operator.</para>
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
         /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
-        public XRangeComparator(PartialVersion operand) : this(operand, PrimitiveOperator.Equal) { }
+        public XRangeComparator(PartialVersion operand) : this(operand, PrimitiveOperator.ImplicitEqual) { }
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="XRangeComparator"/> class with the specified <paramref name="primitiveComparator"/>'s operand and operator.</para>
         /// </summary>
@@ -30,7 +30,7 @@ namespace Chasm.SemanticVersioning.Ranges
         public XRangeComparator(PrimitiveComparator primitiveComparator)
             : this((primitiveComparator ?? throw new ArgumentNullException(nameof(primitiveComparator))).Operand, primitiveComparator.Operator) { }
         /// <summary>
-        ///   <para>Initializes a new instance of the <see cref="XRangeComparator"/> class with the specified <paramref name="operand"/>.</para>
+        ///   <para>Initializes a new instance of the <see cref="XRangeComparator"/> class with the specified <paramref name="operand"/> and comparison <paramref name="operator"/>.</para>
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
         /// <param name="operator">The X-Range version comparator's operator.</param>
@@ -48,7 +48,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="partialVersion">The partial version to convert.</param>
         [Pure] [return: NotNullIfNotNull(nameof(partialVersion))]
         public static implicit operator XRangeComparator?(PartialVersion? partialVersion)
-            => partialVersion is null ? null : new XRangeComparator(partialVersion, PrimitiveOperator.Equal);
+            => partialVersion is null ? null : new XRangeComparator(partialVersion, PrimitiveOperator.ImplicitEqual);
         /// <summary>
         ///   <para>Defines an implicit conversion of a primitive version comparator to an X-Range version comparator.</para>
         /// </summary>
@@ -146,7 +146,9 @@ namespace Chasm.SemanticVersioning.Ranges
                     version = new SemanticVersion(Operand);
                     return (null, PrimitiveComparator.LessThan(version));
 
-                case PrimitiveOperator.Equal:
+                default:
+                // case PrimitiveOperator.Equal:
+                // case PrimitiveOperator.ImplicitEqual:
 
                     SemanticVersion version2;
                     if (!Operand.Minor.IsNumeric)
@@ -168,12 +170,6 @@ namespace Chasm.SemanticVersioning.Ranges
                     }
                     return (PrimitiveComparator.GreaterThanOrEqual(version), PrimitiveComparator.LessThan(version2));
 
-                default:
-#if NET7_0_OR_GREATER
-                    throw new System.Diagnostics.UnreachableException();
-#else
-                    throw new InvalidOperationException();
-#endif
             }
         }
 
@@ -215,12 +211,14 @@ namespace Chasm.SemanticVersioning.Ranges
 
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()
-            => Operand.CalculateLength() + (Operator > PrimitiveOperator.LessThan ? 2 : 1);
+            => Operand.CalculateLength() + Utility.GetOperatorLength(Operator);
         /// <inheritdoc/>
         protected internal override void BuildString(ref SpanBuilder sb)
         {
             switch (Operator)
             {
+                // case PrimitiveOperator.ImplicitEqual:
+                    // break;
                 case PrimitiveOperator.Equal:
                     sb.Append('=');
                     break;
