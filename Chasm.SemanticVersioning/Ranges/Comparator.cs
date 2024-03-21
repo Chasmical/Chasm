@@ -7,7 +7,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator.</para>
     /// </summary>
-    public abstract class Comparator : ISpanBuildable
+    public abstract partial class Comparator : ISpanBuildable
     {
         /// <summary>
         ///   <para>Determines whether this version comparator is a <see cref="PrimitiveComparator"/>.</para>
@@ -61,9 +61,6 @@ namespace Chasm.SemanticVersioning.Ranges
             => SpanBuilder.Format(this);
 
         // TODO: Add ArgumentNullException handling
-
-        public static ComparatorSet operator &(Comparator left, Comparator right)
-            => throw new NotImplementedException();
 
         public static VersionRange operator |(Comparator left, Comparator right)
             => throw new NotImplementedException();

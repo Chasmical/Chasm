@@ -54,7 +54,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="comparator">The version comparator to construct a version comparator set from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparator))]
         public static implicit operator ComparatorSet?(Comparator? comparator)
-            => comparator is null ? null : new ComparatorSet(comparator);
+            => comparator is null ? null : new ComparatorSet([comparator], default);
 
         // TODO: IsSugared is definitely a nice property to have, but I'm not sure about the name yet. Maybe ContainsSugar or sth?
         internal bool IsSugared => Array.Exists(_comparators, static c => c.IsAdvanced);

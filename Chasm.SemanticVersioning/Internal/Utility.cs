@@ -147,5 +147,16 @@ namespace Chasm.SemanticVersioning
             return (int)(op + 2) / 3;
         }
 
+        [Pure] public static bool SameDirection(PrimitiveOperator left, PrimitiveOperator right)
+            => left > PrimitiveOperator.Equal && right > PrimitiveOperator.Equal && ((byte)left & 1) == ((byte)right & 1);
+        [Pure] public static bool IsGTOrGTE(this PrimitiveOperator op)
+            => op is PrimitiveOperator.GreaterThan or PrimitiveOperator.GreaterThanOrEqual;
+        [Pure] public static bool IsLTOrLTE(this PrimitiveOperator op)
+            => op is PrimitiveOperator.LessThan or PrimitiveOperator.LessThanOrEqual;
+        [Pure] public static bool IsEQ(this PrimitiveOperator op)
+            => op <= PrimitiveOperator.Equal;
+        [Pure] public static bool IsSthThanOrEqual(this PrimitiveOperator op)
+            => op is PrimitiveOperator.GreaterThanOrEqual or PrimitiveOperator.LessThanOrEqual;
+
     }
 }
