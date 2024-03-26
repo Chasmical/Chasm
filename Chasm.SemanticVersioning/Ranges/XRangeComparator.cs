@@ -88,6 +88,7 @@ namespace Chasm.SemanticVersioning.Ranges
             SemanticVersion version;
             int major = Operand.Major.AsNumber;
             int minor;
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
             switch (Operator)
             {
                 case PrimitiveOperator.GreaterThan:
@@ -224,6 +225,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <inheritdoc/>
         protected internal override void BuildString(ref SpanBuilder sb)
         {
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (Operator)
             {
                 // case PrimitiveOperator.ImplicitEqual:

@@ -118,6 +118,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <inheritdoc/>
         protected internal override void BuildString(ref SpanBuilder sb)
         {
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (Operator)
             {
                 // case PrimitiveOperator.ImplicitEqual:
