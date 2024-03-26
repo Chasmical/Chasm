@@ -174,6 +174,13 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
+        ///   <para>Creates an implicit 'equal to' X-Range version comparator with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The X-Range version comparator's operand.</param>
+        /// <returns>The new implicit 'equal to' X-Range version comparator with the specified <paramref name="operand"/>.</returns>
+        [Pure] public static XRangeComparator ImplicitEqual(PartialVersion operand)
+            => new XRangeComparator(operand, PrimitiveOperator.ImplicitEqual);
+        /// <summary>
         ///   <para>Creates an 'equal to' X-Range version comparator with the specified <paramref name="operand"/>.</para>
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
@@ -208,6 +215,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The new 'less than or equal to' X-Range version comparator with the specified <paramref name="operand"/>.</returns>
         [Pure] public static XRangeComparator LessThanOrEqual(PartialVersion operand)
             => new XRangeComparator(operand, PrimitiveOperator.LessThanOrEqual);
+
+        public static XRangeComparator All { get; } = new XRangeComparator(new PartialVersion(PartialComponent.Star));
 
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()

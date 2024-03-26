@@ -90,13 +90,9 @@ namespace Chasm.SemanticVersioning.Ranges
         public static implicit operator VersionRange?(ComparatorSet? comparatorSet)
             => comparatorSet is null ? null : new VersionRange(comparatorSet);
 
-        // TODO: IsSugared is definitely a nice property to have, but I'm not sure about the name yet. Maybe ContainsSugar or sth?
-        internal bool IsSugared => Array.Exists(_comparatorSets, static cs => cs.IsSugared);
+        public bool IsSugared => Array.Exists(_comparatorSets, static cs => cs.IsSugared);
 
-        /// <summary>
-        ///   <para>Determines whether this version range is empty, that is, doesn't match any versions.</para>
-        /// </summary>
-        public bool IsEmpty => Array.TrueForAll(_comparatorSets, static cs => cs.IsEmpty);
+        // TODO: IsEmpty property would be nice to have
 
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version range.</para>
@@ -162,6 +158,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
+        // TODO: Add &, |, ~ operators
 
     }
 }
