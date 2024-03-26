@@ -1,5 +1,4 @@
-﻿using System;
-using Chasm.Formatting;
+﻿using Chasm.Formatting;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -7,7 +6,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator.</para>
     /// </summary>
-    public abstract partial class Comparator : ISpanBuildable
+    public abstract class Comparator : ISpanBuildable
     {
         /// <summary>
         ///   <para>Determines whether this version comparator is a <see cref="PrimitiveComparator"/>.</para>
@@ -60,65 +59,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
-        // TODO: Add ArgumentNullException handling
-
-        public static VersionRange operator |(Comparator left, Comparator right)
-            => throw new NotImplementedException();
-
-        public static VersionRange operator ~(Comparator comparator)
-        {
-            if (comparator is PrimitiveComparator primitive)
-            {
-                if (primitive.Operator is PrimitiveOperator.ImplicitEqual or PrimitiveOperator.Equal)
-                    return InvertEqualityPrimitive(primitive);
-
-                // >0.0.0-0 ⇒ =0.0.0-0 (special case)
-                if (primitive.Operator == PrimitiveOperator.GreaterThan && primitive.Operand.Equals(SemanticVersion.MinValue))
-                    return PrimitiveComparator.Equal(primitive.Operand);
-
-                return InvertComparisonPrimitive(primitive);
-            }
-            return InvertAdvanced((AdvancedComparator)comparator);
-
-            static VersionRange InvertAdvanced(AdvancedComparator advanced)
-            {
-                (PrimitiveComparator? left, PrimitiveComparator? right) = advanced.ToPrimitives();
-
-                // If there's only one primitive, invert and return it;
-                // that's also the case, when the left comparator is an equality one.
-                if (left is null)
-                    return right is null ? VersionRange.None : ~right;
-                if (right is null)
-                    return ~left;
-
-                // Note: no need to check for >0.0.0-0 here, as advanced comparators aren't supposed to desugar to that
-
-                return new VersionRange([
-                    InvertComparisonPrimitive(left),
-                    InvertComparisonPrimitive(right),
-                ], default);
-            }
-            static VersionRange InvertEqualityPrimitive(PrimitiveComparator primitive)
-            {
-                // =0.0.0-0 ⇒ >0.0.0-0 (special case)
-                if (primitive.Operand == SemanticVersion.MinValue)
-                    return new VersionRange([PrimitiveComparator.GreaterThan(primitive.Operand)], default);
-
-                // =1.2.3 ⇒ <1.2.3 || >1.2.3
-                return new VersionRange([
-                    PrimitiveComparator.LessThan(primitive.Operand),
-                    PrimitiveComparator.GreaterThan(primitive.Operand),
-                ], default);
-            }
-            static PrimitiveComparator InvertComparisonPrimitive(PrimitiveComparator primitive)
-            {
-                // 7 - 2 (GreaterThan)        = 5 (LessThanOrEqual)
-                // 7 - 3 (LessThan)           = 4 (GreaterThanOrEqual)
-                // 7 - 4 (GreaterThanOrEqual) = 3 (LessThan)
-                // 7 - 5 (LessThanOrEqual)    = 2 (GreaterThan)
-                return new PrimitiveComparator(primitive.Operand, 7 - primitive.Operator);
-            }
-        }
+        // TODO: Add &, |, ~ operators
 
     }
 }

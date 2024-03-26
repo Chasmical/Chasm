@@ -162,26 +162,6 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
-        // TODO: Add ArgumentNullException handling
-
-        public static VersionRange operator &(VersionRange left, ComparatorSet right)
-            => throw new NotImplementedException();
-        public static VersionRange operator &(ComparatorSet left, VersionRange right)
-            => throw new NotImplementedException();
-        public static VersionRange operator &(VersionRange left, VersionRange right)
-            => throw new NotImplementedException();
-
-        public static VersionRange operator |(VersionRange left, ComparatorSet right)
-            => throw new NotImplementedException();
-        public static VersionRange operator |(ComparatorSet left, VersionRange right)
-            => throw new NotImplementedException();
-        public static VersionRange operator |(VersionRange left, VersionRange right)
-            => throw new NotImplementedException();
-        // VersionRange x Comparator | operators aren't needed, since C# has nice implicit conversion resolution:
-        // Comparators can be implicitly converted into ComparatorSets without any unnecessary allocations.
-
-        public static VersionRange operator ~(VersionRange range)
-            => throw new NotImplementedException();
 
     }
 }
