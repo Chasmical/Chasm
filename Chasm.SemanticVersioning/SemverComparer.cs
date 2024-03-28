@@ -10,12 +10,21 @@ namespace Chasm.SemanticVersioning
     /// <summary>
     ///   <para>Represents a semantic version comparison operation that uses specific comparison rules.</para>
     /// </summary>
-    public abstract class SemverComparer : IComparer, IEqualityComparer
-                                         , IComparer<SemanticVersion>, IEqualityComparer<SemanticVersion>
-                                         , IComparer<PartialComponent>, IEqualityComparer<PartialComponent>
-                                         , IComparer<PartialVersion>, IEqualityComparer<PartialVersion>
+    public sealed class SemverComparer : IComparer, IEqualityComparer
+                                       , IComparer<SemanticVersion>, IEqualityComparer<SemanticVersion>
+                                       , IComparer<PartialVersion>, IEqualityComparer<PartialVersion>
+                                       , IComparer<PartialComponent>, IEqualityComparer<PartialComponent>
     {
         private const string supportedTypes = $"{nameof(SemanticVersion)}, {nameof(PartialVersion)} or {nameof(PartialComponent)}";
+
+        private readonly bool includeBuildMetadata;
+        private readonly bool differentiateWildcards;
+
+        private SemverComparer(SemverComparison comparison)
+        {
+            includeBuildMetadata = (comparison & SemverComparison.IncludeBuildMetadata) != 0;
+            differentiateWildcards = (comparison & SemverComparison.DifferentiateWildcards) != 0;
+        }
 
         [Pure] int IComparer.Compare(object? a, object? b)
         {
@@ -60,41 +69,51 @@ namespace Chasm.SemanticVersioning
         /// <param name="a">The first semantic version to compare.</param>
         /// <param name="b">The second semantic version to compare.</param>
         /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
-        [Pure] public abstract int Compare(SemanticVersion? a, SemanticVersion? b);
+        [Pure] public int Compare(SemanticVersion? a, SemanticVersion? b)
+        {
+            if (a is null) return b is null ? 0 : -1;
+            int res = a.CompareTo(b);
+            if (res == 0 && includeBuildMetadata)
+                res = Utility.CompareIdentifiers(a._buildMetadata, b!._buildMetadata);
+            return res;
+        }
         /// <summary>
         ///   <para>Determines whether one semantic version is equal to another semantic version.</para>
         /// </summary>
         /// <param name="a">The first semantic version to compare.</param>
         /// <param name="b">The second semantic version to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public abstract bool Equals(SemanticVersion? a, SemanticVersion? b);
+        [Pure] public bool Equals(SemanticVersion? a, SemanticVersion? b)
+        {
+            if (a is null) return b is null;
+            bool res = a.Equals(b);
+            if (res && includeBuildMetadata)
+                res = Utility.EqualsIdentifiers(a._buildMetadata, b!._buildMetadata);
+            return res;
+        }
         /// <summary>
         ///   <para>Returns a hash code for the specified semantic version.</para>
         /// </summary>
         /// <param name="version">The semantic version to get a hash code for.</param>
         /// <returns>The hash code for the specified semantic version.</returns>
-        [Pure] public abstract int GetHashCode(SemanticVersion? version);
+        [Pure] public int GetHashCode(SemanticVersion? version)
+        {
+            if (version is null) return 0;
+            int res = version.GetHashCode();
 
-        /// <summary>
-        ///   <para>Compares two partial version components and returns an integer that indicates whether one precedes, follows or occurs in the same position in the sort order as another.</para>
-        /// </summary>
-        /// <param name="a">The first partial version component to compare.</param>
-        /// <param name="b">The second partial version component to compare.</param>
-        /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
-        [Pure] public abstract int Compare(PartialComponent a, PartialComponent b);
-        /// <summary>
-        ///   <para>Determines whether one partial version component is equal to another partial version component.</para>
-        /// </summary>
-        /// <param name="a">The first partial version component to compare.</param>
-        /// <param name="b">The second partial version component to compare.</param>
-        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public abstract bool Equals(PartialComponent a, PartialComponent b);
-        /// <summary>
-        ///   <para>Returns a hash code for the specified partial version component.</para>
-        /// </summary>
-        /// <param name="component">The partial version component to get a hash code for.</param>
-        /// <returns>The hash code for the specified partial version component.</returns>
-        [Pure] public abstract int GetHashCode(PartialComponent component);
+            if (includeBuildMetadata && version._buildMetadata.Length > 0)
+            {
+                HashCode hash = new();
+                hash.Add(res);
+
+                string[] buildMetadata = version._buildMetadata;
+                for (int i = 0; i < buildMetadata.Length; i++)
+                    hash.Add(buildMetadata[i]);
+
+                res = hash.ToHashCode();
+            }
+            return res;
+        }
 
         /// <summary>
         ///   <para>Compares two partial versions and returns an integer that indicates whether one precedes, follows or occurs in the same position in the sort order as another.</para>
@@ -102,20 +121,110 @@ namespace Chasm.SemanticVersioning
         /// <param name="a">The first partial version to compare.</param>
         /// <param name="b">The second partial version to compare.</param>
         /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
-        [Pure] public abstract int Compare(PartialVersion? a, PartialVersion? b);
+        [Pure] public int Compare(PartialVersion? a, PartialVersion? b)
+        {
+            if (a is null) return b is null ? 0 : -1;
+            if (b is null) return a.CompareTo(b);
+
+            int res;
+            if (!differentiateWildcards)
+            {
+                res = a.CompareTo(b);
+            }
+            else
+            {
+                res = Compare(a.Major, b.Major);
+                if (res != 0) return res;
+                res = Compare(a.Minor, b.Minor);
+                if (res != 0) return res;
+                res = Compare(a.Patch, b.Patch);
+                if (res != 0) return res;
+                res = Utility.CompareIdentifiers(a._preReleases, b._preReleases);
+            }
+
+            if (res == 0 && includeBuildMetadata)
+                res = Utility.CompareIdentifiers(a._buildMetadata, b._buildMetadata);
+            return res;
+        }
         /// <summary>
         ///   <para>Determines whether one partial version is equal to another partial version.</para>
         /// </summary>
         /// <param name="a">The first partial version to compare.</param>
         /// <param name="b">The second partial version to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public abstract bool Equals(PartialVersion? a, PartialVersion? b);
+        [Pure] public bool Equals(PartialVersion? a, PartialVersion? b)
+        {
+            if (a is null) return b is null;
+            if (b is null) return false;
+
+            bool res;
+            if (!differentiateWildcards)
+            {
+                res = a.Equals(b);
+            }
+            else
+            {
+                res = Equals(a.Major, b.Major) && Equals(a.Minor, b.Minor) && Equals(a.Patch, b.Patch)
+                   && Utility.EqualsIdentifiers(a._preReleases, b._preReleases);
+            }
+
+            if (res && includeBuildMetadata)
+                res = Utility.EqualsIdentifiers(a._buildMetadata, b._buildMetadata);
+            return res;
+        }
         /// <summary>
         ///   <para>Returns a hash code for the specified partial version.</para>
         /// </summary>
         /// <param name="partial">The partial version to get a hash code for.</param>
         /// <returns>The hash code for the specified partial version.</returns>
-        [Pure] public abstract int GetHashCode(PartialVersion? partial);
+        [Pure] public int GetHashCode(PartialVersion? partial)
+        {
+            if (partial is null) return 0;
+
+            if ((!differentiateWildcards || !partial.IsPartial) && (!includeBuildMetadata || partial._buildMetadata.Length == 0))
+                return partial.GetHashCode();
+
+            HashCode hash = new();
+            hash.Add(GetHashCode(partial.Major));
+            hash.Add(GetHashCode(partial.Minor));
+            hash.Add(GetHashCode(partial.Patch));
+
+            SemverPreRelease[] preReleases = partial._preReleases;
+            for (int i = 0; i < preReleases.Length; i++)
+                hash.Add(preReleases[i]);
+
+            if (includeBuildMetadata)
+            {
+                string[] buildMetadata = partial._buildMetadata;
+                for (int i = 0; i < buildMetadata.Length; i++)
+                    hash.Add(buildMetadata[i]);
+            }
+            return hash.ToHashCode();
+        }
+
+        /// <summary>
+        ///   <para>Compares two partial version components and returns an integer that indicates whether one precedes, follows or occurs in the same position in the sort order as another.</para>
+        /// </summary>
+        /// <param name="a">The first partial version component to compare.</param>
+        /// <param name="b">The second partial version component to compare.</param>
+        /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
+        [Pure] public int Compare(PartialComponent a, PartialComponent b)
+            => differentiateWildcards ? a._value.CompareTo(b._value) : a.CompareTo(b);
+        /// <summary>
+        ///   <para>Determines whether one partial version component is equal to another partial version component.</para>
+        /// </summary>
+        /// <param name="a">The first partial version component to compare.</param>
+        /// <param name="b">The second partial version component to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
+        [Pure] public bool Equals(PartialComponent a, PartialComponent b)
+            => differentiateWildcards ? a._value == b._value : a.Equals(b);
+        /// <summary>
+        ///   <para>Returns a hash code for the specified partial version component.</para>
+        /// </summary>
+        /// <param name="component">The partial version component to get a hash code for.</param>
+        /// <returns>The hash code for the specified partial version component.</returns>
+        [Pure] public int GetHashCode(PartialComponent component)
+            => differentiateWildcards ? component._value : component.GetHashCode();
 
         /// <summary>
         ///   <para>Returns a <see cref="SemverComparer"/> that uses the specified semantic version <paramref name="comparison"/> rules.</para>
@@ -136,123 +245,22 @@ namespace Chasm.SemanticVersioning
         ///   <para>Gets the default <see cref="SemverComparer"/>, that ignores the build metadata, and, when comparing partial versions, considers wildcard characters and omitted components equal.</para>
         /// </summary>
         public static SemverComparer Default { get; }
-            = new ConfigurableSemverComparer(SemverComparison.Default);
+            = new SemverComparer(SemverComparison.Default);
         /// <summary>
         ///   <para>Gets the <see cref="SemverComparer"/>, that includes the build metadata in the comparison, and, when comparing partial versions, considers wildcard characters and omitted components equal.</para>
         /// </summary>
         public static SemverComparer IncludeBuildMetadata { get; }
-            = new ConfigurableSemverComparer(SemverComparison.IncludeBuildMetadata);
+            = new SemverComparer(SemverComparison.IncludeBuildMetadata);
         /// <summary>
         ///   <para>Gets the <see cref="SemverComparer"/>, that ignores the build metadata, and, when comparing partial versions, differentiates between different wildcard characters and omitted components.</para>
         /// </summary>
         public static SemverComparer DifferentiateWildcards { get; }
-            = new ConfigurableSemverComparer(SemverComparison.DifferentiateWildcards);
+            = new SemverComparer(SemverComparison.DifferentiateWildcards);
         /// <summary>
         ///   <para>Gets the <see cref="SemverComparer"/>, that includes the build metadata in the comparison, and, when comparing partial versions, differentiates between different wildcard characters and omitted components.</para>
         /// </summary>
         public static SemverComparer IncludeBuildDiffWildcards { get; }
-            = new ConfigurableSemverComparer(SemverComparison.IncludeBuildMetadata | SemverComparison.DifferentiateWildcards);
-
-        internal sealed class ConfigurableSemverComparer(SemverComparison comparison) : SemverComparer
-        {
-            private readonly bool includeBuildMetadata = (comparison & SemverComparison.IncludeBuildMetadata) != 0;
-            private readonly bool differentiateWildcards = (comparison & SemverComparison.DifferentiateWildcards) != 0;
-
-            [Pure] public override int Compare(SemanticVersion? a, SemanticVersion? b)
-            {
-                if (a is null) return b is null ? 0 : -1;
-                int res = a.CompareTo(b);
-                if (res == 0 && includeBuildMetadata)
-                    res = Utility.CompareIdentifiers(a._buildMetadata, b!._buildMetadata);
-                return res;
-            }
-            [Pure] public override bool Equals(SemanticVersion? a, SemanticVersion? b)
-            {
-                if (a is null) return b is null;
-                bool res = a.Equals(b);
-                if (res && includeBuildMetadata)
-                    res = Utility.EqualsIdentifiers(a._buildMetadata, b!._buildMetadata);
-                return res;
-            }
-            [Pure] public override int GetHashCode(SemanticVersion? version)
-            {
-                if (version is null) return 0;
-                int res = version.GetHashCode();
-                if (!includeBuildMetadata || version._buildMetadata.Length == 0)
-                    return res;
-
-                HashCode hash = new();
-                hash.Add(res);
-
-                string[] buildMetadata = version._buildMetadata;
-                for (int i = 0; i < buildMetadata.Length; i++)
-                    hash.Add(buildMetadata[i]);
-
-                return hash.ToHashCode();
-            }
-
-            [Pure] public override int Compare(PartialComponent a, PartialComponent b)
-                => differentiateWildcards ? a._value.CompareTo(b._value) : a.CompareTo(b);
-            [Pure] public override bool Equals(PartialComponent a, PartialComponent b)
-                => differentiateWildcards ? a._value == b._value : a.Equals(b);
-            [Pure] public override int GetHashCode(PartialComponent component)
-                => differentiateWildcards ? component._value : component.GetHashCode();
-
-            [Pure] public override int Compare(PartialVersion? a, PartialVersion? b)
-            {
-                if (a is null) return b is null ? 0 : -1;
-                if (!differentiateWildcards || b is null) return a.CompareTo(b);
-
-                int res = Compare(a.Major, b.Major);
-                if (res != 0) return res;
-                res = Compare(a.Minor, b.Minor);
-                if (res != 0) return res;
-                res = Compare(a.Patch, b.Patch);
-                if (res != 0) return res;
-
-                res = Utility.CompareIdentifiers(a._preReleases, b._preReleases);
-                if (res == 0 && includeBuildMetadata)
-                    res = Utility.CompareIdentifiers(a._buildMetadata, b._buildMetadata);
-                return res;
-            }
-            [Pure] public override bool Equals(PartialVersion? a, PartialVersion? b)
-            {
-                if (a is null) return b is null;
-                if (b is null) return false;
-                if (!includeBuildMetadata && !differentiateWildcards)
-                    return a.Equals(b);
-
-                return Equals(a.Major, b.Major) && Equals(a.Minor, b.Minor) && Equals(a.Patch, b.Patch) &&
-                       Utility.EqualsIdentifiers(a._preReleases, b._preReleases) &&
-                       (!includeBuildMetadata || Utility.EqualsIdentifiers(a._buildMetadata, b._buildMetadata));
-            }
-            [Pure] public override int GetHashCode(PartialVersion? partial)
-            {
-                if (partial is null) return 0;
-                if (!includeBuildMetadata && !differentiateWildcards)
-                    return partial.GetHashCode();
-
-                HashCode hash = new();
-                hash.Add(GetHashCode(partial.Major));
-                hash.Add(GetHashCode(partial.Minor));
-                hash.Add(GetHashCode(partial.Patch));
-
-                SemverPreRelease[] preReleases = partial._preReleases;
-                for (int i = 0; i < preReleases.Length; i++)
-                    hash.Add(preReleases[i]);
-
-                if (includeBuildMetadata)
-                {
-                    string[] buildMetadata = partial._buildMetadata;
-                    for (int i = 0; i < buildMetadata.Length; i++)
-                        hash.Add(buildMetadata[i]);
-                }
-
-                return hash.ToHashCode();
-
-            }
-
-        }
+            = new SemverComparer(SemverComparison.IncludeBuildMetadata | SemverComparison.DifferentiateWildcards);
 
     }
 }
