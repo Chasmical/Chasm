@@ -32,12 +32,24 @@ namespace Chasm.SemanticVersioning
         public const string BuildMetadataEmpty = "The build metadata identifier cannot be empty.";
         public const string BuildMetadataNull = "The build metadata identifiers cannot be null.";
 
+        public const string ComponentInvalid = "The partial version component must be either numeric or a wildcard character.";
         public const string PreReleaseInvalid = "The pre-release identifier must only contain [A-Za-z0-9-] characters.";
         public const string BuildMetadataInvalid = "The build metadata identifier must only contain [A-Za-z0-9-] characters.";
 
+        public const string ComponentNotNumeric = "The version component is not numeric.";
+        public const string ComponentNotWildcard = "The version component is not a wildcard.";
         public const string PreReleaseNotNumeric = "The pre-release identifier is not numeric.";
 
         public const string Leftovers = "Encountered an invalid semantic version character during parsing.";
+
+        public const string ComparatorsNull = "The version comparators cannot be null.";
+        public const string ComparatorSetsNull = "The version comparator sets cannot be null.";
+        public const string EmptyVersionRange = "The version range must contain at least one comparator set.";
+
+        public const string MajorOmitted = "The major version component cannot be omitted.";
+        public const string MinorOmitted = "The minor version component cannot be omitted, if the patch component isn't.";
+
+        public const string ComponentNotSingleChar = "The partial version component cannot be converted into one character.";
 
         [Pure] public static string GetMessage(this SemverErrorCode code) => code switch
         {
@@ -66,6 +78,7 @@ namespace Chasm.SemanticVersioning
             SemverErrorCode.PreReleaseEmpty => PreReleaseEmpty,
             SemverErrorCode.BuildMetadataEmpty => BuildMetadataEmpty,
 
+            SemverErrorCode.ComponentInvalid => ComponentInvalid,
             SemverErrorCode.PreReleaseInvalid => PreReleaseInvalid,
             SemverErrorCode.BuildMetadataInvalid => BuildMetadataInvalid,
 
@@ -77,7 +90,7 @@ namespace Chasm.SemanticVersioning
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TReturn ReturnOrThrow<TReturn>(this SemverErrorCode code, TReturn? returnValue, [InvokerParameterName] string parameterName)
         {
-            if (code is not SemverErrorCode.Success)
+            if (code != SemverErrorCode.Success)
                 throw new ArgumentException(code.GetMessage(), parameterName);
             return returnValue!;
         }

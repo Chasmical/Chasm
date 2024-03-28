@@ -1,5 +1,6 @@
 ﻿using System;
 using Chasm.Formatting;
+using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
@@ -36,11 +37,22 @@ namespace Chasm.SemanticVersioning
             return true;
         }
 
-        [Pure] public static ReadOnlySpan<char> ReadSemverIdentifier(this scoped ref SpanParser parser)
+        public static ReadOnlySpan<char> ReadSemverIdentifier(this scoped ref SpanParser parser)
         {
             int start = parser.position;
             while (parser.position < parser.length && IsValidCharacter(parser.source[parser.position]))
                 parser.position++;
+            return parser.source.Slice(start, parser.position - start);
+        }
+        public static ReadOnlySpan<char> ReadPartialComponent(this scoped ref SpanParser parser)
+        {
+            int start = parser.position;
+            while (parser.position < parser.length)
+            {
+                char next = parser.source[parser.position];
+                if ((uint)next - '0' >= 10u && next is not ('x' or 'X' or '*')) break;
+                parser.position++;
+            }
             return parser.source.Slice(start, parser.position - start);
         }
 
@@ -123,6 +135,28 @@ namespace Chasm.SemanticVersioning
                     return false;
             return true;
         }
+
+        [Pure] public static int GetOperatorLength(PrimitiveOperator op)
+        {
+            // ImplicitEqual      = (0 + 2) / 3 = 0
+            // Equal              = (1 + 2) / 3 = 1, '-'
+            // GreaterThan        = (2 + 2) / 3 = 1, '>'
+            // LessThan           = (3 + 2) / 3 = 1, '<'
+            // GreaterThanOrEqual = (4 + 2) / 3 = 2, '>='
+            // LessThanOrEqual    = (5 + 2) / 3 = 2, '<='
+            return (int)(op + 2) / 3;
+        }
+
+        [Pure] public static bool SameDirection(PrimitiveOperator left, PrimitiveOperator right)
+            => left > PrimitiveOperator.Equal && right > PrimitiveOperator.Equal && ((byte)left & 1) == ((byte)right & 1);
+        [Pure] public static bool IsGTOrGTE(this PrimitiveOperator op)
+            => op is PrimitiveOperator.GreaterThan or PrimitiveOperator.GreaterThanOrEqual;
+        [Pure] public static bool IsLTOrLTE(this PrimitiveOperator op)
+            => op is PrimitiveOperator.LessThan or PrimitiveOperator.LessThanOrEqual;
+        [Pure] public static bool IsEQ(this PrimitiveOperator op)
+            => op <= PrimitiveOperator.Equal;
+        [Pure] public static bool IsSthThanOrEqual(this PrimitiveOperator op)
+            => op is PrimitiveOperator.GreaterThanOrEqual or PrimitiveOperator.LessThanOrEqual;
 
     }
 }

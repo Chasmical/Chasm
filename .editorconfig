@@ -36,3 +36,7 @@ dotnet_diagnostic.IDE0305.severity = none
 # Disable 'Use ArgumentNullException.ThrowIfNull' message
 # - It was only introduced in .NET 6, and I want to support older targets
 dotnet_diagnostic.CA1510.severity = none
+
+# Disable 'Use primary constructor' message
+# - Having explicit constructors is more convenient, and better for version control
+dotnet_diagnostic.IDE0290.severity = none
