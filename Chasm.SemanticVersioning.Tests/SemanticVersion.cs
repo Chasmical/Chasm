@@ -17,8 +17,10 @@ namespace Chasm.SemanticVersioning.Tests
             {
                 ArgumentOutOfRangeException e = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(num, 10, 20));
                 Assert.StartsWith(Exceptions.MajorNegative, e.Message);
+
                 e = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(0, num, 3));
                 Assert.StartsWith(Exceptions.MinorNegative, e.Message);
+
                 e = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(0, 5, num));
                 Assert.StartsWith(Exceptions.PatchNegative, e.Message);
             }
@@ -26,8 +28,10 @@ namespace Chasm.SemanticVersioning.Tests
             // test constructors with invalid build metadata
             ArgumentException e2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], ["$$$"]));
             Assert.StartsWith(Exceptions.BuildMetadataInvalid, e2.Message);
+
             e2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], [""]));
             Assert.StartsWith(Exceptions.BuildMetadataEmpty, e2.Message);
+
             e2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], [null!]));
             Assert.StartsWith(Exceptions.BuildMetadataNull, e2.Message);
         }
