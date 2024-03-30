@@ -14,8 +14,8 @@ namespace Chasm.SemanticVersioning.Ranges
     /// </summary>
     public sealed partial class VersionRange : ISpanBuildable
     {
-        private readonly ComparatorSet[] _comparatorSets;
-        private ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
+        internal readonly ComparatorSet[] _comparatorSets;
+        internal ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
         /// <summary>
         ///   <para>Gets a read-only collection of this version range's version comparator sets.</para>
         /// </summary>
@@ -93,6 +93,9 @@ namespace Chasm.SemanticVersioning.Ranges
         public bool IsSugared => Array.Exists(_comparatorSets, static cs => cs.IsSugared);
 
         // TODO: IsEmpty property would be nice to have
+
+        [Pure] public ReadOnlySpan<ComparatorSet> GetComparatorSets()
+            => _comparatorSets;
 
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version range.</para>

@@ -60,6 +60,9 @@ namespace Chasm.SemanticVersioning.Ranges
 
         // TODO: IsEmpty property would be nice to have
 
+        [Pure] public ReadOnlySpan<Comparator> GetComparators()
+            => _comparators;
+
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version comparator set.</para>
         /// </summary>
