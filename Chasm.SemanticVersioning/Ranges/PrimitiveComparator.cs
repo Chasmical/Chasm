@@ -75,6 +75,13 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
+        ///   <para>Creates an implicit 'equal to' primitive version comparator with the specified <paramref name="operand"/>.</para>
+        /// </summary>
+        /// <param name="operand">The primitive version comparator's operand.</param>
+        /// <returns>The new implicit 'equal to' primitive version comparator with the specified <paramref name="operand"/>.</returns>
+        [Pure] public static PrimitiveComparator ImplicitEqual(SemanticVersion operand)
+            => new PrimitiveComparator(operand, PrimitiveOperator.ImplicitEqual);
+        /// <summary>
         ///   <para>Creates an 'equal to' primitive version comparator with the specified <paramref name="operand"/>.</para>
         /// </summary>
         /// <param name="operand">The primitive version comparator's operand.</param>
