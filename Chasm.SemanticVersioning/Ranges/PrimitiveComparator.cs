@@ -9,7 +9,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> primitive version comparator.</para>
     /// </summary>
-    public sealed class PrimitiveComparator : Comparator
+    public sealed class PrimitiveComparator : Comparator, IEquatable<PrimitiveComparator>
     {
         /// <summary>
         ///   <para>Returns <see langword="true"/>, since this version comparator is primitive.</para>
@@ -141,6 +141,15 @@ namespace Chasm.SemanticVersioning.Ranges
             }
             Operand.BuildString(ref sb);
         }
+
+        [Pure] public bool Equals(PrimitiveComparator? other)
+            => other is not null && Operator.Normalize() == other.Operator.Normalize() && Operand.Equals(other.Operand);
+        [Pure] public override bool Equals(Comparator? comparator)
+            => Equals(comparator as PrimitiveComparator);
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as PrimitiveComparator);
+        [Pure] public override int GetHashCode()
+            => HashCode.Combine(Operator.Normalize(), Operand);
 
     }
 }

@@ -146,6 +146,8 @@ namespace Chasm.SemanticVersioning
             // LessThanOrEqual    = (5 + 2) / 3 = 2, '<='
             return (int)(op + 2) / 3;
         }
+        [Pure] public static PrimitiveOperator Normalize(this PrimitiveOperator op)
+            => (PrimitiveOperator)Math.Min((byte)op, (byte)1);
 
         [Pure] public static bool SameDirection(PrimitiveOperator left, PrimitiveOperator right)
             => left > PrimitiveOperator.Equal && right > PrimitiveOperator.Equal && ((byte)left & 1) == ((byte)right & 1);

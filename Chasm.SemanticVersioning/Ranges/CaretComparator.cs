@@ -9,7 +9,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> caret version comparator.</para>
     /// </summary>
-    public sealed class CaretComparator : AdvancedComparator
+    public sealed class CaretComparator : AdvancedComparator, IEquatable<CaretComparator>
     {
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="CaretComparator"/> class with the specified <paramref name="operand"/>.</para>
@@ -92,6 +92,18 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             sb.Append('^');
             Operand.BuildString(ref sb);
+        }
+
+        [Pure] public bool Equals(CaretComparator? other)
+            => Operand.Equals(other?.Operand);
+        [Pure] public override bool Equals(Comparator? comparator)
+            => Equals(comparator as CaretComparator);
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as CaretComparator);
+        [Pure] public override int GetHashCode()
+        {
+            // Note: GetType() here is to avoid collision with other types of comparators.
+            return HashCode.Combine(GetType(), Operand);
         }
 
     }

@@ -198,8 +198,6 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public ReadOnlySpan<string> GetBuildMetadata()
             => _buildMetadata;
 
-        // TODO: Add Equals/GetHashCode/CompareTo overloads with I[Equality]Comparer<PartialComponent> parameter
-
         /// <summary>
         ///   <para>Determines whether this partial version is equal to another specified partial version.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>

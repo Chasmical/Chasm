@@ -1,4 +1,5 @@
-﻿using Chasm.Formatting;
+﻿using System;
+using Chasm.Formatting;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -6,7 +7,10 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator.</para>
     /// </summary>
-    public abstract class Comparator : ISpanBuildable
+    public abstract class Comparator : ISpanBuildable, IEquatable<Comparator>
+#if NET7_0_OR_GREATER
+                                     , System.Numerics.IEqualityOperators<Comparator, Comparator, bool>
+#endif
     {
         /// <summary>
         ///   <para>Determines whether this version comparator is a <see cref="PrimitiveComparator"/>.</para>
@@ -58,6 +62,15 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The string representation of this version comparator.</returns>
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
+
+        [Pure] public abstract bool Equals(Comparator? comparator);
+        [Pure] public abstract override bool Equals(object? obj);
+        [Pure] public abstract override int GetHashCode();
+
+        [Pure] public static bool operator ==(Comparator? left, Comparator? right)
+            => left is null ? right is null : left.Equals(right);
+        [Pure] public static bool operator !=(Comparator? left, Comparator? right)
+            => left is null ? right is not null : !left.Equals(right);
 
         // TODO: Add &, |, ~ operators
 

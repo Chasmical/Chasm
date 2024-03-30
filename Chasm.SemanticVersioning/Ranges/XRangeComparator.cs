@@ -9,7 +9,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> X-Range version comparator.</para>
     /// </summary>
-    public sealed class XRangeComparator : AdvancedComparator
+    public sealed class XRangeComparator : AdvancedComparator, IEquatable<XRangeComparator>
     {
         /// <summary>
         ///   <para>Gets the X-Range version comparator's operator.</para>
@@ -247,6 +247,19 @@ namespace Chasm.SemanticVersioning.Ranges
                     goto case PrimitiveOperator.Equal;
             }
             Operand.BuildString(ref sb);
+        }
+
+        [Pure] public bool Equals(XRangeComparator? other)
+            => other is not null && Operator.Normalize() == other.Operator.Normalize() && Operand.Equals(other.Operand);
+        [Pure] public override bool Equals(Comparator? comparator)
+            => Equals(comparator as XRangeComparator);
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as XRangeComparator);
+        [Pure] public override int GetHashCode()
+        {
+            // Note: GetType() is not needed here, since GetHashCode() hashes the operator as well.
+            // Note: The operator value is inverted to avoid collision with PrimitiveComparators.
+            return HashCode.Combine(~Operator.Normalize(), Operand);
         }
 
     }
