@@ -277,7 +277,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="right">The second partial version to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(PartialVersion? left, PartialVersion? right)
-            => left is null ? right is not null : !left.Equals(right);
+            => !(left == right);
 
     }
 }

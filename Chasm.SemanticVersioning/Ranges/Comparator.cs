@@ -70,7 +70,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public static bool operator ==(Comparator? left, Comparator? right)
             => left is null ? right is null : left.Equals(right);
         [Pure] public static bool operator !=(Comparator? left, Comparator? right)
-            => left is null ? right is not null : !left.Equals(right);
+            => !(left == right);
 
         // TODO: Add &, |, ~ operators
 

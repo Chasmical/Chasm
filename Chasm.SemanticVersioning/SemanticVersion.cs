@@ -267,7 +267,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="right">The second semantic version to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(SemanticVersion? left, SemanticVersion? right)
-            => left is null ? right is not null : !left.Equals(right);
+            => !(left == right);
 
         /// <summary>
         ///   <para>Determines whether a specified semantic version is greater than another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
@@ -284,7 +284,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="right">The second semantic version to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <(SemanticVersion? left, SemanticVersion? right)
-            => left is null ? right is not null : left.CompareTo(right) < 0;
+            => right > left;
         /// <summary>
         ///   <para>Determines whether a specified semantic version is greater than or equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
         /// </summary>
@@ -292,7 +292,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="right">The second semantic version to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator >=(SemanticVersion? left, SemanticVersion? right)
-            => left is null ? right is null : left.CompareTo(right) >= 0;
+            => !(right > left);
         /// <summary>
         ///   <para>Determines whether a specified semantic version is less than or equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
         /// </summary>
@@ -300,7 +300,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="right">The second semantic version to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <=(SemanticVersion? left, SemanticVersion? right)
-            => left is null || left.CompareTo(right) <= 0;
+            => !(left > right);
 
     }
 }

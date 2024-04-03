@@ -145,7 +145,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="right">The second pre-release identifier to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(SemverPreRelease left, SemverPreRelease right)
-            => !left.Equals(right);
+            => !(left == right);
 
         /// <summary>
         ///   <para>Determines whether a specified pre-release identifier is greater than another specified pre-release identifier.</para>
@@ -162,7 +162,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="right">The second pre-release identifier to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <(SemverPreRelease left, SemverPreRelease right)
-            => left.CompareTo(right) < 0;
+            => right > left;
         /// <summary>
         ///   <para>Determines whether a specified pre-release identifier is greater than or equal to another specified pre-release identifier.</para>
         /// </summary>
@@ -170,7 +170,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="right">The second pre-release identifier to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator >=(SemverPreRelease left, SemverPreRelease right)
-            => left.CompareTo(right) >= 0;
+            => !(right > left);
         /// <summary>
         ///   <para>Determines whether a specified pre-release identifier is less than or equal to another specified pre-release identifier.</para>
         /// </summary>
@@ -178,7 +178,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="right">The second pre-release identifier to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <=(SemverPreRelease left, SemverPreRelease right)
-            => left.CompareTo(right) <= 0;
+            => !(left > right);
 
     }
 }
