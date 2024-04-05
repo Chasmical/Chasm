@@ -23,8 +23,8 @@ namespace Chasm.SemanticVersioning
             Minor = minor;
             Patch = patch;
             _preReleases = preReleases ?? [];
-            _preReleasesReadonly = preReleasesReadonly;
             _buildMetadata = buildMetadata ?? [];
+            _preReleasesReadonly = preReleasesReadonly;
             _buildMetadataReadonly = buildMetadataReadonly;
         }
 

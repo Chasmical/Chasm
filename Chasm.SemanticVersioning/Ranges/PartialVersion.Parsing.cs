@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Chasm.Formatting;
 using JetBrains.Annotations;
@@ -13,13 +14,17 @@ namespace Chasm.SemanticVersioning.Ranges
     {
         // ReSharper disable once UnusedParameter.Local
         internal PartialVersion(PartialComponent major, PartialComponent minor, PartialComponent patch,
-                                SemverPreRelease[]? preReleases, string[]? buildMetadata, bool _)
+                                SemverPreRelease[]? preReleases, string[]? buildMetadata,
+                                ReadOnlyCollection<SemverPreRelease>? preReleasesReadonly,
+                                ReadOnlyCollection<string>? buildMetadataReadonly)
         {
             Major = major;
             Minor = minor;
             Patch = patch;
             _preReleases = preReleases ?? [];
             _buildMetadata = buildMetadata ?? [];
+            _preReleasesReadonly = preReleasesReadonly;
+            _buildMetadataReadonly = buildMetadataReadonly;
         }
 
         [Pure] internal static SemverErrorCode ParseLoose(ReadOnlySpan<char> text, SemverOptions options, out PartialVersion? partial)
@@ -150,7 +155,7 @@ namespace Chasm.SemanticVersioning.Ranges
             if ((options & SemverOptions.AllowLeftovers) == 0 && parser.CanRead())
                 return SemverErrorCode.Leftovers;
 
-            partial = new PartialVersion(major, minor, patch, preReleases, buildMetadata, default);
+            partial = new PartialVersion(major, minor, patch, preReleases, buildMetadata, null, null);
             return SemverErrorCode.Success;
         }
 

@@ -189,7 +189,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="right">The second partial version component to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(PartialComponent left, PartialComponent right)
-            => !left.Equals(right);
+            => !(left == right);
 
         /// <summary>
         ///   <para>Determines whether a specified partial version component is greater than another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
@@ -206,7 +206,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="right">The second partial version component to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <(PartialComponent left, PartialComponent right)
-            => left.CompareTo(right) < 0;
+            => right > left;
         /// <summary>
         ///   <para>Determines whether a specified partial version component is greater than or equal to another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
@@ -214,7 +214,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="right">The second partial version component to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator >=(PartialComponent left, PartialComponent right)
-            => left.CompareTo(right) >= 0;
+            => !(right > left);
         /// <summary>
         ///   <para>Determines whether a specified partial version component is less than or equal to another specified partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DifferentiateWildcards"/>.</para>
         /// </summary>
@@ -222,7 +222,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="right">The second partial version component to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <=(PartialComponent left, PartialComponent right)
-            => left.CompareTo(right) <= 0;
+            => !(left > right);
 
     }
 }
