@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Chasm.Formatting;
@@ -13,13 +14,18 @@ namespace Chasm.SemanticVersioning
 #endif
     {
         // ReSharper disable once UnusedParameter.Local
-        internal SemanticVersion(int major, int minor, int patch, SemverPreRelease[]? preReleases, string[]? buildMetadata, bool _)
+        internal SemanticVersion(int major, int minor, int patch,
+                                 SemverPreRelease[]? preReleases, string[]? buildMetadata,
+                                 ReadOnlyCollection<SemverPreRelease>? preReleasesReadonly,
+                                 ReadOnlyCollection<string>? buildMetadataReadonly)
         {
             Major = major;
             Minor = minor;
             Patch = patch;
             _preReleases = preReleases ?? [];
+            _preReleasesReadonly = preReleasesReadonly;
             _buildMetadata = buildMetadata ?? [];
+            _buildMetadataReadonly = buildMetadataReadonly;
         }
 
         [Pure] internal static SemverErrorCode ParseStrict(ReadOnlySpan<char> text, out SemanticVersion? version)
@@ -84,7 +90,7 @@ namespace Chasm.SemanticVersioning
 
             if (parser.CanRead()) return SemverErrorCode.Leftovers;
 
-            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, default);
+            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, null, null);
             return SemverErrorCode.Success;
         }
 
@@ -223,7 +229,7 @@ namespace Chasm.SemanticVersioning
             if ((options & SemverOptions.AllowLeftovers) == 0 && parser.CanRead())
                 return SemverErrorCode.Leftovers;
 
-            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, default);
+            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, null, null);
             return SemverErrorCode.Success;
         }
 

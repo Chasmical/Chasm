@@ -114,22 +114,6 @@ namespace Chasm.SemanticVersioning
             _preReleases = [];
             _buildMetadata = [];
         }
-        /// <summary>
-        ///   <para>Initializes a new instance of the <see cref="SemanticVersion"/> class using the specified <paramref name="partialVersion"/>'s version components and identifiers, replacing wildcards in version components with zeroes.</para>
-        /// </summary>
-        /// <param name="partialVersion">The partial version to convert.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="partialVersion"/> is <see langword="null"/>.</exception>
-        public SemanticVersion(PartialVersion partialVersion)
-        {
-            if (partialVersion is null) throw new ArgumentNullException(nameof(partialVersion));
-            Major = partialVersion.Major.GetValueOrZero();
-            Minor = partialVersion.Minor.GetValueOrZero();
-            Patch = partialVersion.Patch.GetValueOrZero();
-            _preReleases = partialVersion._preReleases;
-            _preReleasesReadonly = partialVersion._preReleasesReadonly;
-            _buildMetadata = partialVersion._buildMetadata;
-            _buildMetadataReadonly = partialVersion._buildMetadataReadonly;
-        }
 
         /// <summary>
         ///   <para>Defines an explicit conversion of a <see cref="Version"/> to a semantic version using the specified <paramref name="systemVersion"/>'s <see cref="Version.Major"/>, <see cref="Version.Minor"/> and <see cref="Version.Build"/> version components (undefined build component is turned into zero, revision component is ignored).</para>
@@ -138,13 +122,6 @@ namespace Chasm.SemanticVersioning
         [Pure] [return: NotNullIfNotNull(nameof(systemVersion))]
         public static explicit operator SemanticVersion?(Version? systemVersion)
             => systemVersion is null ? null : new SemanticVersion(systemVersion);
-        /// <summary>
-        ///   <para>Defines an explicit conversion of a partial version to a semantic version, replacing wildcards in version components with zeroes.</para>
-        /// </summary>
-        /// <param name="partialVersion">The partial version to convert.</param>
-        [Pure] [return: NotNullIfNotNull(nameof(partialVersion))]
-        public static explicit operator SemanticVersion?(PartialVersion? partialVersion)
-            => partialVersion is null ? null : new SemanticVersion(partialVersion);
 
         /// <summary>
         ///   <para>Defines an explicit conversion of a semantic version to a <see cref="Version"/>.</para>
@@ -183,11 +160,11 @@ namespace Chasm.SemanticVersioning
         /// <summary>
         ///   <para>Gets the minimum possible valid semantic version, <c>0.0.0-0</c>.</para>
         /// </summary>
-        public static SemanticVersion MinValue { get; } = new SemanticVersion(0, 0, 0, SemverPreRelease.ZeroArray, null, default);
+        public static SemanticVersion MinValue { get; } = new SemanticVersion(0, 0, 0, SemverPreRelease.ZeroArray, null, null, null);
         /// <summary>
         ///   <para>Gets the maximum possible valid semantic version in this implementation of SemVer, <c>2147483647.2147483647.2147483647</c>.</para>
         /// </summary>
-        public static SemanticVersion MaxValue { get; } = new SemanticVersion(int.MaxValue, int.MaxValue, int.MaxValue, null, null, default);
+        public static SemanticVersion MaxValue { get; } = new SemanticVersion(int.MaxValue, int.MaxValue, int.MaxValue, null, null, null, null);
 
         /// <summary>
         ///   <para>Determines whether this semantic version is equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>

@@ -171,6 +171,24 @@ namespace Chasm.SemanticVersioning.Ranges
                 partialVersion.Patch.GetValueOrMinusOne()
             );
         }
+        /// <summary>
+        ///   <para>Defines an explicit conversion of a partial version to a semantic version, replacing wildcards in version components with zeroes.</para>
+        /// </summary>
+        /// <param name="partialVersion">The partial version to convert.</param>
+        [Pure] [return: NotNullIfNotNull(nameof(partialVersion))]
+        public static explicit operator SemanticVersion?(PartialVersion? partialVersion)
+        {
+            if (partialVersion is null) return null;
+            return new SemanticVersion(
+                partialVersion.Major.GetValueOrZero(),
+                partialVersion.Minor.GetValueOrZero(),
+                partialVersion.Patch.GetValueOrZero(),
+                partialVersion._preReleases,
+                partialVersion._buildMetadata,
+                partialVersion._preReleasesReadonly,
+                partialVersion._buildMetadataReadonly
+            );
+        }
 
         /// <summary>
         ///   <para>Determines whether the partial version has any wildcard or omitted version components.</para>

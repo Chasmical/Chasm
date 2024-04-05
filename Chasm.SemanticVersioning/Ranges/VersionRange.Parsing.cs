@@ -135,7 +135,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
                     comparator = partial!.IsPartial
                         ? (Comparator)new XRangeComparator(partial, op)
-                        : new PrimitiveComparator(new SemanticVersion(partial), op);
+                        : new PrimitiveComparator((SemanticVersion)partial, op);
                     break;
                 case '<': // read it as a '<' or '<=' comparator
                     op = parser.Skip('=') ? PrimitiveOperator.LessThanOrEqual : PrimitiveOperator.LessThan;
@@ -145,7 +145,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
                     comparator = partial!.IsPartial
                         ? (Comparator)new XRangeComparator(partial, op)
-                        : new PrimitiveComparator(new SemanticVersion(partial), op);
+                        : new PrimitiveComparator((SemanticVersion)partial, op);
                     break;
                 case '=': // read it as an '=' comparator
                     if (innerWhite) parser.SkipWhitespaces();
@@ -154,7 +154,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
                     comparator = partial!.IsPartial
                         ? (Comparator)new XRangeComparator(partial, PrimitiveOperator.Equal)
-                        : new PrimitiveComparator(new SemanticVersion(partial), PrimitiveOperator.Equal);
+                        : new PrimitiveComparator((SemanticVersion)partial, PrimitiveOperator.Equal);
                     break;
                 default: // read it as either an implicit '=' comparator, or a hyphen range comparator
 
@@ -176,7 +176,7 @@ namespace Chasm.SemanticVersioning.Ranges
                         // read it as an implicit '=' comparator
                         comparator = partial!.IsPartial
                             ? (Comparator)new XRangeComparator(partial)
-                            : new PrimitiveComparator(new SemanticVersion(partial));
+                            : new PrimitiveComparator((SemanticVersion)partial);
                     }
                     break;
             }

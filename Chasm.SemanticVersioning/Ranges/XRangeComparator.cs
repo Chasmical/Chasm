@@ -63,7 +63,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="xRangeComparator">The X-Range version comparator to convert.</param>
         [Pure] [return: NotNullIfNotNull(nameof(xRangeComparator))]
         public static explicit operator PrimitiveComparator?(XRangeComparator? xRangeComparator)
-            => xRangeComparator is null ? null : new PrimitiveComparator(new SemanticVersion(xRangeComparator.Operand), xRangeComparator.Operator);
+            => xRangeComparator is null ? null : new PrimitiveComparator((SemanticVersion)xRangeComparator.Operand, xRangeComparator.Operator);
 
         /// <inheritdoc/>
         [Pure] protected override (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives()
@@ -79,7 +79,7 @@ namespace Chasm.SemanticVersioning.Ranges
             // simple primitive comparators
             if (Operand.Minor.IsNumeric && Operand.Patch.IsNumeric)
             {
-                PrimitiveComparator primitive = new PrimitiveComparator(new SemanticVersion(Operand), Operator);
+                PrimitiveComparator primitive = new PrimitiveComparator((SemanticVersion)Operand, Operator);
                 bool isLessThan = primitive.Operator is PrimitiveOperator.LessThan or PrimitiveOperator.LessThanOrEqual;
                 return isLessThan ? (null, primitive) : (primitive, null);
             }
@@ -98,7 +98,7 @@ namespace Chasm.SemanticVersioning.Ranges
                         // >1.x.3    ⇒ >=2.0.0 (Note: don't include '-0' here, since that would opt in into 2.0.0 pre-releases)
                         // >1.x.3-rc ⇒ >=2.0.0 (Note: ^^^)
                         if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
-                        version = new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, default);
+                        version = new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, null, null);
                     }
                     else // if (!Operand.Patch.IsNumeric)
                     {
@@ -106,7 +106,7 @@ namespace Chasm.SemanticVersioning.Ranges
                         // >1.2.x-rc ⇒ >=1.3.0 (Note: ^^^)
                         minor = Operand.Minor.AsNumber;
                         if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
-                        version = new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, default);
+                        version = new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null);
                     }
                     return (PrimitiveComparator.GreaterThanOrEqual(version), null);
 
@@ -117,7 +117,7 @@ namespace Chasm.SemanticVersioning.Ranges
                         // <=1.x.3    ⇒ <2.0.0-0
                         // <=1.x.3-rc ⇒ <2.0.0-0
                         if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
-                        version = new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, default);
+                        version = new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, null, null);
                     }
                     else // if (!Operand.Patch.IsNumeric)
                     {
@@ -125,7 +125,7 @@ namespace Chasm.SemanticVersioning.Ranges
                         // <=1.2.x-rc ⇒ <1.3.0-0
                         minor = Operand.Minor.AsNumber;
                         if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
-                        version = new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, default);
+                        version = new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null);
                     }
                     return (null, PrimitiveComparator.LessThan(version));
 
@@ -135,7 +135,7 @@ namespace Chasm.SemanticVersioning.Ranges
                     // >=1.x.3-rc ⇒ >=1.0.3-rc (TODO: node-semver ignores specified patch and pre-releases if minor is unspecified)
                     // >=1.2.x    ⇒ >=1.2.0
                     // >=1.2.x-rc ⇒ >=1.2.0-rc (TODO: node-semver ignores pre-releases if there are unspecified components)
-                    version = new SemanticVersion(Operand);
+                    version = (SemanticVersion)Operand;
                     return (PrimitiveComparator.GreaterThanOrEqual(version), null);
 
                 case PrimitiveOperator.LessThan:
@@ -144,7 +144,7 @@ namespace Chasm.SemanticVersioning.Ranges
                     // <1.x.3-rc ⇒ <1.0.3-rc (TODO: node-semver ignores specified patch and pre-releases if minor is unspecified)
                     // <1.2.x    ⇒ <1.2.0
                     // <1.2.x-rc ⇒ <1.2.0-rc (TODO: node-semver ignores pre-releases if there are unspecified components)
-                    version = new SemanticVersion(Operand);
+                    version = (SemanticVersion)Operand;
                     return (null, PrimitiveComparator.LessThan(version));
 
                 default:
@@ -157,8 +157,8 @@ namespace Chasm.SemanticVersioning.Ranges
                         // =1.x.3    ⇒ >=1.0.3    <2.0.0-0 (TODO: node-semver ignores specified patch if minor is unspecified)
                         // =1.x.3-rc ⇒ >=1.0.3-rc <2.0.0-0 (TODO: node-semver ignores specified patch and pre-releases if minor is unspecified)
                         if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
-                        version = new SemanticVersion(Operand);
-                        version2 = new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, default);
+                        version = (SemanticVersion)Operand;
+                        version2 = new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, null, null);
                     }
                     else // if (!Operand.Patch.IsNumeric)
                     {
@@ -166,8 +166,8 @@ namespace Chasm.SemanticVersioning.Ranges
                         // =1.2.x-rc ⇒ >=1.2.0-rc <1.3.0-0 (TODO: node-semver ignores pre-releases if there are unspecified components)
                         minor = Operand.Minor.AsNumber;
                         if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
-                        version = new SemanticVersion(Operand);
-                        version2 = new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, default);
+                        version = (SemanticVersion)Operand;
+                        version2 = new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null);
                     }
                     return (PrimitiveComparator.GreaterThanOrEqual(version), PrimitiveComparator.LessThan(version2));
 

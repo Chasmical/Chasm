@@ -38,8 +38,8 @@ namespace Chasm.SemanticVersioning.Ranges
                 // ~1.x.3-rc ⇒ >=1.0.3-rc <2.0.0-0 (TODO: node-semver ignores specified patch and pre-releases if minor is unspecified)
                 if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
                 return (
-                    GreaterThanOrEqual(new SemanticVersion(Operand)),
-                    LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, default))
+                    GreaterThanOrEqual((SemanticVersion)Operand),
+                    LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, null, null))
                 );
             }
             int minor = Operand.Minor.AsNumber; // M is numeric, m is numeric
@@ -53,8 +53,8 @@ namespace Chasm.SemanticVersioning.Ranges
             // ~1.2.3-rc ⇒ >=1.2.3-rc <1.3.0-0
             if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
             return (
-                GreaterThanOrEqual(new SemanticVersion(major, minor, patch, Operand._preReleases, null, default)),
-                LessThan(new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, default))
+                GreaterThanOrEqual(new SemanticVersion(major, minor, patch, Operand._preReleases, null, null, null)),
+                LessThan(new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null))
             );
         }
 

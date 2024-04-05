@@ -47,8 +47,8 @@ namespace Chasm.SemanticVersioning.Ranges
 
                 if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
                 return (
-                    GreaterThanOrEqual(new SemanticVersion(Operand)),
-                    LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, default))
+                    GreaterThanOrEqual((SemanticVersion)Operand),
+                    LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, null, null))
                 );
             }
             int minor = Operand.Minor.AsNumber; // M is 0, m is numeric
@@ -65,8 +65,8 @@ namespace Chasm.SemanticVersioning.Ranges
                 // ^0.0.x-rc ⇒ >=0.0.0-rc <0.1.0 (TODO: node-semver ignores pre-releases if there are unspecified components)
                 if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
                 return (
-                    GreaterThanOrEqual(new SemanticVersion(Operand)),
-                    LessThan(new SemanticVersion(0, minor + 1, 0, SemverPreRelease.ZeroArray, null, default))
+                    GreaterThanOrEqual((SemanticVersion)Operand),
+                    LessThan(new SemanticVersion(0, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null))
                 );
             }
             int patch = Operand.Patch.AsNumber; // M is 0, m is 0, p is numeric
@@ -79,8 +79,8 @@ namespace Chasm.SemanticVersioning.Ranges
             // ^0.0.0-rc ⇒ >=0.0.0-rc <0.0.1-0
             if (patch == int.MaxValue) throw new InvalidOperationException(Exceptions.PatchTooBig);
             return (
-                GreaterThanOrEqual(new SemanticVersion(Operand)),
-                LessThan(new SemanticVersion(0, 0, patch + 1, SemverPreRelease.ZeroArray, null, default))
+                GreaterThanOrEqual((SemanticVersion)Operand),
+                LessThan(new SemanticVersion(0, 0, patch + 1, SemverPreRelease.ZeroArray, null, null, null))
             );
         }
 

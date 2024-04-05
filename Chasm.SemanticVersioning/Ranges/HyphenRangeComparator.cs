@@ -54,16 +54,16 @@ namespace Chasm.SemanticVersioning.Ranges
                 // 1.x.x    - ... ⇒ >=1.0.0    ...
                 // 1.x.x-rc - ... ⇒ >=1.0.0-rc ... (TODO: node-semver ignores pre-releases if there are unspecified components)
                 if (!from.Minor.IsNumeric)
-                    return GreaterThanOrEqual(new SemanticVersion(from));
+                    return GreaterThanOrEqual((SemanticVersion)from);
 
                 // 1.2.x    - ... ⇒ >=1.2.0    ...
                 // 1.2.x-rc - ... ⇒ >=1.2.0-rc ... (TODO: node-semver ignores pre-releases if there are unspecified components)
                 if (!from.Patch.IsNumeric)
-                    return GreaterThanOrEqual(new SemanticVersion(from));
+                    return GreaterThanOrEqual((SemanticVersion)from);
 
                 // 1.2.3    - ... ⇒ >=1.2.3    ...
                 // 1.2.3-rc - ... ⇒ >=1.2.3-rc ...
-                return GreaterThanOrEqual(new SemanticVersion(from));
+                return GreaterThanOrEqual((SemanticVersion)from);
             }
             static PrimitiveComparator? ConvertTo(PartialVersion to)
             {
@@ -80,7 +80,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 {
                     int major = to.Major.AsNumber;
                     if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
-                    return LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, default));
+                    return LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, null, null));
                 }
 
                 // ... - 1.2.x    ⇒ ... <1.3.0-0
@@ -89,12 +89,12 @@ namespace Chasm.SemanticVersioning.Ranges
                 {
                     int minor = to.Minor.AsNumber;
                     if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
-                    return LessThan(new SemanticVersion(to.Major.AsNumber, minor + 1, 0, SemverPreRelease.ZeroArray, null, default));
+                    return LessThan(new SemanticVersion(to.Major.AsNumber, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null));
                 }
 
                 // ... - 1.2.3    ⇒ ... <=1.2.3
                 // ... - 1.2.3-rc ⇒ ... <=1.2.3-rc
-                return LessThanOrEqual(new SemanticVersion(to));
+                return LessThanOrEqual((SemanticVersion)to);
             }
         }
 
