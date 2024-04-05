@@ -16,6 +16,7 @@ namespace Chasm.SemanticVersioning
         PATCH          = 0b_0000_0011 | COMPONENT,
         PRERELEASE     = 0b_0000_0100,
         BUILD_METADATA = 0b_0000_0101,
+        VERSION_RANGE  = 0b_0000_0110,
 
         ErrorTypeMask  = 0b_1111_0000,
 
@@ -51,6 +52,7 @@ namespace Chasm.SemanticVersioning
 
         PreReleaseEmpty         = PRERELEASE     | EMPTY,
         BuildMetadataEmpty      = BUILD_METADATA | EMPTY,
+        VersionRangeEmpty       = VERSION_RANGE  | EMPTY,
 
         ComponentInvalid        = COMPONENT      | INVALID,
         PreReleaseInvalid       = PRERELEASE     | INVALID,

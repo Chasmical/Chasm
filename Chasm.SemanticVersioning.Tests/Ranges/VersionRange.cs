@@ -21,7 +21,7 @@ namespace Chasm.SemanticVersioning.Tests
 
             // try creating an empty version range
             ArgumentException e = Assert.Throws<ArgumentException>(static () => new VersionRange([]));
-            Assert.StartsWith(Exceptions.EmptyVersionRange, e.Message);
+            Assert.StartsWith(Exceptions.VersionRangeEmpty, e.Message);
 
         }
 

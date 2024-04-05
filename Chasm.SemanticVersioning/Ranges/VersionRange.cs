@@ -70,7 +70,7 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             if (comparatorSets is null) throw new ArgumentNullException(nameof(comparatorSets));
             ComparatorSet[] array = comparatorSets.ToArray();
-            if (array.Length == 0) throw new ArgumentException(Exceptions.EmptyVersionRange, nameof(comparatorSets));
+            if (array.Length == 0) throw new ArgumentException(Exceptions.VersionRangeEmpty, nameof(comparatorSets));
             if (Array.IndexOf(array, null) >= 0) throw new ArgumentException(Exceptions.ComparatorSetsNull, nameof(comparatorSets));
             _comparatorSets = array;
         }
