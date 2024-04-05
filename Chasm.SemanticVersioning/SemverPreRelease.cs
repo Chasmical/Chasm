@@ -12,7 +12,7 @@ namespace Chasm.SemanticVersioning
 #endif
     {
         private readonly string? text;
-        private readonly int number;
+        private readonly uint number;
 
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="SemverPreRelease"/> structure with the specified numeric <paramref name="identifier"/>.</para>
@@ -22,7 +22,7 @@ namespace Chasm.SemanticVersioning
         public SemverPreRelease(int identifier)
         {
             if (identifier < 0) throw new ArgumentOutOfRangeException(nameof(identifier), identifier, Exceptions.PreReleaseNegative);
-            number = identifier;
+            number = (uint)identifier;
         }
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="SemverPreRelease"/> structure with the specified <paramref name="identifier"/>.</para>
@@ -83,7 +83,7 @@ namespace Chasm.SemanticVersioning
         ///   <para>Gets the numeric value of the pre-release identifier, if it's numeric; otherwise, throws an exception.</para>
         /// </summary>
         /// <exception cref="InvalidOperationException">This pre-release identifier is not numeric.</exception>
-        public int AsNumber => text is null ? number : throw new InvalidOperationException(Exceptions.PreReleaseNotNumeric);
+        public int AsNumber => text is null ? (int)number : throw new InvalidOperationException(Exceptions.PreReleaseNotNumeric);
 
         /// <summary>
         ///   <para>Gets the numeric pre-release identifier with the value of 0.</para>
@@ -97,7 +97,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="other">The pre-release identifier to compare with this pre-release identifier.</param>
         /// <returns><see langword="true"/>, if this pre-release identifier is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(SemverPreRelease other)
-            => text is null ? other.text is null && number == other.number : text.Equals(other.text);
+            => number == other.number && string.Equals(text, other.text);
         /// <summary>
         ///   <para>Determines whether this pre-release identifier is equal to the specified <paramref name="obj"/>.</para>
         /// </summary>
@@ -110,7 +110,7 @@ namespace Chasm.SemanticVersioning
         /// </summary>
         /// <returns>A hash code for this pre-release identifier.</returns>
         [Pure] public override int GetHashCode()
-            => text?.GetHashCode() ?? number;
+            => text?.GetHashCode() ?? (int)number;
 
         /// <summary>
         ///   <para>Compares this pre-release identifier with another specified pre-release identifier and returns an integer that indicates whether this pre-release identifier precedes, follows or occurs in the same position in the sort order as the <paramref name="other"/> pre-release identifier.</para>
@@ -121,7 +121,7 @@ namespace Chasm.SemanticVersioning
         {
             bool isNumeric = text is null;
             if (isNumeric != other.text is null) return isNumeric ? -1 : 1;
-            return isNumeric ? number - other.number : string.CompareOrdinal(text, other.text);
+            return isNumeric ? (int)number - (int)other.number : string.CompareOrdinal(text, other.text);
         }
         [Pure] int IComparable.CompareTo(object? obj)
         {
