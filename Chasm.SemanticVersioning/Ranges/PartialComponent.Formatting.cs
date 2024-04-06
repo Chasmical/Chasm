@@ -1,5 +1,4 @@
-﻿using System;
-using Chasm.Formatting;
+﻿using Chasm.Formatting;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -8,15 +7,22 @@ namespace Chasm.SemanticVersioning.Ranges
     {
         [Pure] internal int CalculateLength()
         {
-            if (_value == -1) return 0;
-            uint val = Math.Max((uint)_value, 0u); // wildcards take up one character, just like zero
-            return SpanBuilder.CalculateLength(val);
+            if ((int)_value != -1)
+            {
+                // wildcards take up one character, just like zero
+                uint num = (uint)GetValueOrZero();
+                return SpanBuilder.CalculateLength(num);
+            }
+            return 0;
         }
         internal void BuildString(ref SpanBuilder sb)
         {
-            if (_value == -1) return;
-            if (_value > -1) sb.Append((uint)_value);
-            else sb.Append((char)-_value);
+            uint value = _value;
+            if ((int)value != -1)
+            {
+                if ((int)value > -1) sb.Append(value);
+                else sb.Append((char)-(int)value);
+            }
         }
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
@@ -27,14 +33,14 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The string representation of this partial version component.</returns>
         [Pure] public override string ToString()
         {
-            if (_value > -1) return ((uint)_value).ToString();
-            return _value switch
-            {
-                -'x' => "x",
-                -'X' => "X",
-                -'*' => "*",
-                _ => "",
-            };
+            uint value = _value;
+            if ((int)value > -1) return value.ToString();
+
+            // 'x': -120, 'X': -88, '*': -42, omitted: -1
+
+            if ((int)value <= -88)
+                return (int)value == -88 ? "X" : "x";
+            return (int)value != -1 ? "*" : "";
         }
 
     }

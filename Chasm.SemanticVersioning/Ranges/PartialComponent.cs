@@ -11,7 +11,8 @@ namespace Chasm.SemanticVersioning.Ranges
                                                     , System.Numerics.IComparisonOperators<PartialComponent, PartialComponent, bool>
 #endif
     {
-        internal readonly int _value;
+        // Note: uint32 is used here to avoid an unnecessary variable in ToString()
+        internal readonly uint _value;
 
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="PartialComponent"/> structure with the specified numeric <paramref name="value"/>.</para>
@@ -21,7 +22,7 @@ namespace Chasm.SemanticVersioning.Ranges
         public PartialComponent(int value)
         {
             if (value < 0) throw new ArgumentOutOfRangeException(nameof(value), value, Exceptions.ComponentNegative);
-            _value = value;
+            _value = (uint)value;
         }
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="PartialComponent"/> structure with the specified wildcard or numeric <paramref name="character"/>.</para>
@@ -65,54 +66,55 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="component">The partial version component to convert.</param>
         [Pure] public static explicit operator char(PartialComponent component)
         {
-            return component._value switch
+            int value = (int)component._value;
+            if (value < 10)
             {
-                -1 or >= 10 => throw new ArgumentException(Exceptions.ComponentNotSingleChar, nameof(component)),
-                < -1 => (char)-component._value,
-                _ => (char)('0' + component._value),
-            };
+                if (value >= 0) return (char)(value + '0');
+                if (value != -1) return (char)-value;
+            }
+            throw new ArgumentException(Exceptions.ComponentNotSingleChar, nameof(component));
         }
         /// <summary>
         ///   <para>Defines an explicit conversion of a partial version component to a nullable 32-bit signed integer.</para>
         /// </summary>
         /// <param name="component">The partial version component to convert.</param>
         [Pure] public static explicit operator int?(PartialComponent component)
-            => component.IsNumeric ? component._value : null;
+            => component.IsNumeric ? (int)component._value : default;
 
         /// <summary>
         ///   <para>Determines whether the partial version component is numeric.</para>
         /// </summary>
-        public bool IsNumeric => _value > -1;
+        public bool IsNumeric => (int)_value > -1;
         /// <summary>
         ///   <para>Determines whether the partial version component is omitted.</para>
         /// </summary>
-        public bool IsOmitted => _value == -1;
+        public bool IsOmitted => (int)_value == -1;
         /// <summary>
         ///   <para>Determines whether the partial version component is a wildcard.</para>
         /// </summary>
-        public bool IsWildcard => _value < -1;
+        public bool IsWildcard => (int)_value < -1;
 
         /// <summary>
         ///   <para>Gets the partial version component's numeric value, if it's numeric; otherwise, throws an exception.</para>
         /// </summary>
         /// <exception cref="InvalidOperationException">The partial version component is not numeric.</exception>
-        public int AsNumber => _value > -1 ? _value : throw new InvalidOperationException(Exceptions.ComponentNotNumeric);
+        public int AsNumber => (int)_value > -1 ? (int)_value : throw new InvalidOperationException(Exceptions.ComponentNotNumeric);
         /// <summary>
         ///   <para>Gets the partial version component's wildcard character, if it's a wildcard; otherwise, throws an exception.</para>
         /// </summary>
         /// <exception cref="InvalidOperationException">The partial version component is not a wildcard.</exception>
-        public char AsWildcard => _value < -1 ? (char)-_value : throw new InvalidOperationException(Exceptions.ComponentNotWildcard);
+        public char AsWildcard => (int)_value < -1 ? (char)-(int)_value : throw new InvalidOperationException(Exceptions.ComponentNotWildcard);
 
         /// <summary>
         ///   <para>Returns the partial version component's numeric value, if it's numeric; otherwise, returns <c>0</c>.</para>
         /// </summary>
         /// <returns>The partial version component's numeric value, if it's numeric; otherwise, <c>0</c>.</returns>
         [Pure] public int GetValueOrZero()
-            => Math.Max(_value, 0);
+            => (int)Math.Max(_value, 0);
         // Note: GetValueOrMinusOne() doesn't need to be public.
         // Users can write it as (comp.IsNumeric ? (int)comp : -1) or ((int?)comp ?? -1) instead.
         [Pure] internal int GetValueOrMinusOne()
-            => Math.Max(_value, -1);
+            => Math.Max((int)_value, -1);
 
         /// <summary>
         ///   <para>Gets the partial version component with the value of <c>0</c>.</para>
@@ -142,7 +144,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="other">The partial version component to compare with this partial version component.</param>
         /// <returns><see langword="true"/>, if this partial version component is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(PartialComponent other)
-            => _value < 0 ? other._value < 0 : _value == other._value;
+            => (int)_value < 0 ? (int)other._value < 0 : _value == other._value;
         /// <summary>
         ///   <para>Determines whether this partial version component is equal to the specified <paramref name="obj"/>.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
         /// </summary>
@@ -164,8 +166,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>&lt;0, if this partial version component precedes <paramref name="other"/> in the sort order;<br/>=0, if this partial version component occurs in the same position in the sort order as <paramref name="other"/>;<br/>&gt;0, if this partial version component follows <paramref name="other"/> in the sort order.</returns>
         [Pure] public int CompareTo(PartialComponent other)
         {
-            if (_value < 0) return other._value < 0 ? 0 : -1;
-            return other._value < 0 ? 1 : _value - other._value;
+            if ((int)_value < 0) return (int)other._value < 0 ? 0 : -1;
+            return (int)other._value < 0 ? 1 : (int)_value - (int)other._value;
         }
         [Pure] int IComparable.CompareTo(object? obj)
         {

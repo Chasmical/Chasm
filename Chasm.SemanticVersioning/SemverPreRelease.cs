@@ -12,6 +12,7 @@ namespace Chasm.SemanticVersioning
 #endif
     {
         private readonly string? text;
+        // Note: uint32 is used here to avoid an unnecessary variable in ToString()
         private readonly uint number;
 
         /// <summary>

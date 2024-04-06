@@ -11,7 +11,7 @@ namespace Chasm.SemanticVersioning.Ranges
     {
         // ReSharper disable once UnusedParameter.Local
         internal PartialComponent(int value, bool _)
-            => _value = value;
+            => _value = (uint)value;
 
         /// <summary>
         ///   <para>Converts the specified wildcard or numeric character representing a partial version component to an equivalent <see cref="PartialComponent"/> structure.</para>

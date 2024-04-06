@@ -226,7 +226,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="component">The partial version component to get a hash code for.</param>
         /// <returns>The hash code for the specified partial version component.</returns>
         [Pure] public int GetHashCode(PartialComponent component)
-            => diffWildcards ? component._value : component.GetHashCode();
+            => diffWildcards ? (int)component._value : component.GetHashCode();
 
         /// <summary>
         ///   <para>Returns a <see cref="SemverComparer"/> that uses the specified semantic version <paramref name="comparison"/> rules.</para>
