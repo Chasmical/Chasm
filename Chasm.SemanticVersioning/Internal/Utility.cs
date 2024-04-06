@@ -9,22 +9,18 @@ namespace Chasm.SemanticVersioning
     {
         [Pure] public static bool IsValidCharacter(char c)
         {
-#if NET7_0_OR_GREATER
-            return char.IsAsciiLetter(c) || char.IsAsciiDigit(c) || c == '-';
-#else
+            // Note: IsAsciiDigit and IsAsciiLetter are slightly slower, and also increase the assembly size
             return ((uint)c | ' ') - 'a' <= 'z' - 'a' || (uint)c - '0' <= '9' - '0' || c == '-';
-#endif
         }
 
         [Pure] public static bool IsNumeric(ReadOnlySpan<char> text)
         {
-            for (int i = 0, length = text.Length; i < length; i++)
+            // Note: ContainsAnyExceptInRange is pretty slow on small spans
+            // Note: IsAsciiDigit is slightly slower, and also increases assembly size
+
+            for (int i = 0; i < text.Length; i++)
             {
-#if NET7_0_OR_GREATER
-                if (!char.IsAsciiDigit(text[i]))
-#else
                 if ((uint)text[i] - '0' >= 10u)
-#endif
                     return false;
             }
             return true;
