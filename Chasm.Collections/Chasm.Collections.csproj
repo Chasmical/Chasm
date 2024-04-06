@@ -21,7 +21,7 @@
     <!--
       |            Target Frameworks            | - Justification
       |===============|================|========|==============================
-      | net8.0        |                |        | - latest API, for use in IDE
+      | net8.0        |                |        | - latest API, for use in IDE, ReadOnlyCollection<T>.Empty
       | net6.0        |                |        | - Array.Clear
       | net5.0        |                |        | - GC.AllocateUninitializedArray
       | netcoreapp3.0 | netstandard2.1 |        | - IAsyncEnumerator
@@ -35,7 +35,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Collections</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.2.2</Version>
+    <Version>2.2.3</Version>
     <Authors>Abbysssal</Authors>
     <Company>$(Authors)</Company>
     <Copyright>Copyright © Abbysssal 2023</Copyright>

@@ -1,5 +1,8 @@
 # Chasm.Collections Changelog
 
+### v2.2.3
+- ♻️ Refactored read-only collections' `Empty()` methods to use .NET 8's new `Empty` properties;
+
 ### v2.2.2
 - 🧩 Retargeted to: `net8.0`, `net6.0`, `net5.0`, `netcoreapp3.0`,  `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.3`, `netstandard1.0`, `net47`, `net46`, `net45`;
 - ⬆️ Upgraded `JetBrains.Annotations` from 2023.2.0 to 2023.3.0;
