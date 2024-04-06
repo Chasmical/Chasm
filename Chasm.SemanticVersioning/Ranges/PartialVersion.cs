@@ -224,7 +224,7 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             if (ReferenceEquals(this, other)) return true;
             if (other is null || !Major.Equals(other.Major) || !Minor.Equals(other.Minor) || !Patch.Equals(other.Patch)) return false;
-            return Utility.EqualsIdentifiers(_preReleases, other._preReleases);
+            return Utility.SequenceEqual(_preReleases, other._preReleases);
         }
         /// <summary>
         ///   <para>Determines whether this partial version is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>

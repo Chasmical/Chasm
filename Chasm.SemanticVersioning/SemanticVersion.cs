@@ -173,7 +173,7 @@ namespace Chasm.SemanticVersioning
         {
             if (ReferenceEquals(this, other)) return true;
             if (other is null || Major != other.Major || Minor != other.Minor || Patch != other.Patch) return false;
-            return Utility.EqualsIdentifiers(_preReleases, other._preReleases);
+            return Utility.SequenceEqual(_preReleases, other._preReleases);
         }
         /// <summary>
         ///   <para>Determines whether this semantic version is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>

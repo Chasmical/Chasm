@@ -39,10 +39,12 @@ namespace Chasm.SemanticVersioning
             if (array.Length != 0) return new ReadOnlyCollection<T>(array);
 #if NET8_0_OR_GREATER
             return ReadOnlyCollection<T>.Empty;
-        }
 #else
             return Collection<T>.Empty;
+#endif
         }
+
+#if !NET8_0_OR_GREATER
         private static class Collection<T>
         {
             public static readonly ReadOnlyCollection<T> Empty = new([]);
@@ -94,15 +96,15 @@ namespace Chasm.SemanticVersioning
         {
             if (ReferenceEquals(left, right)) return 0;
 
-            int thisLength = left.Length;
-            int otherLength = right.Length;
-            if (thisLength == 0 && otherLength > 0) return 1;
-            if (thisLength > 0 && otherLength == 0) return -1;
+            int leftLength = left.Length;
+            int rightLength = right.Length;
+            if (leftLength == 0 && rightLength > 0) return 1;
+            if (leftLength > 0 && rightLength == 0) return -1;
 
             for (int i = 0; ; i++)
             {
-                if (i == thisLength) return i == otherLength ? 0 : -1;
-                if (i == otherLength) return 1;
+                if (i == leftLength) return i == rightLength ? 0 : -1;
+                if (i == rightLength) return 1;
                 int res = string.CompareOrdinal(left[i], right[i]);
                 if (res != 0) return res;
             }
@@ -125,27 +127,20 @@ namespace Chasm.SemanticVersioning
             }
         }
 
-        [Pure] public static bool EqualsIdentifiers(string[] left, string[] right)
+        [Pure] public static bool SequenceEqual<T>(T[] left, T[] right) where T : IEquatable<T>
         {
-            if (ReferenceEquals(left, right)) return true;
+            // Note: String and SemverPreRelease do ordinal comparison by default
 
-            int preReleasesLength = left.Length;
-            if (preReleasesLength != right.Length) return false;
-            for (int i = 0; i < preReleasesLength; i++)
+#if NET6_0_OR_GREATER
+            return left.AsSpan().SequenceEqual(right);
+#else
+            int length = left.Length;
+            if (length != right.Length) return false;
+            for (int i = 0; i < length; i++)
                 if (!left[i].Equals(right[i]))
                     return false;
             return true;
-        }
-        [Pure] public static bool EqualsIdentifiers(SemverPreRelease[] left, SemverPreRelease[] right)
-        {
-            if (ReferenceEquals(left, right)) return true;
-
-            int preReleasesLength = left.Length;
-            if (preReleasesLength != right.Length) return false;
-            for (int i = 0; i < preReleasesLength; i++)
-                if (!left[i].Equals(right[i]))
-                    return false;
-            return true;
+#endif
         }
 
         [Pure] public static int GetOperatorLength(PrimitiveOperator op)

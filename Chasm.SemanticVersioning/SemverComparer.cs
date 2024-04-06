@@ -73,10 +73,13 @@ namespace Chasm.SemanticVersioning
         /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
         [Pure] public int Compare(SemanticVersion? a, SemanticVersion? b)
         {
-            if (a is null) return b is null ? 0 : -1;
+            if (ReferenceEquals(a, b)) return 0;
+            if (a is null) return -1;
+            if (b is null) return 1;
+
             int res = a.CompareTo(b);
             if (res == 0 && includeBuild)
-                res = Utility.CompareIdentifiers(a._buildMetadata, b!._buildMetadata);
+                res = Utility.CompareIdentifiers(a._buildMetadata, b._buildMetadata);
             return res;
         }
         /// <summary>
@@ -87,10 +90,12 @@ namespace Chasm.SemanticVersioning
         /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(SemanticVersion? a, SemanticVersion? b)
         {
-            if (a is null) return b is null;
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
+
             bool res = a.Equals(b);
             if (res && includeBuild)
-                res = Utility.EqualsIdentifiers(a._buildMetadata, b!._buildMetadata);
+                res = Utility.SequenceEqual(a._buildMetadata, b._buildMetadata);
             return res;
         }
         /// <summary>
@@ -125,8 +130,9 @@ namespace Chasm.SemanticVersioning
         /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
         [Pure] public int Compare(PartialVersion? a, PartialVersion? b)
         {
-            if (a is null) return b is null ? 0 : -1;
-            if (b is null) return a.CompareTo(b);
+            if (ReferenceEquals(a, b)) return 0;
+            if (a is null) return -1;
+            if (b is null) return 1;
 
             int res;
             if (!diffWildcards)
@@ -156,8 +162,8 @@ namespace Chasm.SemanticVersioning
         /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(PartialVersion? a, PartialVersion? b)
         {
-            if (a is null) return b is null;
-            if (b is null) return false;
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
 
             bool res;
             if (!diffWildcards)
@@ -166,12 +172,13 @@ namespace Chasm.SemanticVersioning
             }
             else
             {
-                res = Equals(a.Major, b.Major) && Equals(a.Minor, b.Minor) && Equals(a.Patch, b.Patch)
-                   && Utility.EqualsIdentifiers(a._preReleases, b._preReleases);
+                res = ReferenceEquals(a, b)
+                   || Equals(a.Major, b.Major) && Equals(a.Minor, b.Minor) && Equals(a.Patch, b.Patch)
+                   && Utility.SequenceEqual(a._preReleases, b._preReleases);
             }
 
             if (res && includeBuild)
-                res = Utility.EqualsIdentifiers(a._buildMetadata, b._buildMetadata);
+                res = Utility.SequenceEqual(a._buildMetadata, b._buildMetadata);
             return res;
         }
         /// <summary>
