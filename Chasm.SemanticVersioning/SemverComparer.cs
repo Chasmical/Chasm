@@ -17,13 +17,15 @@ namespace Chasm.SemanticVersioning
     {
         private const string supportedTypes = $"{nameof(SemanticVersion)}, {nameof(PartialVersion)} or {nameof(PartialComponent)}";
 
-        private readonly bool includeBuildMetadata;
-        private readonly bool differentiateWildcards;
+        private readonly bool includeBuild;
+        private readonly bool diffWildcards;
+        private readonly bool diffEquality;
 
         private SemverComparer(SemverComparison comparison)
         {
-            includeBuildMetadata = (comparison & SemverComparison.IncludeBuildMetadata) != 0;
-            differentiateWildcards = (comparison & SemverComparison.DifferentiateWildcards) != 0;
+            includeBuild = (comparison & SemverComparison.IncludeBuild) != 0;
+            diffWildcards = (comparison & SemverComparison.DiffWildcards) != 0;
+            diffEquality = (comparison & SemverComparison.DiffEquality) != 0;
         }
 
         [Pure] int IComparer.Compare(object? a, object? b)
@@ -73,7 +75,7 @@ namespace Chasm.SemanticVersioning
         {
             if (a is null) return b is null ? 0 : -1;
             int res = a.CompareTo(b);
-            if (res == 0 && includeBuildMetadata)
+            if (res == 0 && includeBuild)
                 res = Utility.CompareIdentifiers(a._buildMetadata, b!._buildMetadata);
             return res;
         }
@@ -87,7 +89,7 @@ namespace Chasm.SemanticVersioning
         {
             if (a is null) return b is null;
             bool res = a.Equals(b);
-            if (res && includeBuildMetadata)
+            if (res && includeBuild)
                 res = Utility.EqualsIdentifiers(a._buildMetadata, b!._buildMetadata);
             return res;
         }
@@ -101,7 +103,7 @@ namespace Chasm.SemanticVersioning
             if (version is null) return 0;
             int res = version.GetHashCode();
 
-            if (includeBuildMetadata && version._buildMetadata.Length > 0)
+            if (includeBuild && version._buildMetadata.Length > 0)
             {
                 HashCode hash = new();
                 hash.Add(res);
@@ -127,7 +129,7 @@ namespace Chasm.SemanticVersioning
             if (b is null) return a.CompareTo(b);
 
             int res;
-            if (!differentiateWildcards)
+            if (!diffWildcards)
             {
                 res = a.CompareTo(b);
             }
@@ -142,7 +144,7 @@ namespace Chasm.SemanticVersioning
                 res = Utility.CompareIdentifiers(a._preReleases, b._preReleases);
             }
 
-            if (res == 0 && includeBuildMetadata)
+            if (res == 0 && includeBuild)
                 res = Utility.CompareIdentifiers(a._buildMetadata, b._buildMetadata);
             return res;
         }
@@ -158,7 +160,7 @@ namespace Chasm.SemanticVersioning
             if (b is null) return false;
 
             bool res;
-            if (!differentiateWildcards)
+            if (!diffWildcards)
             {
                 res = a.Equals(b);
             }
@@ -168,7 +170,7 @@ namespace Chasm.SemanticVersioning
                    && Utility.EqualsIdentifiers(a._preReleases, b._preReleases);
             }
 
-            if (res && includeBuildMetadata)
+            if (res && includeBuild)
                 res = Utility.EqualsIdentifiers(a._buildMetadata, b._buildMetadata);
             return res;
         }
@@ -181,7 +183,7 @@ namespace Chasm.SemanticVersioning
         {
             if (partial is null) return 0;
 
-            if ((!differentiateWildcards || !partial.IsPartial) && (!includeBuildMetadata || partial._buildMetadata.Length == 0))
+            if ((!diffWildcards || !partial.IsPartial) && (!includeBuild || partial._buildMetadata.Length == 0))
                 return partial.GetHashCode();
 
             HashCode hash = new();
@@ -193,7 +195,7 @@ namespace Chasm.SemanticVersioning
             for (int i = 0; i < preReleases.Length; i++)
                 hash.Add(preReleases[i]);
 
-            if (includeBuildMetadata)
+            if (includeBuild)
             {
                 string[] buildMetadata = partial._buildMetadata;
                 for (int i = 0; i < buildMetadata.Length; i++)
@@ -209,7 +211,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="b">The second partial version component to compare.</param>
         /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
         [Pure] public int Compare(PartialComponent a, PartialComponent b)
-            => differentiateWildcards ? a._value.CompareTo(b._value) : a.CompareTo(b);
+            => diffWildcards ? a._value.CompareTo(b._value) : a.CompareTo(b);
         /// <summary>
         ///   <para>Determines whether one partial version component is equal to another partial version component.</para>
         /// </summary>
@@ -217,14 +219,14 @@ namespace Chasm.SemanticVersioning
         /// <param name="b">The second partial version component to compare.</param>
         /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(PartialComponent a, PartialComponent b)
-            => differentiateWildcards ? a._value == b._value : a.Equals(b);
+            => diffWildcards ? a._value == b._value : a.Equals(b);
         /// <summary>
         ///   <para>Returns a hash code for the specified partial version component.</para>
         /// </summary>
         /// <param name="component">The partial version component to get a hash code for.</param>
         /// <returns>The hash code for the specified partial version component.</returns>
         [Pure] public int GetHashCode(PartialComponent component)
-            => differentiateWildcards ? component._value : component.GetHashCode();
+            => diffWildcards ? component._value : component.GetHashCode();
 
         /// <summary>
         ///   <para>Returns a <see cref="SemverComparer"/> that uses the specified semantic version <paramref name="comparison"/> rules.</para>
@@ -235,32 +237,32 @@ namespace Chasm.SemanticVersioning
         [Pure] public static SemverComparer FromComparison(SemverComparison comparison) => comparison switch
         {
             SemverComparison.Default => Default,
-            SemverComparison.IncludeBuildMetadata => IncludeBuildMetadata,
-            SemverComparison.DifferentiateWildcards => DifferentiateWildcards,
-            SemverComparison.IncludeBuildMetadata | SemverComparison.DifferentiateWildcards => IncludeBuildDiffWildcards,
+            SemverComparison.IncludeBuild => IncludeBuild,
+            SemverComparison.DiffWildcards => DiffWildcards,
+            SemverComparison.Exact => Exact,
             _ => throw new InvalidEnumArgumentException(nameof(comparison), (int)comparison, typeof(SemverComparison)),
         };
 
         /// <summary>
-        ///   <para>Gets the default <see cref="SemverComparer"/>, that ignores the build metadata, and, when comparing partial versions, considers wildcard characters and omitted components equal.</para>
+        ///   <para>Gets the default <see cref="SemverComparer"/>, that ignores build metadata.</para>
         /// </summary>
         public static SemverComparer Default { get; }
             = new SemverComparer(SemverComparison.Default);
         /// <summary>
-        ///   <para>Gets the <see cref="SemverComparer"/>, that includes the build metadata in the comparison, and, when comparing partial versions, considers wildcard characters and omitted components equal.</para>
+        ///   <para>Gets the <see cref="SemverComparer"/>, that includes build metadata in the comparison.</para>
         /// </summary>
-        public static SemverComparer IncludeBuildMetadata { get; }
-            = new SemverComparer(SemverComparison.IncludeBuildMetadata);
+        public static SemverComparer IncludeBuild { get; }
+            = new SemverComparer(SemverComparison.IncludeBuild);
         /// <summary>
-        ///   <para>Gets the <see cref="SemverComparer"/>, that ignores the build metadata, and, when comparing partial versions, differentiates between different wildcard characters and omitted components.</para>
+        ///   <para>Gets the <see cref="SemverComparer"/>, that differentiates between different wildcard characters and omitted components.</para>
         /// </summary>
-        public static SemverComparer DifferentiateWildcards { get; }
-            = new SemverComparer(SemverComparison.DifferentiateWildcards);
+        public static SemverComparer DiffWildcards { get; }
+            = new SemverComparer(SemverComparison.DiffWildcards);
         /// <summary>
-        ///   <para>Gets the <see cref="SemverComparer"/>, that includes the build metadata in the comparison, and, when comparing partial versions, differentiates between different wildcard characters and omitted components.</para>
+        ///   <para>Gets the <see cref="SemverComparer"/> that compares objects exactly: includes build metadata in the comparison, differentiates between different wildcard characters and omitted components, and differentiates between implicit and explicit equality operators.</para>
         /// </summary>
-        public static SemverComparer IncludeBuildDiffWildcards { get; }
-            = new SemverComparer(SemverComparison.IncludeBuildMetadata | SemverComparison.DifferentiateWildcards);
+        public static SemverComparer Exact { get; }
+            = new SemverComparer(SemverComparison.Exact);
 
     }
 }

@@ -14,7 +14,7 @@ namespace Chasm.SemanticVersioning
     {
         private BuildMetadataComparer() { }
 
-        private readonly SemverComparer Comparer = SemverComparer.IncludeBuildMetadata;
+        private readonly SemverComparer Comparer = SemverComparer.IncludeBuild;
 
         /// <summary>
         ///   <para>Gets an instance of the <see cref="BuildMetadataComparer"/> type.</para>

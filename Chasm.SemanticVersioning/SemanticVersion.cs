@@ -165,7 +165,7 @@ namespace Chasm.SemanticVersioning
         public static SemanticVersion MaxValue { get; } = new SemanticVersion(int.MaxValue, int.MaxValue, int.MaxValue, null, null, null, null);
 
         /// <summary>
-        ///   <para>Determines whether this semantic version is equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Determines whether this semantic version is equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="other">The semantic version to compare with this semantic version.</param>
         /// <returns><see langword="true"/>, if this semantic version is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
@@ -176,14 +176,14 @@ namespace Chasm.SemanticVersioning
             return Utility.EqualsIdentifiers(_preReleases, other._preReleases);
         }
         /// <summary>
-        ///   <para>Determines whether this semantic version is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Determines whether this semantic version is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="obj">The object to compare with this semantic version.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="SemanticVersion"/> instance equal to this semantic version; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => Equals(obj as SemanticVersion);
         /// <summary>
-        ///   <para>Returns a hash code for this semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Returns a hash code for this semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <returns>A hash code for this semantic version.</returns>
         [Pure] public override int GetHashCode()
@@ -202,7 +202,7 @@ namespace Chasm.SemanticVersioning
         }
 
         /// <summary>
-        ///   <para>Compares this semantic version with another specified semantic version and returns an integer that indicates whether this semantic version precedes, follows or occurs in the same position in the sort order as the <paramref name="other"/> semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Compares this semantic version with another specified semantic version and returns an integer that indicates whether this semantic version precedes, follows or occurs in the same position in the sort order as the <paramref name="other"/> semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="other">The semantic version to compare with this semantic version.</param>
         /// <returns>&lt;0, if this semantic version precedes <paramref name="other"/> in the sort order;<br/>=0, if this semantic version occurs in the same position in the sort order as <paramref name="other"/>;<br/>&gt;0, if this semantic version follows <paramref name="other"/> in the sort order.</returns>
@@ -228,7 +228,7 @@ namespace Chasm.SemanticVersioning
         }
 
         /// <summary>
-        ///   <para>Determines whether two specified semantic versions are equal.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Determines whether two specified semantic versions are equal.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="left">The first semantic version to compare.</param>
         /// <param name="right">The second semantic version to compare.</param>
@@ -236,7 +236,7 @@ namespace Chasm.SemanticVersioning
         [Pure] public static bool operator ==(SemanticVersion? left, SemanticVersion? right)
             => left is null ? right is null : left.Equals(right);
         /// <summary>
-        ///   <para>Determines whether two specified semantic versions are not equal.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Determines whether two specified semantic versions are not equal.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="left">The first semantic version to compare.</param>
         /// <param name="right">The second semantic version to compare.</param>
@@ -245,7 +245,7 @@ namespace Chasm.SemanticVersioning
             => !(left == right);
 
         /// <summary>
-        ///   <para>Determines whether a specified semantic version is greater than another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Determines whether a specified semantic version is greater than another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="left">The first semantic version to compare.</param>
         /// <param name="right">The second semantic version to compare.</param>
@@ -253,7 +253,7 @@ namespace Chasm.SemanticVersioning
         [Pure] public static bool operator >(SemanticVersion? left, SemanticVersion? right)
             => left is not null && left.CompareTo(right) > 0;
         /// <summary>
-        ///   <para>Determines whether a specified semantic version is less than another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Determines whether a specified semantic version is less than another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="left">The first semantic version to compare.</param>
         /// <param name="right">The second semantic version to compare.</param>
@@ -261,7 +261,7 @@ namespace Chasm.SemanticVersioning
         [Pure] public static bool operator <(SemanticVersion? left, SemanticVersion? right)
             => right > left;
         /// <summary>
-        ///   <para>Determines whether a specified semantic version is greater than or equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Determines whether a specified semantic version is greater than or equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="left">The first semantic version to compare.</param>
         /// <param name="right">The second semantic version to compare.</param>
@@ -269,7 +269,7 @@ namespace Chasm.SemanticVersioning
         [Pure] public static bool operator >=(SemanticVersion? left, SemanticVersion? right)
             => !(right > left);
         /// <summary>
-        ///   <para>Determines whether a specified semantic version is less than or equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuildMetadata"/>.</para>
+        ///   <para>Determines whether a specified semantic version is less than or equal to another specified semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>
         /// </summary>
         /// <param name="left">The first semantic version to compare.</param>
         /// <param name="right">The second semantic version to compare.</param>
