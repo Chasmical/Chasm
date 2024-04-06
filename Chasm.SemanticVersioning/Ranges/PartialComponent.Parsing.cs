@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using Chasm.Utilities;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -57,23 +56,24 @@ namespace Chasm.SemanticVersioning.Ranges
                 return SemverErrorCode.Success;
             }
             if (text.Length == 1) return TryParse(text[0], out component) ? SemverErrorCode.Success : SemverErrorCode.ComponentInvalid;
+            component = default;
 
             if (Utility.IsNumeric(text))
             {
                 if ((options & SemverOptions.AllowLeadingZeroes) == 0 && text[0] == '0' && text.Length > 1)
-                    return Util.Fail(SemverErrorCode.ComponentLeadingZeroes, out component);
+                    return SemverErrorCode.ComponentLeadingZeroes;
                 if (!int.TryParse(text, NumberStyles.None, null, out int value))
-                    return Util.Fail(SemverErrorCode.ComponentTooBig, out component);
+                    return SemverErrorCode.ComponentTooBig;
                 component = new PartialComponent(value, default);
                 return SemverErrorCode.Success;
             }
 
             // at this point, it's not a numeric component, and text's length > 1
             if ((options & SemverOptions.AllowExtraWildcards) == 0)
-                return Util.Fail(SemverErrorCode.ComponentInvalid, out component);
+                return SemverErrorCode.ComponentInvalid;
 
             char wildcard = text[0];
-            if (!AllSameCharacter(text, wildcard)) return Util.Fail(SemverErrorCode.ComponentInvalid, out component);
+            if (!AllSameCharacter(text, wildcard)) return SemverErrorCode.ComponentInvalid;
 
             component = new PartialComponent(-wildcard, default);
             return SemverErrorCode.Success;
@@ -118,7 +118,11 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="component">When this method returns, contains the <see cref="PartialComponent"/> structure equivalent to the partial version component specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="default"/> if the conversion failed.</param>
         /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool TryParse(string? text, out PartialComponent component)
-            => text is null ? Util.Fail(out component) : TryParse(text.AsSpan(), out component);
+        {
+            if (text is not null) return TryParse(text.AsSpan(), out component);
+            component = default;
+            return false;
+        }
         /// <summary>
         ///   <para>Tries to convert the specified read-only span of characters representing a partial version component to an equivalent <see cref="PartialComponent"/> structure, and returns a value indicating whether the conversion was successful.</para>
         /// </summary>
@@ -158,7 +162,11 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="component">When this method returns, contains the <see cref="PartialComponent"/> structure equivalent to the partial version component specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="default"/> if the conversion failed.</param>
         /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool TryParse(string? text, SemverOptions options, out PartialComponent component)
-            => text is null ? Util.Fail(out component) : TryParse(text.AsSpan(), options, out component);
+        {
+            if (text is not null) return TryParse(text.AsSpan(), options, out component);
+            component = default;
+            return false;
+        }
         /// <summary>
         ///   <para>Tries to convert the specified read-only span of characters representing a partial version component to an equivalent <see cref="PartialComponent"/> structure using the specified parsing <paramref name="options"/>, and returns a value indicating whether the conversion was successful.</para>
         /// </summary>

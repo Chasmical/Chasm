@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <None Remove="Chasm.SemanticVersioning.Tests.csproj.DotSettings" />
+    <ProjectReference Include="..\Chasm.Utilities\Chasm.Utilities.csproj" />
+    <ProjectReference Include="..\Chasm.Collections\Chasm.Collections.csproj" />
     <ProjectReference Include="..\Chasm.SemanticVersioning\Chasm.SemanticVersioning.csproj" />
   </ItemGroup>
 

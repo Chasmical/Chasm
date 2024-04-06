@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using Chasm.Formatting;
 using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
@@ -32,6 +33,21 @@ namespace Chasm.SemanticVersioning
                     return false;
             return true;
         }
+
+        [Pure] public static ReadOnlyCollection<T> AsReadOnly<T>(this T[] array)
+        {
+            if (array.Length != 0) return new ReadOnlyCollection<T>(array);
+#if NET8_0_OR_GREATER
+            return ReadOnlyCollection<T>.Empty;
+        }
+#else
+            return Collection<T>.Empty;
+        }
+        private static class Collection<T>
+        {
+            public static readonly ReadOnlyCollection<T> Empty = new([]);
+        }
+#endif
 
         public static ReadOnlySpan<char> ReadSemverIdentifier(this scoped ref SpanParser parser)
         {

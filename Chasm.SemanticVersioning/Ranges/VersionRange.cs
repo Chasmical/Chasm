@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Chasm.Collections;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -111,7 +110,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="includePreReleases">Determines whether to treat pre-release versions like regular versions.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version range otherwise, <see langword="false"/>.</returns>
         [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
-            => version is not null && _comparatorSets.Exists(cs => cs.IsSatisfiedBy(version, includePreReleases));
+            => version is not null && Array.Exists(_comparatorSets, cs => cs.IsSatisfiedBy(version, includePreReleases));
 
         /// <summary>
         ///   <para>Returns a desugared copy of this version range, that is, with advanced version comparators replaced by equivalent primitive version comparators.</para>

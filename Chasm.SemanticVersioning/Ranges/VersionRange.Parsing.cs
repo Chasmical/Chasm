@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Chasm.Formatting;
-using Chasm.Utilities;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -227,7 +226,11 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="range">When this method returns, contains the <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="null"/> if the conversion failed.</param>
         /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool TryParse(string? text, [NotNullWhen(true)] out VersionRange? range)
-            => text is null ? Util.Fail(out range) : TryParse(text, SemverOptions.Strict, out range);
+        {
+            if (text is not null) return TryParse(text, SemverOptions.Strict, out range);
+            range = null;
+            return false;
+        }
         /// <summary>
         ///   <para>Tries to convert the specified read-only span of characters representing a version range to an equivalent <see cref="VersionRange"/> instance, and returns a value indicating whether the conversion was successful.</para>
         /// </summary>
@@ -264,7 +267,11 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="range">When this method returns, contains the <see cref="VersionRange"/> instance equivalent to the version range specified in the <paramref name="text"/>, if the conversion succeeded, or <see langword="null"/> if the conversion failed.</param>
         /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool TryParse(string? text, SemverOptions options, [NotNullWhen(true)] out VersionRange? range)
-            => text is null ? Util.Fail(out range) : TryParse(text.AsSpan(), options, out range);
+        {
+            if (text is not null) return TryParse(text.AsSpan(), options, out range);
+            range = null;
+            return false;
+        }
         /// <summary>
         ///   <para>Tries to convert the specified read-only span of characters representing a version range to an equivalent <see cref="VersionRange"/> instance, using the specified parsing <paramref name="options"/>, and returns a value indicating whether the conversion was successful.</para>
         /// </summary>

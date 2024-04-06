@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Chasm.Collections;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -36,7 +35,7 @@ namespace Chasm.SemanticVersioning.Ranges
             if (comparators?.Length > 0)
             {
                 if (Array.IndexOf(comparators, null) >= 0) throw new ArgumentException(Exceptions.ComparatorsNull, nameof(comparators));
-                _comparators = comparators.Copy();
+                _comparators = (Comparator[])comparators.Clone();
             }
             else _comparators = [];
         }
@@ -81,10 +80,10 @@ namespace Chasm.SemanticVersioning.Ranges
             if (version is null) return false;
             if (!includePreReleases && version.IsPreRelease)
             {
-                bool canCompare = _comparators.Exists(c => c.CanMatchPreRelease(version.Major, version.Minor, version.Patch));
+                bool canCompare = Array.Exists(_comparators, c => c.CanMatchPreRelease(version.Major, version.Minor, version.Patch));
                 if (!canCompare) return false;
             }
-            return _comparators.TrueForAll(c => c.IsSatisfiedBy(version));
+            return !Array.Exists(_comparators, c => c.IsSatisfiedBy(version));
         }
 
         /// <summary>
