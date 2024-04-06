@@ -158,7 +158,11 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
-        // TODO: Add &, |, ~ operators
+        // TODO: Implement Equals, GetHashCode, and ==, != operators
+
+        // TODO: Implement >, <, >=, <= operators
+
+        // TODO: Implement &, |, ~ operators
 
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Chasm.SemanticVersioning.Ranges
 {
     /// <summary>
-    ///   <para>Specifies primitive operators, used by <see cref="PrimitiveComparator"/> and <see cref="XRangeComparator"/> classes.</para>
+    ///   <para>Specifies comparison operators, used by <see cref="PrimitiveComparator"/> and <see cref="XRangeComparator"/> classes.</para>
     /// </summary>
     public enum PrimitiveOperator : byte
     {
