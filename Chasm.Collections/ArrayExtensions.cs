@@ -495,7 +495,12 @@ namespace Chasm.Collections
         [Pure] public static ReadOnlyCollection<T> AsReadOnly<T>(this T[] array)
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
-            return array.Length != 0 ? new ReadOnlyCollection<T>(array) : ReadOnlyCollection.Empty<T>();
+            if (array.Length != 0) return new ReadOnlyCollection<T>(array);
+#if NET8_0_OR_GREATER
+            return ReadOnlyCollection<T>.Empty;
+#else
+            return ReadOnlyCollection.Empty<T>();
+#endif
         }
 
     }

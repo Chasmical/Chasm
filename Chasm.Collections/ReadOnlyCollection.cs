@@ -14,16 +14,20 @@ namespace Chasm.Collections
         /// <typeparam name="T">The type of the elements in the read-only collection.</typeparam>
         /// <returns>An empty read-only collection.</returns>
         [Pure] public static ReadOnlyCollection<T> Empty<T>()
-            => EmptyCollection<T>.Instance;
-
-        private static class EmptyCollection<T>
         {
-            internal static readonly ReadOnlyCollection<T> Instance
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_3_OR_GREATER || NET46_OR_GREATER
-                = new(System.Array.Empty<T>());
+#if NET8_0_OR_GREATER
+            return ReadOnlyCollection<T>.Empty;
 #else
-                = new(new T[0]);
+            return EmptyCollection<T>.Instance;
 #endif
         }
+
+#if !NET8_0_OR_GREATER
+        private static class EmptyCollection<T>
+        {
+            internal static readonly ReadOnlyCollection<T> Instance = new([]);
+        }
+#endif
+
     }
 }
