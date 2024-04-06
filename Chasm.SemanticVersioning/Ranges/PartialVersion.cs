@@ -239,14 +239,14 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>A hash code for this partial version.</returns>
         [Pure] public override int GetHashCode()
         {
-            if (_preReleases.Length == 0) return HashCode.Combine(Major, Minor, Patch);
+            SemverPreRelease[] preReleases = _preReleases;
+            if (preReleases.Length == 0) return HashCode.Combine(Major, Minor, Patch);
 
             HashCode hash = new();
             hash.Add(Major);
             hash.Add(Minor);
             hash.Add(Patch);
 
-            SemverPreRelease[] preReleases = _preReleases;
             for (int i = 0; i < preReleases.Length; i++)
                 hash.Add(preReleases[i]);
 

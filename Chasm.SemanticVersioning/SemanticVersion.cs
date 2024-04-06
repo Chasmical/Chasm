@@ -188,15 +188,16 @@ namespace Chasm.SemanticVersioning
         /// <returns>A hash code for this semantic version.</returns>
         [Pure] public override int GetHashCode()
         {
-            if (_preReleases.Length == 0) return HashCode.Combine(Major, Minor, Patch);
+            SemverPreRelease[] preReleases = _preReleases;
+            if (preReleases.Length == 0) return HashCode.Combine(Major, Minor, Patch);
 
             HashCode hash = new();
             hash.Add(Major);
             hash.Add(Minor);
             hash.Add(Patch);
 
-            for (int i = 0, length = _preReleases.Length; i < length; i++)
-                hash.Add(_preReleases[i]);
+            for (int i = 0; i < preReleases.Length; i++)
+                hash.Add(preReleases[i]);
 
             return hash.ToHashCode();
         }
