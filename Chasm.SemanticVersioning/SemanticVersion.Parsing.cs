@@ -67,7 +67,7 @@ namespace Chasm.SemanticVersioning
                 List<SemverPreRelease> list = [];
                 do
                 {
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     SemverErrorCode code = SemverPreRelease.ParseValidated(read, false, out SemverPreRelease preRelease);
                     if (code is not SemverErrorCode.Success) return code;
                     list.Add(preRelease);
@@ -80,7 +80,7 @@ namespace Chasm.SemanticVersioning
                 List<string> list = [];
                 do
                 {
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty) return SemverErrorCode.BuildMetadataEmpty;
                     list.Add(new string(read));
                 }
@@ -166,7 +166,7 @@ namespace Chasm.SemanticVersioning
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty)
                     {
                         if (removeEmpty) continue;
@@ -206,7 +206,7 @@ namespace Chasm.SemanticVersioning
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty)
                     {
                         if (removeEmpty) continue;

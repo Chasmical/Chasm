@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Chasm.Formatting;
 using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 
@@ -13,6 +12,8 @@ namespace Chasm.SemanticVersioning
             // Note: IsAsciiDigit and IsAsciiLetter are slightly slower, and also increase the assembly size
             return ((uint)c | ' ') - 'a' <= 'z' - 'a' || (uint)c - '0' <= '9' - '0' || c == '-';
         }
+        [Pure] public static bool IsPartialComponentCharacter(char c)
+            => (uint)c - '0' <= '9' - '0' || ((uint)c | ' ') == 'x' || c == '*';
 
         [Pure] public static bool IsNumeric(ReadOnlySpan<char> text)
         {
@@ -50,25 +51,6 @@ namespace Chasm.SemanticVersioning
             public static readonly ReadOnlyCollection<T> Empty = new([]);
         }
 #endif
-
-        public static ReadOnlySpan<char> ReadSemverIdentifier(this scoped ref SpanParser parser)
-        {
-            int start = parser.position;
-            while (parser.position < parser.length && IsValidCharacter(parser.source[parser.position]))
-                parser.position++;
-            return parser.source.Slice(start, parser.position - start);
-        }
-        public static ReadOnlySpan<char> ReadPartialComponent(this scoped ref SpanParser parser)
-        {
-            int start = parser.position;
-            while (parser.position < parser.length)
-            {
-                char next = parser.source[parser.position];
-                if ((uint)next - '0' >= 10u && next is not ('x' or 'X' or '*')) break;
-                parser.position++;
-            }
-            return parser.source.Slice(start, parser.position - start);
-        }
 
         [Pure] public static ReadOnlySpan<char> Trim(ReadOnlySpan<char> text, SemverOptions options)
         {

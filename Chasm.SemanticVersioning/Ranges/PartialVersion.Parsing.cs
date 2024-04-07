@@ -52,35 +52,38 @@ namespace Chasm.SemanticVersioning.Ranges
 
             bool allowLeadingZeroes = (options & SemverOptions.AllowLeadingZeroes) != 0;
 
-            ReadOnlySpan<char> read = parser.ReadPartialComponent();
+            ReadOnlySpan<char> read;
+            unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
             if (read.IsEmpty) return SemverErrorCode.MajorNotFound;
 
             SemverErrorCode code = PartialComponent.ParseTrimmed(read, options, out PartialComponent major);
             if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MAJOR;
             if (innerWhite) parser.SkipWhitespaces();
 
-            static bool SkipAndWhitespace(ref SpanParser parser, char c, bool skipWhitespace)
-            {
-                bool res = parser.Skip(c);
-                if (res && skipWhitespace) parser.SkipWhitespaces();
-                return res;
-            }
-
             PartialComponent minor = PartialComponent.Omitted;
             PartialComponent patch = PartialComponent.Omitted;
 
-            if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadPartialComponent()).IsEmpty)
+            if (parser.Skip('.'))
             {
-                code = PartialComponent.ParseTrimmed(read, options, out minor);
-                if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MINOR;
                 if (innerWhite) parser.SkipWhitespaces();
-
-                if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadPartialComponent()).IsEmpty)
+                unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
+                if (!read.IsEmpty)
                 {
-                    code = PartialComponent.ParseTrimmed(read, options, out patch);
-                    if (code is not SemverErrorCode.Success) return code | SemverErrorCode.PATCH;
+                    code = PartialComponent.ParseTrimmed(read, options, out minor);
+                    if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MINOR;
                     if (innerWhite) parser.SkipWhitespaces();
 
+                    if (parser.Skip('.'))
+                    {
+                        if (innerWhite) parser.SkipWhitespaces();
+                        unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
+                        if (!read.IsEmpty)
+                        {
+                            code = PartialComponent.ParseTrimmed(read, options, out minor);
+                            if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MINOR;
+                            if (innerWhite) parser.SkipWhitespaces();
+                        }
+                    }
                 }
             }
 
@@ -92,7 +95,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty)
                     {
                         if (removeEmpty) continue;
@@ -132,7 +135,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty)
                     {
                         if (removeEmpty) continue;
