@@ -29,6 +29,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
         // For convenience, the left comparator when not null is always a '>', '>=' or '=',
         // while the right one when not null is always a '<' or '<=' comparator.
+        // Additionally, both comparators are guaranteed to not have any build metadata.
         // This may change in the future, so don't rely on it outside of this project.
         private (PrimitiveComparator?, PrimitiveComparator?)? primitives;
 

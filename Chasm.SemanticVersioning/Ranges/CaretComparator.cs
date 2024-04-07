@@ -25,29 +25,31 @@ namespace Chasm.SemanticVersioning.Ranges
             // ^x.x.x-rc ⇒ *
             // ^x.2.3    ⇒ *
             // ^x.2.3-rc ⇒ *
-            // (TODO: what about unspecified minor and patch components and pre-releases here?)
+            // (Note: node-semver ignores minor, patch and pre-releases here)
             if (!Operand.Major.IsNumeric) return (null, null);
             int major = Operand.Major.AsNumber; // M is numeric
 
             if (major != 0 || !Operand.Minor.IsNumeric)
             {
                 // ^M.m.p[-rr] ⇒ >=M.m.p[-rr] <M+1.0.0-0
+                // ^M.x.x[-rr] ⇒ >=M.0.0      <M+1.0.0-0
 
-                // ^1.2.3    ⇒ >=1.2.3    <2.0.0
-                // ^1.2.3-rc ⇒ >=1.2.3-rc <2.0.0
-                // ^1.2.x    ⇒ >=1.2.0    <2.0.0
-                // ^1.2.x-rc ⇒ >=1.2.0-rc <2.0.0 (TODO: node-semver ignores pre-releases if there are unspecified components)
+                // ^1.2.3    ⇒ >=1.2.3    <2.0.0-0
+                // ^1.2.3-rc ⇒ >=1.2.3-rc <2.0.0-0
 
-                // ^1.x.3    ⇒ >=1.0.3    <2.0.0 (TODO: node-semver ignores specified patch if minor is unspecified)
-                // ^1.x.3-rc ⇒ >=1.0.3-rc <2.0.0 (TODO: node-semver ignores specified patch if minor is unspecified)
-                // ^1.x.x    ⇒ >=1.0.0    <2.0.0
-                // ^1.x.x-rc ⇒ >=1.0.0-rc <2.0.0 (TODO: node-semver ignores pre-releases if there are unspecified components)
-                // ^0.x.x    ⇒ >=0.0.0    <1.0.0
-                // ^0.x.x-rc ⇒ >=0.0.0-rc <1.0.0 (TODO: node-semver ignores pre-releases if there are unspecified components)
+                // (Note: node-semver ignores components and pre-releases after an unspecified component)
+                // ^1.2.x    ⇒ >=1.2.0    <2.0.0-0
+                // ^1.2.x-rc ⇒ >=1.2.0    <2.0.0-0
+                // ^1.x.x    ⇒ >=1.0.0    <2.0.0-0
+                // ^1.x.x-rc ⇒ >=1.0.0    <2.0.0-0
+                // ^1.x.3    ⇒ >=1.0.0    <2.0.0-0
+                // ^1.x.3-rc ⇒ >=1.0.0    <2.0.0-0
+                // ^0.x.x    ⇒ >=0.0.0    <1.0.0-0
+                // ^0.x.x-rc ⇒ >=0.0.0    <1.0.0-0
 
                 if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
                 return (
-                    GreaterThanOrEqual((SemanticVersion)Operand),
+                    GreaterThanOrEqual(Utility.NodeSemverTrim(Operand)),
                     LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, null, null))
                 );
             }
@@ -56,16 +58,20 @@ namespace Chasm.SemanticVersioning.Ranges
             if (minor != 0 || !Operand.Patch.IsNumeric)
             {
                 // ^0.m.p[-rr] ⇒ >=0.m.p[-rr] <0.m+1.0-0
+                // ^0.m.x[-rr] ⇒ >=0.m.0      <0.m+1.0-0
 
-                // ^0.2.3    ⇒ >=0.2.3    <0.3.0
-                // ^0.2.3-rc ⇒ >=0.2.3-rc <0.3.0
-                // ^0.2.x    ⇒ >=0.2.0    <0.3.0
-                // ^0.2.x-rc ⇒ >=0.2.0-rc <0.3.0 (TODO: node-semver ignores pre-releases if there are unspecified components)
-                // ^0.0.x    ⇒ >=0.0.0    <0.1.0
-                // ^0.0.x-rc ⇒ >=0.0.0-rc <0.1.0 (TODO: node-semver ignores pre-releases if there are unspecified components)
+                // ^0.2.3    ⇒ >=0.2.3    <0.3.0-0
+                // ^0.2.3-rc ⇒ >=0.2.3-rc <0.3.0-0
+
+                // (Note: node-semver ignores components and pre-releases after an unspecified component)
+                // ^0.2.x    ⇒ >=0.2.0    <0.3.0-0
+                // ^0.2.x-rc ⇒ >=0.2.0    <0.3.0-0
+                // ^0.0.x    ⇒ >=0.0.0    <0.1.0-0
+                // ^0.0.x-rc ⇒ >=0.0.0    <0.1.0-0
+
                 if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
                 return (
-                    GreaterThanOrEqual((SemanticVersion)Operand),
+                    GreaterThanOrEqual(Utility.NodeSemverTrim(Operand)),
                     LessThan(new SemanticVersion(0, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null))
                 );
             }
@@ -77,9 +83,10 @@ namespace Chasm.SemanticVersioning.Ranges
             // ^0.0.3-rc ⇒ >=0.0.3-rc <0.0.4-0
             // ^0.0.0    ⇒ >=0.0.0    <0.0.1-0
             // ^0.0.0-rc ⇒ >=0.0.0-rc <0.0.1-0
+
             if (patch == int.MaxValue) throw new InvalidOperationException(Exceptions.PatchTooBig);
             return (
-                GreaterThanOrEqual((SemanticVersion)Operand),
+                GreaterThanOrEqual(new SemanticVersion(0, 0, patch, Operand._preReleases, null, Operand._preReleasesReadonly, null)),
                 LessThan(new SemanticVersion(0, 0, patch + 1, SemverPreRelease.ZeroArray, null, null, null))
             );
         }

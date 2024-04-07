@@ -99,6 +99,8 @@ namespace Chasm.SemanticVersioning.Ranges
             Minor = minor;
             Patch = patch;
 
+            // TODO: disallow pre-releases and build metadata if patch is omitted?
+
             _preReleases = preReleases is null ? [] : preReleases.ToArray();
             if (buildMetadata is not null)
             {

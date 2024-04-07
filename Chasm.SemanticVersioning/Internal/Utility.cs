@@ -52,6 +52,31 @@ namespace Chasm.SemanticVersioning
         }
 #endif
 
+        /// <summary>
+        ///   <para>Handles the conversion of a partial version to a semantic one the same way as <c>node-semver</c>: ignores components and pre-releases after an unspecified component, and removes build metadata.</para>
+        /// </summary>
+        /// <param name="partial"></param>
+        /// <returns></returns>
+        public static SemanticVersion NodeSemverTrim(PartialVersion partial)
+        {
+            int major = partial.Major.GetValueOrMinusOne();
+            int minor = major >= 0 ? partial.Minor.GetValueOrMinusOne() : 0;
+            int patch = minor >= 0 ? partial.Patch.GetValueOrMinusOne() : 0;
+
+            SemverPreRelease[]? preReleases = null;
+            ReadOnlyCollection<SemverPreRelease>? preReleasesReadonly = null;
+            if (patch >= 0)
+            {
+                preReleases = partial._preReleases;
+                preReleasesReadonly = partial._preReleasesReadonly;
+            }
+
+            if (major < 0) major = 0;
+            if (minor < 0) minor = 0;
+            if (patch < 0) patch = 0;
+            return new SemanticVersion(major, minor, patch, preReleases, null, preReleasesReadonly, null);
+        }
+
         [Pure] public static ReadOnlySpan<char> Trim(ReadOnlySpan<char> text, SemverOptions options)
         {
             const SemverOptions bothTrim = SemverOptions.AllowLeadingWhite | SemverOptions.AllowTrailingWhite;
