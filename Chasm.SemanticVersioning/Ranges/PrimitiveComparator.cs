@@ -79,6 +79,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The primitive version comparator's operand.</param>
         /// <returns>The new implicit 'equal to' primitive version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static PrimitiveComparator ImplicitEqual(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.ImplicitEqual);
         /// <summary>
@@ -86,6 +87,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The primitive version comparator's operand.</param>
         /// <returns>The new 'equal to' primitive version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static PrimitiveComparator Equal(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.Equal);
         /// <summary>
@@ -93,6 +95,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The primitive version comparator's operand.</param>
         /// <returns>The new 'greater than' primitive version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static PrimitiveComparator GreaterThan(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.GreaterThan);
         /// <summary>
@@ -100,6 +103,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The primitive version comparator's operand.</param>
         /// <returns>The new 'less than' primitive version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static PrimitiveComparator LessThan(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.LessThan);
         /// <summary>
@@ -107,6 +111,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The primitive version comparator's operand.</param>
         /// <returns>The new 'greater than or equal to' primitive version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static PrimitiveComparator GreaterThanOrEqual(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.GreaterThanOrEqual);
         /// <summary>
@@ -114,9 +119,13 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The primitive version comparator's operand.</param>
         /// <returns>The new 'less than or equal to' primitive version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static PrimitiveComparator LessThanOrEqual(SemanticVersion operand)
             => new PrimitiveComparator(operand, PrimitiveOperator.LessThanOrEqual);
 
+        /// <summary>
+        ///   <para>Gets a primitive comparator (<c>&lt;0.0.0-0</c>) that doesn't match any versions.</para>
+        /// </summary>
         public static PrimitiveComparator None { get; } = LessThan(SemanticVersion.MinValue);
 
         /// <inheritdoc/>

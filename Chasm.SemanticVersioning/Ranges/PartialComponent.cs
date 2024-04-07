@@ -55,15 +55,16 @@ namespace Chasm.SemanticVersioning.Ranges
             => new PartialComponent(value ?? -1, default);
 
         /// <summary>
-        ///   <para>Defines an explicit conversion of a partial version component to a 32-bit signed integer.</para>
+        ///   <para>Defines an explicit conversion of a partial version component to a 32-bit signed integer. Returns 0 for wildcards and omitted components.</para>
         /// </summary>
         /// <param name="component">The partial version component to convert.</param>
         [Pure] public static explicit operator int(PartialComponent component)
             => component.GetValueOrZero();
         /// <summary>
-        ///   <para>Defines an explicit conversion of a partial version component to a wildcard or numeric character.</para>
+        ///   <para>Defines an explicit conversion of a partial version component to a single wildcard or numeric character.</para>
         /// </summary>
         /// <param name="component">The partial version component to convert.</param>
+        /// <exception cref="ArgumentException"><paramref name="component"/> cannot be represented as a single character.</exception>
         [Pure] public static explicit operator char(PartialComponent component)
         {
             int value = (int)component._value;
@@ -75,7 +76,7 @@ namespace Chasm.SemanticVersioning.Ranges
             throw new ArgumentException(Exceptions.ComponentNotSingleChar, nameof(component));
         }
         /// <summary>
-        ///   <para>Defines an explicit conversion of a partial version component to a nullable 32-bit signed integer.</para>
+        ///   <para>Defines an explicit conversion of a partial version component to a nullable 32-bit signed integer. Returns <see langword="null"/> for wildcards and omitted components.</para>
         /// </summary>
         /// <param name="component">The partial version component to convert.</param>
         [Pure] public static explicit operator int?(PartialComponent component)

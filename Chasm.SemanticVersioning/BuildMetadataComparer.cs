@@ -21,9 +21,9 @@ namespace Chasm.SemanticVersioning
         /// </summary>
         public static BuildMetadataComparer Instance { get; } = new BuildMetadataComparer();
 
-        int IComparer.Compare(object? a, object? b) => ((IComparer)Comparer).Compare(a, b);
-        bool IEqualityComparer.Equals(object? a, object? b) => ((IEqualityComparer)Comparer).Equals(a, b);
-        int IEqualityComparer.GetHashCode(object? obj) => ((IEqualityComparer)Comparer).GetHashCode(obj!);
+        [Pure] int IComparer.Compare(object? a, object? b) => ((IComparer)Comparer).Compare(a, b);
+        [Pure] bool IEqualityComparer.Equals(object? a, object? b) => ((IEqualityComparer)Comparer).Equals(a, b);
+        [Pure] int IEqualityComparer.GetHashCode(object? obj) => ((IEqualityComparer)Comparer).GetHashCode(obj!);
 
         /// <inheritdoc cref="SemverComparer.Compare(SemanticVersion?, SemanticVersion?)"/>
         [Pure] public int Compare(SemanticVersion? a, SemanticVersion? b) => Comparer.Compare(a, b);

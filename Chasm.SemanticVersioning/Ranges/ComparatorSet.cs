@@ -55,10 +55,17 @@ namespace Chasm.SemanticVersioning.Ranges
         public static implicit operator ComparatorSet?(Comparator? comparator)
             => comparator is null ? null : new ComparatorSet([comparator], default);
 
+        /// <summary>
+        ///   <para>Determines whether this comparator set contains any advanced comparators.</para>
+        /// </summary>
         public bool IsSugared => Array.Exists(_comparators, static c => c.IsAdvanced);
 
         // TODO: IsEmpty property would be nice to have
 
+        /// <summary>
+        ///   <para>Gets a read-only span of the comparators set's comparators.</para>
+        /// </summary>
+        /// <returns>A read-only span of the comparators set's comparators.</returns>
         [Pure] public ReadOnlySpan<Comparator> GetComparators()
             => _comparators;
 

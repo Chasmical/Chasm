@@ -89,10 +89,17 @@ namespace Chasm.SemanticVersioning.Ranges
         public static implicit operator VersionRange?(ComparatorSet? comparatorSet)
             => comparatorSet is null ? null : new VersionRange(comparatorSet);
 
+        /// <summary>
+        ///   <para>Determines whether this version range contains any advanced comparators.</para>
+        /// </summary>
         public bool IsSugared => Array.Exists(_comparatorSets, static cs => cs.IsSugared);
 
         // TODO: IsEmpty property would be nice to have
 
+        /// <summary>
+        ///   <para>Gets a read-only span of the version range's comparator sets.</para>
+        /// </summary>
+        /// <returns>A read-only span of the version range's comparator sets.</returns>
         [Pure] public ReadOnlySpan<ComparatorSet> GetComparatorSets()
             => _comparatorSets;
 

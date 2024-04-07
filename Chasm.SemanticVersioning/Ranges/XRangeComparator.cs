@@ -179,6 +179,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
         /// <returns>The new implicit 'equal to' X-Range version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static XRangeComparator ImplicitEqual(PartialVersion operand)
             => new XRangeComparator(operand, PrimitiveOperator.ImplicitEqual);
         /// <summary>
@@ -186,6 +187,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
         /// <returns>The new 'equal to' X-Range version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static XRangeComparator Equal(PartialVersion operand)
             => new XRangeComparator(operand, PrimitiveOperator.Equal);
         /// <summary>
@@ -193,6 +195,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
         /// <returns>The new 'greater than' X-Range version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static XRangeComparator GreaterThan(PartialVersion operand)
             => new XRangeComparator(operand, PrimitiveOperator.GreaterThan);
         /// <summary>
@@ -200,6 +203,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
         /// <returns>The new 'less than' X-Range version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static XRangeComparator LessThan(PartialVersion operand)
             => new XRangeComparator(operand, PrimitiveOperator.LessThan);
         /// <summary>
@@ -207,6 +211,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
         /// <returns>The new 'greater than or equal to' X-Range version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static XRangeComparator GreaterThanOrEqual(PartialVersion operand)
             => new XRangeComparator(operand, PrimitiveOperator.GreaterThanOrEqual);
         /// <summary>
@@ -214,9 +219,13 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="operand">The X-Range version comparator's operand.</param>
         /// <returns>The new 'less than or equal to' X-Range version comparator with the specified <paramref name="operand"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         [Pure] public static XRangeComparator LessThanOrEqual(PartialVersion operand)
             => new XRangeComparator(operand, PrimitiveOperator.LessThanOrEqual);
 
+        /// <summary>
+        ///   <para>Gets an X-Range comparator (<c>*</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
+        /// </summary>
         public static XRangeComparator All { get; } = new XRangeComparator(new PartialVersion(PartialComponent.Star));
 
         /// <inheritdoc/>

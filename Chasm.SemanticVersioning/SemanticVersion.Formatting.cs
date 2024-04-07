@@ -372,7 +372,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="destination">When this method returns, this semantic version formatted as a span of characters.</param>
         /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
         /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
-        public bool TryFormat(Span<char> destination, out int charsWritten)
+        [Pure] public bool TryFormat(Span<char> destination, out int charsWritten)
             => SpanBuilder.TryFormat(this, destination, out charsWritten);
         /// <summary>
         ///   <para>Tries to format this semantic version into the provided span of characters.</para>
@@ -383,13 +383,13 @@ namespace Chasm.SemanticVersioning
         /// <param name="format">The format to use.</param>
         /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
         /// <exception cref="FormatException">TODO</exception>
-        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format)
+        [Pure] public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format)
             => SpanBuilder.TryFormat(this, destination, out charsWritten, format);
 
-        string IFormattable.ToString(string? format, IFormatProvider? _)
+        [Pure] string IFormattable.ToString(string? format, IFormatProvider? _)
             => ToString(format);
 #if NET6_0_OR_GREATER
-        bool ISpanFormattable.TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? _)
+        [Pure] bool ISpanFormattable.TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? _)
             => TryFormat(destination, out charsWritten, format);
 #endif
 
