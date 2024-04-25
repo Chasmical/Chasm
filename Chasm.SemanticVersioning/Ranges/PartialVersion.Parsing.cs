@@ -79,8 +79,8 @@ namespace Chasm.SemanticVersioning.Ranges
                         unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
                         if (!read.IsEmpty)
                         {
-                            code = PartialComponent.ParseTrimmed(read, options, out minor);
-                            if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MINOR;
+                            code = PartialComponent.ParseTrimmed(read, options, out patch);
+                            if (code is not SemverErrorCode.Success) return code | SemverErrorCode.PATCH;
                             if (innerWhite) parser.SkipWhitespaces();
                         }
                     }
