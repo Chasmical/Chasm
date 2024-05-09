@@ -216,5 +216,21 @@ namespace Chasm.Utilities
                 return function(disposable);
         }
 
+        /// <summary>
+        ///   <para>Swaps the values of the specified locations.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the values to swap.</typeparam>
+        /// <param name="a">The first location to swap the values of. When this method returns, contains the value from <paramref name="b"/>.</param>
+        /// <param name="b">The second location to swap the values of. When this method returns, contains the value from <paramref name="a"/>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Swap<T>(ref T a, ref T b)
+        {
+#pragma warning disable IDE0180 // Suppress 'Use tuple to swap values' message
+            T temp = a;
+            a = b;
+            b = temp;
+#pragma warning restore IDE0180
+        }
+
     }
 }
