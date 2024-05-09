@@ -49,5 +49,18 @@ namespace Chasm.Collections
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source)
             => source ?? Enumerable.Empty<T>();
 
+        /// <inheritdoc cref="string.Join{T}(char, IEnumerable{T})"/>
+        public static string Join<T>(this IEnumerable<T> values, char separator)
+        {
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            return string.Join(separator, values);
+#else
+            return string.Join(separator.ToString(), values);
+#endif
+        }
+        /// <inheritdoc cref="string.Join{T}(string, IEnumerable{T})"/>
+        public static string Join<T>(this IEnumerable<T> values, string? separator)
+            => string.Join(separator, values);
+
     }
 }
