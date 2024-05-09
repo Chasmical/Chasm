@@ -2,6 +2,8 @@
 
 Provides various utility types and methods.
 
+
+
 ## `Util`
 
 Contains various utility methods, that can be used to shorten common branch code. *(or... you could also just not use the auto-formatting, and write everything in a single line, but that's not my style)*
@@ -53,6 +55,18 @@ using (StreamReader reader = File.OpenText(path))
 // Using Util.With:
 string? firstLine = With(File.OpenText(path), reader => reader.ReadLine());
 ```
+
+`Util.Swap` just swaps two values. Useful when the tuple swap is too long or prone to errors.
+
+```cs
+// Commonly written as:
+(firstVariable, secondVariable) = (secondVariable, firstVariable);
+
+// Using Util.Swap:
+Util.Swap(ref firstVariable, ref secondVariable);
+```
+
+
 
 ## `DelegateDisposable`
 

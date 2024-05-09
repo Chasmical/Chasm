@@ -1,5 +1,8 @@
 # Chasm.Utilities Changelog
 
+### v2.3.4
+- ✨ Added `static Util.Swap<T>(ref T, ref T)`;
+
 ### v2.3.3
 - ✨ Added `static DelegateDisposable.Create<TState>(Func<TState>, Action<TState>)`;
 
