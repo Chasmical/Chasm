@@ -1,5 +1,9 @@
 # Chasm.Collections Changelog
 
+### v2.2.4
+- ✨ Added `EnumerableExtensions.Join<T>(this IEnumerable<T>, char)`;
+- ✨ Added `EnumerableExtensions.Join<T>(this IEnumerable<T>, string)`;
+
 ### v2.2.3
 - ♻️ Refactored read-only collections' `Empty()` methods to use .NET 8's new `Empty` properties;
 

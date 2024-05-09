@@ -45,12 +45,13 @@ units.Add("centimeter", 0.01);
 
 ## `EnumerableExtensions`
 
-Contains `NotNull`, `ForEach` and `EmptyIfNull` extension methods for enumerables.
+Contains `NotNull`, `ForEach`, `EmptyIfNull` and `Join` extension methods for enumerables.
 
 ```cs
-string?[] values = new string?[] { "Hello", null, " World", null, "!\n" };
+string?[] values = new string?[] { "Hello", null, "World", null, "!" };
 
-values.NotNull().ForEach(word => Console.Write(word));
+Console.WriteLine(values.NotNull().Join(", "));
+// Output: Hello, World, !
 ```
 
 ## `Enumerator`, `ReadOnlyCollection`, `ReadOnlyDictionary`
