@@ -1,5 +1,8 @@
 # Chasm.Collections Changelog
 
+### v2.2.5
+- 🩹 Added missing `[Pure]` and `[InstantHandle]` attributes;
+
 ### v2.2.4
 - ✨ Added `EnumerableExtensions.Join<T>(this IEnumerable<T>, char)`;
 - ✨ Added `EnumerableExtensions.Join<T>(this IEnumerable<T>, string)`;
