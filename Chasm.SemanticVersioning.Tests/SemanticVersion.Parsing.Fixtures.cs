@@ -115,12 +115,20 @@ namespace Chasm.SemanticVersioning.Tests
             New("1.2", options).Returns(1, 2, 0).ButStrictThrows(Exceptions.PatchNotFound);
             New("1.", options).Throws(Exceptions.MinorNotFound);
             New("1", options).Throws(Exceptions.MinorNotFound);
+            New("1.2.-pre+build", options).Returns(1, 2, 0, "pre", "+build").ButStrictThrows(Exceptions.PatchNotFound);
+            New("1.2-pre+build", options).Returns(1, 2, 0, "pre", "+build").ButStrictThrows(Exceptions.PatchNotFound);
+            New("1.-pre+build", options).Throws(Exceptions.MinorNotFound);
+            New("1-pre+build", options).Throws(Exceptions.MinorNotFound);
             // Optional minor and patch components
             options = SemverOptions.OptionalMinor;
             New("1.2.", options).Throws(Exceptions.PatchNotFound);
             New("1.2", options).Throws(Exceptions.PatchNotFound);
             New("1.", options).Returns(1, 0, 0).ButStrictThrows(Exceptions.MinorNotFound);
             New("1", options).Returns(1, 0, 0).ButStrictThrows(Exceptions.MinorNotFound);
+            New("1.2.-pre+build", options).Throws(Exceptions.PatchNotFound);
+            New("1.2-pre+build", options).Throws(Exceptions.PatchNotFound);
+            New("1.-pre+build", options).Returns(1, 0, 0, "pre", "+build").ButStrictThrows(Exceptions.MinorNotFound);
+            New("1-pre+build", options).Returns(1, 0, 0, "pre", "+build").ButStrictThrows(Exceptions.MinorNotFound);
 
             // Allow leftovers
             options = SemverOptions.AllowLeftovers;
