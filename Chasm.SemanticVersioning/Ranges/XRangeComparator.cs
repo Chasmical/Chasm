@@ -239,7 +239,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Gets an X-Range comparator (<c>*</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
         /// </summary>
-        public static XRangeComparator All { get; } = new XRangeComparator(new PartialVersion(PartialComponent.Star));
+        public static XRangeComparator All { get; } = new XRangeComparator(PartialVersion.OneStar);
 
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()

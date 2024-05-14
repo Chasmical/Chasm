@@ -218,6 +218,11 @@ namespace Chasm.SemanticVersioning.Ranges
             => _buildMetadata;
 
         /// <summary>
+        ///   <para>Gets the one-star partial version with all other components omitted, <c>*</c>.</para>
+        /// </summary>
+        public static PartialVersion OneStar { get; } = new PartialVersion(PartialComponent.Star);
+
+        /// <summary>
         ///   <para>Determines whether this partial version is equal to another specified partial version.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
         /// </summary>
         /// <param name="other">The partial version to compare with this partial version.</param>
