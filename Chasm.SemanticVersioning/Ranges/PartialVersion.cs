@@ -99,17 +99,20 @@ namespace Chasm.SemanticVersioning.Ranges
             Minor = minor;
             Patch = patch;
 
-            // TODO: disallow pre-releases and build metadata if patch is omitted?
+            SemverPreRelease[] preReleasesArray = preReleases is null ? [] : preReleases.ToArray();
+            string[] buildMetadataArray = buildMetadata is null ? [] : buildMetadata.ToArray();
 
-            _preReleases = preReleases is null ? [] : preReleases.ToArray();
-            if (buildMetadata is not null)
+            for (int i = 0; i < buildMetadataArray.Length; i++)
+                Utility.ValidateBuildMetadataItem(buildMetadataArray[i], nameof(buildMetadata));
+
+            if (patch.IsOmitted)
             {
-                string[] array = buildMetadata.ToArray();
-                for (int i = 0; i < array.Length; i++)
-                    Utility.ValidateBuildMetadataItem(array[i], nameof(buildMetadata));
-                _buildMetadata = array;
+                if (preReleasesArray.Length > 0) throw new ArgumentException(Exceptions.PreReleaseAfterOmitted, nameof(preReleases));
+                if (buildMetadataArray.Length > 0) throw new ArgumentException(Exceptions.BuildMetadataAfterOmitted, nameof(buildMetadata));
             }
-            else _buildMetadata = [];
+
+            _preReleases = preReleasesArray;
+            _buildMetadata = buildMetadataArray;
         }
 
         /// <summary>

@@ -48,6 +48,8 @@ namespace Chasm.SemanticVersioning
 
         public const string MajorOmitted = "The major version component cannot be omitted.";
         public const string MinorOmitted = "The minor version component cannot be omitted, if the patch component isn't.";
+        public const string PreReleaseAfterOmitted = "The pre-release identifiers cannot follow an omitted version component.";
+        public const string BuildMetadataAfterOmitted = "The build metadata identifiers cannot follow an omitted version component.";
 
         public const string ComponentNotSingleChar = "The partial version component cannot be converted into one character.";
 
