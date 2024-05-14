@@ -15,25 +15,25 @@ namespace Chasm.SemanticVersioning.Tests
             int[] negativeNumbers = [-1, -42, -1204, int.MinValue];
             foreach (int num in negativeNumbers)
             {
-                ArgumentOutOfRangeException e = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(num, 10, 20));
-                Assert.StartsWith(Exceptions.MajorNegative, e.Message);
+                ArgumentOutOfRangeException ex = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(num, 10, 20));
+                Assert.StartsWith(Exceptions.MajorNegative, ex.Message);
 
-                e = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(0, num, 3));
-                Assert.StartsWith(Exceptions.MinorNegative, e.Message);
+                ex = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(0, num, 3));
+                Assert.StartsWith(Exceptions.MinorNegative, ex.Message);
 
-                e = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(0, 5, num));
-                Assert.StartsWith(Exceptions.PatchNegative, e.Message);
+                ex = Assert.Throws<ArgumentOutOfRangeException>(() => new SemanticVersion(0, 5, num));
+                Assert.StartsWith(Exceptions.PatchNegative, ex.Message);
             }
 
             // test constructors with invalid build metadata
-            ArgumentException e2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], ["$$$"]));
-            Assert.StartsWith(Exceptions.BuildMetadataInvalid, e2.Message);
+            ArgumentException ex2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], ["$$$"]));
+            Assert.StartsWith(Exceptions.BuildMetadataInvalid, ex2.Message);
 
-            e2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], [""]));
-            Assert.StartsWith(Exceptions.BuildMetadataEmpty, e2.Message);
+            ex2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], [""]));
+            Assert.StartsWith(Exceptions.BuildMetadataEmpty, ex2.Message);
 
-            e2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], [null!]));
-            Assert.StartsWith(Exceptions.BuildMetadataNull, e2.Message);
+            ex2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], [null!]));
+            Assert.StartsWith(Exceptions.BuildMetadataNull, ex2.Message);
         }
 
         [Theory, MemberData(nameof(CreateFormattingFixtures))]
@@ -81,5 +81,6 @@ namespace Chasm.SemanticVersioning.Tests
             Assert.Equal(version._preReleases.Length > 0, version.IsPreRelease);
             Assert.Equal(version._buildMetadata.Length > 0, version.HasBuildMetadata);
         }
+
     }
 }

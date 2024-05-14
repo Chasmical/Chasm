@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chasm.Collections;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -177,17 +176,7 @@ namespace Chasm.SemanticVersioning.Tests
                 Minor = minor;
                 Patch = patch;
 
-                int buildMetadataIndex = Array.FindIndex(identifiers, static obj => obj is string str && str[0] == '+');
-                if (buildMetadataIndex < 0) buildMetadataIndex = identifiers.Length;
-
-                PreReleases = identifiers[..buildMetadataIndex];
-                if (buildMetadataIndex < identifiers.Length)
-                {
-                    string[] buildMetadata = identifiers[buildMetadataIndex..].Cast<string>();
-                    buildMetadata[0] = buildMetadata[0][1..]; // remove leading '+'
-                    BuildMetadata = buildMetadata;
-                }
-                else BuildMetadata = Enumerable.Empty<string>();
+                (PreReleases, BuildMetadata) = TestUtil.Split(identifiers, "+");
 
                 return Extend<LooseParsingFixture>();
             }
