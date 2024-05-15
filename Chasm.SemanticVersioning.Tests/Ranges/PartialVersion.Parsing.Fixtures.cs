@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 using Xunit;
@@ -28,12 +27,17 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
-            // add semantic version tests (include only fixtures with all version components)
-            Regex hasAllComponents = new Regex(@"^[=vV\s]*\d+\s*\.\s*\d+\s*\.\s*\d+\s*");
+            // copy fixtures from semantic version tests
             foreach (SemanticVersionTests.ParsingFixture other in SemanticVersionTests.CreateParsingFixtures())
             {
-                if (!hasAllComponents.IsMatch(other.Source)) continue;
-                if (other.ExceptionMessage is Exceptions.MinorNotFound or Exceptions.PatchNotFound) continue;
+                // exclude fixtures with optional components (PartialVersion handles them differently)
+                const SemverOptions excludeOptional = ~(SemverOptions.OptionalMinor | SemverOptions.OptionalPatch);
+                if (other.IsValid
+                    ? !SemanticVersion.TryParse(other.Source, other.Options & excludeOptional, out _)
+                    : other.ExceptionMessage is Exceptions.MinorNotFound or Exceptions.PatchNotFound)
+                {
+                    continue;
+                }
 
                 object[] identifiers = [.. other.BuildMetadata ?? []];
                 if (identifiers.Length > 0) identifiers[0] = $"+{identifiers[0]}";
@@ -48,9 +52,33 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
-            // TODO: omitted components
+            // Wildcard components
+            New("1.2.x").Returns(1, 2, 'x');
+            // Identifiers and components after wildcards technically ARE allowed, they're just ignored when matching
+            New("1.x.*-pre+build").Returns(1, 'x', '*', "pre", "+build");
+            New("1.X.5-pre+build").Returns(1, 'x', 5, "pre", "+build");
+            New("*.x.X-pre+build").Returns('*', 'x', 'X', "pre", "+build");
 
-            // TODO: identifiers after omitted components
+            // Omitted components
+            New("1.2").Returns(1, 2, null);
+            New("1").Returns(1, null, null);
+            New("").Throws(Exceptions.MajorNotFound);
+            // Omitted + wildcard components
+            New("1.x").Returns(1, 'x', null);
+            New("X.5").Returns('X', 5, null);
+            New("*").Returns('*', null, null);
+
+            // Identifiers are not allowed after an omitted component
+            New("1.x-pre").Throws(Exceptions.PreReleaseAfterOmitted);
+            New("*-pre").Throws(Exceptions.PreReleaseAfterOmitted);
+            New("1.X+build").Throws(Exceptions.BuildMetadataAfterOmitted);
+            New("*+build").Throws(Exceptions.BuildMetadataAfterOmitted);
+
+            // Extra wildcard characters
+            options = SemverOptions.AllowExtraWildcards;
+            New("****.XXX.x-pre+build", options).Returns('*', 'X', 'x', "pre", "+build").ButStrictThrows(Exceptions.MajorInvalid);
+            New("1.xx.3-pre+build", options).Returns(1, 'x', 3, "pre", "+build").ButStrictThrows(Exceptions.MinorInvalid);
+            New("1.2.XXX-pre+build", options).Returns(1, 2, 'X', "pre", "+build").ButStrictThrows(Exceptions.PatchInvalid);
 
 
 
