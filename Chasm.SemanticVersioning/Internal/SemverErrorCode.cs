@@ -54,9 +54,15 @@ namespace Chasm.SemanticVersioning
         BuildMetadataEmpty      = BUILD_METADATA | EMPTY,
         VersionRangeEmpty       = VERSION_RANGE  | EMPTY,
 
+        MajorInvalid            = MAJOR          | INVALID,
+        MinorInvalid            = MINOR          | INVALID,
+        PatchInvalid            = PATCH          | INVALID,
         ComponentInvalid        = COMPONENT      | INVALID,
         PreReleaseInvalid       = PRERELEASE     | INVALID,
         BuildMetadataInvalid    = BUILD_METADATA | INVALID,
+
+        PreReleaseAfterOmitted     = PRERELEASE     | LEFTOVERS,
+        BuildMetadataAfterOmitted  = BUILD_METADATA | LEFTOVERS,
 
         Leftovers               = LEFTOVERS,
 

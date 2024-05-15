@@ -63,33 +63,37 @@ namespace Chasm.SemanticVersioning.Ranges
             PartialComponent minor = PartialComponent.Omitted;
             PartialComponent patch = PartialComponent.Omitted;
 
+            bool allowIdentifiers = false;
+
             if (parser.Skip('.'))
             {
                 if (innerWhite) parser.SkipWhitespaces();
                 unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
-                if (!read.IsEmpty)
-                {
-                    code = PartialComponent.ParseTrimmed(read, options, out minor);
-                    if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MINOR;
-                    if (innerWhite) parser.SkipWhitespaces();
+                if (read.IsEmpty) return SemverErrorCode.MinorNotFound;
 
-                    if (parser.Skip('.'))
-                    {
-                        if (innerWhite) parser.SkipWhitespaces();
-                        unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
-                        if (!read.IsEmpty)
-                        {
-                            code = PartialComponent.ParseTrimmed(read, options, out patch);
-                            if (code is not SemverErrorCode.Success) return code | SemverErrorCode.PATCH;
-                            if (innerWhite) parser.SkipWhitespaces();
-                        }
-                    }
+                code = PartialComponent.ParseTrimmed(read, options, out minor);
+                if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MINOR;
+                if (innerWhite) parser.SkipWhitespaces();
+
+                if (parser.Skip('.'))
+                {
+                    if (innerWhite) parser.SkipWhitespaces();
+                    unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
+                    if (read.IsEmpty) return SemverErrorCode.PatchNotFound;
+
+                    code = PartialComponent.ParseTrimmed(read, options, out patch);
+                    if (code is not SemverErrorCode.Success) return code | SemverErrorCode.PATCH;
+                    if (innerWhite) parser.SkipWhitespaces();
+                    allowIdentifiers = true;
                 }
             }
 
             SemverPreRelease[]? preReleases = null;
+
             if (parser.Skip('-'))
             {
+                if (!allowIdentifiers) return SemverErrorCode.PreReleaseAfterOmitted;
+
                 bool removeEmpty = (options & SemverOptions.RemoveEmptyPreReleases) != 0;
                 List<SemverPreRelease> list = [];
                 do
@@ -112,6 +116,8 @@ namespace Chasm.SemanticVersioning.Ranges
             else if ((options & SemverOptions.OptionalPreReleaseSeparator) != 0
                   && parser.TryPeek(out char next) && Utility.IsValidCharacter(next))
             {
+                if (!allowIdentifiers) return SemverErrorCode.PreReleaseAfterOmitted;
+
                 List<SemverPreRelease> list = [];
                 do
                 {
@@ -130,6 +136,8 @@ namespace Chasm.SemanticVersioning.Ranges
             string[]? buildMetadata = null;
             if (parser.Skip('+'))
             {
+                if (!allowIdentifiers) return SemverErrorCode.BuildMetadataAfterOmitted;
+
                 bool removeEmpty = (options & SemverOptions.RemoveEmptyBuildMetadata) != 0;
                 List<string> list = [];
                 do

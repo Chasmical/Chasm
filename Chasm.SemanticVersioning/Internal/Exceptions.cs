@@ -34,6 +34,9 @@ namespace Chasm.SemanticVersioning
         public const string VersionRangeEmpty = "The version range must contain at least one comparator set.";
 
         public const string ComponentInvalid = "The partial version component must be either numeric or a wildcard character.";
+        public const string MajorInvalid = "The major partial version component must be either numeric or a wildcard character.";
+        public const string MinorInvalid = "The minor partial version component must be either numeric or a wildcard character.";
+        public const string PatchInvalid = "The patch partial version component must be either numeric or a wildcard character.";
         public const string PreReleaseInvalid = "The pre-release identifier must only contain [A-Za-z0-9-] characters.";
         public const string BuildMetadataInvalid = "The build metadata identifier must only contain [A-Za-z0-9-] characters.";
 
@@ -81,9 +84,14 @@ namespace Chasm.SemanticVersioning
             SemverErrorCode.BuildMetadataEmpty => BuildMetadataEmpty,
 
             SemverErrorCode.ComponentInvalid => ComponentInvalid,
+            SemverErrorCode.MajorInvalid => MajorInvalid,
+            SemverErrorCode.MinorInvalid => MinorInvalid,
+            SemverErrorCode.PatchInvalid => PatchInvalid,
             SemverErrorCode.PreReleaseInvalid => PreReleaseInvalid,
             SemverErrorCode.BuildMetadataInvalid => BuildMetadataInvalid,
 
+            SemverErrorCode.PreReleaseAfterOmitted => PreReleaseAfterOmitted,
+            SemverErrorCode.BuildMetadataAfterOmitted => BuildMetadataAfterOmitted,
             SemverErrorCode.Leftovers => Leftovers,
 
             _ => throw new ArgumentException($"{code} error code is not supposed to have a message."),
