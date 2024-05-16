@@ -111,7 +111,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <returns>The partial version component's numeric value, if it's numeric; otherwise, <c>0</c>.</returns>
         [Pure] public int GetValueOrZero()
-            => (int)Math.Max(_value, 0);
+            => Math.Max((int)_value, 0);
         // Note: GetValueOrMinusOne() doesn't need to be public.
         // Users can write it as (comp.IsNumeric ? (int)comp : -1) or ((int?)comp ?? -1) instead.
         [Pure] internal int GetValueOrMinusOne()
