@@ -39,7 +39,22 @@ namespace Chasm.SemanticVersioning.Tests
 
         }
 
-        // TODO: test constructors with CreateFormattingFixtures()
+        [Theory, MemberData(nameof(CreateFormattingFixtures))]
+        public void Constructors(FormattingFixture fixture)
+        {
+            PartialVersion v = PartialVersion.Parse(fixture.Source);
+
+            // make sure that constructors result in equal instances
+            Assert.Equal(v, new PartialVersion(v.Major, v.Minor, v.Patch, v.PreReleases, v.BuildMetadata));
+            if (v.BuildMetadata.Count != 0) return;
+            Assert.Equal(v, new PartialVersion(v.Major, v.Minor, v.Patch, v.PreReleases));
+            if (v.PreReleases.Count != 0) return;
+            Assert.Equal(v, new PartialVersion(v.Major, v.Minor, v.Patch));
+            if (!v.Patch.IsOmitted) return;
+            Assert.Equal(v, new PartialVersion(v.Major, v.Minor));
+            if (!v.Minor.IsOmitted) return;
+            Assert.Equal(v, new PartialVersion(v.Major));
+        }
 
         [Fact]
         public void StaticProperties()
@@ -51,7 +66,26 @@ namespace Chasm.SemanticVersioning.Tests
             Assert.Same(PartialVersion.OneStar, PartialVersion.OneStar);
         }
 
-        // TODO: test properties with CreateFormattingFixtures()
+        [Theory, MemberData(nameof(CreateFormattingFixtures))]
+        public void Properties(FormattingFixture fixture)
+        {
+            PartialVersion version = PartialVersion.Parse(fixture.Source);
+
+            // test identifier collections
+            Assert.Equal(version._preReleases, version.PreReleases);
+            Assert.Equal(version._buildMetadata, version.BuildMetadata);
+            Assert.Equal(version._preReleases, version.GetPreReleases().ToArray());
+            Assert.Equal(version._buildMetadata, version.GetBuildMetadata().ToArray());
+
+            // make sure that properties memoize the read-only collections
+            Assert.Same(version.PreReleases, version.PreReleases);
+            Assert.Same(version.BuildMetadata, version.BuildMetadata);
+
+            // test boolean properties
+            Assert.Equal(!version.Major.IsNumeric || !version.Minor.IsNumeric || !version.Patch.IsNumeric, version.IsPartial);
+            Assert.Equal(version._preReleases.Length > 0, version.IsPreRelease);
+            Assert.Equal(version._buildMetadata.Length > 0, version.HasBuildMetadata);
+        }
 
     }
 }
