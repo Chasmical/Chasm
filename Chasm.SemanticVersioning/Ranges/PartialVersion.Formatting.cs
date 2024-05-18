@@ -8,8 +8,11 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] internal int CalculateLength()
         {
             int length = Major.CalculateLength();
-            if ((int)Minor._value != -1) length += Minor.CalculateLength() + 1;
-            if ((int)Patch._value != -1) length += Patch.CalculateLength() + 1;
+
+            int componentLength = Minor.CalculateLength();
+            if (componentLength != 0) length += componentLength + 1;
+            componentLength = Patch.CalculateLength();
+            if (componentLength != 0) length += componentLength + 1;
 
             SemverPreRelease[] preReleases = _preReleases;
             if (preReleases.Length != 0)

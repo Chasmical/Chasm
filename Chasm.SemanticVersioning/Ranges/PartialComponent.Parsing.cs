@@ -72,23 +72,14 @@ namespace Chasm.SemanticVersioning.Ranges
             if ((options & SemverOptions.AllowExtraWildcards) == 0)
                 return SemverErrorCode.ComponentInvalid;
 
+            // make sure all the wildcard characters are the same
             char wildcard = text[0];
-            if (!AllSameCharacter(text, wildcard)) return SemverErrorCode.ComponentInvalid;
+            for (int i = 1; i < text.Length; i++)
+                if (text[i] != wildcard)
+                    return SemverErrorCode.ComponentInvalid;
 
             component = new PartialComponent(-wildcard, default);
             return SemverErrorCode.Success;
-        }
-
-        [Pure] private static bool AllSameCharacter(ReadOnlySpan<char> span, char value)
-        {
-#if NET7_0_OR_GREATER
-            return span.IndexOfAnyExcept(value) < 0;
-#else
-            foreach (char c in span)
-                if (c != value)
-                    return false;
-            return true;
-#endif
         }
 
         /// <summary>
