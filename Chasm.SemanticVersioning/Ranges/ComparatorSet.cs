@@ -90,7 +90,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 bool canCompare = Array.Exists(_comparators, c => c.CanMatchPreRelease(version.Major, version.Minor, version.Patch));
                 if (!canCompare) return false;
             }
-            return !Array.Exists(_comparators, c => c.IsSatisfiedBy(version));
+            return !Array.Exists(_comparators, c => !c.IsSatisfiedBy(version));
         }
 
         /// <summary>
