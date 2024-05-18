@@ -218,7 +218,7 @@ namespace Chasm.SemanticVersioning
                 {
                     case 'M':
                         // write the major version component
-                        if (parser.Skip('M')) throw new FormatException();
+                        if (parser.Skip('M')) throw new FormatException(); // dotcover disable this line
                         FlushSeparator(ref sb, separator);
                         sb.Append((uint)Major);
                         break;
@@ -300,12 +300,12 @@ namespace Chasm.SemanticVersioning
                             case '\'' or '"':
                                 // append the text enclosed in quotes (quote characters can't be escaped inside)
                                 ReadOnlySpan<char> escaped = parser.ReadUntil(read);
-                                if (!parser.Skip(read)) throw new FormatException();
+                                if (!parser.Skip(read)) throw new FormatException(); // dotcover disable this line
                                 sb.Append(escaped);
                                 break;
                             case '\\':
                                 // append the following character as is
-                                if (!parser.CanRead()) throw new FormatException();
+                                if (!parser.CanRead()) throw new FormatException(); // dotcover disable this line
                                 sb.Append(parser.Read());
                                 break;
                             case '.' or '-' or '+' or '_' or ' ':
@@ -351,7 +351,7 @@ namespace Chasm.SemanticVersioning
         ///     <c>rr</c>, <c>dd</c> - all of the pre-release/build metadata identifiers that come after the last specified identifier.<br/>
         ///   </para>
         ///   <para>
-        ///     <c>\Majo\r</c> - backslash-escaped character. Backslash itself can be escaped as well.<br/>
+        ///     <c>\Ma\jo\r</c> - backslash-escaped character. Backslash itself can be escaped as well.<br/>
         ///     <c>'map'</c>, <c>"Arr!"</c> - quote-escaped sequence of characters. Backslash can't escape closing quote characters.<br/>
         ///     <c>.</c>, <c>-</c>, <c>+</c>, <c>_</c>, <c> </c> - separator characters. When preceding an omitted identifier, the separator is omitted as well.<br/>
         ///   </para>

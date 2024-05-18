@@ -47,6 +47,9 @@
     <InternalsVisibleTo Include="Chasm.SemanticVersioning.Benchmarks" />
     <ProjectReference Include="..\Chasm.Formatting\Chasm.Formatting.csproj" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
+    <PackageReference Include="JetBrains.dotCover.MSBuild" Version="1.0.5-alpha" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
