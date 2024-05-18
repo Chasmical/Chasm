@@ -10,18 +10,22 @@ namespace Chasm.SemanticVersioning.Tests
         public ITestOutputHelper Output { get; } = output;
 
         [Fact]
-        public void Constructors()
+        public void ConstructorsArguments()
         {
             // test null argument exceptions
             Assert.Throws<ArgumentNullException>(static () => new VersionRange((ComparatorSet)null!));
             Assert.Throws<ArgumentNullException>(static () => new VersionRange((ComparatorSet[])null!));
-            Assert.Throws<ArgumentException>(static () => new VersionRange([null!]));
             Assert.Throws<ArgumentNullException>(static () => new VersionRange(null!, [ComparatorSet.None]));
-            Assert.Throws<ArgumentException>(static () => new VersionRange(ComparatorSet.None, [null!]));
+
+            // test constructors with null comparator sets
+            ArgumentException ex = Assert.Throws<ArgumentException>(static () => new VersionRange([null!]));
+            Assert.StartsWith(Exceptions.ComparatorSetsNull, ex.Message);
+            ex = Assert.Throws<ArgumentException>(static () => new VersionRange(ComparatorSet.None, [null!]));
+            Assert.StartsWith(Exceptions.ComparatorSetsNull, ex.Message);
 
             // try creating an empty version range
-            ArgumentException e = Assert.Throws<ArgumentException>(static () => new VersionRange([]));
-            Assert.StartsWith(Exceptions.VersionRangeEmpty, e.Message);
+            ex = Assert.Throws<ArgumentException>(static () => new VersionRange([]));
+            Assert.StartsWith(Exceptions.VersionRangeEmpty, ex.Message);
 
         }
 

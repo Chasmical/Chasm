@@ -2,13 +2,11 @@
 using JetBrains.Annotations;
 using Xunit;
 
-// ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
 namespace Chasm.SemanticVersioning.Tests
 {
     public partial class VersionRangeTests
     {
-        [Pure]
-        public static FixtureAdapter<ParsingFixture> CreateParsingFixtures()
+        [Pure] public static FixtureAdapter<ParsingFixture> CreateParsingFixtures()
         {
             FixtureAdapter<ParsingFixture> adapter = [];
 
@@ -20,43 +18,86 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
+            const SemverOptions removeOptions
+                = SemverOptions.AllowEqualsPrefix // '=' is used by comparison comparators
+                | SemverOptions.AllowInnerWhite // interferes with the hyphen range syntax
+                | SemverOptions.OptionalMinor // interferes with partial versions
+                | SemverOptions.OptionalPatch
+                | SemverOptions.AllowLeftovers; // interferes with the rest of the version range
+
             // Make sure all version comparators work individually
-            foreach (SemanticVersionTests.ParsingFixture fixture in SemanticVersionTests.CreateParsingFixtures())
+            foreach (PartialVersionTests.ParsingFixture fixture in PartialVersionTests.CreateParsingFixtures())
             {
                 if (!fixture.IsValid) continue;
-                const SemverOptions removeOptions = SemverOptions.AllowEqualsPrefix // '=' is used by comparison comparators
-                                                  | SemverOptions.AllowInnerWhite // interferes with the hyphen range syntax
-                                                  | SemverOptions.OptionalMinor // interferes with partial versions
-                                                  | SemverOptions.OptionalPatch
-                                                  | SemverOptions.AllowLeftovers; // interferes with the rest of the version range
-
                 SemverOptions opt = fixture.Options & ~removeOptions;
 
                 // make sure the version is still parsable with new options
-                if (!SemanticVersion.TryParse(fixture.Source, opt, out SemanticVersion? version)) continue;
+                if (!PartialVersion.TryParse(fixture.Source, opt, out PartialVersion? partial)) continue;
 
                 // re-add the whitespace option between comparator parts
                 if ((fixture.Options & (SemverOptions.AllowLeadingWhite | SemverOptions.AllowTrailingWhite)) != 0)
                     opt |= SemverOptions.AllowInnerWhite;
 
-                // Single primitive comparators
-                New($"{fixture.Source}", opt).Returns(PrimitiveComparator.ImplicitEqual(version));
-                New($"={fixture.Source}", opt).Returns(PrimitiveComparator.Equal(version));
-                New($">{fixture.Source}", opt).Returns(PrimitiveComparator.GreaterThan(version));
-                New($"<{fixture.Source}", opt).Returns(PrimitiveComparator.LessThan(version));
-                New($">={fixture.Source}", opt).Returns(PrimitiveComparator.GreaterThanOrEqual(version));
-                New($"<={fixture.Source}", opt).Returns(PrimitiveComparator.LessThanOrEqual(version));
+                // Single X-Range and primitive comparators
+                if (partial.IsPartial)
+                {
+                    New($"{fixture.Source}", opt).Returns(XRangeComparator.ImplicitEqual(partial));
+                    New($"={fixture.Source}", opt).Returns(XRangeComparator.Equal(partial));
+                    New($">{fixture.Source}", opt).Returns(XRangeComparator.GreaterThan(partial));
+                    New($"<{fixture.Source}", opt).Returns(XRangeComparator.LessThan(partial));
+                    New($">={fixture.Source}", opt).Returns(XRangeComparator.GreaterThanOrEqual(partial));
+                    New($"<={fixture.Source}", opt).Returns(XRangeComparator.LessThanOrEqual(partial));
+                }
+                else
+                {
+                    SemanticVersion version = (SemanticVersion)partial;
+                    New($"{fixture.Source}", opt).Returns(PrimitiveComparator.ImplicitEqual(version));
+                    New($"={fixture.Source}", opt).Returns(PrimitiveComparator.Equal(version));
+                    New($">{fixture.Source}", opt).Returns(PrimitiveComparator.GreaterThan(version));
+                    New($"<{fixture.Source}", opt).Returns(PrimitiveComparator.LessThan(version));
+                    New($">={fixture.Source}", opt).Returns(PrimitiveComparator.GreaterThanOrEqual(version));
+                    New($"<={fixture.Source}", opt).Returns(PrimitiveComparator.LessThanOrEqual(version));
+                }
 
                 // Single advanced comparators
-                New($"^{fixture.Source}", opt).Returns(new CaretComparator(version));
-                New($"~{fixture.Source}", opt).Returns(new TildeComparator(version));
-                New($"{fixture.Source} - {fixture.Source}", opt).Returns(new HyphenRangeComparator(version, version));
+                New($"^{fixture.Source}", opt).Returns(new CaretComparator(partial));
+                New($"~{fixture.Source}", opt).Returns(new TildeComparator(partial));
+                New($"{fixture.Source} - {fixture.Source}", opt).Returns(new HyphenRangeComparator(partial, partial));
 
                 // Invalid characters
                 New($"{fixture.Source.TrimEnd()}$$$", opt).Throws(Exceptions.Leftovers);
             }
 
-            // TODO: do the same with partial versions later
+
+
+            // "Empty" version range (single empty comparator set), equivalent to *
+            New("").Returns(new ComparatorSet());
+
+            // Version range with multiple comparators
+            New(">=1.2.3 <5.0.0").Returns(new ComparatorSet([
+                PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(1, 2, 3)),
+                PrimitiveComparator.LessThan(new SemanticVersion(5, 0, 0)),
+            ]));
+            New(">5.0.0 <=12.0.0 <45.0.0").Returns(new ComparatorSet([
+                PrimitiveComparator.GreaterThan(new SemanticVersion(5, 0, 0)),
+                PrimitiveComparator.LessThanOrEqual(new SemanticVersion(12, 0, 0)),
+                PrimitiveComparator.LessThan(new SemanticVersion(45, 0, 0)),
+            ]));
+
+            // Version range with multiple comparator sets
+            New(">=1.2.0 <1.5.0 || >1.7.0-alpha.5 <2.0.0-0 || >=3.0.0-beta.4").Returns([
+                new ComparatorSet([
+                    PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(1, 2, 0)),
+                    PrimitiveComparator.LessThan(new SemanticVersion(1, 5, 0)),
+                ]),
+                new ComparatorSet([
+                    PrimitiveComparator.GreaterThan(new SemanticVersion(1, 7, 0, ["alpha", 5])),
+                    PrimitiveComparator.LessThan(new SemanticVersion(2, 0, 0, [0])),
+                ]),
+                new ComparatorSet([
+                    PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(3, 0, 0, ["beta", 4])),
+                ]),
+            ]);
 
 
 
