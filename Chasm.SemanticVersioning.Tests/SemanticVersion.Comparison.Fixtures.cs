@@ -9,12 +9,16 @@ namespace Chasm.SemanticVersioning.Tests
         {
             string[] sources =
             [
-                // 0.0.0-0 - SemanticVersion.MinValue
+                SemanticVersion.MinValue.ToString(),
                 "0.0.0-0.0",
                 "0.0.0--",
+                "0.0.0-A",
+                "0.0.0-Z",
                 "0.0.0-a",
+                "0.0.0-z",
                 "0.0.1",
                 "0.0.4",
+                "0.1.0-pre",
                 "0.1.0",
                 "0.1.9",
                 "0.5.0",
@@ -35,11 +39,9 @@ namespace Chasm.SemanticVersioning.Tests
                 "4.5.6",
                 "99.99.99-0",
                 "99.99.99",
-                // 2147483647.2147483647.2147483647 - SemanticVersion.MaxValue
+                SemanticVersion.MaxValue.ToString(),
             ];
-            SemanticVersion[] versions = sources.ConvertAll(SemanticVersion.Parse);
-
-            return [SemanticVersion.MinValue, ..versions, SemanticVersion.MaxValue];
+            return sources.ConvertAll(SemanticVersion.Parse);
         }
     }
 }
