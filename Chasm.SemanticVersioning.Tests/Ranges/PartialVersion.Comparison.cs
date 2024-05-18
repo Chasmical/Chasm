@@ -35,6 +35,12 @@ namespace Chasm.SemanticVersioning.Tests
                         Assert.Throws<ArgumentException>(() => ((IComparable)a).CompareTo("0"));
                         Assert.Throws<ArgumentException>(() => ((IComparable)a).CompareTo(0));
 
+                        // Test against itself
+                        Assert.True(a.Equals(a));
+                        Assert.True(((object)a).Equals(a));
+                        Assert.Equal(0, a.CompareTo(a));
+                        Assert.Equal(0, ((IComparable)a).CompareTo(a));
+
                         for (int j = 0; j < fixtures2.Length; j++)
                         {
                             PartialVersion[] bRow = fixtures2[j];
