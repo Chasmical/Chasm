@@ -7,10 +7,10 @@ namespace Chasm.SemanticVersioning.Tests
     public partial class SemanticVersionTests
     {
         [Fact]
-        public void Comparison()
+        public void Sorting()
         {
-            SemanticVersion[] fixtures1 = CreateComparisonFixtures();
-            SemanticVersion[] fixtures2 = CreateComparisonFixtures();
+            SemanticVersion[] fixtures1 = CreateSortingFixtures();
+            SemanticVersion[] fixtures2 = CreateSortingFixtures();
             SemanticVersion? a = default, b = default;
 
             try

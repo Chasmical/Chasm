@@ -5,7 +5,7 @@ namespace Chasm.SemanticVersioning.Tests
 {
     public partial class SemanticVersionTests
     {
-        [Pure] public static SemanticVersion[] CreateComparisonFixtures()
+        [Pure] public static SemanticVersion[] CreateSortingFixtures()
         {
             string[] sources =
             [

@@ -8,10 +8,10 @@ namespace Chasm.SemanticVersioning.Tests
     public partial class PartialVersionTests
     {
         [Fact]
-        public void Comparison()
+        public void Sorting()
         {
-            PartialVersion[][] fixtures1 = CreateComparisonFixtures();
-            PartialVersion[][] fixtures2 = CreateComparisonFixtures();
+            PartialVersion[][] fixtures1 = CreateSortingFixtures();
+            PartialVersion[][] fixtures2 = CreateSortingFixtures();
             PartialVersion? a = default, b = default;
 
             try
