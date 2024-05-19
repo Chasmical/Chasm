@@ -99,10 +99,9 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>A desugared copy of this version comparator set.</returns>
         [Pure] public ComparatorSet Desugar()
         {
-            if (!IsSugared) return this;
-
             Comparator[] comparators = _comparators;
-            // TODO: There must be a way to cut back on memory allocation here
+            if (comparators.Length > 0 && !IsSugared) return this;
+
             List<Comparator> desugared = new(comparators.Length);
 
             for (int i = 0; i < comparators.Length; i++)
@@ -119,6 +118,9 @@ namespace Chasm.SemanticVersioning.Ranges
                     desugared.Add(comparator);
                 }
             }
+
+            if (desugared.Count == 0)
+                desugared.Add(PrimitiveComparator.AllNonPreRelease);
 
             return new ComparatorSet(desugared.ToArray(), default);
         }
