@@ -92,7 +92,17 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Determines whether this version range contains any advanced comparators.</para>
         /// </summary>
-        public bool IsSugared => Array.Exists(_comparatorSets, static cs => cs.IsSugared);
+        public bool IsSugared
+        {
+            get
+            {
+                ComparatorSet[] comparatorSets = _comparatorSets;
+                for (int i = 0; i < comparatorSets.Length; i++)
+                    if (comparatorSets[i].IsSugared)
+                        return true;
+                return false;
+            }
+        }
 
         // TODO: IsEmpty property would be nice to have
 
@@ -117,7 +127,16 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="includePreReleases">Determines whether to treat pre-release versions like regular versions.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version range otherwise, <see langword="false"/>.</returns>
         [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
-            => version is not null && Array.Exists(_comparatorSets, cs => cs.IsSatisfiedBy(version, includePreReleases));
+        {
+            if (version is not null)
+            {
+                ComparatorSet[] comparatorSets = _comparatorSets;
+                for (int i = 0; i < comparatorSets.Length; i++)
+                    if (comparatorSets[i].IsSatisfiedBy(version, includePreReleases))
+                        return true;
+            }
+            return false;
+        }
 
         /// <summary>
         ///   <para>Returns a desugared copy of this version range, that is, with advanced version comparators replaced by equivalent primitive version comparators.</para>
@@ -126,7 +145,10 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public VersionRange Desugar()
         {
             if (!IsSugared) return this;
-            ComparatorSet[] desugared = Array.ConvertAll(_comparatorSets, static cs => cs.Desugar());
+            ComparatorSet[] comparatorSets = _comparatorSets;
+            ComparatorSet[] desugared = new ComparatorSet[comparatorSets.Length];
+            for (int i = 0; i < desugared.Length; i++)
+                desugared[i] = comparatorSets[i].Desugar();
             return new VersionRange(desugared, default);
         }
 

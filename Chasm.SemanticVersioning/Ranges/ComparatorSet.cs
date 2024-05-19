@@ -58,7 +58,17 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Determines whether this comparator set contains any advanced comparators.</para>
         /// </summary>
-        public bool IsSugared => Array.Exists(_comparators, static c => c.IsAdvanced);
+        public bool IsSugared
+        {
+            get
+            {
+                Comparator[] comparators = _comparators;
+                for (int i = 0; i < comparators.Length; i++)
+                    if (comparators[i].IsAdvanced)
+                        return true;
+                return false;
+            }
+        }
 
         // TODO: IsEmpty property would be nice to have
 
@@ -84,13 +94,29 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version comparator set; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
         {
-            if (version is null) return false;
-            if (!includePreReleases && version.IsPreRelease)
+            if (version is not null)
             {
-                bool canCompare = Array.Exists(_comparators, c => c.CanMatchPreRelease(version.Major, version.Minor, version.Patch));
-                if (!canCompare) return false;
+                int i;
+                Comparator[] comparators = _comparators;
+
+                if (!includePreReleases && version.IsPreRelease)
+                {
+                    // at least one must match the component triple
+                    for (i = 0; i < comparators.Length; i++)
+                        if (comparators[i].CanMatchPreRelease(version.Major, version.Minor, version.Patch))
+                            goto MATCH_COMPARATORS;
+                    goto MATCH_FAIL;
+                }
+
+            MATCH_COMPARATORS:
+                // all comparators must be satisfied by the version
+                for (i = 0; i < comparators.Length; i++)
+                    if (!comparators[i].IsSatisfiedBy(version))
+                        goto MATCH_FAIL;
+                return true;
             }
-            return !Array.Exists(_comparators, c => !c.IsSatisfiedBy(version));
+        MATCH_FAIL:
+            return false;
         }
 
         /// <summary>
@@ -148,13 +174,14 @@ namespace Chasm.SemanticVersioning.Ranges
         internal void BuildString(ref SpanBuilder sb)
         {
             Comparator[] comparators = _comparators;
-            if (comparators.Length == 0) return;
-
-            comparators[0].BuildString(ref sb);
-            for (int i = 1; i < comparators.Length; i++)
+            if (comparators.Length != 0)
             {
-                sb.Append(' ');
-                comparators[i].BuildString(ref sb);
+                comparators[0].BuildString(ref sb);
+                for (int i = 1; i < comparators.Length; i++)
+                {
+                    sb.Append(' ');
+                    comparators[i].BuildString(ref sb);
+                }
             }
         }
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
