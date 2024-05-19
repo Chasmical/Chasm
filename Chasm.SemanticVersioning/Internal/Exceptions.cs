@@ -68,11 +68,12 @@ namespace Chasm.SemanticVersioning
             SemverErrorCode.PatchLeadingZeroes => PatchLeadingZeroes,
             SemverErrorCode.PreReleaseLeadingZeroes => PreReleaseLeadingZeroes,
 
-            SemverErrorCode.ComponentNegative => ComponentNegative,
-            SemverErrorCode.MajorNegative => MajorNegative,
-            SemverErrorCode.MinorNegative => MinorNegative,
-            SemverErrorCode.PatchNegative => PatchNegative,
-            SemverErrorCode.PreReleaseNegative => PreReleaseNegative,
+            // Note: These aren't thrown during parsing, since it doesn't recognize '-' as a valid character.
+            // SemverErrorCode.ComponentNegative => ComponentNegative,
+            // SemverErrorCode.MajorNegative => MajorNegative,
+            // SemverErrorCode.MinorNegative => MinorNegative,
+            // SemverErrorCode.PatchNegative => PatchNegative,
+            // SemverErrorCode.PreReleaseNegative => PreReleaseNegative,
 
             SemverErrorCode.ComponentTooBig => ComponentTooBig,
             SemverErrorCode.MajorTooBig => MajorTooBig,
@@ -88,12 +89,14 @@ namespace Chasm.SemanticVersioning
             SemverErrorCode.MinorInvalid => MinorInvalid,
             SemverErrorCode.PatchInvalid => PatchInvalid,
             SemverErrorCode.PreReleaseInvalid => PreReleaseInvalid,
-            SemverErrorCode.BuildMetadataInvalid => BuildMetadataInvalid,
+            // Note: unlike PreReleaseInvalid, build metadata doesn't have a dedicated parsing method.
+            // SemverErrorCode.BuildMetadataInvalid => BuildMetadataInvalid,
 
             SemverErrorCode.PreReleaseAfterOmitted => PreReleaseAfterOmitted,
             SemverErrorCode.BuildMetadataAfterOmitted => BuildMetadataAfterOmitted,
             SemverErrorCode.Leftovers => Leftovers,
 
+            // dotcover disable next line
             _ => throw new ArgumentException($"{code} error code is not supposed to have a message."),
         };
 
