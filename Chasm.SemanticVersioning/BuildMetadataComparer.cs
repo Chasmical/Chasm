@@ -8,13 +8,13 @@ namespace Chasm.SemanticVersioning
     /// <summary>
     ///   <para>Compares two semantic versions for equivalence, while also taking into account their build metadata identifiers.</para>
     /// </summary>
-    [Obsolete("Use the SemverComparer.IncludeBuildMetadata property instead.")]
+    [Obsolete($"Use the {nameof(SemverComparer)}.{nameof(SemverComparer.IncludeBuild)} property instead.")]
     public sealed class BuildMetadataComparer : IComparer, IEqualityComparer
                                               , IComparer<SemanticVersion>, IEqualityComparer<SemanticVersion>
     {
         private BuildMetadataComparer() { }
 
-        private readonly SemverComparer Comparer = SemverComparer.IncludeBuild;
+        private static readonly SemverComparer Comparer = SemverComparer.IncludeBuild;
 
         /// <summary>
         ///   <para>Gets an instance of the <see cref="BuildMetadataComparer"/> type.</para>

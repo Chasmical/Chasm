@@ -8,7 +8,7 @@ A semantic versioning library ([SemVer 2.0.0](https://semver.org/spec/v2.0.0.htm
 
 - **Provides all of the common manipulations with semantic versions** that you could possibly need. `SemanticVersion`, `SemverPreRelease`, `SemverOptions`, `SemanticVersionBuilder`, `SemverComparer`, `SemverComparison`.
 
-- **Default comparison ignores build metadata.** Feel free to disagree, but that's just my decision. It feels more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuildMetadata`.
+- **Default comparison ignores build metadata.** Feel free to disagree, but that's just my decision. It feels more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuild`.
 
 - **Implements `node-semver` version ranges.** Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, instead of being desugared into primitives like in all other libraries. ***Work-In-Progress!*** `VersionRange`, `ComparatorSet`, `Comparator`, `PartialVersion`, `PartialComponent`, `AdvancedComparator`, `PrimitiveComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`.
 

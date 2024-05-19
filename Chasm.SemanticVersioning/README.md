@@ -4,7 +4,7 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 - **Focus on functionality and performance.** I will make sure to implement any common manipulations with semantic versions, and I will microoptimize the hell out of everything! *(not as much as diving into assembly code though)* I'll whip up some benchmarks later to show you the difference.
 
-- **Default comparison ignores build metadata.** Feel free to disagree, but that's just my decision. It feels more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuildMetadata`.
+- **Default comparison ignores build metadata.** Feel free to disagree, but that's just my decision. It feels more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuild`.
 
 - **Implements `node-semver`'s version ranges.** Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, and after being parsed, they will still output these exact strings. All other libraries desugar the advanced comparators into primitives, and I didn't really like that. I wanted to be able to manipulate version ranges in a more precise fashion.
 
@@ -31,6 +31,9 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 - [ ] `SemverPreRelease.ParseMultiple/Many` method;
 - [ ] Advanced `SemverPreRelease` formatting, maybe?;
+- [ ] Coercing versions?;
+- [ ] Diffing versions?;
+- [ ] Decrementing versions?;
 
 ### Version ranges
 
@@ -43,9 +46,6 @@ You're probably wondering "Why should I use this library instead of any other mo
 - [x] Desugar methods;
 - [ ] Simplify methods;
 - [ ] IsSubset/Superset methods;
-- [ ] Coercing versions?
-- [ ] Diffing versions?
-- [ ] Decrementing versions?
 
 
 
@@ -61,7 +61,7 @@ Console.WriteLine($"{a} < {b} = {a < b}");
 // 1.0.0-alpha.8 < 1.2-pre = True
 ```
 
-**Note that the default comparison doesn't account for build metadata!** For build metadata-sensitive comparison, use `SemverComparer.IncludeBuildMetadata`.
+**Note that the default comparison doesn't account for build metadata!** For build metadata-sensitive comparison, use `SemverComparer.IncludeBuild`.
 
 ```cs
 var a = SemanticVersion.Parse("1.2.3-4");
@@ -70,7 +70,7 @@ var b = SemanticVersion.Parse("1.2.3-4+BUILD");
 Console.WriteLine($"{a} == {b} = {a == b}");
 // 1.2.3-4 == 1.2.3-4+BUILD = True
 
-var cmp = SemverComparer.IncludeBuildMetadata;
+var cmp = SemverComparer.IncludeBuild;
 Console.WriteLine($"{a} === {b} = {cmp.Equals(a, b)}");
 // 1.2.3-4 === 1.2.3-4+BUILD = False
 ```
