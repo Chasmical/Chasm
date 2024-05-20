@@ -169,11 +169,10 @@ namespace Chasm.SemanticVersioning.Ranges
         public static explicit operator Version?(PartialVersion? partialVersion)
         {
             if (partialVersion is null) return null;
-            return new Version(
-                partialVersion.Major.GetValueOrZero(),
-                partialVersion.Minor.GetValueOrZero(),
-                partialVersion.Patch.GetValueOrMinusOne()
-            );
+            int major = partialVersion.Major.GetValueOrZero();
+            int minor = partialVersion.Minor.GetValueOrZero();
+            int patch = partialVersion.Patch.GetValueOrMinusOne();
+            return patch == -1 ? new Version(major, minor) : new Version(major, minor, patch);
         }
         /// <summary>
         ///   <para>Defines an explicit conversion of a partial version to a semantic version, replacing wildcards in version components with zeroes.</para>
