@@ -80,7 +80,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="component">The partial version component to convert.</param>
         [Pure] public static explicit operator int?(PartialComponent component)
-            => component.IsNumeric ? (int)component._value : default;
+            => component.IsNumeric ? (int)component._value : default(int?);
 
         /// <summary>
         ///   <para>Determines whether the partial version component is numeric.</para>
