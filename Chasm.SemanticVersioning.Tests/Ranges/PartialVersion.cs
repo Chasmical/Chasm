@@ -39,10 +39,67 @@ namespace Chasm.SemanticVersioning.Tests
 
         }
 
+        [Fact]
+        public void ConversionOperators()
+        {
+            // make sure nulls are handled properly
+            Assert.Null((Version)(PartialVersion)null!);
+            Assert.Null((PartialVersion)(Version)null!);
+            Assert.Throws<ArgumentNullException>(static () => new PartialVersion((Version)null!));
+            Assert.Null((SemanticVersion)(PartialVersion)null!);
+            Assert.Null((PartialVersion)(SemanticVersion)null!);
+            Assert.Throws<ArgumentNullException>(static () => new PartialVersion((SemanticVersion)null!));
+
+            // test PartialVersion to Version conversion
+            Assert.Equal(
+                new Version(1, 2, 3),
+                (Version)new PartialVersion(1, 2, 3)
+            );
+            Assert.Equal(
+                new Version(1, 2, 3),
+                (Version)new PartialVersion(1, 2, 3, ["pre", 8], ["build"])
+            );
+            Assert.Equal(
+                new Version(1, 2),
+                (Version)new PartialVersion(1, 2)
+            );
+
+            // test PartialVersion to SemanticVersion conversion
+            Assert.Equal(
+                new SemanticVersion(1, 2, 3, ["pre", 5], ["build"]),
+                (SemanticVersion)new PartialVersion(1, 2, 3, ["pre", 5], ["build"])
+            );
+            Assert.Equal(
+                new SemanticVersion(0, 2, 0, ["pre", 5], ["build"]),
+                (SemanticVersion)new PartialVersion('X', 2, '*', ["pre", 5], ["build"])
+            );
+            Assert.Equal(
+                new SemanticVersion(3, 0, 0),
+                (SemanticVersion)new PartialVersion(3, null, null)
+            );
+        }
+
         [Theory, MemberData(nameof(CreateFormattingFixtures))]
         public void Constructors(FormattingFixture fixture)
         {
             PartialVersion v = PartialVersion.Parse(fixture.Source);
+
+            // test constructor with a SemanticVersion parameter
+            if (!v.IsPartial)
+            {
+                SemanticVersion semver = new SemanticVersion((int)v.Major, (int)v.Minor, (int)v.Patch, v.PreReleases, v.BuildMetadata);
+                Assert.Equal(v, new PartialVersion(semver));
+                Assert.Equal(v, semver);
+            }
+            // test constructor with a Version parameter
+            if (v.Major.IsNumeric && v.Minor.IsNumeric && !v.IsPreRelease && !v.HasBuildMetadata && !v.Patch.IsWildcard)
+            {
+                Version systemVersion = v.Patch.IsOmitted
+                    ? new Version((int)v.Major, (int)v.Minor)
+                    : new Version((int)v.Major, (int)v.Minor, (int)v.Patch);
+                Assert.Equal(v, new PartialVersion(systemVersion));
+                Assert.Equal(v, (PartialVersion)systemVersion);
+            }
 
             // make sure that constructors result in equal instances
             Assert.Equal(v, new PartialVersion(v.Major, v.Minor, v.Patch, v.PreReleases, v.BuildMetadata));

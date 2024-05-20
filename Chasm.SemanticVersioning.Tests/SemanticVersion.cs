@@ -34,6 +34,30 @@ namespace Chasm.SemanticVersioning.Tests
 
             ex2 = Assert.Throws<ArgumentException>(static () => new SemanticVersion(1, 2, 3, [], [null!]));
             Assert.StartsWith(Exceptions.BuildMetadataNull, ex2.Message);
+
+        }
+
+        [Fact]
+        public void ConversionOperators()
+        {
+            // make sure nulls are handled properly
+            Assert.Null((Version)(SemanticVersion)null!);
+            Assert.Null((SemanticVersion)(Version)null!);
+            Assert.Throws<ArgumentNullException>(static () => new SemanticVersion(null!));
+
+            // test SemanticVersion to Version conversion
+            Assert.Equal(
+                new Version(1, 2, 3),
+                (Version)new SemanticVersion(1, 2, 3)
+            );
+            Assert.Equal(
+                new Version(1, 2, 3),
+                (Version)new SemanticVersion(1, 2, 3, ["pre", 8], ["build"])
+            );
+            Assert.Equal(
+                new Version(0, 0, 0),
+                (Version)new SemanticVersion(0, 0, 0)
+            );
         }
 
         [Theory, MemberData(nameof(CreateFormattingFixtures))]
@@ -43,10 +67,17 @@ namespace Chasm.SemanticVersioning.Tests
 
             // make sure that constructors result in equal instances
             Assert.Equal(v, new SemanticVersion(v.Major, v.Minor, v.Patch, v.PreReleases, v.BuildMetadata));
-            if (v.BuildMetadata.Count == 0)
-                Assert.Equal(v, new SemanticVersion(v.Major, v.Minor, v.Patch, v.PreReleases));
-            if (v.PreReleases.Count == 0 && v.BuildMetadata.Count == 0)
-                Assert.Equal(v, new SemanticVersion(v.Major, v.Minor, v.Patch));
+            if (v.BuildMetadata.Count != 0) return;
+            Assert.Equal(v, new SemanticVersion(v.Major, v.Minor, v.Patch, v.PreReleases));
+            if (v.PreReleases.Count != 0) return;
+            Assert.Equal(v, new SemanticVersion(v.Major, v.Minor, v.Patch));
+
+            // test constructor with a Version parameter
+            Assert.Equal(v, new SemanticVersion(new Version(v.Major, v.Minor, v.Patch)));
+            Assert.Equal(v, (SemanticVersion)new Version(v.Major, v.Minor, v.Patch));
+            if (v.Patch != 0) return;
+            Assert.Equal(v, new SemanticVersion(new Version(v.Major, v.Minor)));
+            Assert.Equal(v, (SemanticVersion)new Version(v.Major, v.Minor));
         }
 
         [Fact]
