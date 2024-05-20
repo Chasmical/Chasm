@@ -1,4 +1,5 @@
 ﻿using System;
+using Chasm.Formatting;
 using Chasm.SemanticVersioning.Ranges;
 using Xunit;
 using Xunit.Abstractions;
@@ -35,14 +36,43 @@ namespace Chasm.SemanticVersioning.Tests
         }
 
         [Fact]
+        public void ConversionOperators()
+        {
+            // test PartialComponent to int conversion
+            Assert.Equal(123, (int)(PartialComponent)123);
+            Assert.Equal(0, (int)(PartialComponent)'x');
+            Assert.Equal(0, (int)(PartialComponent)'X');
+            Assert.Equal(0, (int)(PartialComponent)'*');
+            Assert.Equal(0, (int)(PartialComponent)null);
+
+            // test PartialComponent to int? conversion
+            Assert.Equal(123, (int?)(PartialComponent)123);
+            Assert.Null((int?)(PartialComponent)'x');
+            Assert.Null((int?)(PartialComponent)'X');
+            Assert.Null((int?)(PartialComponent)'*');
+            Assert.Null((int?)(PartialComponent)null);
+
+            // test PartialComponent to char conversion
+            foreach (char character in "0123456789xX*")
+                Assert.Equal(character, (char)(PartialComponent)character);
+
+            // test components that can't be represented as single characters
+            ArgumentException ex = Assert.Throws<ArgumentException>(static () => (char)(PartialComponent)123);
+            Assert.StartsWith(Exceptions.ComponentNotSingleChar, ex.Message);
+            ex = Assert.Throws<ArgumentException>(static () => (char)(PartialComponent)null);
+            Assert.StartsWith(Exceptions.ComponentNotSingleChar, ex.Message);
+
+        }
+
+        [Fact]
         public void StaticProperties()
         {
             // make sure that properties return correct values
-            Assert.Equal("0", PartialComponent.Zero.ToString());
-            Assert.Equal("x", PartialComponent.LowerX.ToString());
-            Assert.Equal("X", PartialComponent.UpperX.ToString());
-            Assert.Equal("*", PartialComponent.Star.ToString());
-            Assert.Equal("", PartialComponent.Omitted.ToString());
+            Assert.Equal(0, PartialComponent.Zero);
+            Assert.Equal('x', PartialComponent.LowerX);
+            Assert.Equal('X', PartialComponent.UpperX);
+            Assert.Equal('*', PartialComponent.Star);
+            Assert.Equal((int?)null, PartialComponent.Omitted);
         }
 
         [Fact]
@@ -50,7 +80,7 @@ namespace Chasm.SemanticVersioning.Tests
         {
             InvalidOperationException ex;
 
-            // test numeric components' properties
+            // test numeric components' properties and formatting
             int[] numbers = [0, 1, 2, 3, 4, 8, 875, 5541, int.MaxValue];
             foreach (int number in numbers)
             {
@@ -60,11 +90,14 @@ namespace Chasm.SemanticVersioning.Tests
                 Assert.False(component.IsOmitted);
 
                 Assert.Equal(number, component.AsNumber);
+                Assert.Equal(number.ToString(), component.ToString());
+                Assert.Equal(number.ToString(), SpanBuilder.Format(component));
+
                 ex = Assert.Throws<InvalidOperationException>(() => component.AsWildcard);
                 Assert.Equal(Exceptions.ComponentNotWildcard, ex.Message);
             }
 
-            // test wildcard components' properties
+            // test wildcard components' properties and formatting
             foreach (char wildcard in "xX*")
             {
                 PartialComponent component = wildcard;
@@ -73,15 +106,21 @@ namespace Chasm.SemanticVersioning.Tests
                 Assert.False(component.IsOmitted);
 
                 Assert.Equal(wildcard, component.AsWildcard);
+                Assert.Equal(wildcard.ToString(), component.ToString());
+                Assert.Equal(wildcard.ToString(), SpanBuilder.Format(component));
+
                 ex = Assert.Throws<InvalidOperationException>(() => component.AsNumber);
                 Assert.Equal(Exceptions.ComponentNotNumeric, ex.Message);
             }
 
-            // test omitted component's properties
+            // test omitted component's properties and formatting
             PartialComponent omitted = PartialComponent.Omitted;
             Assert.False(omitted.IsNumeric);
             Assert.False(omitted.IsWildcard);
             Assert.True(omitted.IsOmitted);
+
+            Assert.Equal("", omitted.ToString());
+            Assert.Equal("", SpanBuilder.Format(omitted));
 
             ex = Assert.Throws<InvalidOperationException>(() => omitted.AsNumber);
             Assert.Equal(Exceptions.ComponentNotNumeric, ex.Message);
