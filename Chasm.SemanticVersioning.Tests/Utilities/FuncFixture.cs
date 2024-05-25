@@ -64,13 +64,6 @@ namespace Chasm.SemanticVersioning.Tests
             }
         }
 
-        protected TExtender Extend<TExtender>() where TExtender : IFixtureExtender<IFuncFixture<T>>, new()
-        {
-            TExtender extender = new TExtender();
-            extender.SetPrototype(this);
-            return extender;
-        }
-
     }
     public interface IFuncFixture<in T>
     {

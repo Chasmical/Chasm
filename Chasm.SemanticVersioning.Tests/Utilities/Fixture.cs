@@ -20,5 +20,12 @@ namespace Chasm.SemanticVersioning.Tests
         public override string ToString()
             => $"{Id ?? "Unnamed"} {(IsValid ? '\u2705' : '\u274C')}";
 
+        protected TExtender Extend<TExtender>() where TExtender : IFixtureExtender<Fixture>, new()
+        {
+            TExtender extender = new TExtender();
+            extender.SetPrototype(this);
+            return extender;
+        }
+
     }
 }

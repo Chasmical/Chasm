@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Xunit;
 
 namespace Chasm.SemanticVersioning.Tests
 {
@@ -30,6 +31,9 @@ namespace Chasm.SemanticVersioning.Tests
 
         IEnumerator<object?[]> IEnumerable<object?[]>.GetEnumerator()
         {
+            // Before getting enumerated, make sure all fixtures are complete
+            Assert.All(fixtures, static fixture => Assert.True(fixture.IsComplete));
+
             foreach (TFixture fixture in fixtures)
                 yield return [fixture];
         }
