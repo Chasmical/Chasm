@@ -61,6 +61,8 @@ namespace Chasm.SemanticVersioning.Tests
 
         public sealed class FormattingFixture(string source, string? format = null) : FuncFixture<string>
         {
+            public FormattingFixture() : this(null!) { }
+
             public string Source { get; } = source;
             public string? Format { get; } = format;
             private string? Expected;

@@ -32,7 +32,7 @@ namespace Chasm.SemanticVersioning.Tests
         IEnumerator<object?[]> IEnumerable<object?[]>.GetEnumerator()
         {
             // Before getting enumerated, make sure all fixtures are complete
-            Assert.All(fixtures, static fixture => Assert.True(fixture.IsComplete));
+            Assert.All(fixtures, static fixture => Assert.True(fixture.IsComplete, $"Fixture \"{fixture}\" is incomplete."));
 
             foreach (TFixture fixture in fixtures)
                 yield return [fixture];

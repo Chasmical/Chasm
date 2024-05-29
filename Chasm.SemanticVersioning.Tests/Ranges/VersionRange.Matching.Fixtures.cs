@@ -87,6 +87,8 @@ namespace Chasm.SemanticVersioning.Tests
 
         public class MatchingFixture(string range) : Fixture
         {
+            public MatchingFixture() : this(null!) { }
+
             public string Range { get; } = range;
             public string Version { get; private set; } = null!;
 

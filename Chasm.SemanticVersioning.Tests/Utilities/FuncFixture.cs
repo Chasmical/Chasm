@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Chasm.SemanticVersioning.Tests
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("xUnit", "xUnit3001", Justification = "Class already has an implicit constructor.")]
     public abstract class FuncFixture<T> : Fixture, IFuncFixture<T>
     {
         public Type? ExceptionType { get; private set; }

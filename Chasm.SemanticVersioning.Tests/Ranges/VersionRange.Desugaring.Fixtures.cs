@@ -58,6 +58,8 @@ namespace Chasm.SemanticVersioning.Tests
 
         public class DesugaringFixture(string source) : FuncFixture<VersionRange>
         {
+            public DesugaringFixture() : this(null!) { }
+
             public string Source { get; } = source;
             public string? Expected { get; private set; }
 

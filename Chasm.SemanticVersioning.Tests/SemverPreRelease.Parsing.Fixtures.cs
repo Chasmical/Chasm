@@ -61,6 +61,8 @@ namespace Chasm.SemanticVersioning.Tests
 
         public class ParsingFixture(string source, SemverOptions options) : FuncFixture<SemverPreRelease>
         {
+            public ParsingFixture() : this(null!, default) { }
+
             public string Source { get; } = source;
             public SemverOptions Options { get; } = options;
             private object expected = null!;
