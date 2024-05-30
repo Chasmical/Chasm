@@ -1,4 +1,5 @@
-﻿using Chasm.SemanticVersioning.Ranges;
+﻿using System;
+using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -58,7 +59,7 @@ namespace Chasm.SemanticVersioning.Tests
 
         public class DesugaringFixture(string source) : FuncFixture<VersionRange>
         {
-            public DesugaringFixture() : this(null!) { }
+            [Obsolete(TestUtil.DeserCtor, true)] public DesugaringFixture() : this(null!) { }
 
             public string Source { get; } = source;
             public string? Expected { get; private set; }

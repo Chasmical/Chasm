@@ -87,7 +87,7 @@ namespace Chasm.SemanticVersioning.Tests
 
         public class ParsingFixture(string source, SemverOptions options) : FuncFixture<PartialVersion>
         {
-            public ParsingFixture() : this(null!, default) { }
+            [Obsolete(TestUtil.DeserCtor, true)] public ParsingFixture() : this(null!, default) { }
 
             public string Source { get; } = source;
             public SemverOptions Options { get; } = options;

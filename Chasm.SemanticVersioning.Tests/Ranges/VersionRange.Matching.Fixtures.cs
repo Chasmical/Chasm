@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Tests
 {
@@ -87,7 +88,7 @@ namespace Chasm.SemanticVersioning.Tests
 
         public class MatchingFixture(string range) : Fixture
         {
-            public MatchingFixture() : this(null!) { }
+            [Obsolete(TestUtil.DeserCtor, true)] public MatchingFixture() : this(null!) { }
 
             public string Range { get; } = range;
             public string Version { get; private set; } = null!;
@@ -95,11 +96,11 @@ namespace Chasm.SemanticVersioning.Tests
             public bool? Result { get; private set; }
             // true - matches either way; false - doesn't match either way; null - only with includePreReleases.
 
-            public MatchingFixtureExtender Matches(string[] matchVersions)
+            public MatchingFixtureExtender Matches(params string[] matchVersions)
                 => SetResults(matchVersions, true);
-            public MatchingFixtureExtender DoesNotMatch(string[] matchVersions)
+            public MatchingFixtureExtender DoesNotMatch(params string[] matchVersions)
                 => SetResults(matchVersions, false);
-            public MatchingFixtureExtender MatchesWithIncPr(string[] matchVersions)
+            public MatchingFixtureExtender MatchesWithIncPr(params string[] matchVersions)
                 => SetResults(matchVersions, null);
 
             private MatchingFixtureExtender SetResults(string[] matchVersions, bool? result)
@@ -125,9 +126,9 @@ namespace Chasm.SemanticVersioning.Tests
         }
         public class MatchingFixtureExtender : FixtureExtender<MatchingFixture>
         {
-            public MatchingFixtureExtender MatchesWithIncPr(string[] matchVersions)
+            public MatchingFixtureExtender MatchesWithIncPr(params string[] matchVersions)
                 => AddNew(new MatchingFixture(Prototype.Range)).MatchesWithIncPr(matchVersions);
-            public MatchingFixtureExtender DoesNotMatch(string[] matchVersions)
+            public MatchingFixtureExtender DoesNotMatch(params string[] matchVersions)
                 => AddNew(new MatchingFixture(Prototype.Range)).DoesNotMatch(matchVersions);
         }
     }
