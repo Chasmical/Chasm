@@ -7,10 +7,10 @@ namespace Chasm.SemanticVersioning.Tests
     public partial class SemverPreReleaseTests
     {
         [Fact]
-        public void Comparison()
+        public void Sorting()
         {
-            SemverPreRelease[] fixtures1 = CreateComparisonFixtures();
-            SemverPreRelease[] fixtures2 = CreateComparisonFixtures();
+            SemverPreRelease[] fixtures1 = CreateSortingFixtures();
+            SemverPreRelease[] fixtures2 = CreateSortingFixtures();
             SemverPreRelease a = default, b = default;
 
             try
