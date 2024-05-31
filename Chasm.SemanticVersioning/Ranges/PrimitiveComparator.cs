@@ -59,9 +59,8 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override bool CanMatchPreRelease(int major, int minor, int patch)
             => CanMatchPreRelease(Operand, major, minor, patch);
         /// <inheritdoc/>
-        [Pure] public override bool IsSatisfiedBy(SemanticVersion? version)
+        [Pure] protected internal override bool IsSatisfiedByCore(SemanticVersion version)
         {
-            if (version is null) return false;
             int res = version.CompareTo(Operand);
             return Operator switch
             {

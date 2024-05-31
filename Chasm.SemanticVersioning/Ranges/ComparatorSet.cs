@@ -111,7 +111,7 @@ namespace Chasm.SemanticVersioning.Ranges
             MATCH_COMPARATORS:
                 // all comparators must be satisfied by the version
                 for (i = 0; i < comparators.Length; i++)
-                    if (!comparators[i].IsSatisfiedBy(version))
+                    if (!comparators[i].IsSatisfiedByCore(version))
                         goto MATCH_FAIL;
                 return true;
             }

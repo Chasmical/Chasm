@@ -49,9 +49,8 @@ namespace Chasm.SemanticVersioning.Ranges
                 || right is not null && CanMatchPreRelease(right.Operand, major, minor, patch);
         }
         /// <inheritdoc/>
-        [Pure] public override bool IsSatisfiedBy(SemanticVersion? version)
+        [Pure] protected internal override bool IsSatisfiedByCore(SemanticVersion version)
         {
-            if (version is null) return false;
             (PrimitiveComparator? left, PrimitiveComparator? right) = ToPrimitives();
             return left?.IsSatisfiedBy(version) != false && right?.IsSatisfiedBy(version) != false;
         }

@@ -31,7 +31,30 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="version">The semantic version to match.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version comparator; otherwise, <see langword="false"/>.</returns>
-        [Pure] public abstract bool IsSatisfiedBy(SemanticVersion? version);
+        [Pure] public bool IsSatisfiedBy(SemanticVersion? version)
+            => IsSatisfiedBy(version, false);
+        /// <summary>
+        ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version comparator.</para>
+        /// </summary>
+        /// <param name="version">The semantic version to match.</param>
+        /// <param name="includePreReleases">Determines whether to treat pre-release versions like regular versions.</param>
+        /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version comparator; otherwise, <see langword="false"/>.</returns>
+        [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
+        {
+            if (version is not null)
+            {
+                if (includePreReleases || !version.IsPreRelease || CanMatchPreRelease(version.Major, version.Minor, version.Patch))
+                    return IsSatisfiedByCore(version);
+            }
+            return false;
+        }
+
+        /// <summary>
+        ///   <para>Determines whether this version comparator matches the specified semantic <paramref name="version"/>. At this point, <paramref name="version"/> has been confirmed to not be <see langword="null"/>, and pre-release versions should be treated like regular versions.</para>
+        /// </summary>
+        /// <param name="version">The semantic version to match.</param>
+        /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version comparator; otherwise, <see langword="false"/>.</returns>
+        protected internal abstract bool IsSatisfiedByCore(SemanticVersion version);
 
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> is a pre-release version, and has the specified <paramref name="major"/>, <paramref name="minor"/> and <paramref name="patch"/> version components.</para>
