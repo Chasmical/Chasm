@@ -108,7 +108,6 @@ namespace Chasm.SemanticVersioning.Ranges
             comparator = null;
             SemverErrorCode code;
             PartialVersion? partial;
-            PrimitiveOperator op;
 
             int onFirstChar = parser.position;
             char next = parser.Read();
@@ -126,8 +125,15 @@ namespace Chasm.SemanticVersioning.Ranges
                     if (code is not SemverErrorCode.Success) return code;
                     comparator = new TildeComparator(partial!);
                     break;
-                case '>': // read it as a '>' or '>=' comparator
-                    op = parser.Skip('=') ? PrimitiveOperator.GreaterThanOrEqual : PrimitiveOperator.GreaterThan;
+                case '>' or '<': // read it as a comparison comparator
+
+                    // GreaterThanOrEqual or GreaterThan = 100 or 010
+                    // LessThanOrEqual or LessThan       = 101 or 011
+
+                    PrimitiveOperator op = parser.Skip('=') ? PrimitiveOperator.GreaterThanOrEqual : PrimitiveOperator.GreaterThan;
+                    // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
+                    if (next == '<') op |= (PrimitiveOperator)1;
+
                     if (innerWhite) parser.SkipWhitespaces();
                     code = PartialVersion.ParseLoose(ref parser, options, out partial);
                     if (code is not SemverErrorCode.Success) return code;
@@ -136,17 +142,7 @@ namespace Chasm.SemanticVersioning.Ranges
                         ? (Comparator)new XRangeComparator(partial, op)
                         : new PrimitiveComparator((SemanticVersion)partial, op);
                     break;
-                case '<': // read it as a '<' or '<=' comparator
-                    op = parser.Skip('=') ? PrimitiveOperator.LessThanOrEqual : PrimitiveOperator.LessThan;
-                    if (innerWhite) parser.SkipWhitespaces();
-                    code = PartialVersion.ParseLoose(ref parser, options, out partial);
-                    if (code is not SemverErrorCode.Success) return code;
-
-                    comparator = partial!.IsPartial
-                        ? (Comparator)new XRangeComparator(partial, op)
-                        : new PrimitiveComparator((SemanticVersion)partial, op);
-                    break;
-                case '=': // read it as an '=' comparator
+                case '=': // read it as an equality '=' comparator
                     if (innerWhite) parser.SkipWhitespaces();
                     code = PartialVersion.ParseLoose(ref parser, options, out partial);
                     if (code is not SemverErrorCode.Success) return code;
