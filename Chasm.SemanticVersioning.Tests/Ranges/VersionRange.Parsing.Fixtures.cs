@@ -126,6 +126,39 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
+            // Handling errors in partial versions
+            New("^2147483648").Throws(Exceptions.MajorTooBig);
+            New("~2147483648").Throws(Exceptions.MajorTooBig);
+            New("=2147483648").Throws(Exceptions.MajorTooBig);
+            New(">2147483648").Throws(Exceptions.MajorTooBig);
+            New("<2147483648").Throws(Exceptions.MajorTooBig);
+            New(">=2147483648").Throws(Exceptions.MajorTooBig);
+            New("<=2147483648").Throws(Exceptions.MajorTooBig);
+            New("2147483648 - 123").Throws(Exceptions.MajorTooBig);
+            New("123 - 2147483648").Throws(Exceptions.MajorTooBig);
+
+
+
+            // Any amount of spaces is valid between comparator sets
+            New(">1.2.3    ||  <3.4.5").Returns([
+                new ComparatorSet(PrimitiveComparator.GreaterThan(new SemanticVersion(1, 2, 3))),
+                new ComparatorSet(PrimitiveComparator.LessThan(new SemanticVersion(3, 4, 5))),
+            ]);
+
+            // Only one space between individual comparators
+            New(">1.2.3 <3.4.5 || ^5.6.0").Returns([
+                new ComparatorSet([
+                    PrimitiveComparator.GreaterThan(new SemanticVersion(1, 2, 3)),
+                    PrimitiveComparator.LessThan(new SemanticVersion(3, 4, 5)),
+                ]),
+                new ComparatorSet([
+                    new CaretComparator(new PartialVersion(5, 6, 0)),
+                ]),
+            ]);
+            New(">1.2.3   <3.4.5 || ^5.6.0").Throws(Exceptions.Leftovers);
+
+
+
             return adapter;
         }
 

@@ -29,6 +29,40 @@ namespace Chasm.SemanticVersioning.Tests
 
         }
 
+        [Fact]
+        public void Constructors()
+        {
+            PrimitiveComparator a = PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(1, 2, 3));
+            PrimitiveComparator b = PrimitiveComparator.LessThan(new SemanticVersion(2, 0, 0, [0]));
+
+            // test single comparator constructor
+            VersionRange range = new VersionRange(a);
+            Assert.Single(range.ComparatorSets);
+            Assert.Single(range.ComparatorSets[0].Comparators, c => ReferenceEquals(c, a));
+
+            // test params comparators constructor (empty params)
+            range = new VersionRange(a, []);
+            Assert.Single(range.ComparatorSets);
+            Assert.Single(range.ComparatorSets[0].Comparators, c => ReferenceEquals(c, a));
+
+            // test params comparators constructor
+            range = new VersionRange(a, b);
+            Assert.Collection(
+                range.ComparatorSets,
+                cs => Assert.Single(cs.Comparators, c => ReferenceEquals(c, a)),
+                cs => Assert.Single(cs.Comparators, c => ReferenceEquals(c, b))
+            );
+
+            // test IEnumerable comparators constructor
+            range = new VersionRange([a, b]);
+            Assert.Collection(
+                range.ComparatorSets,
+                cs => Assert.Single(cs.Comparators, c => ReferenceEquals(c, a)),
+                cs => Assert.Single(cs.Comparators, c => ReferenceEquals(c, b))
+            );
+
+        }
+
         [Theory, MemberData(nameof(CreateParsingFixtures))]
         public void Properties(ParsingFixture fixture)
         {
@@ -44,6 +78,17 @@ namespace Chasm.SemanticVersioning.Tests
 
         }
 
+        [Fact]
+        public void StaticProperties()
+        {
+            // make sure that properties return correct values
+            Assert.Equal("<0.0.0-0", VersionRange.None.ToString());
+            Assert.Equal("*", VersionRange.All.ToString());
+
+            // make sure that properties aren't constantly creating new instances
+            Assert.Same(VersionRange.None, VersionRange.None);
+            Assert.Same(VersionRange.All, VersionRange.All);
+        }
 
     }
 }

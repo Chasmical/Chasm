@@ -13,23 +13,29 @@ namespace Chasm.SemanticVersioning.Tests
             VersionRange range = VersionRange.Parse(fixture.Range);
             SemanticVersion version = SemanticVersion.Parse(fixture.Version);
 
-            if (fixture.Result == true)
+            // true  - matches either way
+            // false - doesn't match either way
+            // null  - matches only with includePreReleases
+            bool satisfiesDefault = fixture.Result == true;
+            bool satisfiesIncPr = fixture.Result != false;
+
+            Assert.Equal(satisfiesDefault, range.IsSatisfiedBy(version));
+            Assert.Equal(satisfiesIncPr, range.IsSatisfiedBy(version, true));
+
+            // Test individual comparator set methods
+            if (range.ComparatorSets.Count == 1)
             {
-                // true - matches either way
-                Assert.True(range.IsSatisfiedBy(version));
-                Assert.True(range.IsSatisfiedBy(version, true));
-            }
-            else if (fixture.Result == false)
-            {
-                // false - doesn't match either way
-                Assert.False(range.IsSatisfiedBy(version));
-                Assert.False(range.IsSatisfiedBy(version, true));
-            }
-            else
-            {
-                // null - matches only with includePreReleases
-                Assert.False(range.IsSatisfiedBy(version));
-                Assert.True(range.IsSatisfiedBy(version, true));
+                ComparatorSet set = range.ComparatorSets[0];
+                Assert.Equal(satisfiesDefault, set.IsSatisfiedBy(version));
+                Assert.Equal(satisfiesIncPr, set.IsSatisfiedBy(version, true));
+
+                // Test individual comparator methods
+                if (set.Comparators.Count == 1)
+                {
+                    Comparator comp = set.Comparators[0];
+                    Assert.Equal(satisfiesDefault, comp.IsSatisfiedBy(version));
+                    Assert.Equal(satisfiesIncPr, comp.IsSatisfiedBy(version, true));
+                }
             }
 
         }
