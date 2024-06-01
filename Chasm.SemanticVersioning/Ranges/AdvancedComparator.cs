@@ -67,5 +67,18 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>A tuple of zero, one or two primitive version comparators, a set of which is equivalent to this advanced version comparator.</returns>
         [Pure] protected abstract (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives();
 
+        // TODO: ToPrimitivesArray() could be useful? Maybe think of a better name
+        [Pure] internal PrimitiveComparator[] ToPrimitivesArray()
+        {
+            (PrimitiveComparator? left, PrimitiveComparator? right) = ToPrimitives();
+            int count = (left is not null ? 1 : 0) + (right is not null ? 1 : 0);
+            if (count == 0) return [];
+
+            PrimitiveComparator[] comparators = new PrimitiveComparator[count];
+            if (left is not null) comparators[0] = left;
+            if (right is not null) comparators[left is not null ? 1 : 0] = right;
+            return comparators;
+        }
+
     }
 }
