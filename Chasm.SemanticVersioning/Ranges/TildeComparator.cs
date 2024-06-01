@@ -55,6 +55,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 // ~1.2.x    ⇒ >=1.2.0    <1.3.0-0
                 // ~1.2.x-rc ⇒ >=1.2.0    <1.3.0-0
 
+                if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
                 return (
                     GreaterThanOrEqual(new SemanticVersion(major, minor, 0, null, null, null, null)),
                     LessThan(new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null))
