@@ -142,7 +142,7 @@ namespace Chasm.SemanticVersioning.Ranges
                     // >=1.2.x    ⇒ >=1.2.0
                     // >=1.2.x-rc ⇒ >=1.2.0
 
-                    version = new SemanticVersion(major, (int)Operand.Minor, 0, SemverPreRelease.ZeroArray, null, null, null);
+                    version = new SemanticVersion(major, (int)Operand.Minor, 0, null, null, null, null);
                     return (PrimitiveComparator.GreaterThanOrEqual(version), null);
 
                 case PrimitiveOperator.LessThan:
