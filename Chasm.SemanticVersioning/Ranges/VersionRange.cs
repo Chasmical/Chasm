@@ -28,7 +28,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version <paramref name="comparatorSet"/>.</para>
         /// </summary>
-        /// <param name="comparatorSet">The version range's version comparator sets.</param>
+        /// <param name="comparatorSet">The version range's version comparator set.</param>
         /// <exception cref="ArgumentNullException"><paramref name="comparatorSet"/> is <see langword="null"/>.</exception>
         public VersionRange(ComparatorSet comparatorSet)
         {
