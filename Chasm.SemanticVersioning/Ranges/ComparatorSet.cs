@@ -146,7 +146,7 @@ namespace Chasm.SemanticVersioning.Ranges
             }
 
             if (desugared.Count == 0)
-                desugared.Add(PrimitiveComparator.AllNonPreRelease);
+                desugared.Add(PrimitiveComparator.All);
 
             return new ComparatorSet(desugared.ToArray(), default);
         }

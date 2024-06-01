@@ -129,7 +129,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Gets a primitive comparator (<c>&gt;=0.0.0</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
         /// </summary>
-        public static PrimitiveComparator AllNonPreRelease { get; } = GreaterThanOrEqual(new SemanticVersion(0, 0, 0));
+        public static PrimitiveComparator All { get; } = GreaterThanOrEqual(new SemanticVersion(0, 0, 0));
 
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()
