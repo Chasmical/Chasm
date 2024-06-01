@@ -13,12 +13,13 @@ namespace Chasm.SemanticVersioning.Tests
             VersionRange range = VersionRange.Parse(fixture.Source);
             Assert.True(range.IsSugared);
 
-            VersionRange desugared = range.Desugar();
-            Assert.False(desugared.IsSugared);
-            Assert.Same(desugared, desugared.Desugar());
-
-            fixture.AssertResult(desugared);
-
+            fixture.Test(() =>
+            {
+                VersionRange desugared = range.Desugar();
+                Assert.False(desugared.IsSugared);
+                Assert.Same(desugared, desugared.Desugar());
+                return desugared;
+            });
         }
     }
 }
