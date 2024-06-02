@@ -52,7 +52,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] protected internal override bool IsSatisfiedByCore(SemanticVersion version)
         {
             (PrimitiveComparator? left, PrimitiveComparator? right) = ToPrimitives();
-            return left?.IsSatisfiedBy(version) != false && right?.IsSatisfiedBy(version) != false;
+            return left?.IsSatisfiedByCore(version) != false && right?.IsSatisfiedByCore(version) != false;
         }
 
         /// <summary>
