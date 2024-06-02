@@ -49,8 +49,14 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
-            // There's no need to test advanced comparators, since we have
-            // desugaring tests to ensure they desugar into primitives correctly.
+            // Some simple advanced comparators
+            New("^1.2.3 || 12.3 - 14.4 || ~6.7.0 || 4.*.*")
+                .Matches(["1.2.3", "1.5.0", "12.3.0", "13.5.3", "14.4.5", "6.7.9", "4.0.0", "4.9.2"])
+                .MatchesWithIncPr(["1.2.4-beta.2", "12.3.1-rc.5", "14.4.9-alpha.7", "4.0.2-pre.3"])
+                .DoesNotMatch(["1.2.0-pre.6", "14.5.2-gamma.8", "4.0.0-rc.1"]);
+
+            // We also have desugaring tests to ensure advanced comparators desugar
+            // to primitives correctly, so there's no need to check all scenarios.
 
 
 
