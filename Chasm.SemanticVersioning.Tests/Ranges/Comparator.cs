@@ -116,5 +116,31 @@ namespace Chasm.SemanticVersioning.Tests
             }
         }
 
+        [Fact]
+        public void XRangeConversion()
+        {
+            SemanticVersion version = new SemanticVersion(1, 2, 3, ["alpha", 5], ["DEV", "07--"]);
+            PartialVersion partial = new PartialVersion(1, 'x', '*', ["beta"], ["BUILD"]);
+
+            // test PartialVersion to XRangeComparator conversion
+            XRangeComparator xRange = partial;
+            Assert.Equal(partial, xRange.Operand);
+            Assert.Equal(PrimitiveOperator.ImplicitEqual, xRange.Operator);
+
+            foreach (PrimitiveOperator op in Enum.GetValues<PrimitiveOperator>())
+            {
+                // test PrimitiveComparator to XRangeComparator conversion
+                xRange = new PrimitiveComparator(version, op);
+                Assert.Equal(version, xRange.Operand);
+                Assert.Equal(op, xRange.Operator);
+
+                // test XRangeComparator to PrimitiveComparator conversion
+                PrimitiveComparator primitive = (PrimitiveComparator)new XRangeComparator(partial, op);
+                Assert.Equal((SemanticVersion)partial, primitive.Operand);
+                Assert.Equal(op, primitive.Operator);
+            }
+
+        }
+
     }
 }
