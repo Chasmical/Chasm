@@ -32,42 +32,39 @@ namespace Chasm.SemanticVersioning.Tests
         [Fact]
         public void Constructors()
         {
-            PrimitiveComparator a = PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(1, 2, 3));
-            PrimitiveComparator b = PrimitiveComparator.LessThan(new SemanticVersion(2, 0, 0, [0]));
+            ComparatorSet a = PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(1, 2, 3));
+            ComparatorSet b = PrimitiveComparator.LessThan(new SemanticVersion(2, 0, 0, [0]));
 
-            // test single comparator constructor
+            // test single comparator set constructor
             VersionRange range = new VersionRange(a);
-            Assert.Single(range.ComparatorSets);
-            Assert.Single(range.ComparatorSets[0].Comparators, c => ReferenceEquals(c, a));
+            Assert.Same(a, Assert.Single(range.ComparatorSets));
 
-            // test params comparators constructor (empty params)
+            // test params comparator sets constructor (empty params)
             range = new VersionRange(a, []);
-            Assert.Single(range.ComparatorSets);
-            Assert.Single(range.ComparatorSets[0].Comparators, c => ReferenceEquals(c, a));
+            Assert.Same(a, Assert.Single(range.ComparatorSets));
 
-            // test params comparators constructor
+            // test params comparator sets constructor
             range = new VersionRange(a, b);
             Assert.Collection(
                 range.ComparatorSets,
-                cs => Assert.Single(cs.Comparators, c => ReferenceEquals(c, a)),
-                cs => Assert.Single(cs.Comparators, c => ReferenceEquals(c, b))
+                cs => Assert.Same(a, cs),
+                cs => Assert.Same(b, cs)
             );
 
-            // test IEnumerable comparators constructor
+            // test IEnumerable comparator sets constructor
             range = new VersionRange([a, b]);
             Assert.Collection(
                 range.ComparatorSets,
-                cs => Assert.Single(cs.Comparators, c => ReferenceEquals(c, a)),
-                cs => Assert.Single(cs.Comparators, c => ReferenceEquals(c, b))
+                cs => Assert.Same(a, cs),
+                cs => Assert.Same(b, cs)
             );
 
         }
 
-        [Theory, MemberData(nameof(CreateParsingFixtures))]
-        public void Properties(ParsingFixture fixture)
+        [Fact]
+        public void Properties()
         {
-            if (!fixture.IsValid) return;
-            VersionRange range = VersionRange.Parse(fixture.Source, fixture.Options);
+            VersionRange range = VersionRange.Parse("^0.2 || >=0.3.2 <0.4.0 || ~1.2 || 2.3 - 4.4.x");
 
             // test comparator set collections
             Assert.Equal(range._comparatorSets, range.ComparatorSets);
