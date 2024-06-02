@@ -48,4 +48,9 @@
     <DefineConstants>$(DefineConstants);PUBLISHING_PACKAGE</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <!-- Conceal the path to .pdb file in the build directory (kinda weird that .NET does that, feels like an invasion of privacy) -->
+    <DebugType>None</DebugType>
+  </PropertyGroup>
+
 </Project>

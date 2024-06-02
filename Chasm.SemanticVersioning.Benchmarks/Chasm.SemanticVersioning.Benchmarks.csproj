@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <None Remove="Chasm.SemanticVersioning.Benchmarks.csproj.DotSettings" />
+    <ProjectReference Include="..\Chasm.Utilities\Chasm.Utilities.csproj" />
+    <ProjectReference Include="..\Chasm.Collections\Chasm.Collections.csproj" />
     <ProjectReference Include="..\Chasm.SemanticVersioning\Chasm.SemanticVersioning.csproj" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
     <PackageReference Include="BenchmarkDotNet" Version="0.13.11" />

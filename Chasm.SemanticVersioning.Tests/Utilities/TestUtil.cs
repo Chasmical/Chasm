@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Chasm.Collections;
 using Xunit;
 
 namespace Chasm.SemanticVersioning.Tests
@@ -6,6 +8,7 @@ namespace Chasm.SemanticVersioning.Tests
     public static class TestUtil
     {
         public const SemverOptions PseudoStrict = (SemverOptions)int.MinValue; // only the sign bit is on
+        public const string DeserCtor = "This constructor is only used for deserialization.";
 
         public static T Parse<T>(string text) where T : IParsable<T>
             => T.Parse(text, null);
@@ -41,6 +44,17 @@ namespace Chasm.SemanticVersioning.Tests
                 => throw new InvalidOperationException();
             bool ISpanFormattable.TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> _, IFormatProvider? __)
                 => func(destination, out charsWritten);
+        }
+
+        public static (IEnumerable<object>, IEnumerable<string>) Split(object[] identifiers, string prefix)
+        {
+            int buildMetadataIndex = Array.FindIndex(identifiers, obj => obj is string str && str.StartsWith(prefix, StringComparison.Ordinal));
+            if (buildMetadataIndex < 0) buildMetadataIndex = identifiers.Length;
+
+            object[] left = identifiers[..buildMetadataIndex];
+            string[] right = identifiers[buildMetadataIndex..].Cast<string>();
+            if (right.Length > 0) right[0] = right[0][prefix.Length..];
+            return (left, right);
         }
 
     }

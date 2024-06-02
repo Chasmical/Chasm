@@ -4,40 +4,52 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 - **Focus on functionality and performance.** I will make sure to implement any common manipulations with semantic versions, and I will microoptimize the hell out of everything! *(not as much as diving into assembly code though)* I'll whip up some benchmarks later to show you the difference.
 
-- **Nice concise naming.** `SemanticVersion`, `SemverPreRelease`, `SemverOptions`. *It's a bit inconsistent with `SemanticVersion` compared to other types, but calling it `SemverVersion` would sound redundant.*
+- **Default comparison ignores build metadata.** Feel free to disagree, but that's just my decision. It feels more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuild`.
+
+- **Implements `node-semver`'s version ranges.** Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, and after being parsed, they will still output these exact strings. All other libraries desugar the advanced comparators into primitives, and I didn't really like that. I wanted to be able to manipulate version ranges in a more precise fashion.
 
 - **.NET-style documentation.** Written in the style of `System` namespace docs. I don't know if it's worth advertising, but I really like how descriptive and consistent it is, so I thought I should mention that.
 
 - **In active development, lots of plans.** See the to-do list below.
 
+
+
+## Table of contents
+
+1. [`SemanticVersion` class](#semanticversion-class)
+2. [`SemverPreRelease` struct](#semverprerelease-struct)
+3. [`SemverOptions` enum](#semveroptions-enum)
+4. [`SemanticVersionBuilder` class](#semanticversionbuilder-class)
+5. [`node-semver`'s version ranges](#node-semvers-version-ranges)
+6. [Advanced `SemanticVersion` formatting](#advanced-semanticversion-formatting)
+
+
+
 ## To-do List
 
-### Extra functionality
+### Semantic versions
 
-- [x] Use more efficient formatting (Chasm.Formatting);
-- [x] Advanced `SemanticVersion` formatting (`M.m.p-rr+dd`);
-- [x] `SemanticVersionBuilder` class;
-- [x] `BuildMetadataComparer` class;
-- [x] Option to ignore empty pre-releases/build metadata during parsing;
-- [x] Option to allow an older version syntax, like `1.2.3beta5`;
 - [ ] `SemverPreRelease.ParseMultiple/Many` method;
 - [ ] Advanced `SemverPreRelease` formatting, maybe?;
+- [ ] Coercing versions?;
+- [ ] Diffing versions?;
+- [ ] Decrementing versions?;
 
-### `node-semver` version ranges
+### Version ranges
 
-- [ ] Classes `PartialVersion`, `VersionRange`, `ComparatorSet`, `Comparator`;
-- [ ] Primitive version comparators;
-- [ ] Advanced version comparators;
-- [ ] `PartialVersion` parsing and formatting;
-- [ ] Parsing of version ranges and its components;
+- [x] Classes `PartialVersion`, `VersionRange`, `ComparatorSet`, `Comparator`;
+- [x] Primitive version comparators;
+- [x] Advanced version comparators;
+- [x] `PartialVersion` parsing and formatting;
+- [x] Parsing of version ranges and its components;
 - [ ] Operators (union `|`, intersection `&`, absolute complement `~`);
-- [ ] Simplify and desugar methods;
+- [x] Desugar methods;
+- [ ] Simplify methods;
 - [ ] IsSubset/Superset methods;
-- [ ] Coercing versions?
-- [ ] Diffing versions?
-- [ ] Decrementing versions?
 
-## `SemanticVersion`
+
+
+## `SemanticVersion` class
 
 `SemanticVersion` represents a valid semantic version as per the SemVer 2.0.0 specification.
 
@@ -46,24 +58,26 @@ var a = SemanticVersion.Parse("1.0.0-alpha.8");
 var b = SemanticVersion.Parse("=v 1.02-pre  ", SemverOptions.Loose);
 
 Console.WriteLine($"{a} < {b} = {a < b}");
-// 1.0.0-alpha.8 < 1.2-pre = true
+// 1.0.0-alpha.8 < 1.2-pre = True
 ```
 
-**Note that the default comparison doesn't account for build metadata!** For build metadata-sensitive comparison, use `BuildMetadataComparer`.
+**Note that the default comparison doesn't account for build metadata!** For build metadata-sensitive comparison, use `SemverComparer.IncludeBuild`.
 
 ```cs
 var a = SemanticVersion.Parse("1.2.3-4");
 var b = SemanticVersion.Parse("1.2.3-4+BUILD");
 
 Console.WriteLine($"{a} == {b} = {a == b}");
-// 1.2.3-4 == 1.2.3-4+BUILD = true
+// 1.2.3-4 == 1.2.3-4+BUILD = True
 
-var cmp = BuildMetadataComparer.Instance;
+var cmp = SemverComparer.IncludeBuild;
 Console.WriteLine($"{a} === {b} = {cmp.Equals(a, b)}");
-// 1.2.3-4 === 1.2.3-4+BUILD = false
+// 1.2.3-4 === 1.2.3-4+BUILD = False
 ```
 
-## `SemverPreRelease`
+
+
+## `SemverPreRelease` struct
 
 `SemverPreRelease` is a pre-release identifier. Can be implicitly created from strings and ints.
 
@@ -75,7 +89,9 @@ var version = new SemanticVersion(1, 2, 3, pre);
 var version = new SemanticVersion(1, 2, 3, ["alpha", 0]);
 ```
 
-## `SemverOptions`
+
+
+## `SemverOptions` enum
 
 `SemverOptions` specifies a bunch of different semantic version parsing options.
 
@@ -87,7 +103,9 @@ var version = SemanticVersion.Parse("v2 -. .alpha.", options);
 // Parsed as "2.0.0-alpha"
 ```
 
-### `SemanticVersionBuilder`
+
+
+### `SemanticVersionBuilder` class
 
 `SemanticVersionBuilder` can be used to manipulate semantic versions step by step.
 
@@ -96,7 +114,7 @@ var builder = new SemanticVersionBuilder(1, 2, 3);
 
 builder
     .WithPatch(7)
-    .AppendPreRelease("alpha");
+    .AppendPreRelease("alpha")
     .AppendPreRelease(0);
 
 var a = builder.ToVersion(); // 1.2.7-alpha.0
@@ -109,6 +127,29 @@ builder.Increment(IncrementType.PreMinor, "beta");
 
 var c = builder.ToVersion(); // 1.3.0-beta.0
 ```
+
+
+
+### `node-semver`'s version ranges
+
+`VersionRange`, `ComparatorSet`, `Comparator` classes provide methods for doing stuff with [`node-semver`](https://github.com/npm/node-semver)'s version ranges. Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, instead of being desugared into primitives like in all other libraries.
+
+```cs
+var range = VersionRange.Parse("~5.3");
+
+var a = SemanticVersion.Parse("5.0.1");
+var b = SemanticVersion.Parse("5.3.2");
+var c = SemanticVersion.Parse("5.5.0");
+
+Console.WriteLine($"{a} satisfies {range}: {range.IsSatisfiedBy(a)}");
+Console.WriteLine($"{b} satisfies {range}: {range.IsSatisfiedBy(b)}");
+Console.WriteLine($"{c} satisfies {range}: {range.IsSatisfiedBy(c)}");
+// 5.0.1 satisfies ~5.3: False
+// 5.3.2 satisfies ~5.3: True
+// 5.5.0 satisfies ~5.3: False
+```
+
+
 
 ### Advanced `SemanticVersion` formatting
 
@@ -155,3 +196,5 @@ When a specified build metadata identifier doesn't exist, it is omitted, along w
 
 #### Separators
 - `.`, `-`, `+`, `_`, ` ` - separator characters. When a specified format identifier is omitted, the separator character preceding it is omitted as well.
+
+

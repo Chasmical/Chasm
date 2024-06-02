@@ -45,10 +45,11 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
     <InternalsVisibleTo Include="Chasm.SemanticVersioning.Tests" />
     <InternalsVisibleTo Include="Chasm.SemanticVersioning.Benchmarks" />
-    <ProjectReference Include="..\Chasm.Utilities\Chasm.Utilities.csproj" />
-    <ProjectReference Include="..\Chasm.Collections\Chasm.Collections.csproj" />
     <ProjectReference Include="..\Chasm.Formatting\Chasm.Formatting.csproj" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
+    <PackageReference Include="JetBrains.dotCover.MSBuild" Version="1.0.5-alpha" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

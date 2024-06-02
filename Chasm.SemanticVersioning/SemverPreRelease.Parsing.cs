@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
-using Chasm.Utilities;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
@@ -12,7 +12,12 @@ namespace Chasm.SemanticVersioning
     {
         // ReSharper disable once UnusedParameter.Local
         private SemverPreRelease(string validIdentifier, bool _)
-            => text = validIdentifier;
+        {
+            // Make sure the internal constructor isn't used with an invalid parameter
+            Debug.Assert(Utility.AllValidCharacters(validIdentifier));
+
+            text = validIdentifier;
+        }
 
         [Pure] private static SemverErrorCode ParseInitial(ReadOnlySpan<char> text, bool allowLeadingZeroes, out int result)
         {
@@ -29,11 +34,12 @@ namespace Chasm.SemanticVersioning
         }
         [Pure] internal static SemverErrorCode ParseTrimmed(ReadOnlySpan<char> text, bool allowLeadingZeroes, out SemverPreRelease preRelease)
         {
+            preRelease = default;
             SemverErrorCode code = ParseInitial(text, allowLeadingZeroes, out int result);
-            if (code is not SemverErrorCode.Success) return Util.Fail(code, out preRelease);
+            if (code is not SemverErrorCode.Success) return code;
             if (result == -1)
             {
-                if (!Utility.AllValidCharacters(text)) return Util.Fail(SemverErrorCode.PreReleaseInvalid, out preRelease);
+                if (!Utility.AllValidCharacters(text)) return SemverErrorCode.PreReleaseInvalid;
                 preRelease = new SemverPreRelease(new string(text), default);
             }
             else preRelease = new SemverPreRelease(result);
@@ -41,11 +47,12 @@ namespace Chasm.SemanticVersioning
         }
         [Pure] internal static SemverErrorCode ParseTrimmed(string text, bool allowLeadingZeroes, out SemverPreRelease preRelease)
         {
+            preRelease = default;
             SemverErrorCode code = ParseInitial(text, allowLeadingZeroes, out int result);
-            if (code is not SemverErrorCode.Success) return Util.Fail(code, out preRelease);
+            if (code is not SemverErrorCode.Success) return code;
             if (result == -1)
             {
-                if (!Utility.AllValidCharacters(text)) return Util.Fail(SemverErrorCode.PreReleaseInvalid, out preRelease);
+                if (!Utility.AllValidCharacters(text)) return SemverErrorCode.PreReleaseInvalid;
                 preRelease = new SemverPreRelease(text, default);
             }
             else preRelease = new SemverPreRelease(result);
@@ -53,8 +60,9 @@ namespace Chasm.SemanticVersioning
         }
         [Pure] internal static SemverErrorCode ParseValidated(ReadOnlySpan<char> text, bool allowLeadingZeroes, out SemverPreRelease preRelease)
         {
+            preRelease = default;
             SemverErrorCode code = ParseInitial(text, allowLeadingZeroes, out int result);
-            if (code is not SemverErrorCode.Success) return Util.Fail(code, out preRelease);
+            if (code is not SemverErrorCode.Success) return code;
             preRelease = result == -1 ? new SemverPreRelease(new string(text), default) : new SemverPreRelease(result);
             return SemverErrorCode.Success;
         }
@@ -136,13 +144,17 @@ namespace Chasm.SemanticVersioning
         /// <returns><see langword="true"/>, if the conversion was successful; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool TryParse(string? text, SemverOptions options, out SemverPreRelease preRelease)
         {
-            if (text is null) return Util.Fail(out preRelease);
-            ReadOnlySpan<char> trimmed = Utility.Trim(text, options);
-            bool alz = (options & SemverOptions.AllowLeadingZeroes) != 0;
-            SemverErrorCode code = trimmed.Length != text.Length
-                ? ParseTrimmed(trimmed, alz, out preRelease)
-                : ParseTrimmed(text, alz, out preRelease);
-            return code is SemverErrorCode.Success;
+            if (text is not null)
+            {
+                ReadOnlySpan<char> trimmed = Utility.Trim(text, options);
+                bool alz = (options & SemverOptions.AllowLeadingZeroes) != 0;
+                SemverErrorCode code = trimmed.Length != text.Length
+                    ? ParseTrimmed(trimmed, alz, out preRelease)
+                    : ParseTrimmed(text, alz, out preRelease);
+                return code is SemverErrorCode.Success;
+            }
+            preRelease = default;
+            return false;
         }
         /// <summary>
         ///   <para>Tries to convert the specified read-only span of characters representing a pre-release identifier to an equivalent <see cref="SemverPreRelease"/> structure using the specified parsing <paramref name="options"/>, and returns a value indicating whether the conversion was successful.</para>

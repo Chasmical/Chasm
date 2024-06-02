@@ -56,11 +56,15 @@ namespace Chasm.SemanticVersioning
         /// <summary>
         ///   <para>Allows specifying empty pre-release identifiers, and removes them from the resulting semantic version. For example, <c>4.5.0-pre..0.</c> is resolved as having only <c>pre</c> and <c>0</c> as pre-release identifiers.</para>
         /// </summary>
-        RemoveEmptyPreReleases = 1 << 10,
+        RemoveEmptyPreReleases      = 1 << 10,
         /// <summary>
         ///   <para>Allows specifying empty build metadata identifiers, and removes them from the resulting semantic version. For example, <c>2.0.7+.DEV..07</c> is resolved as having only <c>DEV</c> and <c>07</c> as build metadata identifiers.</para>
         /// </summary>
-        RemoveEmptyBuildMetadata = 1 << 11,
+        RemoveEmptyBuildMetadata    = 1 << 11,
+        /// <summary>
+        ///   <para>Allows specifying more than one wildcard character in a partial version component. Example: <c>1.xx.***</c>.</para>
+        /// </summary>
+        AllowExtraWildcards         = 1 << 12,
 
         /// <summary>
         ///   <para>Specifies all parsing options, to be able to parse normally invalid semantic versions.</para>

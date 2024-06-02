@@ -4,7 +4,7 @@ namespace Chasm.SemanticVersioning.Tests
 {
     public partial class SemverPreReleaseTests
     {
-        [Pure] public static SemverPreRelease[] CreateComparisonFixtures() =>
+        [Pure] public static SemverPreRelease[] CreateSortingFixtures() =>
         [
             "0",
             "1",

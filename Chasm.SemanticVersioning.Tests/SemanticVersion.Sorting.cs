@@ -7,10 +7,10 @@ namespace Chasm.SemanticVersioning.Tests
     public partial class SemanticVersionTests
     {
         [Fact]
-        public void Comparison()
+        public void Sorting()
         {
-            SemanticVersion[] fixtures1 = CreateComparisonFixtures();
-            SemanticVersion[] fixtures2 = CreateComparisonFixtures();
+            SemanticVersion[] fixtures1 = CreateSortingFixtures();
+            SemanticVersion[] fixtures2 = CreateSortingFixtures();
             SemanticVersion? a = default, b = default;
 
             try
@@ -30,6 +30,12 @@ namespace Chasm.SemanticVersioning.Tests
                     Assert.False(a.Equals(0));
                     Assert.Throws<ArgumentException>(() => ((IComparable)a).CompareTo("0"));
                     Assert.Throws<ArgumentException>(() => ((IComparable)a).CompareTo(0));
+
+                    // Test against itself
+                    Assert.True(a.Equals(a));
+                    Assert.True(((object)a).Equals(a));
+                    Assert.Equal(0, a.CompareTo(a));
+                    Assert.Equal(0, ((IComparable)a).CompareTo(a));
 
                     // Test against other versions
                     for (int j = 0; j < fixtures2.Length; j++)

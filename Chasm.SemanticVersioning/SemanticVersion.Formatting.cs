@@ -218,7 +218,7 @@ namespace Chasm.SemanticVersioning
                 {
                     case 'M':
                         // write the major version component
-                        if (parser.Skip('M')) throw new FormatException();
+                        if (parser.Skip('M')) throw new FormatException(); // dotcover disable this line
                         FlushSeparator(ref sb, separator);
                         sb.Append((uint)Major);
                         break;
@@ -300,12 +300,12 @@ namespace Chasm.SemanticVersioning
                             case '\'' or '"':
                                 // append the text enclosed in quotes (quote characters can't be escaped inside)
                                 ReadOnlySpan<char> escaped = parser.ReadUntil(read);
-                                if (!parser.Skip(read)) throw new FormatException();
+                                if (!parser.Skip(read)) throw new FormatException(); // dotcover disable this line
                                 sb.Append(escaped);
                                 break;
                             case '\\':
                                 // append the following character as is
-                                if (!parser.CanRead()) throw new FormatException();
+                                if (!parser.CanRead()) throw new FormatException(); // dotcover disable this line
                                 sb.Append(parser.Read());
                                 break;
                             case '.' or '-' or '+' or '_' or ' ':
@@ -351,7 +351,7 @@ namespace Chasm.SemanticVersioning
         ///     <c>rr</c>, <c>dd</c> - all of the pre-release/build metadata identifiers that come after the last specified identifier.<br/>
         ///   </para>
         ///   <para>
-        ///     <c>\Majo\r</c> - backslash-escaped character. Backslash itself can be escaped as well.<br/>
+        ///     <c>\Ma\jo\r</c> - backslash-escaped character. Backslash itself can be escaped as well.<br/>
         ///     <c>'map'</c>, <c>"Arr!"</c> - quote-escaped sequence of characters. Backslash can't escape closing quote characters.<br/>
         ///     <c>.</c>, <c>-</c>, <c>+</c>, <c>_</c>, <c> </c> - separator characters. When preceding an omitted identifier, the separator is omitted as well.<br/>
         ///   </para>
@@ -372,7 +372,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="destination">When this method returns, this semantic version formatted as a span of characters.</param>
         /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
         /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
-        public bool TryFormat(Span<char> destination, out int charsWritten)
+        [Pure] public bool TryFormat(Span<char> destination, out int charsWritten)
             => SpanBuilder.TryFormat(this, destination, out charsWritten);
         /// <summary>
         ///   <para>Tries to format this semantic version into the provided span of characters.</para>
@@ -383,178 +383,14 @@ namespace Chasm.SemanticVersioning
         /// <param name="format">The format to use.</param>
         /// <returns><see langword="true"/>, if the formatting was successful; otherwise, <see langword="false"/>.</returns>
         /// <exception cref="FormatException">TODO</exception>
-        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format)
+        [Pure] public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format)
             => SpanBuilder.TryFormat(this, destination, out charsWritten, format);
 
-        string IFormattable.ToString(string? format, IFormatProvider? _)
+        [Pure] string IFormattable.ToString(string? format, IFormatProvider? _)
             => ToString(format);
 #if NET6_0_OR_GREATER
-        bool ISpanFormattable.TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? _)
+        [Pure] bool ISpanFormattable.TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? _)
             => TryFormat(destination, out charsWritten, format);
-#endif
-
-#if NOT_PUBLISHING_PACKAGE
-        // Note: These methods are only used in benchmarks.
-        // See here: /Chasm.SemanticVersioning.Benchmarks/SpanBuilderVsStringBuilder.cs
-
-        [Pure, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        internal string ToStringWithStringBuilder()
-        {
-            System.Text.StringBuilder sb = new();
-            sb.Append((uint)Major).Append('.').Append((uint)Minor).Append('.').Append((uint)Patch);
-
-            SemverPreRelease[] preReleases = _preReleases;
-            if (preReleases.Length != 0)
-            {
-                sb.Append('-').Append(preReleases[0]);
-                for (int i = 1; i < preReleases.Length; i++)
-                    sb.Append('.').Append(preReleases[i]);
-            }
-            string[] buildMetadata = _buildMetadata;
-            if (buildMetadata.Length != 0)
-            {
-                sb.Append('+').Append(buildMetadata[0]);
-                for (int i = 1; i < buildMetadata.Length; i++)
-                    sb.Append('.').Append(buildMetadata[i]);
-            }
-
-            return sb.ToString();
-        }
-        [Pure, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        internal string ToStringWithStringBuilder(ReadOnlySpan<char> format)
-        {
-            if (format.IsEmpty) return ToString();
-
-            System.Text.StringBuilder sb = new();
-
-            SpanParser parser = new SpanParser(format);
-
-            SemverPreRelease[] preReleases = _preReleases;
-            string[] buildMetadata = _buildMetadata;
-
-            int preReleaseIndex = 0;
-            int buildMetadataIndex = 0;
-            char separator = '\0';
-
-            static void FlushSeparator(System.Text.StringBuilder sb, char separator)
-            {
-                if (separator == '\0') return;
-                sb.Append(separator);
-            }
-
-            while (parser.CanRead())
-            {
-                char read = parser.Read();
-                switch (read)
-                {
-                    case 'M':
-                        // write the major version component
-                        if (parser.Skip('M')) throw new FormatException();
-                        FlushSeparator(sb, separator);
-                        sb.Append((uint)Major);
-                        break;
-                    case 'm':
-                        // write the minor version component (maybe optional)
-                        if (parser.Skip('m') && Minor == 0 && Patch == 0) break;
-                        FlushSeparator(sb, separator);
-                        sb.Append((uint)Minor);
-                        break;
-                    case 'p':
-                        // write the patch version component (maybe optional)
-                        if (parser.Skip('p') && Patch == 0) break;
-                        FlushSeparator(sb, separator);
-                        sb.Append((uint)Patch);
-                        break;
-                    case 'r':
-                        if (parser.Skip('r'))
-                        {
-                            // write all remaining pre-releases after the last one written
-                            if (preReleaseIndex < preReleases.Length)
-                            {
-                                FlushSeparator(sb, separator);
-                                sb.Append(preReleases[preReleaseIndex++]);
-                                while (preReleaseIndex < preReleases.Length)
-                                    sb.Append('.').Append(preReleases[preReleaseIndex++]);
-                            }
-                            break;
-                        }
-                        // optionally set the next pre-release index
-                        if (parser.OnAsciiDigit)
-                        {
-                            ReadOnlySpan<char> digits = parser.ReadAsciiDigits();
-                            preReleaseIndex = int.Parse(digits, NumberStyles.None);
-                        }
-                        // write the next pre-release
-                        if (preReleaseIndex < preReleases.Length)
-                        {
-                            FlushSeparator(sb, separator);
-                            sb.Append(preReleases[preReleaseIndex++]);
-                        }
-                        break;
-                    case 'd':
-                        if (parser.Skip('d'))
-                        {
-                            // write all remaining build metadata after the last one written
-                            if (buildMetadataIndex < buildMetadata.Length)
-                            {
-                                FlushSeparator(sb, separator);
-                                sb.Append(buildMetadata[buildMetadataIndex++]);
-                                while (buildMetadataIndex < buildMetadata.Length)
-                                {
-                                    sb.Append('.');
-                                    sb.Append(buildMetadata[buildMetadataIndex++]);
-                                }
-                            }
-                            break;
-                        }
-                        // optionally set the next build metadata index
-                        if (parser.OnAsciiDigit)
-                        {
-                            ReadOnlySpan<char> digits = parser.ReadAsciiDigits();
-                            buildMetadataIndex = int.Parse(digits, NumberStyles.None);
-                        }
-                        // write the next build metadata
-                        if (buildMetadataIndex < buildMetadata.Length)
-                        {
-                            FlushSeparator(sb, separator);
-                            sb.Append(buildMetadata[buildMetadataIndex++]);
-                        }
-                        break;
-                    default:
-                        // flush separator (the following format characters don't remove preceding separators)
-                        FlushSeparator(sb, separator);
-                        switch (read)
-                        {
-                            case '\'' or '"':
-                                // append the text enclosed in quotes (quote characters can't be escaped inside)
-                                ReadOnlySpan<char> escaped = parser.ReadUntil(read);
-                                if (!parser.Skip(read)) throw new FormatException();
-                                sb.Append(escaped);
-                                break;
-                            case '\\':
-                                // append the following character as is
-                                if (!parser.CanRead()) throw new FormatException();
-                                sb.Append(parser.Read());
-                                break;
-                            case '.' or '-' or '+' or '_' or ' ':
-                                // set the separator character and continue (skipping separator reset)
-                                separator = read;
-                                continue;
-                            default:
-                                // not a format character, append as is
-                                sb.Append(read);
-                                break;
-                        }
-                        break;
-                }
-                // reset separator
-                separator = '\0';
-            }
-
-            FlushSeparator(sb, separator);
-
-            return sb.ToString();
-        }
 #endif
 
     }

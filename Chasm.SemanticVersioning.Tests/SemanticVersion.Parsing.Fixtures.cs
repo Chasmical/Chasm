@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chasm.Collections;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -116,12 +115,20 @@ namespace Chasm.SemanticVersioning.Tests
             New("1.2", options).Returns(1, 2, 0).ButStrictThrows(Exceptions.PatchNotFound);
             New("1.", options).Throws(Exceptions.MinorNotFound);
             New("1", options).Throws(Exceptions.MinorNotFound);
+            New("1.2.-pre+build", options).Returns(1, 2, 0, "pre", "+build").ButStrictThrows(Exceptions.PatchNotFound);
+            New("1.2-pre+build", options).Returns(1, 2, 0, "pre", "+build").ButStrictThrows(Exceptions.PatchNotFound);
+            New("1.-pre+build", options).Throws(Exceptions.MinorNotFound);
+            New("1-pre+build", options).Throws(Exceptions.MinorNotFound);
             // Optional minor and patch components
             options = SemverOptions.OptionalMinor;
             New("1.2.", options).Throws(Exceptions.PatchNotFound);
             New("1.2", options).Throws(Exceptions.PatchNotFound);
             New("1.", options).Returns(1, 0, 0).ButStrictThrows(Exceptions.MinorNotFound);
             New("1", options).Returns(1, 0, 0).ButStrictThrows(Exceptions.MinorNotFound);
+            New("1.2.-pre+build", options).Throws(Exceptions.PatchNotFound);
+            New("1.2-pre+build", options).Throws(Exceptions.PatchNotFound);
+            New("1.-pre+build", options).Returns(1, 0, 0, "pre", "+build").ButStrictThrows(Exceptions.MinorNotFound);
+            New("1-pre+build", options).Returns(1, 0, 0, "pre", "+build").ButStrictThrows(Exceptions.MinorNotFound);
 
             // Allow leftovers
             options = SemverOptions.AllowLeftovers;
@@ -160,6 +167,8 @@ namespace Chasm.SemanticVersioning.Tests
 
         public class ParsingFixture(string source, SemverOptions options) : FuncFixture<SemanticVersion>
         {
+            [Obsolete(TestUtil.DeserCtor, true)] public ParsingFixture() : this(null!, default) { }
+
             public string Source { get; } = source;
             public SemverOptions Options { get; } = options;
 
@@ -177,17 +186,7 @@ namespace Chasm.SemanticVersioning.Tests
                 Minor = minor;
                 Patch = patch;
 
-                int buildMetadataIndex = Array.FindIndex(identifiers, static obj => obj is string str && str[0] == '+');
-                if (buildMetadataIndex < 0) buildMetadataIndex = identifiers.Length;
-
-                PreReleases = identifiers[..buildMetadataIndex];
-                if (buildMetadataIndex < identifiers.Length)
-                {
-                    string[] buildMetadata = identifiers[buildMetadataIndex..].Cast<string>();
-                    buildMetadata[0] = buildMetadata[0][1..]; // remove leading '+'
-                    BuildMetadata = buildMetadata;
-                }
-                else BuildMetadata = Enumerable.Empty<string>();
+                (PreReleases, BuildMetadata) = TestUtil.Split(identifiers, "+");
 
                 return Extend<LooseParsingFixture>();
             }

@@ -229,7 +229,7 @@ namespace Chasm.SemanticVersioning
         /// </summary>
         /// <returns>The <see cref="SemanticVersion"/> instance constructed by this <see cref="SemanticVersionBuilder"/>.</returns>
         [Pure] public SemanticVersion ToVersion()
-            => new SemanticVersion(_major, _minor, _patch, _preReleases.ToArray(), _buildMetadata.ToArray(), default);
+            => new SemanticVersion(_major, _minor, _patch, _preReleases.ToArray(), _buildMetadata.ToArray(), null, null);
         /// <summary>
         ///   <para>Returns the SemVer 2.0.0 compliant string representation of the semantic version.</para>
         /// </summary>

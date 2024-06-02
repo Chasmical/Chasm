@@ -1,8 +1,11 @@
-﻿using Xunit;
+﻿using System.Reflection;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Chasm.SemanticVersioning.Tests
 {
-    public abstract class Fixture
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("xUnit", "xUnit3001", Justification = "Class already has an implicit constructor.")]
+    public abstract class Fixture : IXunitSerializable
     {
         public string? Id { get; set; }
         public IFixtureAdapter? Adapter { get; internal set; }
@@ -20,5 +23,22 @@ namespace Chasm.SemanticVersioning.Tests
         public override string ToString()
             => $"{Id ?? "Unnamed"} {(IsValid ? '\u2705' : '\u274C')}";
 
+        protected TExtender Extend<TExtender>() where TExtender : IFixtureExtender<Fixture>, new()
+        {
+            TExtender extender = new TExtender();
+            extender.SetPrototype(this);
+            return extender;
+        }
+
+        void IXunitSerializable.Deserialize(IXunitSerializationInfo info)
+        {
+            foreach (FieldInfo field in GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                field.SetValue(this, info.GetValue(field.Name, field.FieldType));
+        }
+        void IXunitSerializable.Serialize(IXunitSerializationInfo info)
+        {
+            foreach (FieldInfo field in GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                info.AddValue(field.Name, field.GetValue(this), field.FieldType);
+        }
     }
 }

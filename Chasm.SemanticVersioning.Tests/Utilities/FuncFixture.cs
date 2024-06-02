@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Chasm.SemanticVersioning.Tests
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("xUnit", "xUnit3001", Justification = "Class already has an implicit constructor.")]
     public abstract class FuncFixture<T> : Fixture, IFuncFixture<T>
     {
         public Type? ExceptionType { get; private set; }
@@ -62,13 +63,6 @@ namespace Chasm.SemanticVersioning.Tests
             {
                 if (success) Assert.Fail("Expected the test to fail, but a result was returned:\n" + result);
             }
-        }
-
-        protected TExtender Extend<TExtender>() where TExtender : IFixtureExtender<IFuncFixture<T>>, new()
-        {
-            TExtender extender = new TExtender();
-            extender.SetPrototype(this);
-            return extender;
         }
 
     }

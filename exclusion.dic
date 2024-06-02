@@ -1,3 +1,4 @@
 semver
-Semver
-Parsable
+parsable
+desugarable
+dotcover

@@ -10,12 +10,13 @@ namespace Chasm.SemanticVersioning
 
         IdentifierMask = 0b_0000_1111,
 
-        COMPONENT      = 0b_0000_0001,
-        MAJOR          = 0b_0000_0010,
-        MINOR          = 0b_0000_0011,
-        PATCH          = 0b_0000_0100,
-        PRERELEASE     = 0b_0000_0101,
-        BUILD_METADATA = 0b_0000_0110,
+        COMPONENT      = 0b_0000_1000,
+        MAJOR          = 0b_0000_0001 | COMPONENT,
+        MINOR          = 0b_0000_0010 | COMPONENT,
+        PATCH          = 0b_0000_0011 | COMPONENT,
+        PRERELEASE     = 0b_0000_0100,
+        BUILD_METADATA = 0b_0000_0101,
+        VERSION_RANGE  = 0b_0000_0110,
 
         ErrorTypeMask  = 0b_1111_0000,
 
@@ -51,9 +52,17 @@ namespace Chasm.SemanticVersioning
 
         PreReleaseEmpty         = PRERELEASE     | EMPTY,
         BuildMetadataEmpty      = BUILD_METADATA | EMPTY,
+        VersionRangeEmpty       = VERSION_RANGE  | EMPTY,
 
+        MajorInvalid            = MAJOR          | INVALID,
+        MinorInvalid            = MINOR          | INVALID,
+        PatchInvalid            = PATCH          | INVALID,
+        ComponentInvalid        = COMPONENT      | INVALID,
         PreReleaseInvalid       = PRERELEASE     | INVALID,
         BuildMetadataInvalid    = BUILD_METADATA | INVALID,
+
+        PreReleaseAfterOmitted     = PRERELEASE     | LEFTOVERS,
+        BuildMetadataAfterOmitted  = BUILD_METADATA | LEFTOVERS,
 
         Leftovers               = LEFTOVERS,
 

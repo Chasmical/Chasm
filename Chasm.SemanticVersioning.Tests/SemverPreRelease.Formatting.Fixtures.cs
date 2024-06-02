@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -20,6 +21,8 @@ namespace Chasm.SemanticVersioning.Tests
 
         public class FormattingFixture(string source, string? format = null) : FuncFixture<string>
         {
+            [Obsolete(TestUtil.DeserCtor, true)] public FormattingFixture() : this(null!) { }
+
             public string Source { get; } = source;
             public string? Format { get; } = format;
             private string Expected = null!;

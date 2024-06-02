@@ -17,6 +17,12 @@
             return extender;
         }
 
+        protected TFixture AddNew(TFixture fixture)
+        {
+            Adapter.Add(fixture);
+            return fixture;
+        }
+
     }
     public interface IFixtureExtender
     {

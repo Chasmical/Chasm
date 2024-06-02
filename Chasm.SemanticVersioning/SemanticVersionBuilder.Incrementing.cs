@@ -152,7 +152,7 @@ namespace Chasm.SemanticVersioning
         /// </summary>
         /// <param name="preRelease">The pre-release identifier of the next pre-release to bump to.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
-        /// <exception cref="InvalidOperationException">The right-most numeric pre-release identifier is equal to <see cref="int.MaxValue"/>.</exception>
+        /// <exception cref="InvalidOperationException">The right-most numeric pre-release identifier (or <see cref="Patch"/>, if there are no pre-releases) is equal to <see cref="int.MaxValue"/>.</exception>
         public SemanticVersionBuilder IncrementPreRelease(SemverPreRelease preRelease)
         {
             if (_preReleases.Count == 0)

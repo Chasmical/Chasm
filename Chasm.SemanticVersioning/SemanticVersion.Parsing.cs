@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Chasm.Formatting;
@@ -13,13 +15,26 @@ namespace Chasm.SemanticVersioning
 #endif
     {
         // ReSharper disable once UnusedParameter.Local
-        internal SemanticVersion(int major, int minor, int patch, SemverPreRelease[]? preReleases, string[]? buildMetadata, bool _)
+        internal SemanticVersion(int major, int minor, int patch,
+                                 SemverPreRelease[]? preReleases, string[]? buildMetadata,
+                                 ReadOnlyCollection<SemverPreRelease>? preReleasesReadonly,
+                                 ReadOnlyCollection<string>? buildMetadataReadonly)
         {
+            // Make sure the internal constructor isn't used with invalid parameters
+            Debug.Assert(major >= 0);
+            Debug.Assert(minor >= 0);
+            Debug.Assert(patch >= 0);
+            Debug.Assert(Array.TrueForAll(buildMetadata ?? [], static b => Utility.AllValidCharacters(b)));
+            Debug.Assert(preReleasesReadonly is null || preReleasesReadonly.Count == (preReleases?.Length ?? 0));
+            Debug.Assert(buildMetadataReadonly is null || buildMetadataReadonly.Count == (buildMetadata?.Length ?? 0));
+
             Major = major;
             Minor = minor;
             Patch = patch;
             _preReleases = preReleases ?? [];
             _buildMetadata = buildMetadata ?? [];
+            _preReleasesReadonly = preReleasesReadonly;
+            _buildMetadataReadonly = buildMetadataReadonly;
         }
 
         [Pure] internal static SemverErrorCode ParseStrict(ReadOnlySpan<char> text, out SemanticVersion? version)
@@ -61,7 +76,7 @@ namespace Chasm.SemanticVersioning
                 List<SemverPreRelease> list = [];
                 do
                 {
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     SemverErrorCode code = SemverPreRelease.ParseValidated(read, false, out SemverPreRelease preRelease);
                     if (code is not SemverErrorCode.Success) return code;
                     list.Add(preRelease);
@@ -74,7 +89,7 @@ namespace Chasm.SemanticVersioning
                 List<string> list = [];
                 do
                 {
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty) return SemverErrorCode.BuildMetadataEmpty;
                     list.Add(new string(read));
                 }
@@ -84,7 +99,7 @@ namespace Chasm.SemanticVersioning
 
             if (parser.CanRead()) return SemverErrorCode.Leftovers;
 
-            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, default);
+            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, null, null);
             return SemverErrorCode.Success;
         }
 
@@ -160,7 +175,7 @@ namespace Chasm.SemanticVersioning
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty)
                     {
                         if (removeEmpty) continue;
@@ -200,7 +215,7 @@ namespace Chasm.SemanticVersioning
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
-                    read = parser.ReadSemverIdentifier();
+                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty)
                     {
                         if (removeEmpty) continue;
@@ -223,7 +238,7 @@ namespace Chasm.SemanticVersioning
             if ((options & SemverOptions.AllowLeftovers) == 0 && parser.CanRead())
                 return SemverErrorCode.Leftovers;
 
-            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, default);
+            version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, null, null);
             return SemverErrorCode.Success;
         }
 
