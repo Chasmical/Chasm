@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using JetBrains.Annotations;
 
@@ -11,7 +12,12 @@ namespace Chasm.SemanticVersioning.Ranges
     {
         // ReSharper disable once UnusedParameter.Local
         internal PartialComponent(int value, bool _)
-            => _value = (uint)value;
+        {
+            // Make sure the internal constructor isn't used with an invalid parameter
+            Debug.Assert(value is >= 0 or -1 or -'x' or -'X' or -'*');
+
+            _value = (uint)value;
+        }
 
         /// <summary>
         ///   <para>Converts the specified wildcard or numeric character representing a partial version component to an equivalent <see cref="PartialComponent"/> structure.</para>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Chasm.Formatting;
@@ -23,7 +24,13 @@ namespace Chasm.SemanticVersioning.Ranges
 
         // ReSharper disable once UnusedParameter.Local
         internal VersionRange(ComparatorSet[] comparatorSets, bool _)
-            => _comparatorSets = comparatorSets;
+        {
+            // Make sure the internal constructor isn't used with an invalid parameter
+            Debug.Assert(comparatorSets.Length >= 1);
+            Debug.Assert(Array.IndexOf(comparatorSets, null) == -1);
+
+            _comparatorSets = comparatorSets;
+        }
 
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version <paramref name="comparatorSet"/>.</para>

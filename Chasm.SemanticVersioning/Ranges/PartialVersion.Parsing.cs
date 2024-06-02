@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Chasm.Formatting;
 using JetBrains.Annotations;
@@ -18,6 +19,14 @@ namespace Chasm.SemanticVersioning.Ranges
                                 ReadOnlyCollection<SemverPreRelease>? preReleasesReadonly,
                                 ReadOnlyCollection<string>? buildMetadataReadonly)
         {
+            // Make sure the internal constructor isn't used with invalid parameters
+            Debug.Assert((int)major._value is >= 0 or -1 or -'x' or -'X' or -'*');
+            Debug.Assert((int)minor._value is >= 0 or -1 or -'x' or -'X' or -'*');
+            Debug.Assert((int)patch._value is >= 0 or -1 or -'x' or -'X' or -'*');
+            Debug.Assert(Array.TrueForAll(buildMetadata ?? [], static b => Utility.AllValidCharacters(b)));
+            Debug.Assert(preReleasesReadonly is null || preReleasesReadonly.Count == (preReleases?.Length ?? 0));
+            Debug.Assert(buildMetadataReadonly is null || buildMetadataReadonly.Count == (buildMetadata?.Length ?? 0));
+
             Major = major;
             Minor = minor;
             Patch = patch;

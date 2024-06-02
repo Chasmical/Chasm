@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Chasm.Formatting;
@@ -23,7 +24,12 @@ namespace Chasm.SemanticVersioning.Ranges
 
         // ReSharper disable once UnusedParameter.Local
         internal ComparatorSet(Comparator[] comparators, bool _)
-            => _comparators = comparators;
+        {
+            // Make sure the internal constructor isn't used with an invalid parameter
+            Debug.Assert(Array.IndexOf(comparators, null) == -1);
+
+            _comparators = comparators;
+        }
 
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="ComparatorSet"/> class with the specified version <paramref name="comparators"/>.</para>

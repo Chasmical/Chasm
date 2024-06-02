@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using JetBrains.Annotations;
 
@@ -11,7 +12,12 @@ namespace Chasm.SemanticVersioning
     {
         // ReSharper disable once UnusedParameter.Local
         private SemverPreRelease(string validIdentifier, bool _)
-            => text = validIdentifier;
+        {
+            // Make sure the internal constructor isn't used with an invalid parameter
+            Debug.Assert(Utility.AllValidCharacters(validIdentifier));
+
+            text = validIdentifier;
+        }
 
         [Pure] private static SemverErrorCode ParseInitial(ReadOnlySpan<char> text, bool allowLeadingZeroes, out int result)
         {
