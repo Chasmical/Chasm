@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Chasm.SemanticVersioning
 {
@@ -59,12 +60,14 @@ namespace Chasm.SemanticVersioning
             return this;
         }
 
-        private void SetPreRelease(SemverPreRelease preRelease)
+        private SemanticVersionBuilder SetPreRelease(SemverPreRelease preRelease)
         {
-            _preReleases.Clear();
-            _preReleases.Add(preRelease);
+            List<SemverPreRelease> preReleases = _preReleases;
+            preReleases.Clear();
+            preReleases.Add(preRelease);
             if (preRelease != SemverPreRelease.Zero)
-                _preReleases.Add(SemverPreRelease.Zero);
+                preReleases.Add(SemverPreRelease.Zero);
+            return this;
         }
 
         /// <summary>
@@ -89,8 +92,7 @@ namespace Chasm.SemanticVersioning
             // 1.2.3 →   (0)   → 2.0.0-0       | 0 specifies not to use an extra identifier
             // 1.2.3 →   (1)   → 2.0.0-1.0
             // 1.2.3 → (alpha) → 2.0.0-alpha.0
-            SetPreRelease(preRelease);
-            return this;
+            return SetPreRelease(preRelease);
         }
         /// <summary>
         ///   <para>Bumps the semantic version to the first pre-release of the next minor version.</para>
@@ -113,8 +115,7 @@ namespace Chasm.SemanticVersioning
             // 1.2.3 →   (0)   → 1.3.0-0       | 0 specifies not to use an extra identifier
             // 1.2.3 →   (1)   → 1.3.0-1.0
             // 1.2.3 → (alpha) → 1.3.0-alpha.0
-            SetPreRelease(preRelease);
-            return this;
+            return SetPreRelease(preRelease);
         }
         /// <summary>
         ///   <para>Bumps the semantic version to the first pre-release of the next patch version.</para>
@@ -136,8 +137,7 @@ namespace Chasm.SemanticVersioning
             // 1.2.3 →   (0)   → 1.2.4-0       | 0 specifies not to use an extra identifier
             // 1.2.3 →   (1)   → 1.2.4-1.0
             // 1.2.3 → (alpha) → 1.2.4-alpha.0
-            SetPreRelease(preRelease);
-            return this;
+            return SetPreRelease(preRelease);
         }
 
         /// <summary>
@@ -155,35 +155,41 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="InvalidOperationException">The right-most numeric pre-release identifier (or <see cref="Patch"/>, if there are no pre-releases) is equal to <see cref="int.MaxValue"/>.</exception>
         public SemanticVersionBuilder IncrementPreRelease(SemverPreRelease preRelease)
         {
-            if (_preReleases.Count == 0)
+#if NET5_0_OR_GREATER
+            // optimize access to the list, if possible
+            Span<SemverPreRelease> preReleases = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_preReleases);
+            int length = preReleases.Length;
+#else
+            List<SemverPreRelease> preReleases = _preReleases;
+            int length = preReleases.Count;
+#endif
+
+            if (length == 0)
             {
                 // increment patch and add 'pre.0' or '0'
                 return IncrementPrePatch(preRelease);
             }
-            if (preRelease == SemverPreRelease.Zero || preRelease == _preReleases[0] && _preReleases.Count > 1 && _preReleases[1].IsNumeric)
+            if (preRelease == SemverPreRelease.Zero || length > 1 && preReleases[0] == preRelease && preReleases[1].IsNumeric)
             {
                 // try to increment the right-most numeric identifier
-                int i;
-                for (i = _preReleases.Count - 1; i >= 0; i--)
+                int i = length;
+                while (--i >= 0)
                 {
-                    SemverPreRelease identifier = _preReleases[i];
+                    SemverPreRelease identifier = preReleases[i];
                     if (identifier.IsNumeric)
                     {
                         int number = identifier.AsNumber;
                         if (number == int.MaxValue) throw new InvalidOperationException(Exceptions.PreReleaseTooBig);
-                        _preReleases[i] = new SemverPreRelease(number + 1);
-                        break;
+                        preReleases[i] = new SemverPreRelease(number + 1);
+                        return this;
                     }
                 }
-                if (i == -1) // couldn't find a numeric identifier
-                    _preReleases.Add(SemverPreRelease.Zero);
+                // couldn't find a numeric identifier
+                _preReleases.Add(SemverPreRelease.Zero);
+                return this;
             }
-            else
-            {
-                // replace the pre-releases with 'pre.0'
-                SetPreRelease(preRelease);
-            }
-            return this;
+            // replace the pre-releases with 'pre.0'
+            return SetPreRelease(preRelease);
         }
 
         /// <summary>
