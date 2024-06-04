@@ -17,28 +17,91 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
-            // IncrementPatch simple tests
-            New("0.0.0-0")
-                .After(b => b.IncrementPatch())
-                .Returns("0.0.0").Then("0.0.1").Then("0.0.2");
-            New("0.0.3-0")
-                .After(b => b.IncrementPatch())
-                .Returns("0.0.3").Then("0.0.4").Then("0.0.5");
-            New("0.2.0-0")
-                .After(b => b.IncrementPatch())
-                .Returns("0.2.0").Then("0.2.1").Then("0.2.2");
-            New("1.2.0-0")
-                .After(b => b.IncrementPatch())
-                .Returns("1.2.0").Then("1.2.1").Then("1.2.2");
-            New("1.2.3-0")
-                .After(b => b.IncrementPatch())
-                .Returns("1.2.3").Then("1.2.4").Then("1.2.5");
+            // IncrementPatch tests
+            New("0.0.0-0").After(IncrementType.Patch).Returns("0.0.0");
+            New("0.0.0").After(IncrementType.Patch).Returns("0.0.1");
+            New("1.2.0-0").After(IncrementType.Patch).Returns("1.2.0");
+            New("1.2.3-0").After(IncrementType.Patch).Returns("1.2.3");
+            New("1.2.3").After(IncrementType.Patch).Returns("1.2.4");
 
             // IncrementPatch overflow
-            New($"1.2.{max}-0")
-                .After(b => b.IncrementPatch())
-                .Returns($"1.2.{max}")
-                .ThenAgain().Throws(Exceptions.PatchTooBig);
+            New($"1.2.{max}-0").After(IncrementType.Patch).Returns($"1.2.{max}");
+            New($"1.2.{max}").After(IncrementType.Patch).Throws(Exceptions.PatchTooBig);
+            New($"{max}.{max}.{max}-0").After(IncrementType.Patch).Returns($"{max}.{max}.{max}");
+            New($"{max}.{max}.{max}").After(IncrementType.Patch).Throws(Exceptions.PatchTooBig);
+
+            // IncrementMinor tests
+            New("0.0.0-0").After(IncrementType.Minor).Returns("0.0.0");
+            New("0.0.0").After(IncrementType.Minor).Returns("0.1.0");
+            New("1.2.0-0").After(IncrementType.Minor).Returns("1.2.0");
+            New("1.2.3-0").After(IncrementType.Minor).Returns("1.3.0");
+            New("1.2.3").After(IncrementType.Minor).Returns("1.3.0");
+
+            // IncrementMinor overflow
+            New($"{max}.{max}.0-0").After(IncrementType.Minor).Returns($"{max}.{max}.0");
+            New($"{max}.{max}.0").After(IncrementType.Minor).Throws(Exceptions.MinorTooBig);
+            New($"{max}.{max - 1}.{max}").After(IncrementType.Minor).Returns($"{max}.{max}.0");
+            New($"{max}.{max}.{max}").After(IncrementType.Minor).Throws(Exceptions.MinorTooBig);
+
+            // IncrementMajor tests
+            New("0.0.0-0").After(IncrementType.Major).Returns("0.0.0");
+            New("0.0.0").After(IncrementType.Major).Returns("1.0.0");
+            New("1.0.0-0").After(IncrementType.Major).Returns("1.0.0");
+            New("1.2.3-0").After(IncrementType.Major).Returns("2.0.0");
+            New("1.2.3").After(IncrementType.Major).Returns("2.0.0");
+
+            // IncrementMajor overflow
+            New($"{max - 1}.0.0-0").After(IncrementType.Major).Returns($"{max - 1}.0.0");
+            New($"{max}.0.0").After(IncrementType.Major).Throws(Exceptions.MajorTooBig);
+            New($"{max - 1}.{max}.{max}").After(IncrementType.Major).Returns($"{max}.0.0");
+            New($"{max}.{max}.{max}").After(IncrementType.Major).Throws(Exceptions.MajorTooBig);
+
+
+
+            // IncrementPreRelease tests
+            New("1.2.2").After(IncrementType.PreRelease).Returns("1.2.3-0");
+            New("1.2.3-0").After(IncrementType.PreRelease).Returns("1.2.3-1");
+            New("1.2.3-9").After(IncrementType.PreRelease).Returns("1.2.3-10");
+            New("1.2.3-rc").After(IncrementType.PreRelease).Returns("1.2.3-rc.0");
+            New("1.2.3-rc.0").After(IncrementType.PreRelease).Returns("1.2.3-rc.1");
+            New("1.2.3-7.-8.9").After(IncrementType.PreRelease).Returns("1.2.3-7.-8.10");
+            New("1.2.3-7.-8.9.beta").After(IncrementType.PreRelease).Returns("1.2.3-7.-8.10.beta");
+
+            // IncrementPreRelease overflow
+            New($"1.2.3-rc.{max - 1}").After(IncrementType.PreRelease).Returns($"1.2.3-rc.{max}");
+            New($"1.2.3-rc.{max}").After(IncrementType.PreRelease).Throws(Exceptions.PreReleaseTooBig);
+            New($"1.2.3-{max}.rc.{max - 1}").After(IncrementType.PreRelease).Returns($"1.2.3-{max}.rc.{max}");
+            New($"1.2.3-{max}.rc.{max}").After(IncrementType.PreRelease).Throws(Exceptions.PreReleaseTooBig);
+            New($"1.2.{max - 1}").After(IncrementType.PreRelease).Returns($"1.2.{max}-0");
+            New($"1.2.{max}").After(IncrementType.PreRelease).Throws(Exceptions.PatchTooBig);
+
+
+
+            // IncrementPreRelease with pre-release
+            New("1.2.2").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+            New("1.2.3-0").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+            New("1.2.3-beta.gamma").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+            New("1.2.3-beta.gamma.4").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+            New("1.2.3-beta.0").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.1");
+            New("1.2.3-beta.1.beta").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.2.beta");
+            New("1.2.3-alpha.2").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+            New("1.2.3-rc.3").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+
+            // IncrementPreRelease with and without a pre-release
+            New("1.2.3-beta.gamma.5").After(IncrementType.PreRelease).Returns("1.2.3-beta.gamma.6");
+            New("1.2.3-beta.gamma.5").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+            New("1.2.3-beta.5.gamma").After(IncrementType.PreRelease).Returns("1.2.3-beta.6.gamma");
+            New("1.2.3-beta.5.gamma").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.6.gamma");
+            New("1.2.3-beta.gamma").After(IncrementType.PreRelease).Returns("1.2.3-beta.gamma.0");
+            New("1.2.3-beta.gamma").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+            New("1.2.3-beta").After(IncrementType.PreRelease).Returns("1.2.3-beta.0");
+            New("1.2.3-beta").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+
+            // IncrementPreRelease with pre-release overflow
+            New($"1.2.3-alpha.{max}").After(IncrementType.PreRelease, "beta").Returns("1.2.3-beta.0");
+            New($"1.2.3-alpha.{max}.0.beta").After(IncrementType.PreRelease, "alpha").Returns($"1.2.3-alpha.{max}.1.beta");
+            New($"1.2.3-alpha.{max}.0.beta.{max - 1}").After(IncrementType.PreRelease, "alpha").Returns($"1.2.3-alpha.{max}.0.beta.{max}");
+            New($"1.2.3-alpha.{max}.0.beta.{max}").After(IncrementType.PreRelease, "alpha").Throws(Exceptions.PreReleaseTooBig);
 
 
 
@@ -50,7 +113,8 @@ namespace Chasm.SemanticVersioning.Tests
             [Obsolete(TestUtil.DeserCtor, true)] public IncrementingFixture() : this(null!) { }
 
             public string Source { get; } = source;
-            public Action<SemanticVersionBuilder>? Action { get; private set; }
+            public IncrementType Type { get; private set; }
+            public SemverPreRelease PreRelease { get; private set; }
             public string? Expected { get; private set; }
 
             protected override Type DefaultExceptionType => typeof(InvalidOperationException);
@@ -61,33 +125,24 @@ namespace Chasm.SemanticVersioning.Tests
                 Assert.Equal(Expected, result?.ToString());
             }
 
-            public Stage2 After(Action<SemanticVersionBuilder> action)
+            public Stage2 After(IncrementType type, SemverPreRelease preRelease = default)
             {
-                Action = action;
+                Type = type;
+                PreRelease = preRelease;
                 return new Stage2(this);
             }
-            private Extender Returns(string expected)
+            private void Returns(string expected)
             {
                 MarkAsComplete();
                 Expected = expected;
-                return Extend<Extender>();
             }
             public override string ToString()
-                => $"{base.ToString()} {Source} → {Expected}";
+                => $"{base.ToString()} {Source} → ({Type}) → {Expected}";
 
             public sealed class Stage2(IncrementingFixture fixture)
             {
-                public Extender Returns(string source) => fixture.Returns(source);
-                public void Throws(string? exceptionMessage) => fixture.Throws(exceptionMessage);
-            }
-            public sealed class Extender : FixtureExtender<IncrementingFixture>
-            {
-                public Stage2 ThenAfter(Action<SemanticVersionBuilder> action)
-                    => AddNew(new IncrementingFixture(Prototype.Expected!)).After(action);
-                public Stage2 ThenAgain()
-                    => ThenAfter(Prototype.Action!);
-                public Extender Then(string expected)
-                    => ThenAgain().Returns(expected);
+                public void Returns(string expected) => fixture.Returns(expected);
+                public void Throws(string exceptionMessage) => fixture.Throws(exceptionMessage);
             }
         }
     }

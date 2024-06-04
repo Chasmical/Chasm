@@ -12,7 +12,7 @@ namespace Chasm.SemanticVersioning.Tests
 
             fixture.Test(() =>
             {
-                fixture.Action!(builder);
+                builder.Increment(fixture.Type, fixture.PreRelease);
                 return builder;
             });
         }
