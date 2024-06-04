@@ -160,7 +160,7 @@ namespace Chasm.SemanticVersioning
                 // increment patch and add 'pre.0' or '0'
                 return IncrementPrePatch(preRelease);
             }
-            if (preRelease == SemverPreRelease.Zero || preRelease == _preReleases[0])
+            if (preRelease == SemverPreRelease.Zero || preRelease == _preReleases[0] && _preReleases.Count > 1 && _preReleases[1].IsNumeric)
             {
                 // try to increment the right-most numeric identifier
                 int i;
@@ -177,12 +177,6 @@ namespace Chasm.SemanticVersioning
                 }
                 if (i == -1) // couldn't find a numeric identifier
                     _preReleases.Add(SemverPreRelease.Zero);
-                else if (i < _preReleases.Count - 1)
-                {
-                    // remove all identifiers following the incremented one
-                    int extraIndex = i + 1;
-                    _preReleases.RemoveRange(extraIndex, _preReleases.Count - extraIndex);
-                }
             }
             else
             {
