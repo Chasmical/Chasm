@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Xunit;
 
 namespace Chasm.SemanticVersioning.Tests
@@ -23,6 +25,14 @@ namespace Chasm.SemanticVersioning.Tests
             => Add(fixture);
         void IFixtureAdapter.Add(Fixture fixture)
             => Add((TFixture)fixture);
+
+        public TheoryData<TResult> Convert<TResult>([InstantHandle] Func<TFixture, TResult> selector)
+        {
+            TheoryData<TResult> data = [];
+            foreach (TFixture fixture in fixtures)
+                data.Add(selector(fixture));
+            return data;
+        }
 
         public IEnumerator<TFixture> GetEnumerator()
             => fixtures.GetEnumerator();

@@ -105,6 +105,49 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
+            // IncrementPrePatch tests
+            New("1.2.2").After(IncrementType.PrePatch).Returns("1.2.3-0");
+            New("1.2.2-0").After(IncrementType.PrePatch).Returns("1.2.3-0");
+            New("1.2.2-dev.0").After(IncrementType.PrePatch).Returns("1.2.3-0");
+            New("1.2.2").After(IncrementType.PrePatch, "dev").Returns("1.2.3-dev.0");
+            New("1.2.2-0").After(IncrementType.PrePatch, "dev").Returns("1.2.3-dev.0");
+            New("1.2.2-dev.0").After(IncrementType.PrePatch, "dev").Returns("1.2.3-dev.0");
+
+            // IncrementPrePatch overflow
+            New($"1.2.{max}-dev.{max}").After(IncrementType.PrePatch).Throws(Exceptions.PatchTooBig);
+            New($"1.2.{max}-dev.{max}").After(IncrementType.PrePatch, "dev").Throws(Exceptions.PatchTooBig);
+
+            // IncrementPreMinor tests
+            New("1.2.0").After(IncrementType.PreMinor).Returns("1.3.0-0");
+            New("1.2.0-0").After(IncrementType.PreMinor).Returns("1.3.0-0");
+            New("1.2.0-dev.0").After(IncrementType.PreMinor).Returns("1.3.0-0");
+            New("1.2.0").After(IncrementType.PreMinor, "dev").Returns("1.3.0-dev.0");
+            New("1.2.0-0").After(IncrementType.PreMinor, "dev").Returns("1.3.0-dev.0");
+            New("1.2.0-dev.0").After(IncrementType.PreMinor, "dev").Returns("1.3.0-dev.0");
+
+            // IncrementPreMinor overflow
+            New($"1.{max}.3-dev.{max}").After(IncrementType.PreMinor).Throws(Exceptions.MinorTooBig);
+            New($"1.{max}.3-dev.{max}").After(IncrementType.PreMinor, "dev").Throws(Exceptions.MinorTooBig);
+
+            // IncrementPreMinor tests
+            New("1.0.0").After(IncrementType.PreMajor).Returns("2.0.0-0");
+            New("1.0.0-0").After(IncrementType.PreMajor).Returns("2.0.0-0");
+            New("1.0.0-dev.0").After(IncrementType.PreMajor).Returns("2.0.0-0");
+            New("1.0.0").After(IncrementType.PreMajor, "dev").Returns("2.0.0-dev.0");
+            New("1.0.0-0").After(IncrementType.PreMajor, "dev").Returns("2.0.0-dev.0");
+            New("1.0.0-dev.0").After(IncrementType.PreMajor, "dev").Returns("2.0.0-dev.0");
+
+            // IncrementPreMinor overflow
+            New($"{max}.2.3-dev.{max}").After(IncrementType.PreMajor).Throws(Exceptions.MajorTooBig);
+            New($"{max}.2.3-dev.{max}").After(IncrementType.PreMajor, "dev").Throws(Exceptions.MajorTooBig);
+
+
+
+
+
+
+
+
             return adapter;
         }
 
@@ -114,7 +157,8 @@ namespace Chasm.SemanticVersioning.Tests
 
             public string Source { get; } = source;
             public IncrementType Type { get; private set; }
-            public SemverPreRelease PreRelease { get; private set; }
+            private string _preRelease = null!;
+            public SemverPreRelease PreRelease => _preRelease;
             public string? Expected { get; private set; }
 
             protected override Type DefaultExceptionType => typeof(InvalidOperationException);
@@ -128,7 +172,7 @@ namespace Chasm.SemanticVersioning.Tests
             public Stage2 After(IncrementType type, SemverPreRelease preRelease = default)
             {
                 Type = type;
-                PreRelease = preRelease;
+                _preRelease = (string)preRelease;
                 return new Stage2(this);
             }
             private void Returns(string expected)
