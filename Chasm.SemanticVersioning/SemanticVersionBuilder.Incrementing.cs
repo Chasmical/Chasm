@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Chasm.SemanticVersioning
 {
@@ -197,6 +198,7 @@ namespace Chasm.SemanticVersioning
         /// </summary>
         /// <param name="type">The increment type to use.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="InvalidEnumArgumentException"><paramref name="type"/> is not a valid increment type.</exception>
         /// <exception cref="InvalidOperationException"><see cref="Major"/>, <see cref="Minor"/>, <see cref="Patch"/> or the right-most numeric pre-release identifier is equal to <see cref="int.MaxValue"/>.</exception>
         public SemanticVersionBuilder Increment(IncrementType type)
             => Increment(type, SemverPreRelease.Zero);
@@ -206,6 +208,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="type">The increment type to use.</param>
         /// <param name="preRelease">The pre-release identifier to increment with.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="InvalidEnumArgumentException"><paramref name="type"/> is not a valid increment type.</exception>
         /// <exception cref="InvalidOperationException"><see cref="Major"/>, <see cref="Minor"/>, <see cref="Patch"/> or the right-most numeric pre-release identifier is equal to <see cref="int.MaxValue"/>.</exception>
         public SemanticVersionBuilder Increment(IncrementType type, SemverPreRelease preRelease) => type switch
         {
@@ -221,7 +224,7 @@ namespace Chasm.SemanticVersioning
 
             IncrementType.PreRelease => IncrementPreRelease(preRelease),
 
-            _ => throw new ArgumentException($"Invalid {nameof(IncrementType)} value.", nameof(type)),
+            _ => throw new InvalidEnumArgumentException(nameof(type), (int)type, typeof(IncrementType)),
         };
 
     }
