@@ -7,6 +7,9 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
+    <Authors>Chasmical</Authors>
+    <Company>$(Authors)</Company>
+    <Copyright>Copyright © Chasmical 2023-2024</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
     <!-- Targets -->

@@ -23,9 +23,6 @@
     <AssemblyName>Chasm.Utilities</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
     <Version>2.3.4</Version>
-    <Authors>Abbysssal</Authors>
-    <Company>$(Authors)</Company>
-    <Copyright>Copyright © Abbysssal 2023</Copyright>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
