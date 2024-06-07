@@ -61,8 +61,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
             bool allowLeadingZeroes = (options & SemverOptions.AllowLeadingZeroes) != 0;
 
-            ReadOnlySpan<char> read;
-            unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
+            ReadOnlySpan<char> read = Utility.ReadPartialComponent(ref parser);
             if (read.IsEmpty) return SemverErrorCode.MajorNotFound;
 
             SemverErrorCode code = PartialComponent.ParseTrimmed(read, options, out PartialComponent major);
@@ -77,24 +76,30 @@ namespace Chasm.SemanticVersioning.Ranges
             if (parser.Skip('.'))
             {
                 if (innerWhite) parser.SkipWhitespaces();
-                unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
-                if (read.IsEmpty) return SemverErrorCode.MinorNotFound;
-
-                code = PartialComponent.ParseTrimmed(read, options, out minor);
-                if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MINOR;
-                if (innerWhite) parser.SkipWhitespaces();
-
-                if (parser.Skip('.'))
+                read = Utility.ReadPartialComponent(ref parser);
+                if (!read.IsEmpty)
                 {
+                    code = PartialComponent.ParseTrimmed(read, options, out minor);
+                    if (code is not SemverErrorCode.Success) return code | SemverErrorCode.MINOR;
                     if (innerWhite) parser.SkipWhitespaces();
-                    unsafe { read = parser.ReadWhile(&Utility.IsPartialComponentCharacter); }
-                    if (read.IsEmpty) return SemverErrorCode.PatchNotFound;
 
-                    code = PartialComponent.ParseTrimmed(read, options, out patch);
-                    if (code is not SemverErrorCode.Success) return code | SemverErrorCode.PATCH;
-                    if (innerWhite) parser.SkipWhitespaces();
-                    allowIdentifiers = true;
+                    if (parser.Skip('.'))
+                    {
+                        if (innerWhite) parser.SkipWhitespaces();
+                        read = Utility.ReadPartialComponent(ref parser);
+                        if (!read.IsEmpty)
+                        {
+                            code = PartialComponent.ParseTrimmed(read, options, out patch);
+                            if (code is not SemverErrorCode.Success) return code | SemverErrorCode.PATCH;
+                            if (innerWhite) parser.SkipWhitespaces();
+                            allowIdentifiers = true;
+                        }
+                        else if ((options & SemverOptions.OptionalPatch) == 0)
+                            return SemverErrorCode.PatchNotFound;
+                    }
                 }
+                else if ((options & SemverOptions.OptionalMinor) == 0)
+                    return SemverErrorCode.MinorNotFound;
             }
 
             SemverPreRelease[]? preReleases = null;

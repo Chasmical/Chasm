@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Chasm.Formatting;
 using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 
@@ -12,8 +13,16 @@ namespace Chasm.SemanticVersioning
             // Note: IsAsciiDigit and IsAsciiLetter are slightly slower, and also increase the assembly size
             return ((uint)c | ' ') - 'a' <= 'z' - 'a' || (uint)c - '0' <= '9' - '0' || c == '-';
         }
-        [Pure] public static bool IsPartialComponentCharacter(char c)
-            => (uint)c - '0' <= '9' - '0' || ((uint)c | ' ') == 'x' || c == '*';
+        [Pure] public static unsafe ReadOnlySpan<char> ReadPartialComponent(ref SpanParser parser)
+        {
+            char read = parser.Peek();
+            if ((uint)read - '0' <= '9' - '0')
+                return parser.ReadAsciiDigits();
+
+            static bool IsPartialChar(char c) => ((uint)c | ' ') == 'x' || c == '*';
+
+            return parser.ReadWhile(&IsPartialChar);
+        }
 
         [Pure] public static bool IsNumeric(ReadOnlySpan<char> text)
         {
