@@ -1,5 +1,8 @@
 # Chasm.Collections Changelog
 
+### v2.2.6
+- 📄 Updated license information;
+
 ### v2.2.5
 - 🩹 Added missing `[Pure]` and `[InstantHandle]` attributes;
 
