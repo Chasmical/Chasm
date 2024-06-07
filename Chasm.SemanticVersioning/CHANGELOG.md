@@ -221,12 +221,16 @@
 - ✨ Added `SemverComparison.DiffEquality`;
 - ✨ Added `SemverComparison.Exact`;
 <!-- -->
+- 🐛 Fixed `SemanticVersionBuilder`'s incrementing with alphanumeric pre-releases;
+- 🩹 Changed `SemanticVersionBuilder.Increment` methods to throw `InvalidEnumArgumentException`;
 - 🩹 Added missing `[Pure]` attributes to `SemanticVersion` formatting methods;
 - ♻️ Refactored `SemanticVersion` parsing a bit;
 - ⚡️ Improved performance of `SemanticVersion.GetHashCode()`;
 - ⚡️ Improved performance of `SemverPreRelease` in general;
 - ⚡️ Improved performance of `SemverPreRelease` parsing methods;
+- ⚡️ Improved performance of `SemanticVersionBuilder`'s pre-release incrementing;
 - ⚡️ Microoptimized the size of `SemanticVersion` and `SemverPreRelease` operators;
+- 📄 Updated license information;
 
 ### v2.3.0
 - ✨ Implemented advanced semantic version formatting;
