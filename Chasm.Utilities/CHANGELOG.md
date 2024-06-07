@@ -1,5 +1,8 @@
 # Chasm.Utilities Changelog
 
+### v2.3.5
+- 📄 Updated license information;
+
 ### v2.3.4
 - ✨ Added `static Util.Swap<T>(ref T, ref T)`;
 
