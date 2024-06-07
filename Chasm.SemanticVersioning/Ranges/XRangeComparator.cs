@@ -80,7 +80,7 @@ namespace Chasm.SemanticVersioning.Ranges
             if (Operand.Minor.IsNumeric && Operand.Patch.IsNumeric)
             {
                 PrimitiveComparator primitive = new PrimitiveComparator(Utility.NodeSemverTrim(Operand), Operator);
-                return Operator.IsLTOrLTE() ? (null, primitive) : (primitive, null);
+                return Operator is PrimitiveOperator.LessThan or PrimitiveOperator.LessThanOrEqual ? (null, primitive) : (primitive, null);
             }
             // at this point, major is numeric, and either minor or patch isn't numeric
 

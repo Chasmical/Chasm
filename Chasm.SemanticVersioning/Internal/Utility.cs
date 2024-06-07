@@ -169,6 +169,8 @@ namespace Chasm.SemanticVersioning
             // LessThanOrEqual    = (5 + 2) / 3 = 2, '<='
             return (int)(op + 2) / 3;
         }
+
+        /*
         [Pure] public static PrimitiveOperator Normalize(this PrimitiveOperator op)
             => (PrimitiveOperator)Math.Min((byte)op, (byte)1);
 
@@ -182,6 +184,7 @@ namespace Chasm.SemanticVersioning
             => op <= PrimitiveOperator.Equal;
         [Pure] public static bool IsSthThanOrEqual(this PrimitiveOperator op)
             => op is PrimitiveOperator.GreaterThanOrEqual or PrimitiveOperator.LessThanOrEqual;
+        */
 
     }
 }
