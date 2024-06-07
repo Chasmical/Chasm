@@ -2,6 +2,9 @@
 
 ### v2.3.1
 - ⚡️ Improved `SpanBuilder.Append(int)`'s performance a bit;
+- ⚡️ Removed unnecessary cast to `long` in `SpanBuilder.CalculateLength(int)`;
+- 📝 Added `FormattingExtensions` XML docs;
+- 📄 Updated license information;
 
 ### v2.3.0
 - ✨ Added `static class FormattingExtensions`;
@@ -9,7 +12,7 @@
 - ✨ Added `FormattingExtensions.TryCopyTo<T>(this Span<T>, Span<T>, out int)`;
 - ✨ Added `FormattingExtensions.TryCopyTo<T>(this ReadOnlySpan<T>, Span<T>, out int)`;
 - 🧑‍💻 Improved debugger displays of `SpanParser` and `SpanBuilder`;
-- ⚡️ Removed unnecessary cast to long in `SpanBuilder.Append(int)`;
+- ⚡️ Removed unnecessary cast to `long` in `SpanBuilder.Append(int)`;
 
 ### v2.2.1
 - 🚑️ Removed `SpanBuilder.TryFormat(ISpanBuildableFormat, ReadOnlySpan<char>, Span<char>, out int)`;
