@@ -95,9 +95,7 @@ namespace Chasm.SemanticVersioning.Tests
                     PrimitiveComparator.GreaterThan(new SemanticVersion(1, 7, 0, ["alpha", 5])),
                     PrimitiveComparator.LessThan(new SemanticVersion(2, 0, 0, [0])),
                 ]),
-                new ComparatorSet([
-                    PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(3, 0, 0, ["beta", 4])),
-                ]),
+                PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(3, 0, 0, ["beta", 4])),
             ]);
 
             // X-Ranges and Hyphen ranges
@@ -107,9 +105,7 @@ namespace Chasm.SemanticVersioning.Tests
                     new HyphenRangeComparator(new PartialVersion(2, 0), new PartialVersion(3, 0, 5)),
                     PrimitiveComparator.LessThanOrEqual(new SemanticVersion(3, 0, 2)),
                 ]),
-                new ComparatorSet([
-                    new HyphenRangeComparator(new PartialVersion(1, 2), new PartialVersion(1, 4, 5, ["beta"])),
-                ]),
+                new HyphenRangeComparator(new PartialVersion(1, 2), new PartialVersion(1, 4, 5, ["beta"])),
             ]);
 
             // Caret and Tilde ranges
@@ -141,8 +137,8 @@ namespace Chasm.SemanticVersioning.Tests
 
             // Any amount of spaces is valid between comparator sets
             New(">1.2.3    ||  <3.4.5").Returns([
-                new ComparatorSet(PrimitiveComparator.GreaterThan(new SemanticVersion(1, 2, 3))),
-                new ComparatorSet(PrimitiveComparator.LessThan(new SemanticVersion(3, 4, 5))),
+                PrimitiveComparator.GreaterThan(new SemanticVersion(1, 2, 3)),
+                PrimitiveComparator.LessThan(new SemanticVersion(3, 4, 5)),
             ]);
 
             // Only one space between individual comparators
@@ -151,11 +147,23 @@ namespace Chasm.SemanticVersioning.Tests
                     PrimitiveComparator.GreaterThan(new SemanticVersion(1, 2, 3)),
                     PrimitiveComparator.LessThan(new SemanticVersion(3, 4, 5)),
                 ]),
-                new ComparatorSet([
-                    new CaretComparator(new PartialVersion(5, 6, 0)),
-                ]),
+                new CaretComparator(new PartialVersion(5, 6, 0)),
             ]);
             New(">1.2.3   <3.4.5 || ^5.6.0").Throws(Exceptions.Leftovers);
+
+            // Various amounts of whitespace in a hyphen range
+            options = SemverOptions.AllowInnerWhite;
+            New("1.2\n  \r- \t4.5.6", options).Returns([
+                new HyphenRangeComparator(new PartialVersion(1, 2), new PartialVersion(4, 5, 6)),
+            ]);
+
+            // Invalid amounts of whitespace for hyphen ranges
+            New("1 \t-4.5", options).Throws(Exceptions.MajorNotFound);
+            New("1.2.3- 4.5", options).Throws(Exceptions.PreReleaseEmpty);
+
+            New("1.2.3-4.5", options).Returns([
+                PrimitiveComparator.ImplicitEqual(new SemanticVersion(1, 2, 3, [4, 5])),
+            ]);
 
 
 
@@ -174,7 +182,6 @@ namespace Chasm.SemanticVersioning.Tests
             private void MarkDiscard(object? _) => MarkAsComplete();
 
             public void Returns(Comparator comparator) => MarkDiscard(Expected = comparator);
-            public void Returns(Comparator[] comparators) => MarkDiscard(Expected = new VersionRange([..comparators]));
             public void Returns(ComparatorSet comparatorSet) => MarkDiscard(Expected = comparatorSet);
             public void Returns(ComparatorSet[] comparatorSets) => MarkDiscard(Expected = new VersionRange(comparatorSets));
 

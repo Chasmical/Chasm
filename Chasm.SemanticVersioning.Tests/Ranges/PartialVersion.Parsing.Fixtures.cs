@@ -68,11 +68,36 @@ namespace Chasm.SemanticVersioning.Tests
             New("X.5").Returns('X', 5, null);
             New("*").Returns('*', null, null);
 
+            // Omitted components, but with a trailing '.' (not node-semver compliant)
+            New("1.").Throws(Exceptions.MinorNotFound);
+            New("*.").Throws(Exceptions.MinorNotFound);
+            New("1.2.").Throws(Exceptions.PatchNotFound);
+            New("1.x.").Throws(Exceptions.PatchNotFound);
+
+            // OptionalMinor and OptionalPatch allow a trailing '.' without a component
+            options = SemverOptions.OptionalMinor;
+            New("1.", options).Returns(1, null, null);
+            New("*.", options).Returns('*', null, null);
+            options = SemverOptions.OptionalPatch;
+            New("1.2.", options).Returns(1, 2, null);
+            New("1.x.", options).Returns(1, 'x', null);
+
+
+
             // Identifiers are not allowed after an omitted component
             New("1.x-pre").Throws(Exceptions.PreReleaseAfterOmitted);
             New("*-pre").Throws(Exceptions.PreReleaseAfterOmitted);
             New("1.X+build").Throws(Exceptions.BuildMetadataAfterOmitted);
             New("*+build").Throws(Exceptions.BuildMetadataAfterOmitted);
+
+            // OptionalPreReleaseSeparator kinda works here I guess
+            options = SemverOptions.OptionalPreReleaseSeparator;
+            New("1.2.xunit4", options).Returns(1, 2, 'x', "unit", 4);
+            New("1.2.nunit4", options).Throws(Exceptions.PatchNotFound);
+            New("1.2xunit4", options).Throws(Exceptions.PreReleaseAfterOmitted);
+            New("1.3dev4", options).Throws(Exceptions.PreReleaseAfterOmitted);
+
+
 
             // Extra wildcard characters
             options = SemverOptions.AllowExtraWildcards;
