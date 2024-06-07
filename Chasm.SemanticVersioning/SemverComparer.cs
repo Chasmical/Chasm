@@ -218,7 +218,7 @@ namespace Chasm.SemanticVersioning
         /// <param name="b">The second partial version component to compare.</param>
         /// <returns>&lt;0, if <paramref name="a"/> precedes <paramref name="b"/> in the sort order;<br/>=0, if <paramref name="a"/> occurs in the same position in the sort order as <paramref name="b"/>;<br/>&gt;0, if <paramref name="a"/> follows <paramref name="b"/> in the sort order.</returns>
         [Pure] public int Compare(PartialComponent a, PartialComponent b)
-            => diffWildcards ? a._value.CompareTo(b._value) : a.CompareTo(b);
+            => diffWildcards ? ((int)a._value).CompareTo((int)b._value) : a.CompareTo(b);
         /// <summary>
         ///   <para>Determines whether one partial version component is equal to another partial version component.</para>
         /// </summary>
