@@ -129,7 +129,7 @@ namespace Chasm.SemanticVersioning.Tests
             New($"1.{max}.3-dev.{max}").After(IncrementType.PreMinor).Throws(Exceptions.MinorTooBig);
             New($"1.{max}.3-dev.{max}").After(IncrementType.PreMinor, "dev").Throws(Exceptions.MinorTooBig);
 
-            // IncrementPreMinor tests
+            // IncrementPreMajor tests
             New("1.0.0").After(IncrementType.PreMajor).Returns("2.0.0-0");
             New("1.0.0-0").After(IncrementType.PreMajor).Returns("2.0.0-0");
             New("1.0.0-dev.0").After(IncrementType.PreMajor).Returns("2.0.0-0");
@@ -137,14 +137,9 @@ namespace Chasm.SemanticVersioning.Tests
             New("1.0.0-0").After(IncrementType.PreMajor, "dev").Returns("2.0.0-dev.0");
             New("1.0.0-dev.0").After(IncrementType.PreMajor, "dev").Returns("2.0.0-dev.0");
 
-            // IncrementPreMinor overflow
+            // IncrementPreMajor overflow
             New($"{max}.2.3-dev.{max}").After(IncrementType.PreMajor).Throws(Exceptions.MajorTooBig);
             New($"{max}.2.3-dev.{max}").After(IncrementType.PreMajor, "dev").Throws(Exceptions.MajorTooBig);
-
-
-
-
-
 
 
 
