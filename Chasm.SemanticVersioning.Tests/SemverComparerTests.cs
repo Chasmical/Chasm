@@ -40,9 +40,19 @@ namespace Chasm.SemanticVersioning.Tests
 
         public static PartialComponent[][] FixturesPartialComponentExact()
         {
-            return [
-                // TODO
+            PartialComponent[] components = [
+                'x',
+                'X',
+                '*',
+                null,
+                0,
+                1,
+                10,
+                20,
+                19785,
+                int.MaxValue,
             ];
+            return components.ConvertAll(static c => new[] { c });
         }
 
 
@@ -73,16 +83,55 @@ namespace Chasm.SemanticVersioning.Tests
         public static PartialVersion[][] FixturesPartialVersionDiffWildcards()
         {
             string[][] partials = [
-                // TODO
+                // each wildcard has its own "pre-release level"
+                ["x.x.x-0", "x.x.x-0+BUILD"],
+                ["x.x.x"],
+                ["x.x.X-0"],
+                ["x.x.X", "x.x.X+TEST"],
+                ["x.x.*-0", "x.x.*-0+-070-"],
+                ["x.x.*"],
+                ["x.x"],
+                ["x.x.0"],
+                ["1.2.x", "1.2.x+DEV"],
+                ["1.2.X"],
+                ["1.2.*"],
+                ["1.2"],
+                ["1.2.0", "1.2.0+007-"],
+                ["9.x.X"],
+                ["9.x.*", "9.x.*+06b0f38"],
+                ["9.x"],
             ];
             return partials.ConvertAll(static a => a.ConvertAll(PartialVersion.Parse));
         }
         public static PartialVersion[][] FixturesPartialVersionExact()
         {
-            string[][] partials = [
-                // TODO
+            string[] partials = [
+                "x.x.x-0+BUILD",
+                "x.x.x-0",
+                "x.x.x",
+                "x.x.X-0",
+                "x.x.X+TEST",
+                "x.x.X",
+                "x.x.*-0+-070-",
+                "x.x.*-0",
+                "x.x.*",
+                "x.x",
+                "x.x.0",
+                "1.*.*+0",
+                "1.*.*",
+                "1.2.x+DEV",
+                "1.2.x",
+                "1.2.X",
+                "1.2.*",
+                "1.2",
+                "1.2.0+007-",
+                "1.2.0",
+                "9.x.X",
+                "9.x.*+06b0f38",
+                "9.x.*",
+                "9.x",
             ];
-            return partials.ConvertAll(static a => a.ConvertAll(PartialVersion.Parse));
+            return partials.ConvertAll(static a => new[] { PartialVersion.Parse(a) });
         }
 
     }

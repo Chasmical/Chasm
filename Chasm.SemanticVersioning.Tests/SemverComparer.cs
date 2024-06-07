@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,56 +12,58 @@ namespace Chasm.SemanticVersioning.Tests
         public ITestOutputHelper Output { get; } = output;
 
         [Fact]
+        public void FromComparisonArguments()
+        {
+            Assert.Throws<InvalidEnumArgumentException>(static () => SemverComparer.FromComparison((SemverComparison)8));
+        }
+
+        [Fact]
         public void TestDefault()
         {
             // test the default comparer options with standard fixtures
+            SemverComparer comparer = SemverComparer.FromComparison(SemverComparison.Default);
 
-            TestComparison(SemverComparer.Default, FixturesSemanticVersionDefault());
-
-            TestComparison(SemverComparer.Default, FixturesPartialVersionDefault());
-
-            TestComparison(SemverComparer.Default, FixturesPartialComponentDefault());
+            TestComparison(comparer, FixturesSemanticVersionDefault());
+            TestComparison(comparer, FixturesPartialVersionDefault());
+            TestComparison(comparer, FixturesPartialComponentDefault());
         }
 
         [Fact]
         public void TestIncludeBuild()
         {
             // test the comparer that includes build metadata in the comparison
+            SemverComparer comparer = SemverComparer.FromComparison(SemverComparison.IncludeBuild);
 
-            // IncludeBuild is the same as Exact for semantic versions
-            TestComparison(SemverComparer.IncludeBuild, FixturesSemanticVersionExact());
+            TestComparison(comparer, FixturesSemanticVersionExact());
+            TestComparison(comparer, FixturesPartialVersionIncludeBuild());
+            TestComparison(comparer, FixturesPartialComponentDefault());
 
-            // use fixtures with build metadata
-            TestComparison(SemverComparer.IncludeBuild, FixturesPartialVersionIncludeBuild());
-
-            // build metadata comparison doesn't affect partial components
-            TestComparison(SemverComparer.IncludeBuild, FixturesPartialComponentDefault());
+#pragma warning disable CS0618
+            // test the obsolete BuildMetadataComparer as well
+            TestComparison(BuildMetadataComparer.Instance, FixturesSemanticVersionExact());
+#pragma warning restore CS0618
         }
 
         [Fact]
         public void TestDiffWildcards()
         {
             // test the comparer that differentiates between wildcards
+            SemverComparer comparer = SemverComparer.FromComparison(SemverComparison.DiffWildcards);
 
-            // DiffWildcards doesn't affect semantic versions
-            TestComparison(SemverComparer.DiffWildcards, FixturesSemanticVersionDefault());
-
-            // use fixtures with different wildcards
-            TestComparison(SemverComparer.DiffWildcards, FixturesPartialVersionDiffWildcards());
-
-            TestComparison(SemverComparer.DiffWildcards, FixturesPartialComponentExact());
+            TestComparison(comparer, FixturesSemanticVersionDefault());
+            TestComparison(comparer, FixturesPartialVersionDiffWildcards());
+            TestComparison(comparer, FixturesPartialComponentExact());
         }
 
         [Fact]
         public void TestExact()
         {
             // test the comparer that includes everything in the comparison
+            SemverComparer comparer = SemverComparer.FromComparison(SemverComparison.Exact);
 
-            TestComparison(SemverComparer.Exact, FixturesSemanticVersionExact());
-
-            TestComparison(SemverComparer.Exact, FixturesPartialVersionExact());
-
-            TestComparison(SemverComparer.Exact, FixturesPartialComponentExact());
+            TestComparison(comparer, FixturesSemanticVersionExact());
+            TestComparison(comparer, FixturesPartialVersionExact());
+            TestComparison(comparer, FixturesPartialComponentExact());
         }
 
         internal void TestComparison<T>(IComparer<T> comparerT, T[][] items) where T : notnull
