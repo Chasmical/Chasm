@@ -1,5 +1,4 @@
 using System;
-using Chasm.Formatting;
 using Xunit;
 
 namespace Chasm.SemanticVersioning.Tests
@@ -19,9 +18,6 @@ namespace Chasm.SemanticVersioning.Tests
             // test TryFormat() methods
             fixture.Test(() => TestUtil.FormatWithTryFormat(preRelease.TryFormat));
             fixture.Test(() => TestUtil.FormatWithTryFormat(preRelease));
-
-            // test SpanBuilder's formatting
-            fixture.Test(() => SpanBuilder.Format(preRelease));
         }
     }
 }

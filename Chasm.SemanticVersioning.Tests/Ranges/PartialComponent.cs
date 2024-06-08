@@ -1,5 +1,4 @@
 ﻿using System;
-using Chasm.Formatting;
 using Chasm.SemanticVersioning.Ranges;
 using Xunit;
 using Xunit.Abstractions;
@@ -91,7 +90,6 @@ namespace Chasm.SemanticVersioning.Tests
 
                 Assert.Equal(number, component.AsNumber);
                 Assert.Equal(number.ToString(), component.ToString());
-                Assert.Equal(number.ToString(), SpanBuilder.Format(component));
 
                 ex = Assert.Throws<InvalidOperationException>(() => component.AsWildcard);
                 Assert.Equal(Exceptions.ComponentNotWildcard, ex.Message);
@@ -107,7 +105,6 @@ namespace Chasm.SemanticVersioning.Tests
 
                 Assert.Equal(wildcard, component.AsWildcard);
                 Assert.Equal(wildcard.ToString(), component.ToString());
-                Assert.Equal(wildcard.ToString(), SpanBuilder.Format(component));
 
                 ex = Assert.Throws<InvalidOperationException>(() => component.AsNumber);
                 Assert.Equal(Exceptions.ComponentNotNumeric, ex.Message);
@@ -120,7 +117,6 @@ namespace Chasm.SemanticVersioning.Tests
             Assert.True(omitted.IsOmitted);
 
             Assert.Equal("", omitted.ToString());
-            Assert.Equal("", SpanBuilder.Format(omitted));
 
             ex = Assert.Throws<InvalidOperationException>(() => omitted.AsNumber);
             Assert.Equal(Exceptions.ComponentNotNumeric, ex.Message);
