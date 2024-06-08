@@ -19,10 +19,9 @@ namespace Chasm.SemanticVersioning
             if ((uint)read - '0' <= '9' - '0')
                 return parser.ReadAsciiDigits();
 
-            static bool IsPartialChar(char c) => ((uint)c | ' ') == 'x' || c == '*';
-
             return parser.ReadWhile(&IsPartialChar);
         }
+        [Pure] private static bool IsPartialChar(char c) => ((uint)c | ' ') == 'x' || c == '*';
 
         [Pure] public static bool IsNumeric(ReadOnlySpan<char> text)
         {
@@ -104,7 +103,7 @@ namespace Chasm.SemanticVersioning
                 throw new ArgumentException(Exceptions.BuildMetadataNull, paramName);
             if (identifier.Length == 0)
                 throw new ArgumentException(Exceptions.BuildMetadataEmpty, paramName);
-            if (!AllValidCharacters(identifier))
+            if (!AllValidCharacters(identifier.AsSpan()))
                 throw new ArgumentException(Exceptions.BuildMetadataInvalid, paramName);
         }
 

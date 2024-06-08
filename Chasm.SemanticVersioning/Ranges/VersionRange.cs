@@ -58,10 +58,9 @@ namespace Chasm.SemanticVersioning.Ranges
                 if (Array.IndexOf(otherComparatorSets, null) >= 0)
                     throw new ArgumentException(Exceptions.ComparatorSetsNull, nameof(otherComparatorSets));
 
-                int otherLength = otherComparatorSets.Length;
-                array = new ComparatorSet[otherLength + 1];
+                array = new ComparatorSet[otherComparatorSets.Length + 1];
                 array[0] = firstComparatorSet;
-                Array.Copy(otherComparatorSets, 0, array, 1, otherLength);
+                otherComparatorSets.CopyTo(array, 1);
             }
             else array = [firstComparatorSet];
             _comparatorSets = array;
@@ -182,7 +181,7 @@ namespace Chasm.SemanticVersioning.Ranges
             comparatorSets[0].BuildString(ref sb);
             for (int i = 1; i < comparatorSets.Length; i++)
             {
-                sb.Append(' ', '|', '|', ' ');
+                sb.Append(" || ".AsSpan());
                 comparatorSets[i].BuildString(ref sb);
             }
         }

@@ -58,11 +58,11 @@ namespace Chasm.SemanticVersioning
             if (buildMetadata.Length != 0)
             {
                 sb.Append('+');
-                sb.Append(buildMetadata[0]);
+                sb.Append(buildMetadata[0].AsSpan());
                 for (int i = 1; i < buildMetadata.Length; i++)
                 {
                     sb.Append('.');
-                    sb.Append(buildMetadata[i]);
+                    sb.Append(buildMetadata[i].AsSpan());
                 }
             }
         }
@@ -270,11 +270,11 @@ namespace Chasm.SemanticVersioning
                             if (buildMetadataIndex < buildMetadata.Length)
                             {
                                 FlushSeparator(ref sb, separator);
-                                sb.Append(buildMetadata[buildMetadataIndex++]);
+                                sb.Append(buildMetadata[buildMetadataIndex++].AsSpan());
                                 while (buildMetadataIndex < buildMetadata.Length)
                                 {
                                     sb.Append('.');
-                                    sb.Append(buildMetadata[buildMetadataIndex++]);
+                                    sb.Append(buildMetadata[buildMetadataIndex++].AsSpan());
                                 }
                             }
                             break;
@@ -289,7 +289,7 @@ namespace Chasm.SemanticVersioning
                         if (buildMetadataIndex < buildMetadata.Length)
                         {
                             FlushSeparator(ref sb, separator);
-                            sb.Append(buildMetadata[buildMetadataIndex++]);
+                            sb.Append(buildMetadata[buildMetadataIndex++].AsSpan());
                         }
                         break;
                     default:

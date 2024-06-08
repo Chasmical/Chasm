@@ -97,7 +97,9 @@ namespace Chasm.SemanticVersioning
             SemverErrorCode.Leftovers => Leftovers,
 
             // dotcover disable next line
-            _ => throw new ArgumentException($"{code} error code is not supposed to have a message."),
+            // Note: we'll use concatenation here instead of interpolation to save some IL size,
+            //       it's fine, since this code segment isn't supposed to execute anyway.
+            _ => throw new ArgumentException(code + " error code is not supposed to have a message."),
         };
 
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]

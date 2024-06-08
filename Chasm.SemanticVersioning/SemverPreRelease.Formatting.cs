@@ -15,7 +15,7 @@ namespace Chasm.SemanticVersioning
             => text?.Length ?? SpanBuilder.CalculateLength(number);
         internal void BuildString(ref SpanBuilder sb)
         {
-            if (text is not null) sb.Append(text);
+            if (text is not null) sb.Append(text.AsSpan());
             else sb.Append(number);
         }
 
@@ -29,9 +29,18 @@ namespace Chasm.SemanticVersioning
         /// <inheritdoc cref="ISpanFormattable.TryFormat"/>
         [Pure] public bool TryFormat(Span<char> destination, out int charsWritten)
         {
-            return text is null
-                ? number.TryFormat(destination, out charsWritten)
-                : text.TryCopyTo(destination, out charsWritten);
+            string? str = text;
+            if (str is not null)
+            {
+#if NET6_0_OR_GREATER
+                bool res = str.TryCopyTo(destination);
+#else
+                bool res = ((ReadOnlySpan<char>)str).TryCopyTo(destination);
+#endif
+                charsWritten = res ? str.Length : 0;
+                return res;
+            }
+            return number.TryFormat(destination, out charsWritten);
         }
 
         [Pure] string IFormattable.ToString(string? _, IFormatProvider? __)

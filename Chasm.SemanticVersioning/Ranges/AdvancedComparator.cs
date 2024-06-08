@@ -60,7 +60,11 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <returns>A tuple of zero, one or two primitive version comparators, a set of which is equivalent to this advanced version comparator.</returns>
         [Pure] public (PrimitiveComparator? Left, PrimitiveComparator? Right) ToPrimitives()
-            => primitives ??= ConvertToPrimitives();
+        {
+            (PrimitiveComparator?, PrimitiveComparator?)? comparators = primitives;
+            if (comparators is null) primitives = comparators = ConvertToPrimitives();
+            return comparators.GetValueOrDefault();
+        }
         /// <summary>
         ///   <para>Converts this advanced version comparator into zero, one or two primitive version comparators, a set of which is equivalent to this advanced version comparator.</para>
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using Chasm.Formatting;
+﻿using System;
+using Chasm.Formatting;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -59,11 +60,11 @@ namespace Chasm.SemanticVersioning.Ranges
             if (buildMetadata.Length != 0)
             {
                 sb.Append('+');
-                sb.Append(buildMetadata[0]);
+                sb.Append(buildMetadata[0].AsSpan());
                 for (int i = 1; i < buildMetadata.Length; i++)
                 {
                     sb.Append('.');
-                    sb.Append(buildMetadata[i]);
+                    sb.Append(buildMetadata[i].AsSpan());
                 }
             }
         }

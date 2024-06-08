@@ -105,7 +105,7 @@ namespace Chasm.SemanticVersioning.Ranges
         protected internal override void BuildString(ref SpanBuilder sb)
         {
             From.BuildString(ref sb);
-            sb.Append(" - ");
+            sb.Append(" - ".AsSpan());
             To.BuildString(ref sb);
         }
 

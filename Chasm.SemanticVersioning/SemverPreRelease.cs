@@ -74,7 +74,7 @@ namespace Chasm.SemanticVersioning
         ///   <para>Defines an explicit conversion of a pre-release identifier to a read-only span of characters.</para>
         /// </summary>
         /// <param name="preRelease">The pre-release identifier to convert.</param>
-        [Pure] public static explicit operator ReadOnlySpan<char>(SemverPreRelease preRelease) => preRelease.ToString();
+        [Pure] public static explicit operator ReadOnlySpan<char>(SemverPreRelease preRelease) => preRelease.ToString().AsSpan();
 
         /// <summary>
         ///   <para>Determines whether the pre-release identifier is numeric.</para>

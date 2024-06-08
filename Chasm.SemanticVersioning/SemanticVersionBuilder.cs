@@ -119,13 +119,16 @@ namespace Chasm.SemanticVersioning
 
             _preReleases = preReleases is null ? [] : preReleases.ToList();
 
+            List<string> list;
             if (buildMetadata is not null)
             {
-                _buildMetadata = buildMetadata.ToList();
-                foreach (string identifier in _buildMetadata)
-                    Utility.ValidateBuildMetadataItem(identifier, nameof(buildMetadata));
+                list = buildMetadata.ToList();
+                for (int i = 0; i < list.Count; i++)
+                    Utility.ValidateBuildMetadataItem(list[i], nameof(buildMetadata));
             }
-            else _buildMetadata = [];
+            else list = [];
+
+            _buildMetadata = list;
         }
 
         /// <summary>
@@ -139,8 +142,8 @@ namespace Chasm.SemanticVersioning
             _major = version.Major;
             _minor = version.Minor;
             _patch = version.Patch;
-            _preReleases = new List<SemverPreRelease>(version._preReleases);
-            _buildMetadata = new List<string>(version._buildMetadata);
+            _preReleases = version._preReleases.ToList();
+            _buildMetadata = version._buildMetadata.ToList();
         }
 
         /// <summary>

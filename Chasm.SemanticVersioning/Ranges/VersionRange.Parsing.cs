@@ -26,7 +26,10 @@ namespace Chasm.SemanticVersioning.Ranges
             bool innerWhite = (options & SemverOptions.AllowInnerWhite) != 0;
 
             List<Comparator> comparators = [];
-            List<List<Comparator>> comparatorSets = [comparators];
+            List<List<Comparator>> comparatorSets = [];
+            // Note: collection expression here results in some perf/size overhead for some reason
+            // ReSharper disable once AppendToCollectionExpression
+            comparatorSets.Add(comparators);
 
             const SemverOptions removeOptions = SemverOptions.AllowEqualsPrefix // '=' is used by comparison comparators
                                               | SemverOptions.AllowInnerWhite // interferes with the hyphen range syntax
