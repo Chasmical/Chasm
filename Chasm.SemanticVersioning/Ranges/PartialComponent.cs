@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -6,6 +7,11 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> partial version component.</para>
     /// </summary>
+#if NET7_0_OR_GREATER
+    [TypeConverter(typeof(ParsableTypeConverter<PartialComponent>))]
+#else
+    [TypeConverter(typeof(Converter))]
+#endif
     public readonly partial struct PartialComponent : IEquatable<PartialComponent>, IComparable, IComparable<PartialComponent>
 #if NET7_0_OR_GREATER
                                                     , System.Numerics.IComparisonOperators<PartialComponent, PartialComponent, bool>
