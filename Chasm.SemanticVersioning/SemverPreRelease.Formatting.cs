@@ -5,11 +5,10 @@ using JetBrains.Annotations;
 namespace Chasm.SemanticVersioning
 {
     public readonly partial struct SemverPreRelease
-        : ISpanBuildable
 #if NET6_0_OR_GREATER
-        , ISpanFormattable
+        : ISpanFormattable
 #else
-        , IFormattable
+        : IFormattable
 #endif
     {
         [Pure] internal int CalculateLength()
@@ -19,8 +18,6 @@ namespace Chasm.SemanticVersioning
             if (text is not null) sb.Append(text);
             else sb.Append(number);
         }
-        [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
-        void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
 
         /// <summary>
         ///   <para>Returns the string representation of this pre-release identifier.</para>

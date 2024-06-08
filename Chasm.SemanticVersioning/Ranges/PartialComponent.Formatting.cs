@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
-    public readonly partial struct PartialComponent : ISpanBuildable
+    public readonly partial struct PartialComponent
     {
         [Pure] internal int CalculateLength()
         {
@@ -24,8 +24,6 @@ namespace Chasm.SemanticVersioning.Ranges
                 else sb.Append((char)-(int)value);
             }
         }
-        [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
-        void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
 
         /// <summary>
         ///   <para>Returns the string representation of this partial version component.</para>
