@@ -40,7 +40,7 @@ namespace Chasm.SemanticVersioning
             if (a is PartialComponent componentA && b is PartialComponent componentB)
                 return Compare(componentA, componentB);
 
-            throw new ArgumentException($"The object must be of type {supportedTypes}.");
+            throw new ArgumentException($"The objects must be of type {supportedTypes}.");
         }
         [Pure] bool IEqualityComparer.Equals(object? a, object? b)
         {
