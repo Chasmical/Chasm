@@ -67,9 +67,9 @@ namespace Chasm.SemanticVersioning
         /// <returns></returns>
         public static SemanticVersion NodeSemverTrim(PartialVersion partial)
         {
-            int major = partial.Major.GetValueOrMinusOne();
-            int minor = major >= 0 ? partial.Minor.GetValueOrMinusOne() : 0;
-            int patch = minor >= 0 ? partial.Patch.GetValueOrMinusOne() : 0;
+            int major = (int)partial.Major._value;
+            int minor = major >= 0 ? (int)partial.Minor._value : -1;
+            int patch = minor >= 0 ? (int)partial.Patch._value : -1;
 
             SemverPreRelease[]? preReleases = null;
             ReadOnlyCollection<SemverPreRelease>? preReleasesReadonly = null;
@@ -78,10 +78,16 @@ namespace Chasm.SemanticVersioning
                 preReleases = partial._preReleases;
                 preReleasesReadonly = partial._preReleasesReadonly;
             }
+            else
+            {
+                patch = 0;
+                if (minor < 0)
+                {
+                    minor = 0;
+                    if (major < 0) major = 0;
+                }
+            }
 
-            if (major < 0) major = 0;
-            if (minor < 0) minor = 0;
-            if (patch < 0) patch = 0;
             return new SemanticVersion(major, minor, patch, preReleases, null, preReleasesReadonly, null);
         }
 
