@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
@@ -11,11 +10,6 @@ namespace Chasm.SemanticVersioning
     /// <summary>
     ///   <para>Represents a valid semantic version, compliant to the SemVer 2.0.0 specification.</para>
     /// </summary>
-#if NET7_0_OR_GREATER
-    [TypeConverter(typeof(ParsableTypeConverter<SemanticVersion>))]
-#else
-    [TypeConverter(typeof(Converter))]
-#endif
     public sealed partial class SemanticVersion : IEquatable<SemanticVersion>, IComparable, IComparable<SemanticVersion>
 #if NET7_0_OR_GREATER
                                                 , System.Numerics.IComparisonOperators<SemanticVersion, SemanticVersion, bool>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
@@ -7,11 +6,6 @@ namespace Chasm.SemanticVersioning
     /// <summary>
     ///   <para>Represents a valid semantic version pre-release identifier, compliant to the SemVer 2.0.0 specification.</para>
     /// </summary>
-#if NET7_0_OR_GREATER
-    [TypeConverter(typeof(ParsableTypeConverter<SemverPreRelease>))]
-#else
-    [TypeConverter(typeof(Converter))]
-#endif
     public readonly partial struct SemverPreRelease : IEquatable<SemverPreRelease>, IComparable, IComparable<SemverPreRelease>
 #if NET7_0_OR_GREATER
                                                     , System.Numerics.IComparisonOperators<SemverPreRelease, SemverPreRelease, bool>

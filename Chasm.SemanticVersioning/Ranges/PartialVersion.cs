@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
@@ -11,11 +10,6 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> partial version.</para>
     /// </summary>
-#if NET7_0_OR_GREATER
-    [TypeConverter(typeof(ParsableTypeConverter<PartialVersion>))]
-#else
-    [TypeConverter(typeof(Converter))]
-#endif
     public sealed partial class PartialVersion : IEquatable<PartialVersion>, IComparable, IComparable<PartialVersion>
 #if NET7_0_OR_GREATER
                                                , System.Numerics.IEqualityOperators<PartialVersion, PartialVersion, bool>

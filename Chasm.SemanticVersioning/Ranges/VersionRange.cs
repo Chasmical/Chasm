@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,11 +12,6 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version range.</para>
     /// </summary>
-#if NET7_0_OR_GREATER
-    [TypeConverter(typeof(ParsableTypeConverter<VersionRange>))]
-#else
-    [TypeConverter(typeof(Converter))]
-#endif
     public sealed partial class VersionRange : ISpanBuildable
     {
         internal readonly ComparatorSet[] _comparatorSets;
