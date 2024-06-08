@@ -1,13 +1,16 @@
 ﻿using System;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 
 namespace Chasm.SemanticVersioning.Benchmarks
 {
     public static class Program
     {
-        public static void Main()
+        public static void Main(string[] args)
         {
-            // BenchmarkRunner.Run<Benchmarks>();
+            IConfig config = DefaultConfig.Instance;
+
+            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, config);
 
             Console.ReadKey();
         }

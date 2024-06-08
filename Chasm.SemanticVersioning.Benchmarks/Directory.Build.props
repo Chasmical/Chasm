@@ -8,4 +8,8 @@
     <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>$(NoWarn),CA1822</NoWarn> <!-- Suppress the 'Member can be marked as static' message -->
+  </PropertyGroup>
+
 </Project>
