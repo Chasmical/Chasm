@@ -1,5 +1,12 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.4.1
+- 🐛 Fixed trimming components and pre-releases on partial versions in comparators;
+- 🔥 Removed unused `ISpanBuildable` implementations in `SemverPreRelease` and `PartialComponent`;
+- ✏️ Fixed typo in `SemverComparer.Compare(object?, object?)` exception message;
+- ⚡️ Reduced the amount of referenced external types and methods;
+- ⚡️ Micro-optimized the size and performance of some methods;
+
 ### v2.4.0
 - ⚠️ Marked `BuildMetadataComparer` as obsolete, use the new `SemverComparer` instead;
 <!-- -->
@@ -229,7 +236,7 @@
 - ⚡️ Improved performance of `SemverPreRelease` in general;
 - ⚡️ Improved performance of `SemverPreRelease` parsing methods;
 - ⚡️ Improved performance of `SemanticVersionBuilder`'s pre-release incrementing;
-- ⚡️ Microoptimized the size of `SemanticVersion` and `SemverPreRelease` operators;
+- ⚡️ Micro-optimized the size of `SemanticVersion` and `SemverPreRelease` operators;
 - 📄 Updated license information;
 
 ### v2.3.0
