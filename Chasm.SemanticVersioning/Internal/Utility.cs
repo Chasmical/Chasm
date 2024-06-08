@@ -159,17 +159,6 @@ namespace Chasm.SemanticVersioning
 #endif
         }
 
-        [Pure] public static int GetOperatorLength(PrimitiveOperator op)
-        {
-            // ImplicitEqual      = (0 + 2) / 3 = 0
-            // Equal              = (1 + 2) / 3 = 1, '-'
-            // GreaterThan        = (2 + 2) / 3 = 1, '>'
-            // LessThan           = (3 + 2) / 3 = 1, '<'
-            // GreaterThanOrEqual = (4 + 2) / 3 = 2, '>='
-            // LessThanOrEqual    = (5 + 2) / 3 = 2, '<='
-            return (int)(op + 2) / 3;
-        }
-
         /*
         [Pure] public static PrimitiveOperator Normalize(this PrimitiveOperator op)
             => (PrimitiveOperator)Math.Min((byte)op, (byte)1);

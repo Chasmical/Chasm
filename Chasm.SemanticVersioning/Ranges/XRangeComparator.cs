@@ -243,7 +243,15 @@ namespace Chasm.SemanticVersioning.Ranges
 
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()
-            => Operand.CalculateLength() + Utility.GetOperatorLength(Operator);
+        {
+            // ImplicitEqual      = (0 + 2) / 3 = 0
+            // Equal              = (1 + 2) / 3 = 1, '-'
+            // GreaterThan        = (2 + 2) / 3 = 1, '>'
+            // LessThan           = (3 + 2) / 3 = 1, '<'
+            // GreaterThanOrEqual = (4 + 2) / 3 = 2, '>='
+            // LessThanOrEqual    = (5 + 2) / 3 = 2, '<='
+            return Operand.CalculateLength() + ((int)Operator + 2) / 3;
+        }
         /// <inheritdoc/>
         protected internal override void BuildString(ref SpanBuilder sb)
         {
