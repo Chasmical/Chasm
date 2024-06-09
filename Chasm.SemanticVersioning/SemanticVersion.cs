@@ -16,18 +16,20 @@ namespace Chasm.SemanticVersioning
                                                 , System.Numerics.IMinMaxValue<SemanticVersion>
 #endif
     {
+        private readonly int _major, _minor, _patch;
+
         /// <summary>
         ///   <para>Gets the semantic version's first, major version component.</para>
         /// </summary>
-        public int Major { get; }
+        public int Major => _major;
         /// <summary>
         ///   <para>Gets the semantic version's second, minor version component.</para>
         /// </summary>
-        public int Minor { get; }
+        public int Minor => _minor;
         /// <summary>
         ///   <para>Gets the semantic version's third, patch version component.</para>
         /// </summary>
-        public int Patch { get; }
+        public int Patch => _patch;
 
         internal readonly SemverPreRelease[] _preReleases;
         internal readonly string[] _buildMetadata;
@@ -83,9 +85,9 @@ namespace Chasm.SemanticVersioning
             if (major < 0) throw new ArgumentOutOfRangeException(nameof(major), major, Exceptions.MajorNegative);
             if (minor < 0) throw new ArgumentOutOfRangeException(nameof(minor), minor, Exceptions.MinorNegative);
             if (patch < 0) throw new ArgumentOutOfRangeException(nameof(patch), patch, Exceptions.PatchNegative);
-            Major = major;
-            Minor = minor;
-            Patch = patch;
+            _major = major;
+            _minor = minor;
+            _patch = patch;
 
             _preReleases = preReleases is null ? [] : preReleases.ToArray();
             if (buildMetadata is not null)
@@ -106,9 +108,9 @@ namespace Chasm.SemanticVersioning
         public SemanticVersion(Version systemVersion)
         {
             if (systemVersion is null) throw new ArgumentNullException(nameof(systemVersion));
-            Major = systemVersion.Major;
-            Minor = systemVersion.Minor;
-            Patch = Math.Max(systemVersion.Build, 0);
+            _major = systemVersion.Major;
+            _minor = systemVersion.Minor;
+            _patch = Math.Max(systemVersion.Build, 0);
             _preReleases = [];
             _buildMetadata = [];
         }

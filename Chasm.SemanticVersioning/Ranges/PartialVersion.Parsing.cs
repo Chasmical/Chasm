@@ -27,9 +27,9 @@ namespace Chasm.SemanticVersioning.Ranges
             Debug.Assert(preReleasesReadonly is null || preReleasesReadonly.Count == (preReleases?.Length ?? 0));
             Debug.Assert(buildMetadataReadonly is null || buildMetadataReadonly.Count == (buildMetadata?.Length ?? 0));
 
-            Major = major;
-            Minor = minor;
-            Patch = patch;
+            _major = major;
+            _minor = minor;
+            _patch = patch;
             _preReleases = preReleases ?? [];
             _buildMetadata = buildMetadata ?? [];
             _preReleasesReadonly = preReleasesReadonly;

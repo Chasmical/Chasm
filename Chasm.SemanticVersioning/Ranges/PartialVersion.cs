@@ -15,18 +15,20 @@ namespace Chasm.SemanticVersioning.Ranges
                                                , System.Numerics.IEqualityOperators<PartialVersion, PartialVersion, bool>
 #endif
     {
+        private readonly PartialComponent _major, _minor, _patch;
+
         /// <summary>
         ///   <para>Gets the partial version's first, major version component.</para>
         /// </summary>
-        public PartialComponent Major { get; }
+        public PartialComponent Major => _major;
         /// <summary>
         ///   <para>Gets the partial version's second, minor version component.</para>
         /// </summary>
-        public PartialComponent Minor { get; }
+        public PartialComponent Minor => _minor;
         /// <summary>
         ///   <para>Gets the partial version's third, patch version component.</para>
         /// </summary>
-        public PartialComponent Patch { get; }
+        public PartialComponent Patch => _patch;
 
         internal readonly SemverPreRelease[] _preReleases;
         internal readonly string[] _buildMetadata;
@@ -95,9 +97,9 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             if (major.IsOmitted) throw new ArgumentException(Exceptions.MajorOmitted, nameof(major));
             if (minor.IsOmitted && !patch.IsOmitted) throw new ArgumentException(Exceptions.MinorOmitted, nameof(minor));
-            Major = major;
-            Minor = minor;
-            Patch = patch;
+            _major = major;
+            _minor = minor;
+            _patch = patch;
 
             SemverPreRelease[] preReleasesArray = preReleases is null ? [] : preReleases.ToArray();
             string[] buildMetadataArray = buildMetadata is null ? [] : buildMetadata.ToArray();
@@ -123,9 +125,9 @@ namespace Chasm.SemanticVersioning.Ranges
         public PartialVersion(Version systemVersion)
         {
             if (systemVersion is null) throw new ArgumentNullException(nameof(systemVersion));
-            Major = new PartialComponent(systemVersion.Major, default);
-            Minor = new PartialComponent(systemVersion.Minor, default);
-            Patch = new PartialComponent(systemVersion.Build, default);
+            _major = new PartialComponent(systemVersion.Major, default);
+            _minor = new PartialComponent(systemVersion.Minor, default);
+            _patch = new PartialComponent(systemVersion.Build, default);
             _preReleases = [];
             _buildMetadata = [];
         }
@@ -137,9 +139,9 @@ namespace Chasm.SemanticVersioning.Ranges
         public PartialVersion(SemanticVersion semanticVersion)
         {
             if (semanticVersion is null) throw new ArgumentNullException(nameof(semanticVersion));
-            Major = new PartialComponent(semanticVersion.Major, default);
-            Minor = new PartialComponent(semanticVersion.Minor, default);
-            Patch = new PartialComponent(semanticVersion.Patch, default);
+            _major = new PartialComponent(semanticVersion.Major, default);
+            _minor = new PartialComponent(semanticVersion.Minor, default);
+            _patch = new PartialComponent(semanticVersion.Patch, default);
             _preReleases = semanticVersion._preReleases;
             _preReleasesReadonly = semanticVersion._preReleasesReadonly;
             _buildMetadata = semanticVersion._buildMetadata;
