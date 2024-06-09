@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Xml;
+using System.Xml.Serialization;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
@@ -6,7 +9,7 @@ namespace Chasm.SemanticVersioning
     /// <summary>
     ///   <para>Represents a valid semantic version pre-release identifier, compliant to the SemVer 2.0.0 specification.</para>
     /// </summary>
-    public readonly partial struct SemverPreRelease : IEquatable<SemverPreRelease>, IComparable, IComparable<SemverPreRelease>
+    public readonly partial struct SemverPreRelease : IEquatable<SemverPreRelease>, IComparable, IComparable<SemverPreRelease>, IXmlSerializable
 #if NET7_0_OR_GREATER
                                                     , System.Numerics.IComparisonOperators<SemverPreRelease, SemverPreRelease, bool>
 #endif
@@ -180,6 +183,15 @@ namespace Chasm.SemanticVersioning
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <=(SemverPreRelease left, SemverPreRelease right)
             => !(left > right);
+
+        #region IXmlSerializable implementation
+        System.Xml.Schema.XmlSchema? IXmlSerializable.GetSchema() => null;
+
+        void IXmlSerializable.WriteXml(XmlWriter xml)
+            => xml.WriteString(ToString());
+        void IXmlSerializable.ReadXml(XmlReader xml)
+            => Unsafe.AsRef(in this) = Parse(xml.ReadElementContentAsString());
+        #endregion
 
     }
 }

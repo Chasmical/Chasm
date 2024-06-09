@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Xml;
+using System.Xml.Serialization;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -6,7 +9,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> partial version component.</para>
     /// </summary>
-    public readonly partial struct PartialComponent : IEquatable<PartialComponent>, IComparable, IComparable<PartialComponent>
+    public readonly partial struct PartialComponent : IEquatable<PartialComponent>, IComparable, IComparable<PartialComponent>, IXmlSerializable
 #if NET7_0_OR_GREATER
                                                     , System.Numerics.IComparisonOperators<PartialComponent, PartialComponent, bool>
 #endif
@@ -226,6 +229,15 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns><see langword="true"/>, if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator <=(PartialComponent left, PartialComponent right)
             => !(left > right);
+
+        #region IXmlSerializable implementation
+        System.Xml.Schema.XmlSchema? IXmlSerializable.GetSchema() => null;
+
+        void IXmlSerializable.WriteXml(XmlWriter xml)
+            => xml.WriteString(ToString());
+        void IXmlSerializable.ReadXml(XmlReader xml)
+            => Unsafe.AsRef(in _value) = Parse(xml.ReadElementContentAsString())._value;
+        #endregion
 
     }
 }

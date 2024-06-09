@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Xml;
+using System.Xml.Serialization;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -10,7 +13,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> partial version.</para>
     /// </summary>
-    public sealed partial class PartialVersion : IEquatable<PartialVersion>, IComparable, IComparable<PartialVersion>
+    public sealed partial class PartialVersion : IEquatable<PartialVersion>, IComparable, IComparable<PartialVersion>, IXmlSerializable
 #if NET7_0_OR_GREATER
                                                , System.Numerics.IEqualityOperators<PartialVersion, PartialVersion, bool>
 #endif
@@ -306,6 +309,27 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(PartialVersion? left, PartialVersion? right)
             => !(left == right);
+
+        #region IXmlSerializable implementation
+        System.Xml.Schema.XmlSchema? IXmlSerializable.GetSchema() => null;
+
+#pragma warning disable CS8618
+        [Obsolete] private PartialVersion() { }
+#pragma warning restore CS8618
+
+        void IXmlSerializable.WriteXml(XmlWriter xml)
+            => xml.WriteString(ToString());
+        void IXmlSerializable.ReadXml(XmlReader xml)
+        {
+            if (_preReleases is not null) throw new InvalidOperationException();
+            PartialVersion version = Parse(xml.ReadElementContentAsString());
+            Unsafe.AsRef(in _major) = version._major;
+            Unsafe.AsRef(in _minor) = version._minor;
+            Unsafe.AsRef(in _patch) = version._patch;
+            Unsafe.AsRef(in _preReleases) = version._preReleases;
+            Unsafe.AsRef(in _buildMetadata) = version._buildMetadata;
+        }
+        #endregion
 
     }
 }

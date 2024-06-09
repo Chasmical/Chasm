@@ -4,6 +4,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Xml;
+using System.Xml.Serialization;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -12,7 +15,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version range.</para>
     /// </summary>
-    public sealed partial class VersionRange : ISpanBuildable
+    public sealed partial class VersionRange : ISpanBuildable, IXmlSerializable
     {
         internal readonly ComparatorSet[] _comparatorSets;
         internal ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
@@ -194,6 +197,23 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The string representation of this version range.</returns>
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
+
+        #region IXmlSerializable implementation
+        System.Xml.Schema.XmlSchema? IXmlSerializable.GetSchema() => null;
+
+#pragma warning disable CS8618
+        [Obsolete] private VersionRange() { }
+#pragma warning restore CS8618
+
+        void IXmlSerializable.WriteXml(XmlWriter xml)
+            => xml.WriteString(ToString());
+        void IXmlSerializable.ReadXml(XmlReader xml)
+        {
+            if (_comparatorSets is not null) throw new InvalidOperationException();
+            VersionRange range = Parse(xml.ReadElementContentAsString());
+            Unsafe.AsRef(in _comparatorSets) = range._comparatorSets;
+        }
+        #endregion
 
         // TODO: Implement Equals, GetHashCode, and ==, != operators
 
