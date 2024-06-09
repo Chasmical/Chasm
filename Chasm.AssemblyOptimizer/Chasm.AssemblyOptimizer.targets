@@ -1,0 +1,28 @@
+<Project>
+
+  <PropertyGroup>
+    <OptimizerAssemblyPath>$(MSBuildThisFileDirectory)..\task\Chasm.AssemblyOptimizer.dll</OptimizerAssemblyPath>
+  </PropertyGroup>
+
+  <UsingTask TaskName="OptimizeTask" AssemblyFile="$(OptimizerAssemblyPath)" />
+
+  <Target Name="AssemblyOptimizerRun" AfterTargets="AfterCompile">
+
+    <Message Text="Hello World from package!" Importance="High" />
+    <Message Text="$(MSBuildThisFileDirectory)" Importance="High" />
+
+    <Message Text="ProjectDir: $(MSBuildProjectDirectory)" Importance="High" />
+    <Message Text="ProjectFile: $(MSBuildProjectFullPath)" Importance="High" />
+    <Message Text="IntermAsml: @(IntermediateAssembly)" Importance="High" />
+    <Message Text="IntermPath: $(ProjectDir)@(IntermediateAssembly)" Importance="High" />
+
+    <Message Text="Flags: $(AssemblyOptimizerFlags)" Importance="High" />
+
+    <OptimizeTask
+      AssemblyPath="$(ProjectDir)@(IntermediateAssembly)"
+      FeatureFlags="NormalizeNames"
+      />
+
+  </Target>
+
+</Project>
