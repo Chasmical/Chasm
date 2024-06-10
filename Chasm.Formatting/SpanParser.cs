@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using JetBrains.Annotations;
 
 namespace Chasm.Formatting
@@ -413,44 +414,31 @@ namespace Chasm.Formatting
         {
             get
             {
+
+                const int distance = 15;
+                const int totalMaxLength = 1 + distance + 1 + 1 + 1 + distance + 1;
+
                 int pos = position;
                 ReadOnlySpan<char> src = source;
 
-                const int distance = 15;
-                int start = Math.Max(pos - distance, 0);
-                int finish = Math.Min(pos + distance, src.Length);
+                int start = pos - distance;
+                if (start < 0) start = 0;
+                int finish = pos + distance;
+                if (finish > src.Length) finish = src.Length;
 
-#if NET6_0_OR_GREATER
-                ReadOnlySpan<char> leftEllipsis = start > 0 ? "…" : ReadOnlySpan<char>.Empty;
-                ReadOnlySpan<char> left = src.Slice(start, pos - start);
-                ReadOnlySpan<char> pointer = pos < src.Length ? src[pos].ToString() : ReadOnlySpan<char>.Empty;
-                ReadOnlySpan<char> right = src.Slice(pos + 1, finish - (pos + 1));
-                ReadOnlySpan<char> rightEllipsis = finish < src.Length ? "…" : ReadOnlySpan<char>.Empty;
+                StringBuilder sb = new(totalMaxLength);
 
-                return $"{leftEllipsis}{left}⟨{pointer}⟩{right}{rightEllipsis}";
-#else
-                const int totalMaxLength = 1 + distance + 1 + 1 + 1 + distance + 1;
+                if (start > 0) sb.Append('…');
 
-                ReadOnlySpan<char> left = src.Slice(start, pos - start);
-                ReadOnlySpan<char> right = src.Slice(pos + 1, finish - (pos + 1));
+                sb.Append(src.Slice(start, pos - start))
+                  .Append('⟨')
+                  .Append(src[pos])
+                  .Append('⟩')
+                  .Append(src.Slice(pos + 1, finish - (pos + 1)));
 
-                int i = 0;
-                Span<char> buffer = stackalloc char[totalMaxLength];
-                if (start > 0) buffer[i++] = '…';
+                if (finish < src.Length) sb.Append('…');
 
-                left.CopyTo(buffer.Slice(i));
-                i += left.Length;
-
-                buffer[i++] = '⟨';
-                if (pos < src.Length) buffer[i++] = src[pos];
-                buffer[i++] = '⟩';
-
-                right.CopyTo(buffer.Slice(i));
-                i += right.Length;
-
-                if (finish < src.Length) buffer[i++] = '…';
-                return new string(buffer.Slice(i));
-#endif
+                return sb.ToString();
             }
         }
 
