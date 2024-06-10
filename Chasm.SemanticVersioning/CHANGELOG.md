@@ -1,5 +1,11 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.5.1
+- ✨ Added `VersionRange.GetEnumerator()`;
+- ✨ Added `VersionRange.this[int]`;
+- ✨ Added `ComparatorSet.GetEnumerator()`;
+- ✨ Added `ComparatorSet.this[int]`;
+
 ### v2.5.0
 - ✨ Added `TypeConverter` support for types: `SemanticVersion`, `SemverPreRelease`, `PartialVersion`, `PartialComponent`, `VersionRange`;
 - ✨ Added `JsonConverter` support for types: `SemanticVersion`, `SemverPreRelease`, `PartialVersion`, `PartialComponent`, `VersionRange`;
