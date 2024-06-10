@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -13,10 +12,16 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
+    // Note: Do not implement IEnumerable.
+    //   That would source-level break some methods due to ambiguous resolution
+    //   caused by collection expressions and implicit operators. Json.NET will
+    //   also serialize this as an array instead of using a TypeConverter.
+    //   Having a GetEnumerator() method is good enough.
+
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version range.</para>
     /// </summary>
-    public sealed partial class VersionRange : ISpanBuildable, IXmlSerializable, IReadOnlyList<ComparatorSet>
+    public sealed partial class VersionRange : ISpanBuildable, IXmlSerializable
     {
         internal readonly ComparatorSet[] _comparatorSets;
         internal ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
@@ -205,8 +210,6 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>An enumerator for the version range's comparator sets.</returns>
         [Pure] public IEnumerator<ComparatorSet> GetEnumerator()
             => ((IEnumerable<ComparatorSet>)_comparatorSets).GetEnumerator();
-        [Pure] IEnumerator IEnumerable.GetEnumerator()
-            => GetEnumerator();
 
         /// <summary>
         ///   <para>Gets the comparator set at the specified <paramref name="index"/>.</para>
@@ -214,7 +217,6 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="index">The zero-based index of the comparator set to get.</param>
         /// <returns>The comparator set at the specified index.</returns>
         public ComparatorSet this[int index] => _comparatorSets[index];
-        int IReadOnlyCollection<ComparatorSet>.Count => _comparatorSets.Length;
 
         #region IXmlSerializable implementation
         System.Xml.Schema.XmlSchema? IXmlSerializable.GetSchema() => null;

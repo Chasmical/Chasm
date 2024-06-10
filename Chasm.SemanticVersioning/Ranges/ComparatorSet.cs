@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -10,10 +9,16 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
+    // Note: Do not implement IEnumerable.
+    //   That would source-level break some methods due to ambiguous resolution
+    //   caused by collection expressions and implicit operators. Json.NET will
+    //   also serialize this as an array instead of using a TypeConverter.
+    //   Having a GetEnumerator() method is good enough.
+
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator set.</para>
     /// </summary>
-    public sealed class ComparatorSet : ISpanBuildable, IReadOnlyList<Comparator>
+    public sealed class ComparatorSet : ISpanBuildable
     {
         internal readonly Comparator[] _comparators;
         internal ReadOnlyCollection<Comparator>? _comparatorsReadonly;
@@ -207,8 +212,6 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>An enumerator for the comparator set's comparators.</returns>
         [Pure] public IEnumerator<Comparator> GetEnumerator()
             => ((IEnumerable<Comparator>)_comparators).GetEnumerator();
-        [Pure] IEnumerator IEnumerable.GetEnumerator()
-            => GetEnumerator();
 
         /// <summary>
         ///   <para>Gets the comparator at the specified <paramref name="index"/>.</para>
@@ -216,7 +219,6 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="index">The zero-based index of the comparator to get.</param>
         /// <returns>The comparator at the specified index.</returns>
         public Comparator this[int index] => _comparators[index];
-        int IReadOnlyCollection<Comparator>.Count => _comparators.Length;
 
         // TODO: Implement Equals, GetHashCode, and ==, != operators
 
