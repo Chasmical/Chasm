@@ -124,9 +124,9 @@ namespace Chasm.Formatting
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void FillDigits(Span<char> dest, uint number)
+        private static void FillDigits(Span<char> destination, uint number)
         {
-            int pos = dest.Length;
+            int pos = destination.Length;
             do
             {
 #if NET6_0_OR_GREATER
@@ -138,7 +138,7 @@ namespace Chasm.Formatting
                 uint rem = number - div * 10u;
                 number = div;
 #endif
-                dest[--pos] = (char)('0' + rem);
+                destination[--pos] = (char)('0' + rem);
             }
             while (number != 0u);
         }

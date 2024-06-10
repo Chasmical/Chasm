@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 
 namespace Chasm.Collections
@@ -27,7 +26,8 @@ namespace Chasm.Collections
 #if !NET8_0_OR_GREATER
         private static class EmptyDictionary<TKey, TValue> where TKey : notnull
         {
-            internal static readonly ReadOnlyDictionary<TKey, TValue> Instance = new(new Dictionary<TKey, TValue>());
+            internal static readonly ReadOnlyDictionary<TKey, TValue> Instance
+                = new(new System.Collections.Generic.Dictionary<TKey, TValue>());
         }
 #endif
 
