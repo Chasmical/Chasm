@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,7 +13,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator set.</para>
     /// </summary>
-    public sealed class ComparatorSet : ISpanBuildable
+    public sealed class ComparatorSet : ISpanBuildable, IReadOnlyList<Comparator>
     {
         internal readonly Comparator[] _comparators;
         internal ReadOnlyCollection<Comparator>? _comparatorsReadonly;
@@ -199,6 +200,23 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The string representation of this version comparator set.</returns>
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
+
+        /// <summary>
+        ///   <para>Returns an enumerator that iterates through the comparator set's comparators.</para>
+        /// </summary>
+        /// <returns>An enumerator for the comparator set's comparators.</returns>
+        [Pure] public IEnumerator<Comparator> GetEnumerator()
+            => ((IEnumerable<Comparator>)_comparators).GetEnumerator();
+        [Pure] IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
+
+        /// <summary>
+        ///   <para>Gets the comparator at the specified <paramref name="index"/>.</para>
+        /// </summary>
+        /// <param name="index">The zero-based index of the comparator to get.</param>
+        /// <returns>The comparator at the specified index.</returns>
+        public Comparator this[int index] => _comparators[index];
+        int IReadOnlyCollection<Comparator>.Count => _comparators.Length;
 
         // TODO: Implement Equals, GetHashCode, and ==, != operators
 

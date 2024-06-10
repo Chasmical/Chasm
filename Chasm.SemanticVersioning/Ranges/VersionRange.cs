@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version range.</para>
     /// </summary>
-    public sealed partial class VersionRange : ISpanBuildable, IXmlSerializable
+    public sealed partial class VersionRange : ISpanBuildable, IXmlSerializable, IReadOnlyList<ComparatorSet>
     {
         internal readonly ComparatorSet[] _comparatorSets;
         internal ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
@@ -197,6 +198,23 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The string representation of this version range.</returns>
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
+
+        /// <summary>
+        ///   <para>Returns an enumerator that iterates through the version range's comparator sets.</para>
+        /// </summary>
+        /// <returns>An enumerator for the version range's comparator sets.</returns>
+        [Pure] public IEnumerator<ComparatorSet> GetEnumerator()
+            => ((IEnumerable<ComparatorSet>)_comparatorSets).GetEnumerator();
+        [Pure] IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
+
+        /// <summary>
+        ///   <para>Gets the comparator set at the specified <paramref name="index"/>.</para>
+        /// </summary>
+        /// <param name="index">The zero-based index of the comparator set to get.</param>
+        /// <returns>The comparator set at the specified index.</returns>
+        public ComparatorSet this[int index] => _comparatorSets[index];
+        int IReadOnlyCollection<ComparatorSet>.Count => _comparatorSets.Length;
 
         #region IXmlSerializable implementation
         System.Xml.Schema.XmlSchema? IXmlSerializable.GetSchema() => null;
