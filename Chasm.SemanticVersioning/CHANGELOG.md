@@ -1,5 +1,11 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.5.0
+- ✨ Added `TypeConverter` support for types: `SemanticVersion`, `SemverPreRelease`, `PartialVersion`, `PartialComponent`, `VersionRange`;
+- ✨ Added `JsonConverter` support for types: `SemanticVersion`, `SemverPreRelease`, `PartialVersion`, `PartialComponent`, `VersionRange`;
+- ✨ Implemented `IXmlSerializable` in types: `SemanticVersion`, `SemverPreRelease`, `PartialVersion`, `PartialComponent`, `VersionRange`;
+- 🧩 Added `netcoreapp3.0` target. Now targets: `net8.0`, `net7.0`, `net6.0`, `netcoreapp3.0`, `netcoreapp2.1`, `netstandard2.1`.
+
 ### v2.4.1
 - 🐛 Fixed trimming components and pre-releases on partial versions in comparators;
 - 🔥 Removed unused `ISpanBuildable` implementations in `SemverPreRelease` and `PartialComponent`;

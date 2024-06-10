@@ -6,6 +6,8 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 - **Implements [`node-semver`](https://github.com/npm/node-semver)'s version ranges.** Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, instead of being desugared into primitives like in all other libraries. That allows to interpret and manipulate version ranges more precisely. `VersionRange`, `ComparatorSet`, `Comparator`, `PartialVersion`, `PartialComponent`, `AdvancedComparator`, `PrimitiveComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`.
 
+- **Out-of-the-box serialization support.** Supports serialization/deserialization with `Newtonsoft.Json`, `System.Text.Json` and `System.Xml` (and any libraries using `TypeConverter`s) with no extra configuration needed.
+
 - **Default comparison ignores build metadata.** I think it's more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuild`.
 
 - **.NET-style documentation.** Written in the style of `System` namespace docs. I don't know if it's worth advertising, but I really like how descriptive and consistent it is, so I thought I should mention that.
