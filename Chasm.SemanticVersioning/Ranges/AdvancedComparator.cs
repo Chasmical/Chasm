@@ -63,6 +63,14 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             (PrimitiveComparator?, PrimitiveComparator?)? comparators = primitives;
             if (comparators is null) primitives = comparators = ConvertToPrimitives();
+
+            // Make sure the advanced comparator is properly converted into primitives
+            Debug.Assert(comparators.Value.Item1?.Operator is null
+                or PrimitiveOperator.ImplicitEqual or PrimitiveOperator.Equal
+                or PrimitiveOperator.GreaterThan or PrimitiveOperator.GreaterThanOrEqual);
+            Debug.Assert(comparators.Value.Item2?.Operator is null
+                or PrimitiveOperator.LessThan or PrimitiveOperator.LessThanOrEqual);
+
             return comparators.GetValueOrDefault();
         }
         /// <summary>
