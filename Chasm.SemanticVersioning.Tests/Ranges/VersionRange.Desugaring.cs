@@ -53,6 +53,9 @@ namespace Chasm.SemanticVersioning.Tests
                 Assert.Equal(op, comparator.Operator);
                 Assert.Equal(version, comparator.Operand);
             }
+
+            XRangeComparator xRange2 = new PartialVersion('x', '*', 'X');
+            Assert.Empty(xRange2.ToPrimitivesArray());
         }
 
         [Fact]

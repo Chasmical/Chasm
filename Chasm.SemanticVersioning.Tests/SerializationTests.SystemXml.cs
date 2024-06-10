@@ -28,8 +28,11 @@ namespace Chasm.SemanticVersioning.Tests
 
             // test Xml deserialization
             object? deserialized = SystemXmlDeserialize(serialized, type);
-            if (value is VersionRange) (value, deserialized) = (value.ToString()!, deserialized?.ToString());
-            Assert.Equal(value, deserialized);
+
+            if (value is VersionRange)
+                Assert.Equal(value.ToString(), deserialized?.ToString());
+            else
+                Assert.Equal(value, deserialized);
 
         }
 
@@ -50,6 +53,52 @@ namespace Chasm.SemanticVersioning.Tests
 
                 Assert.Equal(expected, SystemXmlSerialize(container, containerType));
                 Assert.Null(((IContainer)SystemXmlDeserialize(expected, containerType)!).Value);
+            }
+        }
+
+        [Theory, MemberData(nameof(CreateSerializationFixtures))]
+        public void DoubleDeserializationSystemXml(object value)
+        {
+            Type type = value.GetType();
+            // assuming previous tests have succeeded, and serialization works correctly
+            string expected = SystemXmlSerialize(value, type);
+
+            object? deserialized;
+
+            // try manually using the IXmlSerializable.ReadXml method
+            using (StringReader reader = new StringReader(expected))
+            using (XmlReader xmlReader = XmlReader.Create(reader))
+            {
+                xmlReader.MoveToContent();
+                deserialized = Activator.CreateInstance(type, true)!;
+                ((IXmlSerializable)deserialized).ReadXml(xmlReader);
+
+                if (value is VersionRange)
+                    Assert.Equal(value.ToString(), deserialized.ToString());
+                else
+                    Assert.Equal(value, deserialized);
+            }
+
+            // make sure that ReadXml can run only once (for classes)
+            using (StringReader reader = new StringReader(expected))
+            using (XmlReader xmlReader = XmlReader.Create(reader))
+            {
+                xmlReader.MoveToContent();
+                if (type.IsClass)
+                {
+                    // classes can only be deserialized once
+                    Assert.Throws<InvalidOperationException>(() => ((IXmlSerializable)deserialized).ReadXml(xmlReader));
+                }
+                else
+                {
+                    // structs are boxed, so it should be fine to deserialize boxed values several times
+                    ((IXmlSerializable)deserialized).ReadXml(xmlReader);
+
+                    if (value is VersionRange)
+                        Assert.Equal(value.ToString(), deserialized.ToString());
+                    else
+                        Assert.Equal(value, deserialized);
+                }
             }
         }
 

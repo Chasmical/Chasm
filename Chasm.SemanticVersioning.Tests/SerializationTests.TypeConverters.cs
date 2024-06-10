@@ -34,6 +34,9 @@ namespace Chasm.SemanticVersioning.Tests
                 if (!type.IsClass) continue;
                 Assert.Equal("", TypeConverterSerialize(null, type));
                 Assert.Null(TypeConverterDeserialize("", type));
+
+                TypeConverter converter = TypeDescriptor.GetConverter(type);
+                Assert.Throws<NotSupportedException>(() => converter.ConvertFrom(123));
             }
         }
 
