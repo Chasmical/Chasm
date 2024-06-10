@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Chasm.SemanticVersioning.Ranges;
 using Xunit;
 using Xunit.Abstractions;
@@ -72,6 +73,16 @@ namespace Chasm.SemanticVersioning.Tests
 
             // make sure the read-only collection is memoized
             Assert.Same(range.ComparatorSets, range.ComparatorSets);
+
+            // test the GetEnumerator() method
+            List<ComparatorSet> comparatorSets = [];
+            foreach (ComparatorSet comparatorSet in range)
+                comparatorSets.Add(comparatorSet);
+            Assert.Equal(range._comparatorSets, comparatorSets);
+
+            // test this[int index] property
+            for (int i = 0; i < range._comparatorSets.Length; i++)
+                Assert.Equal(range._comparatorSets[i], range[i]);
 
         }
 

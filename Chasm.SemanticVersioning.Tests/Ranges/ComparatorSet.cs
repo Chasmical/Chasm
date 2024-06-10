@@ -54,7 +54,7 @@ namespace Chasm.SemanticVersioning.Tests
         [Fact]
         public void Properties()
         {
-            ComparatorSet set = VersionRange.Parse(">3.5.x || <2.0.0-0 >=1.3.0").ComparatorSets[0];
+            ComparatorSet set = VersionRange.Parse(">3.5.x <2.0.0-0 >=1.3.0")[0];
 
             // test comparator collections
             Assert.Equal(set._comparators, set.Comparators);
@@ -62,6 +62,16 @@ namespace Chasm.SemanticVersioning.Tests
 
             // make sure the read-only collection is memoized
             Assert.Same(set.Comparators, set.Comparators);
+
+            // test the GetEnumerator() method
+            List<Comparator> comparators = [];
+            foreach (Comparator comparator in set)
+                comparators.Add(comparator);
+            Assert.Equal(set._comparators, comparators);
+
+            // test this[int index] property
+            for (int i = 0; i < set._comparators.Length; i++)
+                Assert.Equal(set._comparators[i], set[i]);
 
         }
 
