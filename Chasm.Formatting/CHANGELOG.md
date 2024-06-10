@@ -1,5 +1,8 @@
 # Chasm.Formatting Changelog
 
+### v2.3.2
+- 🐛 Fixed `SpanParser.DebuggerDisplay` property on targets older than .NET 6;
+
 ### v2.3.1
 - ⚡️ Improved `SpanBuilder.Append(int)`'s performance a bit;
 - ⚡️ Removed unnecessary cast to `long` in `SpanBuilder.CalculateLength(int)`;
