@@ -1,5 +1,8 @@
 # Chasm.Formatting Changelog
 
+### v2.3.3
+- 🧩 Added `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.0`, `netstandard1.1` and `net45` targets. Now targets: `net8.0`, `net6.0`, `net5.0`, `netcoreapp2.1`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.1`, `net45`.
+
 ### v2.3.2
 - 🐛 Fixed `SpanParser.DebuggerDisplay` property on targets older than .NET 6;
 
