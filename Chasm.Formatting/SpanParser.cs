@@ -414,7 +414,6 @@ namespace Chasm.Formatting
         {
             get
             {
-
                 const int distance = 15;
                 const int totalMaxLength = 1 + distance + 1 + 1 + 1 + distance + 1;
 
@@ -430,11 +429,15 @@ namespace Chasm.Formatting
 
                 if (start > 0) sb.Append('…');
 
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 sb.Append(src.Slice(start, pos - start))
-                  .Append('⟨')
-                  .Append(src[pos])
-                  .Append('⟩')
+                  .Append('⟨').Append(src[pos]).Append('⟩')
                   .Append(src.Slice(pos + 1, finish - (pos + 1)));
+#else
+                sb.Append(src.Slice(start, pos - start).ToString())
+                  .Append('⟨').Append(src[pos]).Append('⟩')
+                  .Append(src.Slice(pos + 1, finish - (pos + 1)).ToString());
+#endif
 
                 if (finish < src.Length) sb.Append('…');
 

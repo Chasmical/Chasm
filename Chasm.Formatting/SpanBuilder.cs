@@ -118,7 +118,12 @@ namespace Chasm.Formatting
             get
             {
                 char[] display = buffer.ToArray();
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 Array.Fill(display, '\u25a1', pos, display.Length - pos);
+#else
+                for (int i = pos; i < display.Length; i++)
+                    display[i] = '\u25a1';
+#endif
                 return new string(display);
             }
         }
@@ -131,7 +136,7 @@ namespace Chasm.Formatting
             {
 #if NET6_0_OR_GREATER
                 (number, uint rem) = Math.DivRem(number, 10u);
-#elif NETSTANDARD2_0_OR_GREATER || NET11_OR_GREATER || NETCOREAPP2_0_OR_GREATER
+#elif NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET11_OR_GREATER
                 number = (uint)Math.DivRem(number, 10, out long rem);
 #else
                 uint div = number / 10u;
@@ -184,8 +189,12 @@ namespace Chasm.Formatting
         /// <returns>The string representation of the specified <paramref name="buildable"/> instance.</returns>
         [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Format(ISpanBuildable buildable)
+        {
+#pragma warning disable IDE0049
             // ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess
-            => string.Create(buildable.CalculateLength(), buildable, BuildSimpleDelegate);
+            return String.Create(buildable.CalculateLength(), buildable, BuildSimpleDelegate);
+#pragma warning restore IDE0049
+        }
         /// <summary>
         ///   <para>Returns the string representation of the specified <paramref name="buildable"/> instance, using the specified <paramref name="format"/>.</para>
         /// </summary>
@@ -198,8 +207,10 @@ namespace Chasm.Formatting
             fixed (char* formatPointer = format)
             {
                 FormatInfo info = new FormatInfo(buildable, formatPointer, format.Length);
+#pragma warning disable IDE0049
                 // ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess
-                return string.Create(buildable.CalculateLength(format), info, BuildFormatDelegate);
+                return String.Create(buildable.CalculateLength(format), info, BuildFormatDelegate);
+#pragma warning restore IDE0049
             }
         }
         /// <summary>
@@ -210,8 +221,12 @@ namespace Chasm.Formatting
         /// <returns>The created string of the specified <paramref name="length"/>, filled by the specified <paramref name="action"/>.</returns>
         [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Format(int length, SpanBuilderAction action)
+        {
+#pragma warning disable IDE0049
             // ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess
-            => string.Create(length, action, BuildActionDelegate);
+            return String.Create(length, action, BuildActionDelegate);
+#pragma warning restore IDE0049
+        }
 
         /// <summary>
         ///   <para>Tries to format the value of the specified <paramref name="buildable"/> into the provided span of characters.</para>
