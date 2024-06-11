@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <!-- Project Properties -->
@@ -10,13 +10,15 @@
       netstandard2.1;
       netstandard1.0;
       net45;
+      net35;
     </TargetFrameworks>
     <!--
-      |            Target Frameworks            | - Justification
+      |      Target Frameworks (-excluded)      | - Justification
       |===============|================|========|==============================
       | net8.0        |                |        | - latest API, for use in IDE
       | netcoreapp3.0 | netstandard2.1 |        | - NotNullWhenAttribute
-      | netcoreapp1.0 | netstandard1.0 | net45  | - lowest supported API
+      | netcoreapp1.0 | netstandard1.0 | net45  | - MethodImplOptions.AggressiveInlining
+      | netcoreapp1.0 | netstandard1.0 | net35  | - lowest supported API, Extension attribute
     -->
 
     <!-- Header -->

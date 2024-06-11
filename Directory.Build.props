@@ -43,6 +43,10 @@
     <!-- Some code analysis warnings don't work with netcoreapp3.1 as the target for some reason -->
     <NoWarn>$(NoWarn),IDE0079</NoWarn> <!-- Suppress the 'Remove unnecessary suppression' message -->
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35' or '$(TargetFramework)'=='net40'">
+    <!-- We use a custom MethodImplAttribute on older targets to enforce aggressive inlining in CIL -->
+    <NoWarn>$(NoWarn),CS0436</NoWarn> <!-- Suppress the 'The type conflicts with imported type in mscorlib' warning -->
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(WorkflowPublishingPackage)'==''">
     <DefineConstants>$(DefineConstants);NOT_PUBLISHING_PACKAGE</DefineConstants>
