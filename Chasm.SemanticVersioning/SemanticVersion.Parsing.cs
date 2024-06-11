@@ -24,7 +24,7 @@ namespace Chasm.SemanticVersioning
             Debug.Assert(major >= 0);
             Debug.Assert(minor >= 0);
             Debug.Assert(patch >= 0);
-            Debug.Assert(Array.TrueForAll(buildMetadata ?? [], static b => Utility.AllValidCharacters(b)));
+            Debug.Assert(Array.TrueForAll(buildMetadata ?? [], static b => Utility.AllValidCharacters(b.AsSpan())));
             Debug.Assert(preReleasesReadonly is null || preReleasesReadonly.Count == (preReleases?.Length ?? 0));
             Debug.Assert(buildMetadataReadonly is null || buildMetadataReadonly.Count == (buildMetadata?.Length ?? 0));
 
@@ -49,7 +49,11 @@ namespace Chasm.SemanticVersioning
             ReadOnlySpan<char> read = parser.ReadAsciiDigits();
             if (read.IsEmpty) return SemverErrorCode.MajorNotFound;
             if (read[0] == '0' && read.Length > 1) return SemverErrorCode.MajorLeadingZeroes;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             if (!int.TryParse(read, NumberStyles.None, null, out int major))
+#else
+            if (!int.TryParse(read.ToString(), NumberStyles.None, null, out int major))
+#endif
                 return SemverErrorCode.MajorTooBig;
 
             if (!parser.Skip('.')) return SemverErrorCode.MinorNotFound;
@@ -57,7 +61,11 @@ namespace Chasm.SemanticVersioning
             read = parser.ReadAsciiDigits();
             if (read.IsEmpty) return SemverErrorCode.MinorNotFound;
             if (read[0] == '0' && read.Length > 1) return SemverErrorCode.MinorLeadingZeroes;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             if (!int.TryParse(read, NumberStyles.None, null, out int minor))
+#else
+            if (!int.TryParse(read.ToString(), NumberStyles.None, null, out int minor))
+#endif
                 return SemverErrorCode.MinorTooBig;
 
             if (!parser.Skip('.')) return SemverErrorCode.PatchNotFound;
@@ -65,7 +73,11 @@ namespace Chasm.SemanticVersioning
             read = parser.ReadAsciiDigits();
             if (read.IsEmpty) return SemverErrorCode.PatchNotFound;
             if (read[0] == '0' && read.Length > 1) return SemverErrorCode.PatchLeadingZeroes;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             if (!int.TryParse(read, NumberStyles.None, null, out int patch))
+#else
+            if (!int.TryParse(read.ToString(), NumberStyles.None, null, out int patch))
+#endif
                 return SemverErrorCode.PatchTooBig;
 
             SemverPreRelease[]? preReleases = null;
@@ -91,7 +103,7 @@ namespace Chasm.SemanticVersioning
                 {
                     unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
                     if (read.IsEmpty) return SemverErrorCode.BuildMetadataEmpty;
-                    list.Add(new string(read));
+                    list.Add(read.ToString());
                 }
                 while (parser.Skip('.'));
                 buildMetadata = list.ToArray();
@@ -131,7 +143,11 @@ namespace Chasm.SemanticVersioning
             ReadOnlySpan<char> read = parser.ReadAsciiDigits();
             if (read.IsEmpty) return SemverErrorCode.MajorNotFound;
             if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.MajorLeadingZeroes;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             if (!int.TryParse(read, NumberStyles.None, null, out int major))
+#else
+            if (!int.TryParse(read.ToString(), NumberStyles.None, null, out int major))
+#endif
                 return SemverErrorCode.MajorTooBig;
             if (innerWhite) parser.SkipWhitespaces();
 
@@ -148,14 +164,22 @@ namespace Chasm.SemanticVersioning
             if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadAsciiDigits()).IsEmpty)
             {
                 if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.MinorLeadingZeroes;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 if (!int.TryParse(read, NumberStyles.None, null, out minor))
+#else
+                if (!int.TryParse(read.ToString(), NumberStyles.None, null, out minor))
+#endif
                     return SemverErrorCode.MinorTooBig;
                 if (innerWhite) parser.SkipWhitespaces();
 
                 if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadAsciiDigits()).IsEmpty)
                 {
                     if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.PatchLeadingZeroes;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                     if (!int.TryParse(read, NumberStyles.None, null, out patch))
+#else
+                    if (!int.TryParse(read.ToString(), NumberStyles.None, null, out patch))
+#endif
                         return SemverErrorCode.PatchTooBig;
                     if (innerWhite) parser.SkipWhitespaces();
 
@@ -221,7 +245,7 @@ namespace Chasm.SemanticVersioning
                         if (removeEmpty) continue;
                         return SemverErrorCode.BuildMetadataEmpty;
                     }
-                    list.Add(new string(read));
+                    list.Add(read.ToString());
                     if (innerWhite) parser.SkipWhitespaces();
                 }
                 while (parser.Skip('.'));

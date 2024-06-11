@@ -44,7 +44,7 @@ namespace Chasm.SemanticVersioning.Ranges
     [TypeConverter(typeof(ParsableTypeConverter<VersionRange>))]
     public sealed partial class VersionRange;
 }
-#else
+#elif NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET11_OR_GREATER
 namespace Chasm.SemanticVersioning
 {
     // Otherwise, use a generic type converter that uses an abstract method

@@ -23,7 +23,7 @@ namespace Chasm.SemanticVersioning.Ranges
             Debug.Assert((int)major._value is >= 0 or -1 or -'x' or -'X' or -'*');
             Debug.Assert((int)minor._value is >= 0 or -1 or -'x' or -'X' or -'*');
             Debug.Assert((int)patch._value is >= 0 or -1 or -'x' or -'X' or -'*');
-            Debug.Assert(Array.TrueForAll(buildMetadata ?? [], static b => Utility.AllValidCharacters(b)));
+            Debug.Assert(Array.TrueForAll(buildMetadata ?? [], static b => Utility.AllValidCharacters(b.AsSpan())));
             Debug.Assert(preReleasesReadonly is null || preReleasesReadonly.Count == (preReleases?.Length ?? 0));
             Debug.Assert(buildMetadataReadonly is null || buildMetadataReadonly.Count == (buildMetadata?.Length ?? 0));
 
@@ -163,7 +163,7 @@ namespace Chasm.SemanticVersioning.Ranges
                         if (removeEmpty) continue;
                         return SemverErrorCode.BuildMetadataEmpty;
                     }
-                    list.Add(new string(read));
+                    list.Add(read.ToString());
                     if (innerWhite) parser.SkipWhitespaces();
                 }
                 while (parser.Skip('.'));

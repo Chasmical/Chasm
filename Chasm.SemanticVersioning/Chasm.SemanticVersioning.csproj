@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <!-- Project Properties -->
@@ -7,19 +7,26 @@
       net8.0;
       net7.0;
       net6.0;
+      net5.0;
       netcoreapp3.0;
-      netcoreapp2.1;
+      netcoreapp2.0;
       netstandard2.1;
+      netstandard2.0;
+      net461;
     </TargetFrameworks>
     <!--
-      |            Target Frameworks            | - Justification
-      |===============|================|========|==============================
-      | net8.0        |                |        | - latest API, for use in IDE, ReadOnlyCollection<T>.Empty
-      | net7.0        |                |        | - IParsable/ISpanParsable, operators interfaces
-      | net6.0        |                |        | - ISpanFormattable, span SequenceEqual, string.TryCopyTo
-      | net5.0        |                |        | - CollectionsMarshal.AsSpan
-      | netcoreapp3.0 | netstandard2.1 |        | - NotNullWhenAttribute
-      | netcoreapp2.1 | netstandard2.1 |        | - lowest supported API
+      |       Target Frameworks (-excluded)        | - Justification
+      |================|=================|=========|==============================
+      | net8.0         |                 |         | - latest API, for use in IDE, ReadOnlyCollection<T>.Empty
+      | net7.0         |                 |         | - IParsable/ISpanParsable, operators interfaces
+      | net6.0         |                 |         | - ISpanFormattable, span SequenceEqual, string.TryCopyTo
+      | net5.0         |                 |         | - CollectionsMarshal.AsSpan
+      | netcoreapp3.0  | netstandard2.1  |         | - NotNullWhenAttribute
+      | netcoreapp3.0  |                 |         | - System.Text.Json
+      | netcoreapp3.0  | netstandard2.1  |         | - HashCode
+      | netcoreapp2.0  | netstandard2.0  | net461  | - lowest supported API, HashCode from Microsoft.Bcl.HashCode
+      | netcoreapp1.0- | netstandard1.1- | net45-  | - lowest supported by Chasm.Formatting
+      | netcoreapp1.0- | netstandard1.3- | net11-  | - IXmlSerializable
 
       TODO: consider lowering target versions
     -->
@@ -52,11 +59,14 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1' or '$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.1'">
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0' or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
 </Project>

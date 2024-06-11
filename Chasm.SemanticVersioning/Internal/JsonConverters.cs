@@ -33,7 +33,7 @@ namespace Chasm.SemanticVersioning.Ranges
     [JsonConverter(typeof(ParsableJsonConverter<VersionRange>))]
     public sealed partial class VersionRange;
 }
-#elif NETCOREAPP3_0_OR_GREATER || NET4_6_2_OR_GREATER
+#elif NETCOREAPP3_0_OR_GREATER
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;

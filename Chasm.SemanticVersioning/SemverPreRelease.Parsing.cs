@@ -14,7 +14,7 @@ namespace Chasm.SemanticVersioning
         private SemverPreRelease(string validIdentifier, bool _)
         {
             // Make sure the internal constructor isn't used with an invalid parameter
-            Debug.Assert(Utility.AllValidCharacters(validIdentifier));
+            Debug.Assert(Utility.AllValidCharacters(validIdentifier.AsSpan()));
 
             text = validIdentifier;
         }
@@ -27,7 +27,11 @@ namespace Chasm.SemanticVersioning
             {
                 if (!allowLeadingZeroes && text[0] == '0' && text.Length > 1)
                     return SemverErrorCode.PreReleaseLeadingZeroes;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 if (!int.TryParse(text, NumberStyles.None, null, out result))
+#else
+                if (!int.TryParse(text.ToString(), NumberStyles.None, null, out result))
+#endif
                     return SemverErrorCode.PreReleaseTooBig;
             }
             return SemverErrorCode.Success;
@@ -40,7 +44,7 @@ namespace Chasm.SemanticVersioning
             if (result == -1)
             {
                 if (!Utility.AllValidCharacters(text)) return SemverErrorCode.PreReleaseInvalid;
-                preRelease = new SemverPreRelease(new string(text), default);
+                preRelease = new SemverPreRelease(text.ToString(), default);
             }
             else preRelease = new SemverPreRelease(result);
             return SemverErrorCode.Success;
@@ -63,7 +67,7 @@ namespace Chasm.SemanticVersioning
             preRelease = default;
             SemverErrorCode code = ParseInitial(text, allowLeadingZeroes, out int result);
             if (code is not SemverErrorCode.Success) return code;
-            preRelease = result == -1 ? new SemverPreRelease(new string(text), default) : new SemverPreRelease(result);
+            preRelease = result == -1 ? new SemverPreRelease(text.ToString(), default) : new SemverPreRelease(result);
             return SemverErrorCode.Success;
         }
 

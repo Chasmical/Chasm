@@ -34,13 +34,19 @@ namespace Chasm.SemanticVersioning
             {
 #if NET6_0_OR_GREATER
                 bool res = str.TryCopyTo(destination);
-#else
+#elif NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 bool res = ((ReadOnlySpan<char>)str).TryCopyTo(destination);
+#else
+                bool res = str.AsSpan().TryCopyTo(destination);
 #endif
                 charsWritten = res ? str.Length : 0;
                 return res;
             }
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return number.TryFormat(destination, out charsWritten);
+#else
+            return number.ToString().TryCopyTo(destination, out charsWritten);
+#endif
         }
 
         [Pure] string IFormattable.ToString(string? _, IFormatProvider? __)
