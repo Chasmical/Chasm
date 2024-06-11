@@ -1,5 +1,8 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.5.2
+- 🧩 Added `net5.0`, `netcoreapp2.0`, `netstandard2.0` and `net461` targets, and removed `netcoreapp2.1` target. Now targets: `net8.0`, `net7.0`, `net6.0`, `net5.0`, `netcoreapp3.0`, `netcoreapp2.0`, `netstandard2.1`, `netstandard2.0`, `net461`.
+
 ### v2.5.1
 - ✨ Added `VersionRange.GetEnumerator()`;
 - ✨ Added `VersionRange.this[int]`;
