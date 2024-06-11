@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <!-- Project Properties -->
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net8.0;
       net6.0;
@@ -17,19 +16,21 @@
       net47;
       net46;
       net45;
+      net35;
     </TargetFrameworks>
     <!--
-      |            Target Frameworks            | - Justification
+      |      Target Frameworks (-excluded)      | - Justification
       |===============|================|========|==============================
-      | net8.0        |                |        | - latest API, for use in IDE, ReadOnlyCollection<T>.Empty
+      | net8.0        |                |        | - latest API for use in IDE, ReadOnlyCollection<T>.Empty
       | net6.0        |                |        | - Array.Clear
       | net5.0        |                |        | - GC.AllocateUninitializedArray
       | netcoreapp3.0 | netstandard2.1 |        | - IAsyncEnumerator
       | netcoreapp2.0 | netstandard2.0 | net47  | - ValueTuple
-      | netcoreapp2.0 | netstandard2.1 |        | - Array.Fill, string.Join(char,)
-      | netcoreapp2.0 | netstandard2.0 | net20  | - Array.ForEach, Array.ConvertAll, Converter<TInput, TOutput>
+      | netcoreapp2.0 | netstandard2.1 | net40  | - Array.Fill, string.Join(char,)
+      | netcoreapp2.0 | netstandard2.0 | net20- | - Array.ForEach, Array.ConvertAll, Converter<,>
       | netcoreapp1.0 | netstandard1.3 | net46  | - Array.Empty
-      | netcoreapp1.0 | netstandard1.0 | net45  | - lowest supported API
+      | netcoreapp1.0 | netstandard1.0 | net45  | - ReadOnlyDictionary<,>
+      | netcoreapp1.0 | netstandard1.0 | net35  | - lowest supported API, Extension attribute
     -->
 
     <!-- Header -->

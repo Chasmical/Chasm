@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
+using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 
 namespace Chasm.Collections
@@ -33,3 +34,4 @@ namespace Chasm.Collections
 
     }
 }
+#endif

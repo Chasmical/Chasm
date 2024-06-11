@@ -54,13 +54,21 @@ namespace Chasm.Collections
         {
 #if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return string.Join(separator, values);
-#else
+#elif NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET40_OR_GREATER
             return string.Join(separator.ToString(), values);
+#else
+            return string.Join(separator.ToString(), values.Select(v => v?.ToString()).ToArray());
 #endif
         }
         /// <inheritdoc cref="string.Join{T}(string, IEnumerable{T})"/>
         [Pure] public static string Join<T>([InstantHandle] this IEnumerable<T> values, string? separator)
-            => string.Join(separator, values);
+        {
+#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET40_OR_GREATER
+            return string.Join(separator, values);
+#else
+            return string.Join(separator, values.Select(v => v?.ToString()).ToArray());
+#endif
+        }
 
     }
 }
