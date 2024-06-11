@@ -36,7 +36,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Collections</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.2.6</Version>
+    <Version>2.2.7</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
