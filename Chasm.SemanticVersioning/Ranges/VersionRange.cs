@@ -21,7 +21,10 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version range.</para>
     /// </summary>
-    public sealed partial class VersionRange : ISpanBuildable, IXmlSerializable
+    public sealed partial class VersionRange : ISpanBuildable, IEquatable<VersionRange>, IXmlSerializable
+#if NET7_0_OR_GREATER
+                                             , System.Numerics.IEqualityOperators<VersionRange, VersionRange, bool>
+#endif
     {
         internal readonly ComparatorSet[] _comparatorSets;
         internal ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
@@ -218,6 +221,27 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The comparator set at the specified index.</returns>
         public ComparatorSet this[int index] => _comparatorSets[index];
 
+        [Pure] public bool Equals(VersionRange? other)
+        {
+            if (other is null) return false;
+            return Utility.SequenceEqual(_comparatorSets, other._comparatorSets);
+        }
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as VersionRange);
+        [Pure] public override int GetHashCode()
+        {
+            HashCode hash = new();
+            ComparatorSet[] comparatorSets = _comparatorSets;
+            for (int i = 0; i < comparatorSets.Length; i++)
+                hash.Add(comparatorSets[i]);
+            return hash.ToHashCode();
+        }
+
+        [Pure] public static bool operator ==(VersionRange? left, VersionRange? right)
+            => left is null ? right is null : left.Equals(right);
+        [Pure] public static bool operator !=(VersionRange? left, VersionRange? right)
+            => !(left == right);
+
         #region IXmlSerializable implementation
         System.Xml.Schema.XmlSchema? IXmlSerializable.GetSchema() => null;
 
@@ -234,8 +258,6 @@ namespace Chasm.SemanticVersioning.Ranges
             Unsafe.AsRef(in _comparatorSets) = range._comparatorSets;
         }
         #endregion
-
-        // TODO: Implement Equals, GetHashCode, and ==, != operators
 
         // TODO: Implement >, <, >=, <= operators
 

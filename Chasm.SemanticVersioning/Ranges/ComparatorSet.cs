@@ -18,7 +18,10 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator set.</para>
     /// </summary>
-    public sealed class ComparatorSet : ISpanBuildable
+    public sealed class ComparatorSet : ISpanBuildable, IEquatable<ComparatorSet>
+#if NET7_0_OR_GREATER
+                                      , System.Numerics.IEqualityOperators<ComparatorSet, ComparatorSet, bool>
+#endif
     {
         internal readonly Comparator[] _comparators;
         internal ReadOnlyCollection<Comparator>? _comparatorsReadonly;
@@ -220,7 +223,26 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The comparator at the specified index.</returns>
         public Comparator this[int index] => _comparators[index];
 
-        // TODO: Implement Equals, GetHashCode, and ==, != operators
+        [Pure] public bool Equals(ComparatorSet? other)
+        {
+            if (other is null) return false;
+            return Utility.SequenceEqual(_comparators, other._comparators);
+        }
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as ComparatorSet);
+        [Pure] public override int GetHashCode()
+        {
+            HashCode hash = new();
+            Comparator[] comparators = _comparators;
+            for (int i = 0; i < comparators.Length; i++)
+                hash.Add(comparators[i]);
+            return hash.ToHashCode();
+        }
+
+        [Pure] public static bool operator ==(ComparatorSet? left, ComparatorSet? right)
+            => left is null ? right is null : left.Equals(right);
+        [Pure] public static bool operator !=(ComparatorSet? left, ComparatorSet? right)
+            => !(left == right);
 
         // TODO: Implement >, <, >=, <= operators
 
