@@ -166,10 +166,10 @@ namespace Chasm.SemanticVersioning
 #endif
         }
 
-        /*
         [Pure] public static PrimitiveOperator Normalize(this PrimitiveOperator op)
             => (PrimitiveOperator)Math.Min((byte)op, (byte)1);
 
+        /*
         [Pure] public static bool SameDirection(PrimitiveOperator a, PrimitiveOperator b)
             => a > PrimitiveOperator.Equal && b > PrimitiveOperator.Equal && (((byte)a + (byte)b) & 1) == 0;
         [Pure] public static bool IsGTOrGTE(this PrimitiveOperator op)

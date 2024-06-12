@@ -10,7 +10,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> hyphen range version comparator.</para>
     /// </summary>
-    public sealed class HyphenRangeComparator : AdvancedComparator
+    public sealed class HyphenRangeComparator : AdvancedComparator, IEquatable<HyphenRangeComparator>
     {
         /// <summary>
         ///   <para>Gets the hyphen range version comparator's lower bound.</para>
@@ -96,6 +96,19 @@ namespace Chasm.SemanticVersioning.Ranges
 
                 return LessThanOrEqual(Utility.NodeSemverTrim(to));
             }
+        }
+
+        [Pure] public bool Equals(HyphenRangeComparator? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return other is not null && From.Equals(other.From) && To.Equals(other.To);
+        }
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as HyphenRangeComparator);
+        [Pure] public override int GetHashCode()
+        {
+            // Add the type hashcode as well to avoid collisions between different types of comparators
+            return HashCode.Combine(GetType(), From, To);
         }
 
         /// <inheritdoc/>

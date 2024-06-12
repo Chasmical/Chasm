@@ -9,7 +9,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> primitive version comparator.</para>
     /// </summary>
-    public sealed class PrimitiveComparator : Comparator
+    public sealed class PrimitiveComparator : Comparator, IEquatable<PrimitiveComparator>
     {
         /// <summary>
         ///   <para>Returns <see langword="true"/>, since this version comparator is primitive.</para>
@@ -130,6 +130,21 @@ namespace Chasm.SemanticVersioning.Ranges
         ///   <para>Gets a primitive comparator (<c>&gt;=0.0.0</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
         /// </summary>
         public static PrimitiveComparator All { get; } = GreaterThanOrEqual(new SemanticVersion(0, 0, 0));
+
+        [Pure] public bool Equals(PrimitiveComparator? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return other is not null && Operator.Normalize() == other.Operator.Normalize() && Operand.Equals(other.Operand);
+        }
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as PrimitiveComparator);
+        [Pure] public override int GetHashCode()
+        {
+            // We won't add the type hashcode here for performance reasons, since
+            // this one will get called the most, and adding the type hashcode in
+            // advanced comparators should avoid collisions with primitives.
+            return HashCode.Combine(Operand, Operator.Normalize());
+        }
 
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()

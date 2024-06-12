@@ -9,7 +9,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> X-Range version comparator.</para>
     /// </summary>
-    public sealed class XRangeComparator : AdvancedComparator
+    public sealed class XRangeComparator : AdvancedComparator, IEquatable<XRangeComparator>
     {
         /// <summary>
         ///   <para>Gets the X-Range version comparator's operator.</para>
@@ -240,6 +240,19 @@ namespace Chasm.SemanticVersioning.Ranges
         ///   <para>Gets an X-Range comparator (<c>*</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
         /// </summary>
         public static XRangeComparator All { get; } = new XRangeComparator(PartialVersion.OneStar);
+
+        [Pure] public bool Equals(XRangeComparator? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return other is not null && Operator.Normalize() == other.Operator.Normalize() && Operand.Equals(other.Operand);
+        }
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as XRangeComparator);
+        [Pure] public override int GetHashCode()
+        {
+            // Add the type hashcode as well to avoid collisions between different types of comparators
+            return HashCode.Combine(GetType(), Operand, Operator.Normalize());
+        }
 
         /// <inheritdoc/>
         [Pure] protected internal override int CalculateLength()

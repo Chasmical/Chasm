@@ -9,6 +9,9 @@ namespace Chasm.SemanticVersioning.Ranges
     /// </summary>
     public abstract class AdvancedComparator : Comparator
     {
+        // IEquatable<AdvancedComparator> isn't implemented here, since there's already
+        // IEquatable<Comparator> implemented, so, that takes care of the generic constraints.
+
         /// <summary>
         ///   <para>Returns <see langword="false"/>, since this version comparator is not primitive.</para>
         /// </summary>

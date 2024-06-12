@@ -9,7 +9,7 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> tilde version comparator.</para>
     /// </summary>
-    public sealed class TildeComparator : AdvancedComparator
+    public sealed class TildeComparator : AdvancedComparator, IEquatable<TildeComparator>
     {
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="TildeComparator"/> class with the specified <paramref name="operand"/>.</para>
@@ -73,6 +73,19 @@ namespace Chasm.SemanticVersioning.Ranges
                 GreaterThanOrEqual(new SemanticVersion(major, minor, patch, Operand._preReleases, null, Operand._preReleasesReadonly, null)),
                 LessThan(new SemanticVersion(major, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null))
             );
+        }
+
+        [Pure] public bool Equals(TildeComparator? other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return other is not null && Operand.Equals(other.Operand);
+        }
+        [Pure] public override bool Equals(object? obj)
+            => Equals(obj as TildeComparator);
+        [Pure] public override int GetHashCode()
+        {
+            // Add the type hashcode as well to avoid collisions between different types of comparators
+            return HashCode.Combine(GetType(), Operand);
         }
 
         /// <inheritdoc/>
