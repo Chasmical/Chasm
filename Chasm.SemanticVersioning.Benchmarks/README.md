@@ -1,11 +1,13 @@
 
 ## Benchmarked libraries
 
-- `Chasm` - [Chasm.SemanticVersioning](https://github.com/Chasmical/Chasm/tree/main/Chasm.SemanticVersioning#readme), this project, v2.4.0 (Jun 2024);
-- `McSherry` - [McSherry.SemanticVersioning](https://github.com/McSherry/McSherry.SemanticVersioning) v1.4.1 (Jan 2021);
-- `Reeve` - [SemanticVersioning](https://github.com/adamreeve/semver.net) v3.0.0-beta2 (Nov 2023);
-- `Hauser` - [Semver](https://github.com/maxhauser/semver) v3.0.0-beta.1 (Aug 2023);
-- `NuGet` - [NuGet.Versioning](https://github.com/NuGet/NuGet.Client/tree/dev/src/NuGet.Core/NuGet.Versioning) v6.11.0-preview.2 (Jun 2024);
+- `Chasm` - [Chasm.SemanticVersioning](https://github.com/Chasmical/Chasm/tree/main/Chasm.SemanticVersioning#readme) ([NuGet](https://www.nuget.org/packages/Chasm.SemanticVersioning)), this project, v2.4.0 (Jun 2024);
+- `McSherry` - [McSherry.SemanticVersioning](https://github.com/McSherry/McSherry.SemanticVersioning) ([NuGet](https://www.nuget.org/packages/McSherry.SemanticVersioning)) v1.4.1 (Jan 2021);
+- `Reeve` - [SemanticVersioning](https://github.com/adamreeve/semver.net) ([NuGet](https://www.nuget.org/packages/SemanticVersioning)) v3.0.0-beta2 (Nov 2023);
+- `Hauser` - [Semver](https://github.com/maxhauser/semver) ([NuGet](https://www.nuget.org/packages/Semver)) v3.0.0-beta.1 (Aug 2023);
+- `NuGet` - [NuGet.Versioning](https://github.com/NuGet/NuGet.Client/tree/dev/src/NuGet.Core/NuGet.Versioning) ([NuGet](https://www.nuget.org/packages/NuGet.Versioning)) v6.11.0-preview.2 (Jun 2024);
+
+
 
 ## Benchmark results
 
@@ -43,7 +45,7 @@ AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
 
 ## Conclusion
 
-`Chasm` outperforms all of the benchmarked alternatives. It's closely followed by `NuGet` (ratios: 1.19, 1.53, 3.56), then by `McSherry` (ratios: 2.87, 3.44, 6.34) and `Hauser` (ratios: 3.19, 4.12, 8.47). Additionally, `Chasm` allocates as little unnecessary memory as possible during parsing. This performance is achieved through the use of read-only spans, which are available only on .NET Standard 2.0+ and .NET Core 2.1+. Other libraries on the other hand target older framework versions, supporting .NET Framework as well.
+`Chasm` outperforms all of the benchmarked alternatives. It's closely followed by `NuGet` (ratios: 1.19, 1.53, 3.56), then by `McSherry` (ratios: 2.87, 3.44, 6.34) and `Hauser` (ratios: 3.19, 4.12, 8.47). Additionally, `Chasm` allocates as little unnecessary memory as possible during parsing through the use of read-only spans, available on newer framework versions.
 
 
 
@@ -51,11 +53,14 @@ AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
 
 | Library    | .NET Core       | .NET Standard       | .NET Framework         |
 |------------|-----------------|---------------------|------------------------|
-| Chasm      | .NET Core 2.1   | .NET Standard 2.1   | *[not supported]*      |
 | McSherry   | .NET Core 1.0   | .NET Standard 1.0   | .NET Framework 4.5     |
+| Chasm      | .NET Core 2.0   | .NET Standard 2.0   | .NET Framework 4.6.1   |
 | Reeve      | *.NET Core 2.0* | .NET Standard 2.0   | *.NET Framework 4.6.1* |
 | Hauser     | *.NET Core 2.0* | .NET Standard 2.0   | *.NET Framework 4.6.1* |
 | NuGet      | *.NET Core 2.0* | .NET Standard 2.0   | *.NET Framework 4.6.1* |
+
+- explicitly included target framework (in package)
+- *compatible target framework* (through .NET Standard)
 
 
 
@@ -63,12 +68,12 @@ AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
 
 | Library    | Raw total |  Packaged |
 |------------|----------:|----------:|
-| Chasm      |  79.0 KiB |  30.5 KiB |
+| Chasm      |  82.5 KiB |  31.4 KiB |
 | McSherry   |  50.0 KiB |  19.8 KiB |
 | Reeve      |  34.0 KiB |  14.1 KiB |
 | Hauser     |  74.5 KiB |  28.4 KiB |
 | NuGet      |  67.0 KiB |  33.4 KiB |
 
-These size differences are negligible, roughly the size of a low quality meme PNG.
+The size differences are negligible, they're all roughly the size of a low quality meme PNG.
 
 

@@ -1,18 +1,23 @@
 # Chasm.SemanticVersioning
 
+[![Latest NuGet version](https://img.shields.io/nuget/v/Chasm.SemanticVersioning)](https://www.nuget.org/packages/Chasm.SemanticVersioning/)
+[![Open issues](https://img.shields.io/github/issues/Chasmical/Chasm)](https://github.com/Chasmical/Chasm/issues)
+[![Open PRs](https://img.shields.io/github/issues-pr/Chasmical/Chasm)](https://github.com/Chasmical/Chasm/pulls)
+[![MIT License](https://img.shields.io/github/license/Chasmical/Chasm)](../LICENSE)
+
 You're probably wondering "Why should I use this library instead of any other more popular alternatives?". Well, here's a quick overview...
 
-- **Focus on functionality and performance.** I will make sure to implement any common manipulations with semantic versions, and I will microoptimize the hell out of everything! [See the benchmarks](./Chasm.SemanticVersioning.Benchmarks#readme). `SemanticVersion`, `SemverPreRelease`, `SemverOptions`, `SemanticVersionBuilder`, `SemverComparer`, `SemverComparison`.
+- **Focus on functionality and performance.** I will make sure to implement any common manipulations with semantic versions, and I will microoptimize the hell out of everything! [See the benchmarks](../Chasm.SemanticVersioning.Benchmarks#readme). `SemanticVersion`, `SemverPreRelease`, `SemverOptions`, `SemanticVersionBuilder`, `SemverComparer`, `SemverComparison`.
 
-- **Implements [`node-semver`](https://github.com/npm/node-semver)'s version ranges.** Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, instead of being desugared into primitives like in all other libraries. That allows to interpret and manipulate version ranges more precisely. `VersionRange`, `ComparatorSet`, `Comparator`, `PartialVersion`, `PartialComponent`, `AdvancedComparator`, `PrimitiveComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`.
-
-- **Out-of-the-box serialization support.** Supports serialization/deserialization with `Newtonsoft.Json`, `System.Text.Json` and `System.Xml` (and any libraries using `TypeConverter`s) with no extra configuration needed.
+- **Implements [`node-semver`](https://github.com/npm/node-semver)'s version ranges.** Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, instead of being desugared into primitives like in all other libraries. That allows to interpret and manipulate version ranges more precisely. `VersionRange`, `ComparatorSet`, `Comparator`, `PartialVersion`, `PartialComponent`, `PrimitiveComparator`, `AdvancedComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`.
 
 - **Default comparison ignores build metadata.** I think it's more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuild`.
 
-- **.NET-style documentation.** Written in the style of `System` namespace docs. I don't know if it's worth advertising, but I really like how descriptive and consistent it is, so I thought I should mention that.
+- **Out-of-the-box serialization support.** Supports serialization/deserialization with `Newtonsoft.Json`, `System.Text.Json` and `System.Xml` (and any libraries using `TypeConverter`s) with no extra configuration needed.
 
-- **In active development, lots of plans.** See the to-do list below.
+- **Thoroughly tested, 100% code coverage.** As of v2.5.1, all of the library's functionality has been covered by tests. Of course, like with all tests, there may be some really obscure edge cases that haven't been covered, but it's really unlikely you'll ever run into them. And if you do, [file an issue here](https://github.com/Chasmical/Chasm/issues)!
+
+- **.NET-style documentation.** Written in the style of `System` namespace docs. I don't know if it's worth advertising, but I really like how descriptive and consistent it is, so I thought I should mention that.
 
 
 

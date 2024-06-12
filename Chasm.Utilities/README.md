@@ -1,5 +1,8 @@
 # Chasm.Utilities
 
+[![Latest NuGet version](https://img.shields.io/nuget/v/Chasm.Utilities)](https://www.nuget.org/packages/Chasm.Utilities/)
+[![MIT License](https://img.shields.io/github/license/Chasmical/Chasm)](../LICENSE)
+
 Provides various utility types and methods.
 
 
@@ -53,7 +56,7 @@ using (StreamReader reader = File.OpenText(path))
     firstLine = reader.ReadLine();
 
 // Using Util.With:
-string? firstLine = With(File.OpenText(path), reader => reader.ReadLine());
+string? firstLine = Util.With(File.OpenText(path), reader => reader.ReadLine());
 ```
 
 `Util.Swap` just swaps two values. Useful when the tuple swap is too long or prone to errors.

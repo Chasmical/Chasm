@@ -1,6 +1,11 @@
 # Chasm.Collections
 
+[![Latest NuGet version](https://img.shields.io/nuget/v/Chasm.Collections)](https://www.nuget.org/packages/Chasm.Collections/)
+[![MIT License](https://img.shields.io/github/license/Chasmical/Chasm)](../LICENSE)
+
 Provides various collection-related extension and utility methods.
+
+
 
 ## `ArrayExtensions`
 
@@ -32,6 +37,8 @@ string[] strings = arr.Cast<string>();
 object[] shallowCopy = arr.Copy();
 ```
 
+
+
 ## `CollectionExtensions`
 
 Contains `Add` overloads for adding tuples and `KeyValuePair`s to collections, without having to enclose the elements in double parenthesis.
@@ -42,6 +49,8 @@ List<(string, double)> units = new();
 units.Add("meter", 1);
 units.Add("centimeter", 0.01);
 ```
+
+
 
 ## `EnumerableExtensions`
 
@@ -54,6 +63,8 @@ Console.WriteLine(values.NotNull().Join(", "));
 // Output: Hello, World, !
 ```
 
+
+
 ## `Enumerator`, `ReadOnlyCollection`, `ReadOnlyDictionary`
 
 Contain static `Empty<T>()` methods that returns a global empty enumerator/read-only collection/read-only dictionary.
@@ -64,3 +75,8 @@ if (size == 0) return ReadOnlyCollection.Empty<string>();
 ```
 
 `Enumerator` contains three versions of this method: `Empty()` (`IEnumerator`), `Empty<T>()` (`IEnumerator<T>`) and `EmptyAsync<T>()` (`IAsyncEnumerator<T>`).
+
+> [!NOTE]
+> .NET 8 introduced `ReadOnlyCollection<T>.Empty` and `ReadOnlyDictionary<TKey, TValue>.Empty` properties, so, you could use them instead if you're only targeting the newer versions. Chasm.Collections will also use them when compiled for .NET 8 and newer.
+
+
