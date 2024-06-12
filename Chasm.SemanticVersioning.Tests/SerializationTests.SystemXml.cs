@@ -3,7 +3,6 @@ using System.IO;
 using System.Security;
 using System.Xml;
 using System.Xml.Serialization;
-using Chasm.SemanticVersioning.Ranges;
 using Xunit;
 #pragma warning disable xUnit1045
 
@@ -28,11 +27,7 @@ namespace Chasm.SemanticVersioning.Tests
 
             // test Xml deserialization
             object? deserialized = SystemXmlDeserialize(serialized, type);
-
-            if (value is VersionRange)
-                Assert.Equal(value.ToString(), deserialized?.ToString());
-            else
-                Assert.Equal(value, deserialized);
+            Assert.Equal(value, deserialized);
 
         }
 
@@ -72,11 +67,7 @@ namespace Chasm.SemanticVersioning.Tests
                 xmlReader.MoveToContent();
                 deserialized = Activator.CreateInstance(type, true)!;
                 ((IXmlSerializable)deserialized).ReadXml(xmlReader);
-
-                if (value is VersionRange)
-                    Assert.Equal(value.ToString(), deserialized.ToString());
-                else
-                    Assert.Equal(value, deserialized);
+                Assert.Equal(value, deserialized);
             }
 
             // make sure that ReadXml can run only once (for classes)
@@ -93,11 +84,7 @@ namespace Chasm.SemanticVersioning.Tests
                 {
                     // structs are boxed, so it should be fine to deserialize boxed values several times
                     ((IXmlSerializable)deserialized).ReadXml(xmlReader);
-
-                    if (value is VersionRange)
-                        Assert.Equal(value.ToString(), deserialized.ToString());
-                    else
-                        Assert.Equal(value, deserialized);
+                    Assert.Equal(value, deserialized);
                 }
             }
         }

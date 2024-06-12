@@ -1,5 +1,4 @@
 ﻿using System;
-using Chasm.SemanticVersioning.Ranges;
 using Newtonsoft.Json;
 using Xunit;
 #pragma warning disable xUnit1045
@@ -21,7 +20,6 @@ namespace Chasm.SemanticVersioning.Tests
 
             // test Json.NET deserialization
             object? deserialized = JsonNetDeserialize(serialized, value.GetType());
-            if (value is VersionRange) (value, deserialized) = (value.ToString()!, deserialized?.ToString());
             Assert.Equal(value, deserialized);
 
         }

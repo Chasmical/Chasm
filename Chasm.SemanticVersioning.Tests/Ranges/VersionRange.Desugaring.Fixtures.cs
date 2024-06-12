@@ -291,7 +291,7 @@ namespace Chasm.SemanticVersioning.Tests
             public override void AssertResult(VersionRange? result)
             {
                 Assert.NotNull(result);
-                Assert.Equal(Expected, result.ToString());
+                Assert.Equal(VersionRange.Parse(Expected!), result);
             }
 
             public override string ToString() => $"{base.ToString()} \"{Source}\"";

@@ -34,7 +34,6 @@ namespace Chasm.SemanticVersioning.Tests
                 PartialComponent.Omitted,
                 new PartialComponent(6792),
 
-                // TODO: VersionRange doesn't have equality methods yet, so there are a lot of hardcoded comparisons
                 VersionRange.All,
                 VersionRange.None,
                 VersionRange.Parse(">1.2.3-alpha.4 <2.0.0-0 || ~3.* || ^2.3.x-beta.5"),

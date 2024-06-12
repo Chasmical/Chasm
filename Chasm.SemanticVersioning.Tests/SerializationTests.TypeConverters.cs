@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using Chasm.SemanticVersioning.Ranges;
 using Xunit;
 #pragma warning disable xUnit1045
 
@@ -21,7 +20,6 @@ namespace Chasm.SemanticVersioning.Tests
 
             // test TypeConverter deserialization
             object? deserialized = TypeConverterDeserialize(serialized, value.GetType());
-            if (value is VersionRange) (value, deserialized) = (value.ToString()!, deserialized?.ToString());
             Assert.Equal(value, deserialized);
 
         }

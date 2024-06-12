@@ -186,11 +186,7 @@ namespace Chasm.SemanticVersioning.Tests
             public void Returns(ComparatorSet[] comparatorSets) => MarkDiscard(Expected = new VersionRange(comparatorSets));
 
             public override void AssertResult(VersionRange? result)
-            {
-                Assert.NotNull(result);
-                // Note: It's hard to do a proper assertion with so many comparator types. This should be fine.
-                Assert.Equal(Expected?.ToString(), result.ToString());
-            }
+                => Assert.Equal(Expected, result);
 
             public override string ToString() => $"{base.ToString()} \"{Source}\" ({Options})";
         }
