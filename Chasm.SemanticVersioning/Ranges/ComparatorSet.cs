@@ -175,6 +175,25 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         public static ComparatorSet All { get; } = new ComparatorSet(XRangeComparator.All);
 
+        // Internal helper to minimize allocations during range operations
+        [Pure] internal static ComparatorSet FromTuple((Comparator?, Comparator?) tuple)
+        {
+            (Comparator? resultLeft, Comparator? resultRight) = tuple;
+
+            // If two comparators were returned, combine them in a set
+            if (resultRight is not null)
+                return new ComparatorSet([resultLeft!, resultRight], default);
+
+            // if it's one of the pre-defined ones, use the singletons
+            if (resultLeft is null || ReferenceEquals(resultLeft, XRangeComparator.All))
+                return All;
+            if (ReferenceEquals(resultLeft, PrimitiveComparator.None))
+                return None;
+
+            // return a set with a single comparator
+            return resultLeft;
+        }
+
         [Pure] internal int CalculateLength()
         {
             Comparator[] comparators = _comparators;

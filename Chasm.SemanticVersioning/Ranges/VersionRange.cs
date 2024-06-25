@@ -179,6 +179,25 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         public static VersionRange All { get; } = new VersionRange(ComparatorSet.All);
 
+        // Internal helper to minimize allocations during range operations
+        [Pure] internal static VersionRange FromTuple((ComparatorSet, ComparatorSet?) tuple)
+        {
+            (ComparatorSet resultLeft, ComparatorSet? resultRight) = tuple;
+
+            // If two comparator sets were returned, combine them in a range
+            if (resultRight is not null)
+                return new VersionRange([resultLeft, resultRight], default);
+
+            // if it's one of the pre-defined ones, use the singletons
+            if (ReferenceEquals(resultLeft, ComparatorSet.All))
+                return All;
+            if (ReferenceEquals(resultLeft, ComparatorSet.None))
+                return None;
+
+            // return a range with a single comparator set
+            return resultLeft;
+        }
+
         [Pure] internal int CalculateLength()
         {
             ComparatorSet[] comparatorSets = _comparatorSets;

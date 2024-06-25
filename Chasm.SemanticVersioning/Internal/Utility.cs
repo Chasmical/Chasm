@@ -169,7 +169,6 @@ namespace Chasm.SemanticVersioning
         [Pure] public static PrimitiveOperator Normalize(this PrimitiveOperator op)
             => (PrimitiveOperator)Math.Max((byte)op, (byte)1);
 
-        /*
         [Pure] public static bool SameDirection(PrimitiveOperator a, PrimitiveOperator b)
             => a > PrimitiveOperator.Equal && b > PrimitiveOperator.Equal && (((byte)a + (byte)b) & 1) == 0;
         [Pure] public static bool IsGTOrGTE(this PrimitiveOperator op)
@@ -180,7 +179,28 @@ namespace Chasm.SemanticVersioning
             => op <= PrimitiveOperator.Equal;
         [Pure] public static bool IsSthThanOrEqual(this PrimitiveOperator op)
             => op is PrimitiveOperator.GreaterThanOrEqual or PrimitiveOperator.LessThanOrEqual;
-        */
+        [Pure] public static PrimitiveOperator Invert(this PrimitiveOperator op)
+        {
+            // 7 - 2 (>) = 5 (<=)
+            // 7 - 3 (<) = 4 (>=)
+            // 7 - 4 (>=) = 3 (<)
+            // 7 - 5 (<=) = 2 (>)
+            return 7 - op;
+        }
+
+        [Pure] public static int CompareSameDirection(PrimitiveComparator left, PrimitiveComparator right)
+        {
+            Debug.Assert(!left.Operator.IsEQ() && !right.Operator.IsEQ());
+            Debug.Assert(left.Operator.IsLTOrLTE() == right.Operator.IsLTOrLTE());
+            Debug.Assert(left.Operator.IsGTOrGTE() == right.Operator.IsGTOrGTE());
+
+            int cmp = left.Operand.CompareTo(right.Operand);
+            // >1.2.3 is greater than >=1.2.3, since it doesn't include =1.2.3
+            // <=1.2.3 is greater than <1.2.3, since it also includes =1.2.3
+            if (cmp == 0 && left.Operator != right.Operator)
+                cmp = left.Operator is PrimitiveOperator.GreaterThan or PrimitiveOperator.LessThanOrEqual ? 1 : -1;
+            return cmp;
+        }
 
     }
 }
