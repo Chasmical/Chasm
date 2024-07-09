@@ -201,6 +201,27 @@ namespace Chasm.SemanticVersioning
                 cmp = left.Operator is PrimitiveOperator.GreaterThan or PrimitiveOperator.LessThanOrEqual ? 1 : -1;
             return cmp;
         }
+        /// <summary>
+        ///   <para>Determines whether the union of the specified comparators is equivalent to <c>*</c>.</para>
+        /// </summary>
+        /// <param name="lessThan"></param>
+        /// <param name="greaterThan"></param>
+        /// <returns></returns>
+        [Pure] public static bool DoComparatorsComplement(PrimitiveComparator lessThan, PrimitiveComparator greaterThan)
+        {
+            Debug.Assert(lessThan.Operator.IsLTOrLTE());
+            Debug.Assert(greaterThan.Operator.IsGTOrGTE());
+
+            int cmp = lessThan.Operand.CompareTo(greaterThan.Operand);
+            //  <1.3.0 | >=1.3.0 ⇒ *
+            // <=1.3.0 |  >1.3.0 ⇒ *
+            // <=1.3.0 | >=1.3.0 ⇒ *
+            if (cmp == 0) return lessThan.Operator.IsSthThanOrEqual() || greaterThan.Operator.IsSthThanOrEqual();
+
+            // <=1.3.0 | >=1.4.0 ⇒ <=1.3.0 || >=1.4.0
+            // <=1.3.0 | >=1.2.0 ⇒ *
+            return cmp > 0;
+        }
 
     }
 }
