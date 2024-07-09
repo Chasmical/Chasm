@@ -16,6 +16,30 @@ namespace Chasm.SemanticVersioning.Tests
 
 
 
+            // Complement of primitives
+            New(">1.2.3", '~').Returns("<=1.2.3");
+            New(">=1.2.3", '~').Returns("<1.2.3");
+            New("<1.2.3", '~').Returns(">=1.2.3");
+            New("<=1.2.3", '~').Returns(">1.2.3");
+
+            // Note: The complement of <0.0.0-0 is considered to be * instead of >=0.0.0-0,
+            //       since <0.0.0-0 and * are essentially used as special symbols.
+            New("<0.0.0-0", '~').Returns("*");
+            New("*", '~').Returns("<0.0.0-0");
+
+            // Complement of 0.0.0 primitives
+            New("<0.0.0", '~').Returns(">=0.0.0");
+            New(">=0.0.0", '~').Returns("<0.0.0");
+
+            // Complement of ranges specifying all versions
+            New(">=0.0.0-0", '~').Returns("<0.0.0-0");
+            New("x.x", '~').Returns("<0.0.0-0");
+            New("^x.x.x", '~').Returns("<0.0.0-0");
+            New("~x.x.x", '~').Returns("<0.0.0-0");
+            New("3.4.5 - 1.2.3", '~').Returns("<0.0.0-0");
+
+
+
             // Intersection of primitives, same direction
             New(">1.2.3", '&', ">3.4.5").Returns(">3.4.5", true);
             New("<1.2.3", '&', "<3.4.5").Returns("<1.2.3", true);
@@ -62,6 +86,8 @@ namespace Chasm.SemanticVersioning.Tests
             New("<0.0.0-0", '|', "<0.0.0").Returns("<0.0.0", true);
             New("<0.0.0-0", '|', ">=0.0.0-0").Returns("*", true);
             New("<=0.0.0-0", '|', ">0.0.0-0").Returns("*", true);
+            New("<0.0.0-0", '|', ">=0.0.0").Returns("<0.0.0-0 || >=0.0.0");
+            New(">=0.0.0", '|', "<0.0.0-0").Returns(">=0.0.0 || <0.0.0-0");
 
 
 
@@ -89,7 +115,7 @@ namespace Chasm.SemanticVersioning.Tests
             public override void AssertResult(VersionRange? result)
                 => Assert.Equal(Expected, result?.ToString());
             public override string ToString()
-                => $"{base.ToString()} {(Right is null ? $"{Operation} {Left}" : $"{Left} {Operation} {Right} ⇒ {Expected}")}";
+                => $"{base.ToString()} {(Right is null ? $"{Operation}({Left})" : $"{Left} {Operation} {Right}")} ⇒ {Expected}";
 
         }
     }
