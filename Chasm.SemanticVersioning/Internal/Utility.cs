@@ -167,7 +167,7 @@ namespace Chasm.SemanticVersioning
         }
 
         [Pure] public static PrimitiveOperator Normalize(this PrimitiveOperator op)
-            => (PrimitiveOperator)Math.Min((byte)op, (byte)1);
+            => (PrimitiveOperator)Math.Max((byte)op, (byte)1);
 
         /*
         [Pure] public static bool SameDirection(PrimitiveOperator a, PrimitiveOperator b)
