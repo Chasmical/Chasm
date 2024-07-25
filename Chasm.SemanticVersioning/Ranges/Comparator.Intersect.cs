@@ -22,9 +22,9 @@ namespace Chasm.SemanticVersioning.Ranges
             return IntersectAdvanced(left1, right1, left2, right2, left, right);
         }
 
-        [Pure] private static (Comparator?, Comparator?) IntersectAdvanced(PrimitiveComparator? left1, PrimitiveComparator? right1,
-                                                                           PrimitiveComparator? left2, PrimitiveComparator? right2,
-                                                                           Comparator sugared1, Comparator sugared2)
+        [Pure] internal static (Comparator?, Comparator?) IntersectAdvanced(PrimitiveComparator? left1, PrimitiveComparator? right1,
+                                                                            PrimitiveComparator? left2, PrimitiveComparator? right2,
+                                                                            Comparator sugared1, Comparator sugared2)
         {
             // =1.2.3 & ^1.0.0 ⇒ =1.2.3
             // =1.2.3 & ^2.0.0 ⇒ <0.0.0-0
@@ -89,7 +89,7 @@ namespace Chasm.SemanticVersioning.Ranges
             // At this point, the comparison directions are different
             return TryIntersectOppositeSingle(left, right);
         }
-        [Pure] private static PrimitiveComparator? TryIntersectOppositeSingle(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] internal static PrimitiveComparator? TryIntersectOppositeSingle(PrimitiveComparator left, PrimitiveComparator right)
         {
             // The arguments must compare in opposite directions
             Debug.Assert(!left.Operator.IsEQ() && !right.Operator.IsEQ());
@@ -113,14 +113,14 @@ namespace Chasm.SemanticVersioning.Ranges
             return null;
         }
 
-        [Pure] private static PrimitiveComparator IntersectGreaterThan(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] internal static PrimitiveComparator IntersectGreaterThan(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Both arguments must be GT/GTE
             Debug.Assert(left.Operator.IsGTOrGTE() && right.Operator.IsGTOrGTE());
 
             return Utility.CompareSameDirection(left, right) >= 0 ? left : right;
         }
-        [Pure] private static PrimitiveComparator IntersectLessThan(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] internal static PrimitiveComparator IntersectLessThan(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Both arguments must be LT/LTE
             Debug.Assert(left.Operator.IsLTOrLTE() && right.Operator.IsLTOrLTE());

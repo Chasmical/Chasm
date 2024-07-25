@@ -10,8 +10,14 @@ namespace Chasm.SemanticVersioning.Ranges
 
         [Pure] public static (ComparatorSet?, ComparatorSet?) Union(Comparator left, Comparator right)
         {
+            (Comparator?, Comparator?) tuple = Union(left, right, out bool isRange);
+            return isRange ? tuple : (ComparatorSet.FromTuple(tuple), null);
+        }
+        [Pure] public static (Comparator?, Comparator?) Union(Comparator left, Comparator right, out bool isRange)
+        {
             if (left is PrimitiveComparator primitiveLeft && right is PrimitiveComparator primitiveRight)
             {
+                isRange = true;
                 Comparator? result = TryUnionPrimitivesSingle(primitiveLeft, primitiveRight);
                 return result is not null ? (result, null) : (left, right);
             }
@@ -19,12 +25,12 @@ namespace Chasm.SemanticVersioning.Ranges
             (PrimitiveComparator? left1, PrimitiveComparator? right1) = left.AsPrimitives();
             (PrimitiveComparator? left2, PrimitiveComparator? right2) = right.AsPrimitives();
 
-            var tuple = UnionAdvanced(left1, right1, left2, right2, left, right, out bool isRange);
-            return isRange ? tuple : (ComparatorSet.FromTuple(tuple), null);
+            return UnionAdvanced(left1, right1, left2, right2, left, right, out isRange);
         }
-        [Pure] private static (Comparator?, Comparator?) UnionAdvanced(PrimitiveComparator? left1, PrimitiveComparator? right1,
-                                                                       PrimitiveComparator? left2, PrimitiveComparator? right2,
-                                                                       Comparator sugared1, Comparator sugared2, out bool isRange)
+
+        [Pure] internal static (Comparator?, Comparator?) UnionAdvanced(PrimitiveComparator? left1, PrimitiveComparator? right1,
+                                                                        PrimitiveComparator? left2, PrimitiveComparator? right2,
+                                                                        Comparator sugared1, Comparator sugared2, out bool isRange)
         {
             isRange = true;
             // =1.2.3 | ^1.0.0 ⇒ ^1.0.0
@@ -74,7 +80,7 @@ namespace Chasm.SemanticVersioning.Ranges
             return (leftResult, rightResult);
         }
 
-        [Pure] private static Comparator? TryUnionPrimitivesSingle(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] internal static Comparator? TryUnionPrimitivesSingle(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Same direction primitive comparators (not equality)
             if (Utility.SameDirection(left.Operator, right.Operator))
@@ -112,14 +118,14 @@ namespace Chasm.SemanticVersioning.Ranges
             return null;
         }
 
-        [Pure] private static PrimitiveComparator UnionGreaterThan(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] internal static PrimitiveComparator UnionGreaterThan(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Both arguments must be GT/GTE
             Debug.Assert(left.Operator.IsGTOrGTE() && right.Operator.IsGTOrGTE());
 
             return Utility.CompareSameDirection(left, right) <= 0 ? left : right;
         }
-        [Pure] private static PrimitiveComparator UnionLessThan(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] internal static PrimitiveComparator UnionLessThan(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Both arguments must be LT/LTE
             Debug.Assert(left.Operator.IsLTOrLTE() && right.Operator.IsLTOrLTE());

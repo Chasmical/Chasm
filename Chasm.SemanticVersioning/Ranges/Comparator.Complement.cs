@@ -21,7 +21,7 @@ namespace Chasm.SemanticVersioning.Ranges
             return (ComplementPrimitive(left), right is null ? null : ComplementPrimitive(right));
         }
 
-        [Pure] private static Comparator ComplementPrimitive(PrimitiveComparator primitive)
+        [Pure] internal static Comparator ComplementPrimitive(PrimitiveComparator primitive)
         {
             Debug.Assert(!primitive.Operator.IsEQ());
 

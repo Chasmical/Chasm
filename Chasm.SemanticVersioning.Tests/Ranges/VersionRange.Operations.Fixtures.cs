@@ -36,7 +36,10 @@ namespace Chasm.SemanticVersioning.Tests
             New("x.x", '~').Returns("<0.0.0-0");
             New("^x.x.x", '~').Returns("<0.0.0-0");
             New("~x.x.x", '~').Returns("<0.0.0-0");
-            New("3.4.5 - 1.2.3", '~').Returns("<0.0.0-0");
+
+            // Complement of ranges specifying no versions
+            New("3.4.5 - 1.2.3", '~').Returns("*");
+            New("<0.0.0", '~').Returns(">=0.0.0");
 
 
 
