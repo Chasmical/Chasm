@@ -14,6 +14,7 @@
         netstandard2.1;
         netstandard2.0;
         netstandard1.0;
+        net45;
         net40;
         net35;
     </TargetFrameworks>
@@ -24,8 +25,10 @@
       | net7.0         |                 |         | - ConstantExpected, StringSyntax, RequiredMember, SetsRequiredMembers, UnscopedRef attributes
       | net6.0         |                 |         | - InterpolatedStringHandler attributes
       | net5.0         |                 |         | - MemberNotNull[When], IsExternalInit, SkipLocalsInit, ModuleInitializer attributes
+      | netcoreapp3.0  |                 |         | - CallerArgumentExpression attribute
       | netcoreapp3.0  | netstandard2.1  |         | - nullable analysis attributes
       | netcoreapp2.0  | netstandard2.0  | net40   | - ExcludeFromCodeCoverage attribute
+      | netcoreapp1.0  | netstandard1.0  | net45   | - basic Caller… attributes
       | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API, Extension attribute
       | netcoreapp1.0  | netstandard1.0  | net11-  | - attributes
     -->
