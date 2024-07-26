@@ -9,13 +9,13 @@
 
 These attributes are interpreted by the compiler, and are generally not used directly in the compiled assembly.
 
+- `[AsyncMethodBuilder]` (Core 1.1+ / Standard 2.0+);
 - `[ModuleInitializer]` (.NET 5+) - module initializers are a CLI spec feature and work on older targets as well;
 - `[SkipLocalsInit]` (.NET 5+) - simply removes the `.locals init` flag from metadata;
 - `IsExternalInit` metadata class (.NET 5+) - used for `{ init; }` properties and `record` types;
 - `[InterpolatedStringHandler]` (.NET 6+) - allows using your own string interpolation handlers on older targets;
 - `[InterpolatedStringHandlerArgument]` (.NET 6+);
-- `[AsyncMethodBuilder]` (Core 1.1+ / Standard 2.0+);
-- `[RequiredMember]` (.NET 7+).
+- `[RequiredMember]` (.NET 7+) - allows declaring `required` members.
 
 
 
@@ -46,13 +46,15 @@ Attributes for code analyzers, IDE suggestions, syntax highlighting, and other t
 - `[ConstantExpected]` (.NET 7+);
 - `[SetsRequiredMembers]` (.NET 7+);
 - `[UnscopedRef]` (.NET 7+);
-- `[Experimental]` (.NET 8+);
+- `[Experimental]` (.NET 8+).
 
 Note: `ExcludeFromCodeCoverageAttribute.Justification` property is not shimmed, since it was added only in .NET 5.
 
 
 
 ## To-do List
+
+The following attributes may be added in the future. I need to investigate whether they're actually needed and whether it's possible to polyfill them.
 
 - [ ] `[CallerArgument...]`s;
 - [ ] `[CollectionBuilder]`;
@@ -65,5 +67,26 @@ Note: `ExcludeFromCodeCoverageAttribute.Justification` property is not shimmed, 
 - [ ] `[UnmanagedCallersOnly]`;
 - [ ] `[UnsafeAccessor]`;
 - [ ] `[InlineArray]`;
+- [ ] `[DynamicallyAccessedMembers]`;
+- [ ] `enum DynamicallyAccessedMemberTypes`;
+- [ ] `[DynamicDependency]`;
+- [ ] `[RequiresAssemblyFiles]`;
+- [ ] `[RequiresDynamicCode]`;
+- [ ] `[RequiresUnreferencedCode]`;
+- [ ] `[UnconditionalSuppressMessage]`;
+- [ ] `[FeatureGuard]`;
+- [ ] `[FeatureSwitchDefinition]`;
+- [ ] `[IteratorStateMachine]`;
+- [ ] `[AsyncIteratorStateMachine]`;
+- [ ] `[StateMachine]`;
+- [ ] `[AsyncStateMachine]`;
+- [ ] `[EnumeratorCancellation]`;
+- [ ] `[InlineArray]`;
+- [ ] `[PreserveBaseOverrides]`;
+- [ ] `[ScopedRef]`;
+- [ ] `[TupleElementNames]` (in `ValueTuple` package?);
+- [ ] `[OverloadResolutionPriority]`;
+- [ ] `[ParamCollection]`;
+- [ ] `[RequiredAttribute]`;
 
 
