@@ -1,4 +1,4 @@
-name: Publish (Chasm.*)
+name: Publish (Chasm.Compatibility.*)
 run-name: Publish ${{ inputs.project }}
 
 permissions:
@@ -12,10 +12,8 @@ on:
         required: true
         type: choice
         options:
-        - Chasm.Utilities
-        - Chasm.Collections
-        - Chasm.Formatting
-        - Chasm.SemanticVersioning
+        - Chasm.Compatibility
+        - Chasm.Compatibility.Attributes
 
 jobs:
   publish-package:
@@ -38,7 +36,7 @@ jobs:
       - name: Compile ${{ inputs.project }}
         run: |
           mkdir __out
-          dotnet pack ${{ inputs.project }} -c Release -o __out -p:WorkflowPublishingPackage=true --no-restore
+          dotnet pack Chasm.Compatibility/${{ inputs.project }} -c Release -o __out -p:WorkflowPublishingPackage=true --no-restore
 
       - name: Publish ${{ inputs.project }} to NuGet
         run: |

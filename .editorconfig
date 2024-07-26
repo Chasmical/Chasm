@@ -44,3 +44,6 @@ dotnet_diagnostic.IDE0290.severity = none
 # Disable 'Place using directives outside namespace'
 # - Sometimes it's just shorter and more concise to use "using static" inside namespaces
 dotnet_diagnostic.IDE0065.severity = none
+
+# Disable 'Namespace does not match folder structure' message
+dotnet_diagnostic.IDE0130.severity = none

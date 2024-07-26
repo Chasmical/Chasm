@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Project Properties -->
+    <TargetFrameworks>
+        net8.0;
+        net7.0;
+        net6.0;
+        net5.0;
+        netcoreapp3.0;
+        netcoreapp2.0;
+        netcoreapp1.1;
+        netcoreapp1.0;
+        netstandard2.1;
+        netstandard2.0;
+        netstandard1.0;
+        net40;
+        net35;
+    </TargetFrameworks>
+    <!--
+      |       Target Frameworks (-excluded)        | - Justification
+      |================|=================|=========|==============================
+      | net8.0         |                 |         | - latest API, for use in IDE, Experimental attribute
+      | net7.0         |                 |         | - ConstantExpected, StringSyntax, RequiredMember, SetsRequiredMembers, UnscopedRef attributes
+      | net6.0         |                 |         | - InterpolatedStringHandler attributes
+      | net5.0         |                 |         | - MemberNotNull[When], IsExternalInit, SkipLocalsInit, ModuleInitializer attributes
+      | netcoreapp3.0  | netstandard2.1  |         | - nullable analysis attributes
+      | netcoreapp2.0  | netstandard2.0  | net40   | - ExcludeFromCodeCoverage attribute
+      | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API, Extension attribute
+      | netcoreapp1.0  | netstandard1.0  | net11-  | - attributes
+    -->
+
+    <!-- Header -->
+    <AssemblyName>Chasm.Compatibility.Attributes</AssemblyName>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Version>2.0.0</Version>
+
+    <!-- Title, Description, Tags -->
+    <Title>$(AssemblyName)</Title>
+    <Description>
+      Polyfills some attributes and metadata classes for older target frameworks.
+    </Description>
+    <PackageTags>compatibility polyfills shims attributes</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Chasm.Compatibility.Attributes.csproj.DotSettings" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <InternalsVisibleTo Include="Chasm.Compatibility.Tests" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
