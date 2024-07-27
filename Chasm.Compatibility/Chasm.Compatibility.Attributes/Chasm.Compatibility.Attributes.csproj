@@ -22,7 +22,7 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net8.0         |                 |         | - latest API, for use in IDE, Experimental, RequiresLocation attributes
+      | net8.0         |                 |         | - latest API, for use in IDE, Experimental, RequiresLocation, CollectionBuilder attributes
       | net7.0         |                 |         | - ConstantExpected, StringSyntax, RequiredMember, SetsRequiredMembers, UnscopedRef, CompilerFeatureRequired attributes
       | net6.0         |                 |         | - InterpolatedStringHandler, StackTraceHidden, RequiresPreviewFeatures attributes
       | net5.0         |                 |         | - MemberNotNull[When], IsExternalInit, SkipLocalsInit, ModuleInitializer, UnconditionalSuppressMessage attributes

@@ -23,6 +23,7 @@ These attributes are interpreted by the compiler, and are generally not used dir
 - `[CompilerFeatureRequired]` (.NET 7+) - allows declaring `required` members and `ref struct` types;
 - `[RequiredMember]` (.NET 7+) - allows declaring `required` members;
 - `[RequiresLocation]` (.NET 8+) - `ref readonly` parameters in function pointers.
+- `[CollectionBuilder]` (.NET 8+) - used for creating custom collections from spans.
 
 
 
@@ -69,25 +70,20 @@ Note: `ExcludeFromCodeCoverageAttribute.Justification` property is not shimmed, 
 
 ## To-do List
 
-The following attributes may be added in the future. I need to investigate whether they're actually needed and whether it's possible to polyfill them.
+Future .NET versions:
 
-- [ ] `[CollectionBuilder]`;
-- [ ] `[FeatureGuard]`;
-- [ ] `[FeatureSwitchDefinition]`;
-- [ ] `[EnumeratorCancellation]`;
-- [ ] `[OverloadResolutionPriority]`;
-- [ ] `[ParamCollection]`;
+- [ ] `[FeatureGuard]` (.NET 9+);
+- [ ] `[FeatureSwitchDefinition]` (.NET 9+);
+- [ ] `[OverloadResolutionPriority]` (.NET 9+);
+- [ ] `[ParamCollection]` (.NET 9+);
 
-Interoperability/marshaling:
+I'm not sure how the attributes below work, so I'll put it off for now:
 
 - [ ] `[DisableRuntimeMarshalling]`;
 - [ ] `[SuppressGCTransition]`;
 - [ ] `[UnmanagedCallersOnly]`;
 - [ ] `[UnsafeAccessor]`;
 - [ ] `[InlineArray]`;
-
-Dependencies:
-
 - [ ] `[DynamicallyAccessedMembers]`;
 - [ ] `enum DynamicallyAccessedMemberTypes`;
 - [ ] `[DynamicDependency]`;
@@ -107,6 +103,7 @@ The following attributes are not provided by this package:
 - `[NullableContext]` - generated automatically, on types and methods in `#nullable` context;
 - `[Nullable]` - generated automatically, on types, members and parameters in `#nullable` context;
 - `[TupleElementNames]` - provided in the `ValueTuple` package;
+- `[EnumeratorCancellation]` - that would require adding `TaskAsyncEnumerableExtensions` as well;
 
 
 
