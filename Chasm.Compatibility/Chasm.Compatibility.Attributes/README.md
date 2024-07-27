@@ -9,6 +9,7 @@
 
 These attributes are interpreted by the compiler, and are generally not used directly in the compiled assembly.
 
+- `[In]` (Core 1.0+ / Standard 1.1+ / Framework 1.1+) - `ref readonly` method return type;
 - `[CallerFilePath]` (Core 1.0+ / Standard 1.0+ / Framework 4.5+);
 - `[CallerLineNumber]` (Core 1.0+ / Standard 1.0+ / Framework 4.5+);
 - `[CallerMemberName]` (Core 1.0+ / Standard 1.0+ / Framework 4.5+);
@@ -17,9 +18,11 @@ These attributes are interpreted by the compiler, and are generally not used dir
 - `[ModuleInitializer]` (.NET 5+) - module initializers are a CLI spec feature and work on older targets as well;
 - `[SkipLocalsInit]` (.NET 5+) - simply removes the `.locals init` flag from metadata;
 - `IsExternalInit` metadata class (.NET 5+) - used for `{ init; }` properties and `record` types;
-- `[InterpolatedStringHandler]` (.NET 6+) - allows using your own string interpolation handlers on older targets;
+- `[InterpolatedStringHandler]` (.NET 6+) - allows using your own string interpolation handlers;
 - `[InterpolatedStringHandlerArgument]` (.NET 6+);
-- `[RequiredMember]` (.NET 7+) - allows declaring `required` members.
+- `[CompilerFeatureRequired]` (.NET 7+) - allows declaring `required` members and `ref struct` types;
+- `[RequiredMember]` (.NET 7+) - allows declaring `required` members;
+- `[RequiresLocation]` (.NET 8+) - `ref readonly` parameters in function pointers.
 
 
 
@@ -46,6 +49,8 @@ Attributes to assist with C# 8.0's `#nullable` context and nullable reference ty
 Attributes for code analyzers, IDE suggestions, syntax highlighting, and other tools.
 
 - `[ExcludeFromCodeCoverage]` (Core 2.0+ / Standard 2.0+ / Framework 4.0+);
+- `[UnconditionalSuppressMessage]` (.NET 5+);
+- `[RequiresPreviewFeatures]` (.NET 6+);
 - `[StringSyntax]` (.NET 7+);
 - `[ConstantExpected]` (.NET 7+);
 - `[SetsRequiredMembers]` (.NET 7+);
@@ -56,40 +61,57 @@ Note: `ExcludeFromCodeCoverageAttribute.Justification` property is not shimmed, 
 
 
 
+## Attributes used at runtime
+
+- `[StackTraceHidden]` (.NET 6+) - omits the method/type from `StackTrace.ToString()`.
+
+
+
 ## To-do List
 
 The following attributes may be added in the future. I need to investigate whether they're actually needed and whether it's possible to polyfill them.
 
 - [ ] `[CollectionBuilder]`;
-- [ ] `[CompilerFeatureRequired]`;
-- [ ] `[RequiresLocation]`;
-- [ ] `[RequiresPreviewFeatures]`;
+- [ ] `[FeatureGuard]`;
+- [ ] `[FeatureSwitchDefinition]`;
+- [ ] `[EnumeratorCancellation]`;
+- [ ] `[OverloadResolutionPriority]`;
+- [ ] `[ParamCollection]`;
+
+Interoperability/marshaling:
+
 - [ ] `[DisableRuntimeMarshalling]`;
-- [ ] `[StackTraceHidden]`;
 - [ ] `[SuppressGCTransition]`;
 - [ ] `[UnmanagedCallersOnly]`;
 - [ ] `[UnsafeAccessor]`;
 - [ ] `[InlineArray]`;
+
+Dependencies:
+
 - [ ] `[DynamicallyAccessedMembers]`;
 - [ ] `enum DynamicallyAccessedMemberTypes`;
 - [ ] `[DynamicDependency]`;
 - [ ] `[RequiresAssemblyFiles]`;
 - [ ] `[RequiresDynamicCode]`;
 - [ ] `[RequiresUnreferencedCode]`;
-- [ ] `[UnconditionalSuppressMessage]`;
-- [ ] `[FeatureGuard]`;
-- [ ] `[FeatureSwitchDefinition]`;
-- [ ] `[IteratorStateMachine]`;
-- [ ] `[AsyncIteratorStateMachine]`;
-- [ ] `[StateMachine]`;
-- [ ] `[AsyncStateMachine]`;
-- [ ] `[EnumeratorCancellation]`;
-- [ ] `[InlineArray]`;
-- [ ] `[PreserveBaseOverrides]`;
-- [ ] `[ScopedRef]`;
-- [ ] `[TupleElementNames]` (in `ValueTuple` package?);
-- [ ] `[OverloadResolutionPriority]`;
-- [ ] `[ParamCollection]`;
-- [ ] `[RequiredAttribute]`;
+
+
+
+## Not needed
+
+The following attributes are not provided by this package:
+
+- Attributes for C++ and Visual Basic compilers;
+- `[RefSafetyRules]` - generated automatically;
+- `[ScopedRef]` - generated automatically, for `scoped ref` parameters;
+- `[NullableContext]` - generated automatically, on types and methods in `#nullable` context;
+- `[Nullable]` - generated automatically, on types, members and parameters in `#nullable` context;
+- `[TupleElementNames]` - provided in the `ValueTuple` package;
+
+
+
+## Can't be added
+
+- `[PreserveBaseOverrides]` - requires runtime support of covariant return types;
 
 

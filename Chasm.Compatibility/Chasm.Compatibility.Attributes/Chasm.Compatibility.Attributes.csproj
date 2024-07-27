@@ -13,6 +13,7 @@
         netcoreapp1.0;
         netstandard2.1;
         netstandard2.0;
+        netstandard1.1;
         netstandard1.0;
         net45;
         net40;
@@ -21,13 +22,15 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net8.0         |                 |         | - latest API, for use in IDE, Experimental attribute
-      | net7.0         |                 |         | - ConstantExpected, StringSyntax, RequiredMember, SetsRequiredMembers, UnscopedRef attributes
-      | net6.0         |                 |         | - InterpolatedStringHandler attributes
-      | net5.0         |                 |         | - MemberNotNull[When], IsExternalInit, SkipLocalsInit, ModuleInitializer attributes
+      | net8.0         |                 |         | - latest API, for use in IDE, Experimental, RequiresLocation attributes
+      | net7.0         |                 |         | - ConstantExpected, StringSyntax, RequiredMember, SetsRequiredMembers, UnscopedRef, CompilerFeatureRequired attributes
+      | net6.0         |                 |         | - InterpolatedStringHandler, StackTraceHidden, RequiresPreviewFeatures attributes
+      | net5.0         |                 |         | - MemberNotNull[When], IsExternalInit, SkipLocalsInit, ModuleInitializer, UnconditionalSuppressMessage attributes
       | netcoreapp3.0  |                 |         | - CallerArgumentExpression attribute
       | netcoreapp3.0  | netstandard2.1  |         | - nullable analysis attributes
+      | netcoreapp1.1  | netstandard2.1  |         | - AsyncMethodBuilder attribute
       | netcoreapp2.0  | netstandard2.0  | net40   | - ExcludeFromCodeCoverage attribute
+      | netcoreapp1.0  | netstandard1.1  | net11-  | - InAttribute
       | netcoreapp1.0  | netstandard1.0  | net45   | - basic Caller… attributes
       | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API, Extension attribute
       | netcoreapp1.0  | netstandard1.0  | net11-  | - attributes
