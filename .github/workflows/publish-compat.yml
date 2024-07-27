@@ -14,6 +14,7 @@ on:
         options:
         - Chasm.Compatibility
         - Chasm.Compatibility.Attributes
+        - Chasm.Compatibility.IndexRange
 
 jobs:
   publish-package:

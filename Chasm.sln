@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chasm.Compatibility", "Chas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chasm.Compatibility.Attributes", "Chasm.Compatibility\Chasm.Compatibility.Attributes\Chasm.Compatibility.Attributes.csproj", "{AA2E84A0-1ED6-4ADA-904C-D4C149C9F0F5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chasm.Compatibility.IndexRange", "Chasm.Compatibility\Chasm.Compatibility.IndexRange\Chasm.Compatibility.IndexRange.csproj", "{E5C8CD1D-32C6-4410-A4E5-283AFA17609F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{AA2E84A0-1ED6-4ADA-904C-D4C149C9F0F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA2E84A0-1ED6-4ADA-904C-D4C149C9F0F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA2E84A0-1ED6-4ADA-904C-D4C149C9F0F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5C8CD1D-32C6-4410-A4E5-283AFA17609F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5C8CD1D-32C6-4410-A4E5-283AFA17609F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5C8CD1D-32C6-4410-A4E5-283AFA17609F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5C8CD1D-32C6-4410-A4E5-283AFA17609F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B804BAB5-EEF3-4922-8114-8E75BA0DB831} = {2C7FBA53-1606-415C-8A16-070BD448A4EA}
 		{AA2E84A0-1ED6-4ADA-904C-D4C149C9F0F5} = {2C7FBA53-1606-415C-8A16-070BD448A4EA}
+		{E5C8CD1D-32C6-4410-A4E5-283AFA17609F} = {2C7FBA53-1606-415C-8A16-070BD448A4EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BE43185E-2ADB-4105-80A3-6E01EDCD0553}

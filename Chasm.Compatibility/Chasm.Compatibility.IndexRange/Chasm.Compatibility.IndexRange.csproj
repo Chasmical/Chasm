@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Project Properties -->
+    <TargetFrameworks>
+        net8.0;
+        netcoreapp3.0;
+        netcoreapp1.0;
+        netstandard2.1;
+        netstandard1.0;
+        net45;
+        net35;
+    </TargetFrameworks>
+    <!--
+      |       Target Frameworks (-excluded)        | - Justification
+      |================|=================|=========|==============================
+      | net8.0         |                 |         | - latest API, for use in IDE
+      | netcoreapp3.0  | netstandard2.1  |         | - System.Index and System.Range
+      | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
+      | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API
+    -->
+
+    <!-- Header -->
+    <AssemblyName>Chasm.Compatibility.IndexRange</AssemblyName>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Version>2.0.0</Version>
+
+    <!-- Title, Description, Tags -->
+    <Title>$(AssemblyName)</Title>
+    <Description>
+      Polyfills System.Index and System.Range for a wide selection of target frameworks.
+    </Description>
+    <PackageTags>compatibility polyfills shims index range</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Chasm.Compatibility.IndexRange.csproj.DotSettings" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <InternalsVisibleTo Include="Chasm.Compatibility.Tests" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
