@@ -15,18 +15,21 @@
         netstandard2.0;
         netstandard1.1;
         netstandard1.0;
+        net47;
         net45;
         net40;
         net35;
     </TargetFrameworks>
     <!--
       Target frameworks are copied from all of the sub-projects.
+
+      Don't forget to update the sub-project dependencies at the end.
     -->
 
     <!-- Header -->
     <AssemblyName>Chasm.Compatibility</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.1.1</Version>
+    <Version>2.2.0</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
@@ -48,6 +51,40 @@
 
   <ItemGroup>
     <ProjectReference Include="../Chasm.Compatibility.Attributes/Chasm.Compatibility.Attributes.csproj" />
+  </ItemGroup>
+
+  <!-- System.ValueTuple supported since netcoreapp2.0, netstandard2.0, net47 -->
+  <!-- System.ValueTuple package targets netcoreapp1.0, netstandard1.0, net45 -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp1.1' or
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard1.1' or
+    '$(TargetFramework)'=='netstandard1.0' or
+    '$(TargetFramework)'=='net45'
+  )">
+    <!-- Add the official package -->
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
+    <!-- Use Compatibility.ValueTuple -->
+    <ProjectReference Include="../Chasm.Compatibility.ValueTuple/Chasm.Compatibility.ValueTuple.csproj" />
+  </ItemGroup>
+
+  <!-- System.Index and System.Range supported since netcoreapp3.0, netstandard2.1 -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp2.0' or
+    '$(TargetFramework)'=='netcoreapp1.1' or
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='netstandard1.1' or
+    '$(TargetFramework)'=='netstandard1.0' or
+    '$(TargetFramework)'=='net47' or
+    '$(TargetFramework)'=='net45' or
+    '$(TargetFramework)'=='net40' or
+    '$(TargetFramework)'=='net35'
+  )">
+    <!-- Use Compatibility.IndexRange -->
+    <ProjectReference Include="../Chasm.Compatibility.IndexRange/Chasm.Compatibility.IndexRange.csproj" />
   </ItemGroup>
 
 </Project>

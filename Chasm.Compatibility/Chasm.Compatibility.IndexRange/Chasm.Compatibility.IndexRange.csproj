@@ -57,7 +57,7 @@
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
-    <!-- Use own implementation -->
+    <!-- Use Compatibility.ValueTuple -->
     <ProjectReference Include="../Chasm.Compatibility.ValueTuple/Chasm.Compatibility.ValueTuple.csproj" />
   </ItemGroup>
 
