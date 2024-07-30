@@ -8,6 +8,7 @@
         net6.0;
         net5.0;
         netcoreapp3.0;
+        netcoreapp2.1;
         netcoreapp2.0;
         netcoreapp1.1;
         netcoreapp1.0;
@@ -23,15 +24,15 @@
         net35;
     </TargetFrameworks>
     <!--
-      Target frameworks are copied from all of the sub-projects.
+      Target frameworks are copied from the subprojects.
 
-      Don't forget to update the sub-project dependencies at the end.
+      Don't forget to update the subproject dependencies at the end.
     -->
 
     <!-- Header -->
     <AssemblyName>Chasm.Compatibility</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.2.0</Version>
+    <Version>2.3.0</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
@@ -74,6 +75,7 @@
 
   <!-- System.Index and System.Range supported since netcoreapp3.0, netstandard2.1 -->
   <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp2.1' or
     '$(TargetFramework)'=='netcoreapp2.0' or
     '$(TargetFramework)'=='netcoreapp1.1' or
     '$(TargetFramework)'=='netcoreapp1.0' or
