@@ -1,5 +1,8 @@
 # Chasm.Compatibility.Attributes Changelog
 
+### v2.1.2
+- 🐛 Fixed `InAttribute` type-forwarding for .NET Framework targets;
+
 ### v2.1.1
 - ✨ Added `CollectionBuilderAttribute` polyfill;
 
