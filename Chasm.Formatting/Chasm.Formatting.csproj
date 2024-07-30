@@ -32,7 +32,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Formatting</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.3.3</Version>
+    <Version>2.3.4</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
