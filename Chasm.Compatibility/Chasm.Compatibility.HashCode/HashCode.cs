@@ -49,9 +49,7 @@ https://raw.githubusercontent.com/Cyan4973/xxHash/5c174cfa4e45a42f94082dc0d4539b
 
 using System.Collections.Generic;
 using System.ComponentModel;
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
 using System.Runtime.CompilerServices;
-#endif
 
 //#pragma warning disable CA1066 // Implement IEquatable when overriding Object.Equals
 #pragma warning disable IDE0251 // Member can be made 'readonly'
@@ -88,9 +86,7 @@ namespace System
             return BitConverter.ToUInt32(buffer, 0);
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static uint RotateLeft(uint value, int offset)
             => (value << offset) | (value >> (32 - offset));
 
@@ -275,9 +271,7 @@ namespace System
             return (int)hash;
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static void Initialize(out uint v1, out uint v2, out uint v3, out uint v4)
         {
             v1 = hashSeed + Prime1 + Prime2;
@@ -286,25 +280,19 @@ namespace System
             v4 = hashSeed - Prime1;
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static uint Round(uint hash, uint input)
         {
             return RotateLeft(hash + input * Prime2, 13) * Prime1;
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static uint QueueRound(uint hash, uint queuedValue)
         {
             return RotateLeft(hash + queuedValue * Prime3, 17) * Prime4;
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static uint MixState(uint v1, uint v2, uint v3, uint v4)
         {
             return RotateLeft(v1, 1) + RotateLeft(v2, 7) + RotateLeft(v3, 12) + RotateLeft(v4, 18);
@@ -315,9 +303,7 @@ namespace System
             return hashSeed + Prime5;
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static uint MixFinal(uint hash)
         {
             hash ^= hash >> 15;

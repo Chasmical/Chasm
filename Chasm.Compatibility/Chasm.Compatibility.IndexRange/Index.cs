@@ -5,9 +5,8 @@ using System.Runtime.CompilerServices;
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-#endif
 
 // ReSharper disable CommentTypo GrammarMistakeInComment
 // ReSharper disable once CheckNamespace
@@ -31,9 +30,7 @@ namespace System
         /// <remarks>
         /// If the Index constructed from the end, index value 1 means pointing at the last element and index value 0 means pointing at beyond last element.
         /// </remarks>
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public Index(int value, bool fromEnd = false)
         {
             if (value < 0) ThrowValueArgumentOutOfRange_NeedNonNegNumException();
@@ -52,9 +49,7 @@ namespace System
 
         /// <summary>Create an Index from the start at the position indicated by the value.</summary>
         /// <param name="value">The index value from the start.</param>
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static Index FromStart(int value)
         {
             if (value < 0) ThrowValueArgumentOutOfRange_NeedNonNegNumException();
@@ -63,9 +58,7 @@ namespace System
 
         /// <summary>Create an Index from the end at the position indicated by the value.</summary>
         /// <param name="value">The index value from the end.</param>
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static Index FromEnd(int value)
         {
             if (value < 0) ThrowValueArgumentOutOfRange_NeedNonNegNumException();
@@ -86,9 +79,7 @@ namespace System
         /// It is expected Index will be used with collections which always have non negative length/count. If the returned offset is negative and
         /// then used to index a collection will get out of range exception which will be same affect as the validation.
         /// </remarks>
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public int GetOffset(int length)
         {
             int offset = _value;
@@ -105,12 +96,8 @@ namespace System
 
         /// <summary>Indicates whether the current Index object is equal to another object of the same type.</summary>
         /// <param name="value">An object to compare with this object</param>
-        public override bool Equals(
-#if NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
-#endif
-            object? value
-        ) => value is Index && _value == ((Index)value)._value;
+        public override bool Equals([NotNullWhen(true)] object? value)
+            => value is Index && _value == ((Index)value)._value;
 
         /// <summary>Indicates whether the current Index object is equal to another Index object.</summary>
         /// <param name="other">An object to compare with this object</param>

@@ -2,8 +2,15 @@
 // ReSharper disable once CheckNamespace
 namespace System.Diagnostics.CodeAnalysis
 {
-#pragma warning disable CS9113 // Parameter is unread.
-    internal class NotNullWhenAttribute(bool _) : Attribute;
-    internal class NotNullIfNotNullAttribute(string _) : Attribute;
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
+    internal sealed class NotNullWhenAttribute(bool returnValue) : Attribute
+    {
+        public bool ReturnValue { get; } = returnValue;
+    }
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, AllowMultiple = true, Inherited = false)]
+    internal sealed class NotNullIfNotNullAttribute(string parameterName) : Attribute
+    {
+        public string ParameterName { get; } = parameterName;
+    }
 }
 #endif

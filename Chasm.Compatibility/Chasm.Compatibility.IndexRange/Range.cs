@@ -5,9 +5,8 @@ using System.Runtime.CompilerServices;
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-#endif
 
 // ReSharper disable CommentTypo GrammarMistakeInComment
 // ReSharper disable once CheckNamespace
@@ -41,12 +40,8 @@ namespace System
 
         /// <summary>Indicates whether the current Range object is equal to another object of the same type.</summary>
         /// <param name="value">An object to compare with this object</param>
-        public override bool Equals(
-#if NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
-#endif
-            object? value
-        ) => value is Range r && r.Start.Equals(Start) && r.End.Equals(End);
+        public override bool Equals([NotNullWhen(true)] object? value)
+            => value is Range r && r.Start.Equals(Start) && r.End.Equals(End);
 
         /// <summary>Indicates whether the current Range object is equal to another Range object.</summary>
         /// <param name="other">An object to compare with this object</param>
@@ -84,9 +79,7 @@ namespace System
             return BitConverter.ToUInt32(buffer, 0);
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static uint RotateLeft_17(uint value)
             => (value << 17) | (value >> (32 - 17));
 
@@ -109,9 +102,7 @@ namespace System
         /// It is expected Range will be used with collections which always have non negative length/count.
         /// We validate the range is inside the length scope though.
         /// </remarks>
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public (int Offset, int Length) GetOffsetAndLength(int length)
         {
             int start = Start.GetOffset(length);
