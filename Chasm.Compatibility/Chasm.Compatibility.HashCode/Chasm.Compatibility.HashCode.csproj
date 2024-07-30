@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Project Properties -->
+    <TargetFrameworks>
+        net8.0;
+        netcoreapp2.1;
+        netcoreapp2.0;
+        netcoreapp1.0;
+        netstandard2.1;
+        netstandard2.0;
+        netstandard1.3;
+        netstandard1.0;
+        net461;
+        net45;
+        net35;
+    </TargetFrameworks>
+    <!--
+      | Target Framework | - Status
+      |==================|======================
+      | net8.0           | - supported
+      | netcoreapp2.1    | - supported
+      | netcoreapp2.0    | - Microsoft.Bcl.HashCode package
+      | netcoreapp1.0    | - own implementation
+      | netstandard2.1   | - supported
+      | netstandard2.0   | - Microsoft.Bcl.HashCode package
+      | netstandard1.0   | - own implementation
+      | net461           | - Microsoft.Bcl.HashCode package
+      | net45            | - own implementation
+      | net35            | - own implementation
+    -->
+    <!--
+      |       Target Frameworks (-excluded)        | - Justification
+      |================|=================|=========|==============================
+      | net8.0         |                 |         | - latest API, for use in IDE
+      | netcoreapp2.1  | netstandard2.1  |         | - System.HashCode
+      | netcoreapp2.0  | netstandard2.0  | net461  | - Microsoft.Bcl.HashCode
+      | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
+      | netcoreapp1.0  | netstandard1.3  | net11-  | - RandomNumberGenerator
+      | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API
+    -->
+
+    <!-- Header -->
+    <AssemblyName>Chasm.Compatibility.HashCode</AssemblyName>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Version>2.0.0</Version>
+
+    <!-- Title, Description, Tags -->
+    <Title>$(AssemblyName)</Title>
+    <Description>
+      Polyfills System.HashCode for a wide selection of target frameworks.
+    </Description>
+    <PackageTags>compatibility polyfills shims hashcode hash code</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Chasm.Compatibility.HashCode.csproj.DotSettings" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <InternalsVisibleTo Include="Chasm.Compatibility.Tests" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- System.HashCode supported since netcoreapp2.1, netstandard2.1 -->
+  <!-- Microsoft.Bcl.HashCode package targets netcoreapp2.0, netstandard2.0, net461 -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp2.0' or
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='net461'
+  )">
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

@@ -13,9 +13,11 @@
         netcoreapp1.0;
         netstandard2.1;
         netstandard2.0;
+        netstandard1.3;
         netstandard1.1;
         netstandard1.0;
         net47;
+        net461;
         net45;
         net40;
         net35;
@@ -76,15 +78,42 @@
     '$(TargetFramework)'=='netcoreapp1.1' or
     '$(TargetFramework)'=='netcoreapp1.0' or
     '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='netstandard1.3' or
     '$(TargetFramework)'=='netstandard1.1' or
     '$(TargetFramework)'=='netstandard1.0' or
     '$(TargetFramework)'=='net47' or
+    '$(TargetFramework)'=='net461' or
     '$(TargetFramework)'=='net45' or
     '$(TargetFramework)'=='net40' or
     '$(TargetFramework)'=='net35'
   )">
     <!-- Use Compatibility.IndexRange -->
     <ProjectReference Include="../Chasm.Compatibility.IndexRange/Chasm.Compatibility.IndexRange.csproj" />
+  </ItemGroup>
+
+  <!-- System.HashCode supported since netcoreapp2.1, netstandard2.1 -->
+  <!-- Microsoft.Bcl.HashCode package targets netcoreapp2.0, netstandard2.0, net461 -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp2.0' or
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='net47' or
+    '$(TargetFramework)'=='net461'
+  )">
+    <!-- Add the official package -->
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+  </ItemGroup>
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp1.1' or
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard1.3' or
+    '$(TargetFramework)'=='netstandard1.1' or
+    '$(TargetFramework)'=='netstandard1.0' or
+    '$(TargetFramework)'=='net45' or
+    '$(TargetFramework)'=='net40' or
+    '$(TargetFramework)'=='net35'
+  )">
+    <!-- Use Compatibility.HashCode -->
+    <ProjectReference Include="../Chasm.Compatibility.HashCode/Chasm.Compatibility.HashCode.csproj" />
   </ItemGroup>
 
 </Project>
