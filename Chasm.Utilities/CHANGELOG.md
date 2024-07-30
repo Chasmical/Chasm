@@ -4,7 +4,7 @@
 - ♻️ Refactored shimmed attributes;
 
 ### v2.3.6
-- 🧩 Added `net35` target. Now targets: `net8.0`, `netcoreapp3.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`, `net35`.
+- 🧩 Added `net35` target. Now targets: `net8.0`, `netcoreapp3.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`, `net35`;
 
 ### v2.3.5
 - 📄 Updated license information;

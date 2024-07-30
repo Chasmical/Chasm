@@ -22,7 +22,7 @@ These attributes are interpreted by the compiler, and are generally not used dir
 - `[InterpolatedStringHandlerArgument]` (.NET 6+);
 - `[CompilerFeatureRequired]` (.NET 7+) - allows declaring `required` members and `ref struct` types;
 - `[RequiredMember]` (.NET 7+) - allows declaring `required` members;
-- `[RequiresLocation]` (.NET 8+) - `ref readonly` parameters in function pointers.
+- `[RequiresLocation]` (.NET 8+) - `ref readonly` parameters in function pointers;
 - `[CollectionBuilder]` (.NET 8+) - used for creating custom collections from spans.
 
 

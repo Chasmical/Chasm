@@ -25,7 +25,7 @@
 - ♻️ Refactored shimmed attributes;
 
 ### v2.5.2
-- 🧩 Added `net5.0`, `netcoreapp2.0`, `netstandard2.0` and `net461` targets, and removed `netcoreapp2.1` target. Now targets: `net8.0`, `net7.0`, `net6.0`, `net5.0`, `netcoreapp3.0`, `netcoreapp2.0`, `netstandard2.1`, `netstandard2.0`, `net461`.
+- 🧩 Added `net5.0`, `netcoreapp2.0`, `netstandard2.0` and `net461` targets, and removed `netcoreapp2.1` target. Now targets: `net8.0`, `net7.0`, `net6.0`, `net5.0`, `netcoreapp3.0`, `netcoreapp2.0`, `netstandard2.1`, `netstandard2.0`, `net461`;
 
 ### v2.5.1
 - ✨ Added `VersionRange.GetEnumerator()`;
@@ -37,7 +37,7 @@
 - ✨ Added `TypeConverter` support for types: `SemanticVersion`, `SemverPreRelease`, `PartialVersion`, `PartialComponent`, `VersionRange`;
 - ✨ Added `JsonConverter` support for types: `SemanticVersion`, `SemverPreRelease`, `PartialVersion`, `PartialComponent`, `VersionRange`;
 - ✨ Implemented `IXmlSerializable` in types: `SemanticVersion`, `SemverPreRelease`, `PartialVersion`, `PartialComponent`, `VersionRange`;
-- 🧩 Added `netcoreapp3.0` target. Now targets: `net8.0`, `net7.0`, `net6.0`, `netcoreapp3.0`, `netcoreapp2.1`, `netstandard2.1`.
+- 🧩 Added `netcoreapp3.0` target. Now targets: `net8.0`, `net7.0`, `net6.0`, `netcoreapp3.0`, `netcoreapp2.1`, `netstandard2.1`;
 
 ### v2.4.1
 - 🐛 Fixed trimming components and pre-releases on partial versions in comparators;
@@ -351,10 +351,10 @@
 - ✨ Added `SemverOptions.RemoveEmptyPreReleases`;
 - ✨ Added `SemverOptions.RemoveEmptyBuildMetadata`;
 <!-- -->
-- ✨ Implemented the above options in `SemanticVersion` parsing methods.
+- ✨ Implemented the above options in `SemanticVersion` parsing methods;
 
 ### v2.0.0
-- 🧩 Targets: `net8.0`, `net7.0`, `net6.0`, `netcoreapp2.1`, `netstandard2.1`.
+- 🧩 Targets: `net8.0`, `net7.0`, `net6.0`, `netcoreapp2.1`, `netstandard2.1`;
 <!-- -->
 - ✨ Added `sealed class SemanticVersion : IEquatable<SemanticVersion>, IComparable, IComparable<SemanticVersion>, IComparisonOperators<SemanticVersion, SemanticVersion, bool>, IMinMaxValue<SemanticVersion>, ISpanParsable<SemanticVersion>`;
 - ✨ Added `SemanticVersion(int, int, int)`;
