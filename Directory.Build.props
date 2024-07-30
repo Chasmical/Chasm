@@ -55,6 +55,12 @@
     <DefineConstants>$(DefineConstants);PUBLISHING_PACKAGE</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework)))'=='.NETFramework'">
+    <!-- The oldest .NET Framework target in SDK-style projects is v2.0 -->
+    <!-- So we'll need to add the symbol NET11_OR_GREATER manually -->
+    <DefineConstants>$(DefineConstants);NET11_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <!-- Conceal the path to .pdb file in the build directory (kinda weird that .NET does that, feels like an invasion of privacy) -->
     <DebugType>None</DebugType>
