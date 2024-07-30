@@ -7,6 +7,7 @@
         netcoreapp2.0;
         netcoreapp1.0;
         netstandard2.0;
+        netstandard1.3;
         netstandard1.0;
         net47;
         net45;
@@ -20,6 +21,7 @@
       | netcoreapp2.0    | - supported
       | netcoreapp1.0    | - System.ValueTuple package
       | netstandard2.0   | - supported
+      | netstandard1.3   | - System.ValueTuple package
       | netstandard1.0   | - System.ValueTuple package
       | net47            | - supported
       | net45            | - System.ValueTuple package
@@ -33,6 +35,7 @@
       | netcoreapp2.0  | netstandard2.0  | net47   | - System.ValueTuple
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
       | netcoreapp1.0  | netstandard1.0  | net40   | - System.Tuple, IStructuralEquatable/Comparable
+      | netcoreapp1.0  | netstandard1.3  | net11-  | - RandomNumberGenerator
       | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API
     -->
 
@@ -61,6 +64,7 @@
 
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard1.3' or
     '$(TargetFramework)'=='netstandard1.0' or
     '$(TargetFramework)'=='net45'
   )">

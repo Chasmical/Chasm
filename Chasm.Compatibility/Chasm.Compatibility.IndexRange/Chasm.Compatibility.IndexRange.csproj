@@ -9,6 +9,7 @@
         netcoreapp1.0;
         netstandard2.1;
         netstandard2.0;
+        netstandard1.3;
         netstandard1.0;
         net47;
         net45;
@@ -23,6 +24,7 @@
       | netcoreapp2.0  | netstandard2.0  | net47   | - ValueTuple native support
       | netcoreapp1.0  | netstandard1.0  | net45   | - ValueTuple package
       |                |                 | net35/40| - ValueTuple compat project
+      | netcoreapp1.0  | netstandard1.3  | net11-  | - RandomNumberGenerator
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
       | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API
     -->
@@ -52,7 +54,12 @@
 
   <!-- System.ValueTuple supported since netcoreapp2.0, netstandard2.0, net47 -->
   <!-- System.ValueTuple package targets netcoreapp1.0, netstandard1.0, net45 -->
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0' or '$(TargetFramework)'=='netstandard1.0' or '$(TargetFramework)'=='net45'">
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard1.0' or
+    '$(TargetFramework)'=='netstandard1.3' or
+    '$(TargetFramework)'=='net45'
+  )">
     <!-- Add the official package -->
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
