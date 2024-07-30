@@ -9,10 +9,13 @@ namespace Chasm.Formatting
     /// <summary>
     ///   <para>Represents an unsafe string builder, that allocates all of the necessary memory beforehand.</para>
     /// </summary>
+    [DebuggerDisplay($"{{{nameof(DebuggerDisplay)}}}")]
 #if NET5_0_OR_GREATER
     [SkipLocalsInit]
 #endif
-    [DebuggerDisplay($"{{{nameof(DebuggerDisplay)}}}")]
+#if NETSTANDARD1_0 // System.Memory for netstandard1.0 doesn't have annotations
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "PossiblyImpureMethodCallOnReadonlyVariable")]
+#endif
     public unsafe ref struct SpanBuilder
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

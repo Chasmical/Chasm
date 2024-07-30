@@ -13,6 +13,9 @@ namespace Chasm.Formatting
 #if NET5_0_OR_GREATER
     [SkipLocalsInit]
 #endif
+#if NETSTANDARD1_0 // System.Memory for netstandard1.0 doesn't have annotations
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "PossiblyImpureMethodCallOnReadonlyVariable")]
+#endif
     public ref struct SpanParser
     {
         /// <summary>

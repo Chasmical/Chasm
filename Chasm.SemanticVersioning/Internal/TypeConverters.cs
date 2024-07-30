@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Globalization;
-
-// Default behavior of overridable methods:
+﻿// Default behavior of overridable methods:
 // - CanConvertFrom() - returns true on typeof(InstanceDescriptor)
 // - CanConvertTo() - returns true on typeof(string)
 // - ConvertFrom() - depends on InstanceDescriptor.Invoke()
@@ -13,20 +9,24 @@ using System.Globalization;
 #if NET7_0_OR_GREATER
 namespace Chasm.SemanticVersioning
 {
+    using System;
+    using System.ComponentModel;
+    using System.Globalization;
+
     // Use a generic type converter, that uses the IParsable<T> interface, if possible
     internal sealed class ParsableTypeConverter<T> : TypeConverter where T : IParsable<T>
     {
         public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
             => sourceType == typeof(string);
 
-        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
         {
             if (value is string text)
             {
                 if (default(T) is null && text.Length == 0) return null;
                 return T.Parse(text, culture);
             }
-            return base.ConvertFrom(context, culture, value);
+            return base.ConvertFrom(context, culture, value!);
         }
     }
 
@@ -37,6 +37,8 @@ namespace Chasm.SemanticVersioning
 }
 namespace Chasm.SemanticVersioning.Ranges
 {
+    using System.ComponentModel;
+
     [TypeConverter(typeof(ParsableTypeConverter<PartialVersion>))]
     public sealed partial class PartialVersion;
     [TypeConverter(typeof(ParsableTypeConverter<PartialComponent>))]
@@ -47,20 +49,24 @@ namespace Chasm.SemanticVersioning.Ranges
 #elif NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET11_OR_GREATER
 namespace Chasm.SemanticVersioning
 {
+    using System;
+    using System.ComponentModel;
+    using System.Globalization;
+
     // Otherwise, use a generic type converter that uses an abstract method
     internal abstract class ParsableTypeConverter<T> : TypeConverter where T : notnull
     {
         public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
             => sourceType == typeof(string);
 
-        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
         {
             if (value is string text)
             {
                 if (default(T) is null && text.Length == 0) return null;
                 return ConvertString(text);
             }
-            return base.ConvertFrom(context, culture, value);
+            return base.ConvertFrom(context!, culture!, value!);
         }
 
         protected abstract T ConvertString(string text);
@@ -85,6 +91,8 @@ namespace Chasm.SemanticVersioning
 }
 namespace Chasm.SemanticVersioning.Ranges
 {
+    using System.ComponentModel;
+
     [TypeConverter(typeof(Converter))]
     public sealed partial class PartialVersion
     {

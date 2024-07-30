@@ -29,6 +29,9 @@ dotnet_diagnostic.IDE0022.severity = none
 # - Not all target frameworks support ranges, and using the range syntax doesn't have any significant benefits
 dotnet_diagnostic.IDE0057.severity = none
 
+# Disable ''new' expression can be simplified' message
+dotnet_diagnostic.IDE0090.severity = none
+
 # Disable 'Use collection expression for fluent' message
 # - I think ToArray() calls are more readable than [..list]
 dotnet_diagnostic.IDE0305.severity = none

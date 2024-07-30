@@ -21,7 +21,7 @@ namespace System.Buffers
 }
 #endif
 
-#if !(NETSTANDARD1_1_OR_GREATER || NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER)
+#if !(NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_1_OR_GREATER || NET45_OR_GREATER)
 namespace System
 {
     internal static class GetPinnableReferenceExtensions
@@ -32,7 +32,7 @@ namespace System
 }
 #endif
 
-#if !(NETSTANDARD1_1_OR_GREATER || NET11_OR_GREATER || NETCOREAPP1_0_OR_GREATER)
+#if !(NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_1_OR_GREATER || NET11_OR_GREATER)
 namespace System.Runtime.InteropServices
 {
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
