@@ -20,3 +20,22 @@ namespace System.Buffers
     internal delegate void SpanAction<T, in TArg>(Span<T> span, TArg arg);
 }
 #endif
+
+#if !(NETSTANDARD1_1_OR_GREATER || NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER)
+namespace System
+{
+    internal static class GetPinnableReferenceExtensions
+    {
+        public static ref readonly char GetPinnableReference(this ReadOnlySpan<char> span)
+            => ref span.DangerousGetPinnableReference();
+    }
+}
+#endif
+
+#if !(NETSTANDARD1_1_OR_GREATER || NET11_OR_GREATER || NETCOREAPP1_0_OR_GREATER)
+namespace System.Runtime.InteropServices
+{
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
+    internal sealed class InAttribute : Attribute;
+}
+#endif

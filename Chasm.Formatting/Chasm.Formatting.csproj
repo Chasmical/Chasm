@@ -74,6 +74,7 @@
     '$(TargetFramework)'=='netcoreapp1.0' or
     '$(TargetFramework)'=='netstandard2.0' or
     '$(TargetFramework)'=='netstandard1.1' or
+    '$(TargetFramework)'=='netstandard1.0' or
     '$(TargetFramework)'=='net45'
   )">
     <NoWarn>$(NoWarn),IDE0079</NoWarn> <!-- Suppress the 'Remove unnecessary suppression' message -->
