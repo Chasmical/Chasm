@@ -1,5 +1,8 @@
 # Chasm.Compatibility.IndexRange Changelog
 
+### v2.2.1
+- 🐛 Fixed usage of `RandomNumberGenerator` for hashing for .NET Framework targets;
+
 ### v2.2.0
 - ♻️ Refactored shimmed attributes;
 

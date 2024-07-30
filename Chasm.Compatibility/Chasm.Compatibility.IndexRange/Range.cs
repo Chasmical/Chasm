@@ -70,9 +70,11 @@ namespace System
         private static uint GenerateHashSeed()
         {
             byte[] buffer = new byte[sizeof(uint)];
-#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_3_OR_GREATER || NET11_OR_GREATER
+#if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_3_OR_GREATER || NET40_OR_GREATER
             using (var rng = Security.Cryptography.RandomNumberGenerator.Create())
                 rng.GetBytes(buffer);
+#elif NET11_OR_GREATER
+            Security.Cryptography.RandomNumberGenerator.Create().GetBytes(buffer);
 #else
             new Random().NextBytes(buffer);
 #endif
