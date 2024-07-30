@@ -13,6 +13,7 @@
       netstandard2.1;
       netstandard2.0;
       netstandard1.1;
+      netstandard1.0;
       net45;
     </TargetFrameworks>
     <!--
@@ -21,11 +22,11 @@
       | net8.0        |                |        | - latest API, for use in IDE
       | net6.0        |                |        | - span interpolation, tuple Math.DivRem, string.TryCopyTo
       | net5.0        |                |        | - SkipLocalsInit
-      | netcoreapp2.1 | netstandard2.1 |        | - span support
-      | netcoreapp2.1 | netstandard2.0 |        | - string.Create(,,)
+      | netcoreapp2.1 | netstandard2.1 |        | - span support, string.Create(,,)
       | netcoreapp2.0 | netstandard2.1 |        | - Array.Fill
       | netcoreapp2.0 | netstandard2.0 |        | - Math.DivRem(,,out)
-      | netcoreapp1.0 | netstandard1.1 | net45  | - lowest supported API, with span support from System.Memory package
+      | netcoreapp1.0 | netstandard1.1 | net45  | - System.Memory package targets
+      | netcoreapp1.0 | netstandard1.0 | net45  | - lowest supported API, legacy System.Memory package targets
     -->
 
     <!-- Header -->
@@ -52,10 +53,29 @@
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0' or '$(TargetFramework)'=='netcoreapp1.0' or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='netstandard1.1' or '$(TargetFramework)'=='net45'">
+  <!-- Spans supported since netstandard2.1, netcoreapp2.1 -->
+  <!-- System.Memory targets netstandard1.1, netcoreapp1.0, net45 -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp2.0' or
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='netstandard1.1' or
+    '$(TargetFramework)'=='net45'
+  )">
     <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0' or '$(TargetFramework)'=='netcoreapp1.0' or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='netstandard1.1' or '$(TargetFramework)'=='net45'">
+  <!-- An older pre-release of System.Memory also targets netstandard1.0 -->
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.0'">
+    <PackageReference Include="System.Memory" Version="4.4.0-preview1-25305-02" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp2.0' or
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='netstandard1.1' or
+    '$(TargetFramework)'=='net45'
+  )">
     <NoWarn>$(NoWarn),IDE0079</NoWarn> <!-- Suppress the 'Remove unnecessary suppression' message -->
     <!-- It's triggered on a suppression of IDE0049 'Use "string" instead of "String"' -->
   </PropertyGroup>
