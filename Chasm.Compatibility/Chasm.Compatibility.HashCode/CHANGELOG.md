@@ -1,5 +1,8 @@
 # Chasm.Compatibility.HashCode Changelog
 
+### v2.1.1
+- 🐛 Fixed usage of `RandomNumberGenerator` for .NET Framework targets;
+
 ### v2.1.0
 - ♻️ Refactored shimmed attributes;
 
