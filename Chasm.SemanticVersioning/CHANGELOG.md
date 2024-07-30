@@ -1,5 +1,29 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.6.0
+- ✨ Implemented `IEquatable<T>` methods in types: `Comparator`, `PrimitiveComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`;
+- ✨ Implemented `IEqualityOperators<T,T,bool>` methods in `Comparator`;
+- ✨ Added `abstract Comparator.Equals(object? obj)`;
+- ✨ Added `abstarct Comparator.GetHashCode()`;
+- ✨ Added `static operator ==(Comparator?, Comparator?)`;
+- ✨ Added `static operator !=(Comparator?, Comparator?)`;
+- ✨ Added `PrimitiveComparator.Equals(PrimitiveComparator?)`;
+- ✨ Added `PrimitiveComparator.Equals(object?)`;
+- ✨ Added `PrimitiveComparator.GetHashCode()`;
+- ✨ Added `CaretComparator.Equals(CaretComparator?)`;
+- ✨ Added `CaretComparator.Equals(object?)`;
+- ✨ Added `CaretComparator.GetHashCode()`;
+- ✨ Added `HyphenRangeComparator.Equals(HyphenRangeComparator?)`;
+- ✨ Added `HyphenRangeComparator.Equals(object?)`;
+- ✨ Added `HyphenRangeComparator.GetHashCode()`;
+- ✨ Added `TildeComparator.Equals(TildeComparator?)`;
+- ✨ Added `TildeComparator.Equals(object?)`;
+- ✨ Added `TildeComparator.GetHashCode()`;
+- ✨ Added `XRangeComparator.Equals(XRangeComparator?)`;
+- ✨ Added `XRangeComparator.Equals(object?)`;
+- ✨ Added `XRangeComparator.GetHashCode()`;
+- ♻️ Refactored shimmed attributes;
+
 ### v2.5.2
 - 🧩 Added `net5.0`, `netcoreapp2.0`, `netstandard2.0` and `net461` targets, and removed `netcoreapp2.1` target. Now targets: `net8.0`, `net7.0`, `net6.0`, `net5.0`, `netcoreapp3.0`, `netcoreapp2.0`, `netstandard2.1`, `netstandard2.0`, `net461`.
 
