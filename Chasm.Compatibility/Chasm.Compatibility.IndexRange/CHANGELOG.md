@@ -1,5 +1,8 @@
 # Chasm.Compatibility.IndexRange Changelog
 
+### v2.2.0
+- ♻️ Refactored shimmed attributes;
+
 ### v2.1.0
 - 🧩 Added `netstandard1.3` target. Now targets: `net8.0`, `netcoreapp3.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`, `net35`.
 - 🐛 Fixed random seed generation in `Range.GetHashCode()`;
