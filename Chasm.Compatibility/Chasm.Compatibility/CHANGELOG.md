@@ -1,5 +1,11 @@
 # Chasm.Compatibility Changelog
 
+### v2.4.1
+- ⬆️ Chasm.Compatibility.Attributes v2.1.2;
+- ⬆️ Chasm.Compatibility.HashCode v2.1.1;
+- ⬆️ Chasm.Compatibility.ValueTuple v2.2.1;
+- ⬆️ Chasm.Compatibility.IndexRange v2.2.1;
+
 ### v2.4.0
 - ⬆️ Chasm.Compatibility.HashCode v2.1.0;
 - ⬆️ Chasm.Compatibility.ValueTuple v2.2.0;
