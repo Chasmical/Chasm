@@ -1,5 +1,9 @@
 # Chasm.Formatting Changelog
 
+### v2.3.5
+- 🐛 Fixed usage of `Math.DivRem(,,out)` for .NET Framework targets;
+- 🩹 Fixed unnecessary inclusion of the `InAttribute` shim;
+
 ### v2.3.4
 - 🧩 Added `netstandard1.0` target. Now targets: `net8.0`, `net6.0`, `net5.0`, `netcoreapp2.1`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.1`, `netstandard1.0`, `net45`;
 
