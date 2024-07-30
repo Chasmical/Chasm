@@ -16,6 +16,7 @@ on:
         - Chasm.Compatibility.Attributes
         - Chasm.Compatibility.IndexRange
         - Chasm.Compatibility.ValueTuple
+        - Chasm.Compatibility.HashCode
 
 jobs:
   publish-package:
