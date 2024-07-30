@@ -1,5 +1,8 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.6.1
+- 🐛 Added missing `TypeConverter`s for .NET Framework targets;
+
 ### v2.6.0
 - ✨ Implemented `IEquatable<T>` methods in types: `Comparator`, `PrimitiveComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`;
 - ✨ Implemented `IEqualityOperators<T,T,bool>` methods in `Comparator`;
