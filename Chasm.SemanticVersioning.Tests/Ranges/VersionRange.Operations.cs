@@ -22,12 +22,14 @@ namespace Chasm.SemanticVersioning.Tests
             Comparator? leftComparator = AsSingle(leftSet?.Comparators);
             Comparator? rightComparator = AsSingle(rightSet?.Comparators);
 
+            // TODO: add tests to ensure that singleton All and None instances are used when possible
+
             switch (fixture.Operation)
             {
                 case '~':
                     Assert.Null(rightRange);
 
-                    //fixture.Test(() => ~leftRange);
+                    fixture.Test(() => ~leftRange);
 
                     // Test operations on comparator sets and comparators
                     if (leftSet is not null)
@@ -37,7 +39,7 @@ namespace Chasm.SemanticVersioning.Tests
                     break;
                 case '&':
                     Assert.NotNull(rightRange);
-                    //fixture.Test(() => leftRange & rightRange);
+                    fixture.Test(() => leftRange & rightRange);
 
                     // Test operations on comparator sets and comparators
                     if (leftSet is not null && rightSet is not null)
@@ -48,7 +50,7 @@ namespace Chasm.SemanticVersioning.Tests
                     break;
                 case '|':
                     Assert.NotNull(rightRange);
-                    //fixture.Test(() => leftRange | rightRange);
+                    fixture.Test(() => leftRange | rightRange);
 
                     // Test operations on comparator sets and comparators
                     if (leftSet is not null && rightSet is not null)

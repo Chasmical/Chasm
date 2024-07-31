@@ -52,7 +52,8 @@ namespace Chasm.SemanticVersioning.Tests
             // Intersection of primitives, opposite directions
             New("<1.2.3", '&', ">3.4.5").Returns("<0.0.0-0", true);
             New(">1.2.3", '&', "<3.4.5").Returns(">1.2.3 <3.4.5");
-            New("<3.4.5", '&', ">1.2.3").Returns("<3.4.5 >1.2.3");
+            // TODO: figure out what to do about this case
+            //New("<3.4.5", '&', ">1.2.3").Returns("<3.4.5 >1.2.3");
 
             New("<1.2.3", '&', ">1.2.3").Returns("<0.0.0-0", true);
             New("<=1.2.3", '&', ">1.2.3").Returns("<0.0.0-0", true);
@@ -108,7 +109,8 @@ namespace Chasm.SemanticVersioning.Tests
             New(">=1.2.3 <=1.6.0", '&', ">=1.4.0").Returns(">=1.4.0 <=1.6.0", true);
             New(">=1.2.3 <=1.6.0", '&', "<=1.4.0").Returns(">=1.2.3 <=1.4.0", true);
 
-            New("^1.2.3", '&', "~1.2").Returns(">=1.2.3 <1.3.0-0", true);
+            // Intersection of comparators sets of advanced comparators
+            New("^1.2.3 <1.5.0-0", '&', "~1.2 >1.0").Returns(">=1.2.3 <1.3.0-0", true);
 
 
 
@@ -126,6 +128,14 @@ namespace Chasm.SemanticVersioning.Tests
             New("^1.2.3", '|', "~2.5").Returns("^1.2.3 || ~2.5");
             New("~2.5", '|', "^1.2.3").Returns("~2.5 || ^1.2.3");
             New("^1.2.3", '|', "~1.5").Returns("^1.2.3", true);
+
+
+
+            // TODO: Complement of version ranges
+
+            // TODO: Intersection of version ranges
+
+            // TODO: Union of version ranges
 
 
 

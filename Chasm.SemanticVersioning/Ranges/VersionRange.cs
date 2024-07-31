@@ -280,7 +280,5 @@ namespace Chasm.SemanticVersioning.Ranges
 
         // TODO: Implement >, <, >=, <= operators
 
-        // TODO: Implement &, |, ~ operators
-
     }
 }
