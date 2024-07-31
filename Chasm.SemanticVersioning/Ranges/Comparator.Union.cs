@@ -52,6 +52,8 @@ namespace Chasm.SemanticVersioning.Ranges
             if (right2 is not null && left1 is not null && !Utility.DoComparatorsComplement(right2, left1))
                 return (sugared1, sugared2);
 
+            isRange = false;
+
             // >1.2.3 | * ⇒ *
             // <1.2.3 | * ⇒ *
             // >1.2.3 | >2.3.4 ⇒ >1.2.3
@@ -61,13 +63,13 @@ namespace Chasm.SemanticVersioning.Ranges
 
             if (sugared1 is AdvancedComparator advanced1)
             {
-                if (ReferenceEquals(leftResult, left1) && ReferenceEquals(rightResult, right1)) return (sugared1, null);
-                // TODO: attempt to resugar
+                AdvancedComparator? resugared = Resugar(advanced1, leftResult, rightResult);
+                if (resugared is not null) return (resugared, null);
             }
             if (sugared2 is AdvancedComparator advanced2)
             {
-                if (ReferenceEquals(leftResult, left2) && ReferenceEquals(rightResult, right2)) return (sugared2, null);
-                // TODO: attempt to resugar
+                AdvancedComparator? resugared = Resugar(advanced2, leftResult, rightResult);
+                if (resugared is not null) return (resugared, null);
             }
 
             // At this point, simple combining and resugaring failed, so we'll just AND the results
@@ -76,7 +78,6 @@ namespace Chasm.SemanticVersioning.Ranges
             //                   >=0.0.3 <0.0.4-0 | >=0.0.4 <0.1.0-0
             // TODO: This would resugar as ~0.0.3 though. I'm not sure if there are any cases that would run this branch.
 
-            isRange = false;
             return (leftResult, rightResult);
         }
 

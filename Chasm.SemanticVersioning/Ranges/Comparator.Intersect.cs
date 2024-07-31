@@ -50,13 +50,13 @@ namespace Chasm.SemanticVersioning.Ranges
 
             if (sugared1 is AdvancedComparator advanced1)
             {
-                if (ReferenceEquals(leftResult, left1) && ReferenceEquals(rightResult, right1)) return (sugared1, null);
-                // TODO: attempt to resugar
+                AdvancedComparator? resugared = Resugar(advanced1, leftResult, rightResult);
+                if (resugared is not null) return (resugared, null);
             }
             if (sugared2 is AdvancedComparator advanced2)
             {
-                if (ReferenceEquals(leftResult, left2) && ReferenceEquals(rightResult, right2)) return (sugared2, null);
-                // TODO: attempt to resugar
+                AdvancedComparator? resugared = Resugar(advanced2, leftResult, rightResult);
+                if (resugared is not null) return (resugared, null);
             }
 
             if (leftResult is null)
