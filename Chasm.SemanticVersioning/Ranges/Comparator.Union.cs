@@ -8,12 +8,12 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public static VersionRange operator |(Comparator left, Comparator right)
             => VersionRange.FromTuple(Union(left, right));
 
-        [Pure] public static (ComparatorSet?, ComparatorSet?) Union(Comparator left, Comparator right)
+        [Pure] internal static (ComparatorSet?, ComparatorSet?) Union(Comparator left, Comparator right)
         {
             (Comparator?, Comparator?) tuple = Union(left, right, out bool isRange);
             return isRange ? tuple : (ComparatorSet.FromTuple(tuple), null);
         }
-        [Pure] public static (Comparator?, Comparator?) Union(Comparator left, Comparator right, out bool isRange)
+        [Pure] internal static (Comparator?, Comparator?) Union(Comparator left, Comparator right, out bool isRange)
         {
             if (left is PrimitiveComparator primitiveLeft && right is PrimitiveComparator primitiveRight)
             {

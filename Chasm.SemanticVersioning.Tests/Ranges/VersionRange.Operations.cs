@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using Chasm.SemanticVersioning.Ranges;
 using Xunit;
 
@@ -13,11 +13,14 @@ namespace Chasm.SemanticVersioning.Tests
             VersionRange leftRange = VersionRange.Parse(fixture.Left);
             VersionRange? rightRange = fixture.Right is null ? null : VersionRange.Parse(fixture.Right);
 
-            ComparatorSet? leftSet = leftRange.ComparatorSets.SingleOrDefault();
-            ComparatorSet? rightSet = rightRange?.ComparatorSets.SingleOrDefault();
+            static T? AsSingle<T>(IList<T>? list)
+                => list?.Count == 1 ? list[0] : default;
 
-            Comparator? leftComparator = leftSet?.Comparators.SingleOrDefault();
-            Comparator? rightComparator = rightSet?.Comparators.SingleOrDefault();
+            ComparatorSet? leftSet = AsSingle(leftRange.ComparatorSets);
+            ComparatorSet? rightSet = AsSingle(rightRange?.ComparatorSets);
+
+            Comparator? leftComparator = AsSingle(leftSet?.Comparators);
+            Comparator? rightComparator = AsSingle(rightSet?.Comparators);
 
             switch (fixture.Operation)
             {
@@ -27,8 +30,8 @@ namespace Chasm.SemanticVersioning.Tests
                     //fixture.Test(() => ~leftRange);
 
                     // Test operations on comparator sets and comparators
-                    //if (leftSet is not null)
-                    //    fixture.Test(() => ~leftSet);
+                    if (leftSet is not null)
+                        fixture.Test(() => ~leftSet);
                     if (leftComparator is not null)
                         fixture.Test(() => ~leftComparator);
                     break;
@@ -37,8 +40,8 @@ namespace Chasm.SemanticVersioning.Tests
                     //fixture.Test(() => leftRange & rightRange);
 
                     // Test operations on comparator sets and comparators
-                    //if (leftSet is not null && rightSet is not null)
-                    //    fixture.Test(() => leftSet & rightSet);
+                    if (leftSet is not null && rightSet is not null)
+                        fixture.Test(() => leftSet & rightSet);
                     if (leftComparator is not null && rightComparator is not null)
                         fixture.Test(() => leftComparator & rightComparator);
 
@@ -48,8 +51,8 @@ namespace Chasm.SemanticVersioning.Tests
                     //fixture.Test(() => leftRange | rightRange);
 
                     // Test operations on comparator sets and comparators
-                    //if (leftSet is not null && rightSet is not null)
-                    //    fixture.Test(() => leftSet | rightSet);
+                    if (leftSet is not null && rightSet is not null)
+                        fixture.Test(() => leftSet | rightSet);
                     if (leftComparator is not null && rightComparator is not null)
                         fixture.Test(() => leftComparator | rightComparator);
 

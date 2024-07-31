@@ -8,7 +8,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public static VersionRange operator ~(Comparator comparator)
             => VersionRange.FromTuple(Complement(comparator));
 
-        [Pure] public static (Comparator, Comparator?) Complement(Comparator comparator)
+        [Pure] internal static (Comparator, Comparator?) Complement(Comparator comparator)
         {
             (PrimitiveComparator? left, PrimitiveComparator? right) = comparator.AsPrimitives();
 

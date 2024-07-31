@@ -18,9 +18,9 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator set.</para>
     /// </summary>
-    public sealed class ComparatorSet : ISpanBuildable, IEquatable<ComparatorSet>
+    public sealed partial class ComparatorSet : ISpanBuildable, IEquatable<ComparatorSet>
 #if NET7_0_OR_GREATER
-                                      , System.Numerics.IEqualityOperators<ComparatorSet, ComparatorSet, bool>
+                                              , System.Numerics.IEqualityOperators<ComparatorSet, ComparatorSet, bool>
 #endif
     {
         internal readonly Comparator[] _comparators;
@@ -220,6 +220,31 @@ namespace Chasm.SemanticVersioning.Ranges
         }
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
+
+        [Pure] public (PrimitiveComparator? Lower, PrimitiveComparator? Upper) GetBounds()
+        {
+            PrimitiveComparator? lower = null;
+            PrimitiveComparator? upper = null;
+
+            Comparator[] comparators = _comparators;
+            for (int i = 0; i < comparators.Length; i++)
+            {
+                (PrimitiveComparator? left, PrimitiveComparator? right) = comparators[i].AsPrimitives();
+                if (left?.Operator.IsEQ() == true)
+                {
+                    // TODO: need to optimize this, maybe decompose the tuple type further
+                    right = PrimitiveComparator.LessThanOrEqual(left.Operand);
+                    left = PrimitiveComparator.GreaterThanOrEqual(left.Operand);
+                }
+
+                if (lower is null || left is not null && Utility.CompareSameDirection(left, lower) > 0)
+                    lower = left;
+                if (upper is null || right is not null && Utility.CompareSameDirection(right, upper) < 0)
+                    upper = right;
+            }
+
+            return (lower, upper);
+        }
 
         /// <summary>
         ///   <para>Returns the string representation of this version comparator set.</para>
