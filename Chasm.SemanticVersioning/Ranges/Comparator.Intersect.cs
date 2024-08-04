@@ -35,10 +35,24 @@ namespace Chasm.SemanticVersioning.Ranges
             if (left2?.Operator.IsEQ() == true)
                 return (sugared1.IsSatisfiedBy(left2.Operand) ? sugared2 : PrimitiveComparator.None, null);
 
-            PrimitiveComparator? leftResult = left1 is null ? left2 : left2 is null ? left1 : IntersectGreaterThan(left1, left2);
-            PrimitiveComparator? rightResult = right1 is null ? right2 : right2 is null ? right1 : IntersectLessThan(right1, right2);
+            // -1 - second, 1 - first, 0 - either
+            int leftC = Utility.CompareComparators(left1, left2);
+            int rightC = Utility.CompareComparators(right1, right2);
 
-            if (rightResult is not null && leftResult is not null)
+            // TODO: determine preference based on whether a comparator is advanced
+            if (leftC == 0 && rightC == 0 && false)
+            {
+                if (sugared1 is AdvancedComparator) return (sugared1, null);
+                if (sugared2 is AdvancedComparator) return (sugared2, null);
+                return (sugared1, null);
+            }
+            if (leftC >= 0 && rightC >= 0) return (sugared1, null);
+            if (leftC <= 0 && rightC <= 0) return (sugared2, null);
+
+            PrimitiveComparator? leftResult = leftC <= 0 ? left1 : left2;
+            PrimitiveComparator? rightResult = rightC <= 0 ? right1 : right2;
+
+            if (leftResult is not null && rightResult is not null)
             {
                 // see if the two primitives can be turned into one (e.g. =1.2.3 or <0.0.0-0)
                 PrimitiveComparator? singleResult = TryIntersectOppositeSingle(leftResult, rightResult);
@@ -72,7 +86,7 @@ namespace Chasm.SemanticVersioning.Ranges
             // Same direction primitive comparators (not equality)
             if (Utility.SameDirection(left.Operator, right.Operator))
             {
-                int cmp = Utility.CompareSameDirection(left, right);
+                int cmp = Utility.CompareComparators(left, right);
                 return (left.Operator.IsGTOrGTE() ? cmp >= 0 : cmp <= 0) ? left : right;
             }
 
@@ -118,14 +132,14 @@ namespace Chasm.SemanticVersioning.Ranges
             // Both arguments must be GT/GTE
             Debug.Assert(left.Operator.IsGTOrGTE() && right.Operator.IsGTOrGTE());
 
-            return Utility.CompareSameDirection(left, right) >= 0 ? left : right;
+            return Utility.CompareComparators(left, right) >= 0 ? left : right;
         }
         [Pure] internal static PrimitiveComparator IntersectLessThan(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Both arguments must be LT/LTE
             Debug.Assert(left.Operator.IsLTOrLTE() && right.Operator.IsLTOrLTE());
 
-            return Utility.CompareSameDirection(left, right) <= 0 ? left : right;
+            return Utility.CompareComparators(left, right) <= 0 ? left : right;
         }
 
     }

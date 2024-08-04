@@ -237,13 +237,30 @@ namespace Chasm.SemanticVersioning.Ranges
                     left = PrimitiveComparator.GreaterThanOrEqual(left.Operand);
                 }
 
-                if (lower is null || left is not null && Utility.CompareSameDirection(left, lower) > 0)
+                if (left is not null && (lower is null || Utility.CompareComparators(left, lower) > 0))
                     lower = left;
-                if (upper is null || right is not null && Utility.CompareSameDirection(right, upper) < 0)
+                if (right is not null && (upper is null || Utility.CompareComparators(right, upper) < 0))
                     upper = right;
             }
 
             return (lower, upper);
+        }
+
+        [Pure] public bool Contains(ComparatorSet other)
+        {
+            (PrimitiveComparator? low1, PrimitiveComparator? high1) = GetBounds();
+            (PrimitiveComparator? low2, PrimitiveComparator? high2) = other.GetBounds();
+
+            return (low1 is null || low2 is not null && Utility.CompareComparators(low1, low2) <= 0) &&
+                   (high1 is null || high2 is not null && Utility.CompareComparators(high1, high2) >= 0);
+        }
+        [Pure] public bool Intersects(ComparatorSet other)
+        {
+            (PrimitiveComparator? low1, PrimitiveComparator? high1) = GetBounds();
+            (PrimitiveComparator? low2, PrimitiveComparator? high2) = other.GetBounds();
+
+            return (high1 is null || low2 is null || Utility.CompareComparators(high1, low2) >= 0) &&
+                   (low1 is null || high2 is null || Utility.CompareComparators(low1, high2) <= 0);
         }
 
         /// <summary>

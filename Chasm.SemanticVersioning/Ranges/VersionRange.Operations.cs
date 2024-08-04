@@ -26,12 +26,18 @@ namespace Chasm.SemanticVersioning.Ranges
             ComparatorSet[] rightSets = right._comparatorSets;
 
             for (int i = 0; i < leftSets.Length; i++)
+            {
                 for (int j = 0; j < rightSets.Length; j++)
                 {
                     ComparatorSet intersection = leftSets[i] & rightSets[j];
-                    if (!ReferenceEquals(intersection, ComparatorSet.None))
+                    if (!ReferenceEquals(intersection, ComparatorSet.None) && !sets.Contains(intersection))
                         sets.Add(intersection);
                 }
+                // TODO: combine similar and exact same intersections
+                // Example:  (~1.2 || ~1.4) & (<3 || <5)
+                // Current:  ~1.2 || ~1.4 || ~1.2 || ~1.4
+                // Expected: ~1.2 || ~1.4
+            }
 
             if (sets.Count == 0) return None;
 

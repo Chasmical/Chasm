@@ -58,8 +58,23 @@ namespace Chasm.SemanticVersioning.Ranges
             // <1.2.3 | * ⇒ *
             // >1.2.3 | >2.3.4 ⇒ >1.2.3
             // <1.2.3 | <2.3.4 ⇒ <2.3.4
-            PrimitiveComparator? leftResult = left1 is null || left2 is null ? null : UnionGreaterThan(left1, left2);
-            PrimitiveComparator? rightResult = right1 is null || right2 is null ? null : UnionLessThan(right1, right2);
+
+            // -1 - first, 1 - second, 0 - either
+            int leftC = Utility.CompareComparators(left1, left2);
+            int rightC = Utility.CompareComparators(right1, right2);
+
+            // TODO: determine preference based on whether a comparator is advanced
+            if (leftC == 0 && rightC == 0 && false)
+            {
+                if (sugared1 is AdvancedComparator) return (sugared1, null);
+                if (sugared2 is AdvancedComparator) return (sugared2, null);
+                return (sugared1, null);
+            }
+            if (leftC <= 0 && rightC <= 0) return (sugared1, null);
+            if (leftC >= 0 && rightC >= 0) return (sugared2, null);
+
+            PrimitiveComparator? leftResult = leftC >= 0 ? left1 : left2;
+            PrimitiveComparator? rightResult = rightC >= 0 ? right1 : right2;
 
             if (sugared1 is AdvancedComparator advanced1)
             {
@@ -86,7 +101,7 @@ namespace Chasm.SemanticVersioning.Ranges
             // Same direction primitive comparators (not equality)
             if (Utility.SameDirection(left.Operator, right.Operator))
             {
-                int cmp = Utility.CompareSameDirection(left, right);
+                int cmp = Utility.CompareComparators(left, right);
                 return (left.Operator.IsGTOrGTE() ? cmp <= 0 : cmp >= 0) ? left : right;
             }
 
@@ -111,6 +126,12 @@ namespace Chasm.SemanticVersioning.Ranges
             if ((left.Operator.IsSthThanOrEqual() || right.Operator.IsSthThanOrEqual()) && left.Operand.Equals(right.Operand))
                 return XRangeComparator.All;
 
+            // <0.0.0-0 handling
+            if (PrimitiveComparator.None.Equals(left))
+                return right;
+            if (PrimitiveComparator.None.Equals(right))
+                return left;
+
             // The comparators can't be combined into a primitive, meaning that in order
             // to union these two, a memory allocation (VersionRange) is required.
 
@@ -124,14 +145,14 @@ namespace Chasm.SemanticVersioning.Ranges
             // Both arguments must be GT/GTE
             Debug.Assert(left.Operator.IsGTOrGTE() && right.Operator.IsGTOrGTE());
 
-            return Utility.CompareSameDirection(left, right) <= 0 ? left : right;
+            return Utility.CompareComparators(left, right) <= 0 ? left : right;
         }
         [Pure] internal static PrimitiveComparator UnionLessThan(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Both arguments must be LT/LTE
             Debug.Assert(left.Operator.IsLTOrLTE() && right.Operator.IsLTOrLTE());
 
-            return Utility.CompareSameDirection(left, right) >= 0 ? left : right;
+            return Utility.CompareComparators(left, right) >= 0 ? left : right;
         }
 
     }

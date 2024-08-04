@@ -24,9 +24,11 @@
             (PrimitiveComparator? low1, PrimitiveComparator? high1) = left.GetBounds();
             (PrimitiveComparator? low2, PrimitiveComparator? high2) = right.GetBounds();
 
+            // TODO: refactor and fix precedence
             // determine the intersection's limits
             PrimitiveComparator? lowR = low1 is null ? low2 : low2 is null ? low1 : Comparator.IntersectGreaterThan(low1, low2);
-            PrimitiveComparator? highR = high1 is null ? high2 : high2 is null ? high1 : Comparator.IntersectLessThan(high1, high2);
+            bool lowRIs1 = ReferenceEquals(lowR, low1);
+            PrimitiveComparator? highR = high1 is null ? high2 : high2 is null ? high1 : Comparator.IntersectLessThan(lowRIs1 ? high1 : high2, lowRIs1 ? high2 : high1);
 
             // if the intersection is invalid or empty, return <0.0.0-0
             if (lowR is not null && highR is not null)
@@ -62,12 +64,19 @@
             (PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh) = left.GetBounds();
             (PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh) = right.GetBounds();
 
-            // if the opposing limits of each set don't complement each other, the ranges are separate
-            if (leftHigh is not null && rightLow is not null && !Utility.DoComparatorsComplement(leftHigh, rightLow))
-                return new VersionRange([left, right], default);
-            if (rightHigh is not null && leftLow is not null && !Utility.DoComparatorsComplement(rightHigh, leftLow))
-                return new VersionRange([left, right], default);
+            if (PrimitiveComparator.None.Equals(leftHigh))
+                return right;
+            if (PrimitiveComparator.None.Equals(rightHigh))
+                return left;
 
+            // if the ranges do not intersect, combine them in a version range
+            if (leftHigh is not null && rightLow is not null && Utility.CompareComparators(leftHigh, rightLow) < 0 ||
+                leftLow is not null && rightHigh is not null && Utility.CompareComparators(leftLow, rightHigh) > 0)
+            {
+                return new VersionRange([left, right], default);
+            }
+
+            // TODO: refactor and fix precedence
             // the ranges intersect, determine the union's limits
             PrimitiveComparator? resultLow = leftLow is null || rightLow is null ? null : Comparator.UnionGreaterThan(leftLow, rightLow);
             PrimitiveComparator? resultHigh = leftHigh is null || rightHigh is null ? null : Comparator.UnionLessThan(leftHigh, rightHigh);

@@ -188,19 +188,28 @@ namespace Chasm.SemanticVersioning
             return 7 - op;
         }
 
-        [Pure] public static int CompareSameDirection(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] public static int CompareComparators(PrimitiveComparator? left, PrimitiveComparator? right)
         {
-            Debug.Assert(!left.Operator.IsEQ() && !right.Operator.IsEQ());
-            Debug.Assert(left.Operator.IsLTOrLTE() == right.Operator.IsLTOrLTE());
-            Debug.Assert(left.Operator.IsGTOrGTE() == right.Operator.IsGTOrGTE());
+            if (left is null) return right is null ? 0 : -1;
+            if (right is null) return 1;
+            return CompareComparators(left.Operator, left.Operand, right.Operator, right.Operand);
+        }
 
-            int cmp = left.Operand.CompareTo(right.Operand);
+        [Pure] public static int CompareComparators(
+            PrimitiveOperator leftOperator, SemanticVersion leftOperand,
+            PrimitiveOperator rightOperator, SemanticVersion rightOperand
+        )
+        {
+            Debug.Assert(!leftOperator.IsEQ() && !rightOperator.IsEQ());
+
+            int cmp = leftOperand.CompareTo(rightOperand);
             // >1.2.3 is greater than >=1.2.3, since it doesn't include =1.2.3
             // <=1.2.3 is greater than <1.2.3, since it also includes =1.2.3
-            if (cmp == 0 && left.Operator != right.Operator)
-                cmp = left.Operator is PrimitiveOperator.GreaterThan or PrimitiveOperator.LessThanOrEqual ? 1 : -1;
+            if (cmp == 0 && leftOperator != rightOperator)
+                cmp = leftOperator is PrimitiveOperator.GreaterThan or PrimitiveOperator.LessThanOrEqual ? 1 : -1;
             return cmp;
         }
+
         /// <summary>
         ///   <para>Determines whether the union of the specified comparators is equivalent to <c>*</c>.</para>
         /// </summary>

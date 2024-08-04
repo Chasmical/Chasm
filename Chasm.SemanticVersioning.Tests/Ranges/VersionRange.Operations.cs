@@ -29,35 +29,38 @@ namespace Chasm.SemanticVersioning.Tests
                 case '~':
                     Assert.Null(rightRange);
 
-                    fixture.Test(() => ~leftRange);
-
                     // Test operations on comparator sets and comparators
-                    if (leftSet is not null)
-                        fixture.Test(() => ~leftSet);
                     if (leftComparator is not null)
                         fixture.Test(() => ~leftComparator);
-                    break;
-                case '&':
-                    Assert.NotNull(rightRange);
-                    fixture.Test(() => leftRange & rightRange);
+                    if (leftSet is not null)
+                        fixture.Test(() => ~leftSet);
 
-                    // Test operations on comparator sets and comparators
-                    if (leftSet is not null && rightSet is not null)
-                        fixture.Test(() => leftSet & rightSet);
-                    if (leftComparator is not null && rightComparator is not null)
-                        fixture.Test(() => leftComparator & rightComparator);
-
+                    // Test operations on ranges
+                    fixture.Test(() => ~leftRange);
                     break;
                 case '|':
                     Assert.NotNull(rightRange);
-                    fixture.Test(() => leftRange | rightRange);
 
                     // Test operations on comparator sets and comparators
-                    if (leftSet is not null && rightSet is not null)
-                        fixture.Test(() => leftSet | rightSet);
                     if (leftComparator is not null && rightComparator is not null)
                         fixture.Test(() => leftComparator | rightComparator);
+                    if (leftSet is not null && rightSet is not null)
+                        fixture.Test(() => leftSet | rightSet);
 
+                    // Test operations on ranges
+                    fixture.Test(() => leftRange | rightRange);
+                    break;
+                case '&':
+                    Assert.NotNull(rightRange);
+
+                    // Test operations on comparator sets and comparators
+                    if (leftComparator is not null && rightComparator is not null)
+                        fixture.Test(() => leftComparator & rightComparator);
+                    if (leftSet is not null && rightSet is not null)
+                        fixture.Test(() => leftSet & rightSet);
+
+                    // Test operations on ranges
+                    fixture.Test(() => leftRange & rightRange);
                     break;
                 default:
                     throw new InvalidOperationException();
