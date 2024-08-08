@@ -22,35 +22,31 @@ namespace Chasm.SemanticVersioning.Ranges
             return IntersectAdvanced(left1, right1, left2, right2, left, right);
         }
 
-        [Pure] internal static (Comparator?, Comparator?) IntersectAdvanced(PrimitiveComparator? left1, PrimitiveComparator? right1,
-                                                                            PrimitiveComparator? left2, PrimitiveComparator? right2,
+        [Pure] internal static (Comparator?, Comparator?) IntersectAdvanced(PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh,
+                                                                            PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh,
                                                                             Comparator sugared1, Comparator sugared2)
         {
             // =1.2.3 & ^1.0.0 ⇒ =1.2.3
             // =1.2.3 & ^2.0.0 ⇒ <0.0.0-0
-            if (left1?.Operator.IsEQ() == true)
-                return (sugared2.IsSatisfiedBy(left1.Operand) ? sugared1 : PrimitiveComparator.None, null);
+            if (leftLow?.Operator.IsEQ() == true)
+                return (sugared2.IsSatisfiedBy(leftLow.Operand) ? sugared1 : PrimitiveComparator.None, null);
             // ^1.0.0 & =1.2.3 ⇒ =1.2.3
             // ^2.0.0 & =1.2.3 ⇒ <0.0.0-0
-            if (left2?.Operator.IsEQ() == true)
-                return (sugared1.IsSatisfiedBy(left2.Operand) ? sugared2 : PrimitiveComparator.None, null);
+            if (rightLow?.Operator.IsEQ() == true)
+                return (sugared1.IsSatisfiedBy(rightLow.Operand) ? sugared2 : PrimitiveComparator.None, null);
 
             // -1 - second, 1 - first, 0 - either
-            int leftC = Utility.CompareComparators(left1, left2);
-            int rightC = Utility.CompareComparators(right1, right2);
+            int leftC = Utility.CompareComparators(leftLow, rightLow);
+            int rightC = Utility.CompareComparators(leftHigh, rightHigh, -1);
 
-            // TODO: determine preference based on whether a comparator is advanced
-            if (leftC == 0 && rightC == 0 && false)
-            {
-                if (sugared1 is AdvancedComparator) return (sugared1, null);
-                if (sugared2 is AdvancedComparator) return (sugared2, null);
-                return (sugared1, null);
-            }
-            if (leftC >= 0 && rightC >= 0) return (sugared1, null);
-            if (leftC <= 0 && rightC <= 0) return (sugared2, null);
+            if (leftC == 0 && rightC == 0)
+                return (sugared1.IsAdvanced || !sugared2.IsAdvanced ? sugared1 : sugared2, null);
 
-            PrimitiveComparator? leftResult = leftC <= 0 ? left1 : left2;
-            PrimitiveComparator? rightResult = rightC <= 0 ? right1 : right2;
+            if (leftC >= 0 && rightC <= 0) return (sugared1, null);
+            if (leftC <= 0 && rightC >= 0) return (sugared2, null);
+
+            PrimitiveComparator? leftResult = leftC >= 0 ? leftLow : rightLow;
+            PrimitiveComparator? rightResult = rightC <= 0 ? leftHigh : rightHigh;
 
             if (leftResult is not null && rightResult is not null)
             {
@@ -125,21 +121,6 @@ namespace Chasm.SemanticVersioning.Ranges
             //  >1.2.3 &  <3.4.5 ⇒ >1.2.3 <3.4.5
             // >=1.2.3 & <=3.4.5 ⇒ >=1.2.3 <=3.4.5
             return null;
-        }
-
-        [Pure] internal static PrimitiveComparator IntersectGreaterThan(PrimitiveComparator left, PrimitiveComparator right)
-        {
-            // Both arguments must be GT/GTE
-            Debug.Assert(left.Operator.IsGTOrGTE() && right.Operator.IsGTOrGTE());
-
-            return Utility.CompareComparators(left, right) >= 0 ? left : right;
-        }
-        [Pure] internal static PrimitiveComparator IntersectLessThan(PrimitiveComparator left, PrimitiveComparator right)
-        {
-            // Both arguments must be LT/LTE
-            Debug.Assert(left.Operator.IsLTOrLTE() && right.Operator.IsLTOrLTE());
-
-            return Utility.CompareComparators(left, right) <= 0 ? left : right;
         }
 
     }

@@ -28,28 +28,28 @@ namespace Chasm.SemanticVersioning.Ranges
             return UnionAdvanced(left1, right1, left2, right2, left, right, out isRange);
         }
 
-        [Pure] internal static (Comparator?, Comparator?) UnionAdvanced(PrimitiveComparator? left1, PrimitiveComparator? right1,
-                                                                        PrimitiveComparator? left2, PrimitiveComparator? right2,
+        [Pure] internal static (Comparator?, Comparator?) UnionAdvanced(PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh,
+                                                                        PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh,
                                                                         Comparator sugared1, Comparator sugared2, out bool isRange)
         {
             isRange = true;
             // =1.2.3 | ^1.0.0 ⇒ ^1.0.0
             // =1.2.3 | ^2.0.0 ⇒ =1.2.3 || ^2.0.0
-            if (left1?.Operator.IsEQ() == true)
-                return sugared2.IsSatisfiedBy(left1.Operand) ? (sugared2, null) : (sugared1, sugared2);
+            if (leftLow?.Operator.IsEQ() == true)
+                return sugared2.IsSatisfiedBy(leftLow.Operand) ? (sugared2, null) : (sugared1, sugared2);
             // ^1.0.0 | =1.2.3 ⇒ ^1.0.0
             // ^2.0.0 | =1.2.3 ⇒ ^2.0.0 || =1.2.3
-            if (left2?.Operator.IsEQ() == true)
-                return sugared1.IsSatisfiedBy(left2.Operand) ? (sugared1, null) : (sugared1, sugared2);
+            if (rightLow?.Operator.IsEQ() == true)
+                return sugared1.IsSatisfiedBy(rightLow.Operand) ? (sugared1, null) : (sugared1, sugared2);
 
             // >=1.0.0 <2.0.0-0 | >=3.0.0 <4.0.0-0 ⇒ as is
             //         --------   -------
-            if (right1 is not null && left2 is not null && !Utility.DoComparatorsComplement(right1, left2))
+            if (leftHigh is not null && rightLow is not null && !Utility.DoComparatorsComplement(leftHigh, rightLow))
                 return (sugared1, sugared2);
 
             // >=3.0.0 <4.0.0-0 | >=1.0.0 <2.0.0-0 ⇒ as is
             // -------                    --------
-            if (right2 is not null && left1 is not null && !Utility.DoComparatorsComplement(right2, left1))
+            if (rightHigh is not null && leftLow is not null && !Utility.DoComparatorsComplement(rightHigh, leftLow))
                 return (sugared1, sugared2);
 
             isRange = false;
@@ -60,21 +60,17 @@ namespace Chasm.SemanticVersioning.Ranges
             // <1.2.3 | <2.3.4 ⇒ <2.3.4
 
             // -1 - first, 1 - second, 0 - either
-            int leftC = Utility.CompareComparators(left1, left2);
-            int rightC = Utility.CompareComparators(right1, right2);
+            int leftC = Utility.CompareComparators(leftLow, rightLow);
+            int rightC = Utility.CompareComparators(leftHigh, rightHigh, -1);
 
-            // TODO: determine preference based on whether a comparator is advanced
-            if (leftC == 0 && rightC == 0 && false)
-            {
-                if (sugared1 is AdvancedComparator) return (sugared1, null);
-                if (sugared2 is AdvancedComparator) return (sugared2, null);
-                return (sugared1, null);
-            }
-            if (leftC <= 0 && rightC <= 0) return (sugared1, null);
-            if (leftC >= 0 && rightC >= 0) return (sugared2, null);
+            if (leftC == 0 && rightC == 0)
+                return (sugared1.IsAdvanced || !sugared2.IsAdvanced ? sugared1 : sugared2, null);
 
-            PrimitiveComparator? leftResult = leftC >= 0 ? left1 : left2;
-            PrimitiveComparator? rightResult = rightC >= 0 ? right1 : right2;
+            if (leftC <= 0 && rightC >= 0) return (sugared1, null);
+            if (leftC >= 0 && rightC <= 0) return (sugared2, null);
+
+            PrimitiveComparator? leftResult = leftC <= 0 ? leftLow : rightLow;
+            PrimitiveComparator? rightResult = rightC >= 0 ? leftHigh : rightHigh;
 
             if (sugared1 is AdvancedComparator advanced1)
             {
@@ -138,21 +134,6 @@ namespace Chasm.SemanticVersioning.Ranges
             // <1.2.3 | >3.4.5
             // <1.2.3 | >1.2.3
             return null;
-        }
-
-        [Pure] internal static PrimitiveComparator UnionGreaterThan(PrimitiveComparator left, PrimitiveComparator right)
-        {
-            // Both arguments must be GT/GTE
-            Debug.Assert(left.Operator.IsGTOrGTE() && right.Operator.IsGTOrGTE());
-
-            return Utility.CompareComparators(left, right) <= 0 ? left : right;
-        }
-        [Pure] internal static PrimitiveComparator UnionLessThan(PrimitiveComparator left, PrimitiveComparator right)
-        {
-            // Both arguments must be LT/LTE
-            Debug.Assert(left.Operator.IsLTOrLTE() && right.Operator.IsLTOrLTE());
-
-            return Utility.CompareComparators(left, right) >= 0 ? left : right;
         }
 
     }

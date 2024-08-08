@@ -21,14 +21,21 @@
         public static ComparatorSet operator &(ComparatorSet left, ComparatorSet right)
         {
             // each set represents a contiguous range of versions
-            (PrimitiveComparator? low1, PrimitiveComparator? high1) = left.GetBounds();
-            (PrimitiveComparator? low2, PrimitiveComparator? high2) = right.GetBounds();
+            (PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh) = left.GetBounds();
+            (PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh) = right.GetBounds();
 
-            // TODO: refactor and fix precedence
-            // determine the intersection's limits
-            PrimitiveComparator? lowR = low1 is null ? low2 : low2 is null ? low1 : Comparator.IntersectGreaterThan(low1, low2);
-            bool lowRIs1 = ReferenceEquals(lowR, low1);
-            PrimitiveComparator? highR = high1 is null ? high2 : high2 is null ? high1 : Comparator.IntersectLessThan(lowRIs1 ? high1 : high2, lowRIs1 ? high2 : high1);
+            // -1 - second, 1 - first, 0 - either
+            int leftC = Utility.CompareComparators(leftLow, rightLow);
+            int rightC = Utility.CompareComparators(leftHigh, rightHigh, -1);
+
+            if (leftC == 0 && rightC == 0)
+                return left.IsSugared || !right.IsSugared ? left : right;
+
+            if (leftC >= 0 && rightC <= 0) return left;
+            if (leftC <= 0 && rightC >= 0) return right;
+
+            PrimitiveComparator? lowR = leftC >= 0 ? leftLow : rightLow;
+            PrimitiveComparator? highR = rightC <= 0 ? leftHigh : rightHigh;
 
             // if the intersection is invalid or empty, return <0.0.0-0
             if (lowR is not null && highR is not null)
@@ -36,12 +43,6 @@
                 if (!lowR.IsSatisfiedByCore(highR.Operand) || !highR.IsSatisfiedByCore(lowR.Operand))
                     return None;
             }
-
-            // see if it's still one of the sets (one range entirely contained by the other)
-            if (ReferenceEquals(lowR, low1) && ReferenceEquals(highR, high1))
-                return left;
-            if (ReferenceEquals(lowR, low2) && ReferenceEquals(highR, high2))
-                return right;
 
             // combine into an equality primitive
             if (lowR?.Operator is PrimitiveOperator.GreaterThanOrEqual
@@ -70,22 +71,23 @@
                 return left;
 
             // if the ranges do not intersect, combine them in a version range
-            if (leftHigh is not null && rightLow is not null && Utility.CompareComparators(leftHigh, rightLow) < 0 ||
-                leftLow is not null && rightHigh is not null && Utility.CompareComparators(leftLow, rightHigh) > 0)
+            if (!Utility.DoComparatorsIntersect(rightHigh, leftLow) || !Utility.DoComparatorsIntersect(leftHigh, rightLow))
             {
                 return new VersionRange([left, right], default);
             }
 
-            // TODO: refactor and fix precedence
-            // the ranges intersect, determine the union's limits
-            PrimitiveComparator? resultLow = leftLow is null || rightLow is null ? null : Comparator.UnionGreaterThan(leftLow, rightLow);
-            PrimitiveComparator? resultHigh = leftHigh is null || rightHigh is null ? null : Comparator.UnionLessThan(leftHigh, rightHigh);
+            // -1 - first, 1 - second, 0 - either
+            int lowC = Utility.CompareComparators(leftLow, rightLow);
+            int highC = Utility.CompareComparators(leftHigh, rightHigh, -1);
 
-            // see if it's still one of the sets (one range entirely contains the other)
-            if (ReferenceEquals(resultLow, leftLow) && ReferenceEquals(resultHigh, leftHigh))
-                return left;
-            if (ReferenceEquals(resultLow, rightLow) && ReferenceEquals(resultHigh, rightHigh))
-                return right;
+            if (lowC == 0 && highC == 0)
+                return left.IsSugared || !right.IsSugared ? left : right;
+
+            if (lowC <= 0 && highC >= 0) return left;
+            if (lowC >= 0 && highC <= 0) return right;
+
+            PrimitiveComparator? resultLow = lowC <= 0 ? leftLow : rightLow;
+            PrimitiveComparator? resultHigh = highC >= 0 ? leftHigh : rightHigh;
 
             // return the union
             if (resultLow is null)

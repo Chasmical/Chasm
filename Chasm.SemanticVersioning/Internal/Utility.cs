@@ -188,11 +188,31 @@ namespace Chasm.SemanticVersioning
             return 7 - op;
         }
 
-        [Pure] public static int CompareComparators(PrimitiveComparator? left, PrimitiveComparator? right)
+        [Pure] public static int CompareComparators(PrimitiveComparator? left, PrimitiveComparator? right, int sign = 1)
         {
-            if (left is null) return right is null ? 0 : -1;
-            if (right is null) return 1;
+            // 1 should be used when comparing > and >=, while -1 - when comparing < and <=
+
+            if (left is null) return right is null ? 0 : -sign;
+            if (right is null) return sign;
             return CompareComparators(left.Operator, left.Operand, right.Operator, right.Operand);
+        }
+        [Pure] public static bool DoComparatorsIntersect(PrimitiveComparator? right, PrimitiveComparator? left)
+        {
+            if (right is null || left is null) return true;
+            Debug.Assert(right.Operator.IsLTOrLTE());
+            Debug.Assert(left.Operator.IsGTOrGTE());
+
+            int cmp = right.Operand.CompareTo(left.Operand);
+            return cmp > 0 || cmp == 0 && right.Operator.IsSthThanOrEqual() && left.Operator.IsSthThanOrEqual();
+        }
+        [Pure] public static bool DoComparatorsTouch(PrimitiveComparator? right, PrimitiveComparator? left)
+        {
+            if (right is null || left is null) return true;
+            Debug.Assert(right.Operator.IsLTOrLTE());
+            Debug.Assert(left.Operator.IsGTOrGTE());
+
+            int cmp = right.Operand.CompareTo(left.Operand);
+            return cmp > 0 || cmp == 0 && (right.Operator.IsSthThanOrEqual() || left.Operator.IsSthThanOrEqual());
         }
 
         [Pure] public static int CompareComparators(
@@ -201,6 +221,8 @@ namespace Chasm.SemanticVersioning
         )
         {
             Debug.Assert(!leftOperator.IsEQ() && !rightOperator.IsEQ());
+            Debug.Assert(leftOperator.IsGTOrGTE() == rightOperator.IsGTOrGTE());
+            Debug.Assert(leftOperator.IsLTOrLTE() == rightOperator.IsLTOrLTE());
 
             int cmp = leftOperand.CompareTo(rightOperand);
             // >1.2.3 is greater than >=1.2.3, since it doesn't include =1.2.3
