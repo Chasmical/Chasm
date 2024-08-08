@@ -40,7 +40,13 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <inheritdoc/>
         [Pure] protected override (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives()
         {
-            return (ConvertFrom(From), ConvertTo(To));
+            PrimitiveComparator? from = ConvertFrom(From);
+            PrimitiveComparator? to = ConvertTo(To);
+
+            if (from is not null && to is not null && !Utility.DoComparatorsComplement(to, from))
+                return (null, None);
+
+            return (from, to);
 
             static PrimitiveComparator? ConvertFrom(PartialVersion from)
             {

@@ -169,7 +169,6 @@ namespace Chasm.SemanticVersioning
         [Pure] public static PrimitiveOperator Normalize(this PrimitiveOperator op)
             => (PrimitiveOperator)Math.Max((byte)op, (byte)1);
 
-        /*
         [Pure] public static bool SameDirection(PrimitiveOperator a, PrimitiveOperator b)
             => a > PrimitiveOperator.Equal && b > PrimitiveOperator.Equal && (((byte)a + (byte)b) & 1) == 0;
         [Pure] public static bool IsGTOrGTE(this PrimitiveOperator op)
@@ -180,7 +179,80 @@ namespace Chasm.SemanticVersioning
             => op <= PrimitiveOperator.Equal;
         [Pure] public static bool IsSthThanOrEqual(this PrimitiveOperator op)
             => op is PrimitiveOperator.GreaterThanOrEqual or PrimitiveOperator.LessThanOrEqual;
-        */
+        [Pure] public static PrimitiveOperator Invert(this PrimitiveOperator op)
+        {
+            // 7 - 2 (>) = 5 (<=)
+            // 7 - 3 (<) = 4 (>=)
+            // 7 - 4 (>=) = 3 (<)
+            // 7 - 5 (<=) = 2 (>)
+            return 7 - op;
+        }
+
+        [Pure] public static int CompareComparators(PrimitiveComparator? left, PrimitiveComparator? right, int sign = 1)
+        {
+            // 1 should be used when comparing > and >=, while -1 - when comparing < and <=
+
+            if (left is null) return right is null ? 0 : -sign;
+            if (right is null) return sign;
+            return CompareComparators(left.Operator, left.Operand, right.Operator, right.Operand);
+        }
+        [Pure] public static bool DoComparatorsIntersect(PrimitiveComparator? right, PrimitiveComparator? left)
+        {
+            if (right is null || left is null) return true;
+            Debug.Assert(right.Operator.IsLTOrLTE());
+            Debug.Assert(left.Operator.IsGTOrGTE());
+
+            int cmp = right.Operand.CompareTo(left.Operand);
+            return cmp > 0 || cmp == 0 && right.Operator.IsSthThanOrEqual() && left.Operator.IsSthThanOrEqual();
+        }
+        [Pure] public static bool DoComparatorsTouch(PrimitiveComparator? right, PrimitiveComparator? left)
+        {
+            if (right is null || left is null) return true;
+            Debug.Assert(right.Operator.IsLTOrLTE());
+            Debug.Assert(left.Operator.IsGTOrGTE());
+
+            int cmp = right.Operand.CompareTo(left.Operand);
+            return cmp > 0 || cmp == 0 && (right.Operator.IsSthThanOrEqual() || left.Operator.IsSthThanOrEqual());
+        }
+
+        [Pure] public static int CompareComparators(
+            PrimitiveOperator leftOperator, SemanticVersion leftOperand,
+            PrimitiveOperator rightOperator, SemanticVersion rightOperand
+        )
+        {
+            Debug.Assert(!leftOperator.IsEQ() && !rightOperator.IsEQ());
+            Debug.Assert(leftOperator.IsGTOrGTE() == rightOperator.IsGTOrGTE());
+            Debug.Assert(leftOperator.IsLTOrLTE() == rightOperator.IsLTOrLTE());
+
+            int cmp = leftOperand.CompareTo(rightOperand);
+            // >1.2.3 is greater than >=1.2.3, since it doesn't include =1.2.3
+            // <=1.2.3 is greater than <1.2.3, since it also includes =1.2.3
+            if (cmp == 0 && leftOperator != rightOperator)
+                cmp = leftOperator is PrimitiveOperator.GreaterThan or PrimitiveOperator.LessThanOrEqual ? 1 : -1;
+            return cmp;
+        }
+
+        /// <summary>
+        ///   <para>Determines whether the union of the specified comparators is equivalent to <c>*</c>.</para>
+        /// </summary>
+        /// <param name="lessThan"></param>
+        /// <param name="greaterThan"></param>
+        /// <returns></returns>
+        [Pure] public static bool DoComparatorsComplement(PrimitiveComparator lessThan, PrimitiveComparator greaterThan)
+        {
+            Debug.Assert(lessThan.Operator.IsLTOrLTE());
+            Debug.Assert(greaterThan.Operator.IsGTOrGTE());
+
+            int cmp = lessThan.Operand.CompareTo(greaterThan.Operand);
+            //  <1.3.0 | >=1.3.0 ⇒ *
+            // <=1.3.0 |  >1.3.0 ⇒ *
+            // <=1.3.0 | >=1.3.0 ⇒ *
+            if (cmp == 0) return lessThan.Operator.IsSthThanOrEqual() || greaterThan.Operator.IsSthThanOrEqual();
+
+            // <=1.3.0 | >=1.4.0 ⇒ <=1.3.0 || >=1.4.0
+            // <=1.3.0 | >=1.2.0 ⇒ *
+            return cmp > 0;
+        }
 
     }
 }

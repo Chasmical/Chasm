@@ -7,9 +7,9 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator.</para>
     /// </summary>
-    public abstract class Comparator : ISpanBuildable, IEquatable<Comparator>
+    public abstract partial class Comparator : ISpanBuildable, IEquatable<Comparator>
 #if NET7_0_OR_GREATER
-                                     , System.Numerics.IEqualityOperators<Comparator, Comparator, bool>
+                                             , System.Numerics.IEqualityOperators<Comparator, Comparator, bool>
 #endif
     {
         /// <summary>
@@ -71,6 +71,15 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] protected static bool CanMatchPreRelease(SemanticVersion? version, int major, int minor, int patch)
             => version?.IsPreRelease == true && version.Major == major && version.Minor == minor && version.Patch == patch;
 
+        // Internal helper method to arrange the primitives properly, for the use of some methods
+        // TODO: maybe expose AsPrimitives() as public API somehow
+        [Pure] internal (PrimitiveComparator?, PrimitiveComparator?) AsPrimitives()
+        {
+            if (this is PrimitiveComparator primitive)
+                return primitive.Operator.IsLTOrLTE() ? (null, primitive) : (primitive, null);
+            return ((AdvancedComparator)this).ToPrimitives();
+        }
+
         /// <inheritdoc cref="ISpanBuildable.CalculateLength"/>
         [Pure] protected internal abstract int CalculateLength();
         /// <inheritdoc cref="ISpanBuildable.BuildString"/>
@@ -97,8 +106,6 @@ namespace Chasm.SemanticVersioning.Ranges
             => !(left == right);
 
         // TODO: Implement >, <, >=, <= operators
-
-        // TODO: Implement &, |, ~ operators
 
     }
 }

@@ -30,6 +30,12 @@ namespace Chasm.SemanticVersioning.Tests
             return extender;
         }
 
+        protected TFixture AddNew<TFixture>(TFixture fixture) where TFixture : Fixture
+        {
+            Adapter!.Add(fixture);
+            return fixture;
+        }
+
         void IXunitSerializable.Deserialize(IXunitSerializationInfo info)
         {
             foreach (FieldInfo field in GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))

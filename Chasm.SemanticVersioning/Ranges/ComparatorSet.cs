@@ -18,9 +18,9 @@ namespace Chasm.SemanticVersioning.Ranges
     /// <summary>
     ///   <para>Represents a valid <c>node-semver</c> version comparator set.</para>
     /// </summary>
-    public sealed class ComparatorSet : ISpanBuildable, IEquatable<ComparatorSet>
+    public sealed partial class ComparatorSet : ISpanBuildable, IEquatable<ComparatorSet>
 #if NET7_0_OR_GREATER
-                                      , System.Numerics.IEqualityOperators<ComparatorSet, ComparatorSet, bool>
+                                              , System.Numerics.IEqualityOperators<ComparatorSet, ComparatorSet, bool>
 #endif
     {
         internal readonly Comparator[] _comparators;
@@ -175,6 +175,25 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         public static ComparatorSet All { get; } = new ComparatorSet(XRangeComparator.All);
 
+        // Internal helper to minimize allocations during range operations
+        [Pure] internal static ComparatorSet FromTuple((Comparator?, Comparator?) tuple)
+        {
+            (Comparator? resultLeft, Comparator? resultRight) = tuple;
+
+            // If two comparators were returned, combine them in a set
+            if (resultRight is not null)
+                return new ComparatorSet([resultLeft!, resultRight], default);
+
+            // if it's one of the pre-defined ones, use the singletons
+            if (resultLeft is null || ReferenceEquals(resultLeft, XRangeComparator.All))
+                return All;
+            if (ReferenceEquals(resultLeft, PrimitiveComparator.None))
+                return None;
+
+            // return a set with a single comparator
+            return resultLeft;
+        }
+
         [Pure] internal int CalculateLength()
         {
             Comparator[] comparators = _comparators;
@@ -201,6 +220,48 @@ namespace Chasm.SemanticVersioning.Ranges
         }
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
+
+        [Pure] public (PrimitiveComparator? Lower, PrimitiveComparator? Upper) GetBounds()
+        {
+            PrimitiveComparator? lower = null;
+            PrimitiveComparator? upper = null;
+
+            Comparator[] comparators = _comparators;
+            for (int i = 0; i < comparators.Length; i++)
+            {
+                (PrimitiveComparator? left, PrimitiveComparator? right) = comparators[i].AsPrimitives();
+                if (left?.Operator.IsEQ() == true)
+                {
+                    // TODO: need to optimize this, maybe decompose the tuple type further
+                    right = PrimitiveComparator.LessThanOrEqual(left.Operand);
+                    left = PrimitiveComparator.GreaterThanOrEqual(left.Operand);
+                }
+
+                if (left is not null && (lower is null || Utility.CompareComparators(left, lower) > 0))
+                    lower = left;
+                if (right is not null && (upper is null || Utility.CompareComparators(right, upper) < 0))
+                    upper = right;
+            }
+
+            return (lower, upper);
+        }
+
+        [Pure] public bool Contains(ComparatorSet other)
+        {
+            (PrimitiveComparator? low1, PrimitiveComparator? high1) = GetBounds();
+            (PrimitiveComparator? low2, PrimitiveComparator? high2) = other.GetBounds();
+
+            return (low1 is null || low2 is not null && Utility.CompareComparators(low1, low2) <= 0) &&
+                   (high1 is null || high2 is not null && Utility.CompareComparators(high1, high2) >= 0);
+        }
+        [Pure] public bool Intersects(ComparatorSet other)
+        {
+            (PrimitiveComparator? low1, PrimitiveComparator? high1) = GetBounds();
+            (PrimitiveComparator? low2, PrimitiveComparator? high2) = other.GetBounds();
+
+            return (high1 is null || low2 is null || Utility.CompareComparators(high1, low2) >= 0) &&
+                   (low1 is null || high2 is null || Utility.CompareComparators(low1, high2) <= 0);
+        }
 
         /// <summary>
         ///   <para>Returns the string representation of this version comparator set.</para>
@@ -245,8 +306,6 @@ namespace Chasm.SemanticVersioning.Ranges
             => !(left == right);
 
         // TODO: Implement >, <, >=, <= operators
-
-        // TODO: Implement &, |, ~ operators
 
     }
 }
