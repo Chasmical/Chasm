@@ -13,6 +13,8 @@ namespace Chasm.SemanticVersioning.Tests
             VersionRange leftRange = VersionRange.Parse(fixture.Left);
             VersionRange? rightRange = fixture.Right is null ? null : VersionRange.Parse(fixture.Right);
 
+            Output.WriteLine($"{leftRange}\n{fixture.Operation}\n{rightRange}\n=\n{fixture.Expected}");
+
             static T? AsSingle<T>(IList<T>? list)
                 => list?.Count == 1 ? list[0] : default;
 
