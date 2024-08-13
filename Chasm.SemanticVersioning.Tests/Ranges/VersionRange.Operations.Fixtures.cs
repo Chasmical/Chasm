@@ -1,5 +1,6 @@
 ﻿using Chasm.SemanticVersioning.Ranges;
 using System;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -11,8 +12,8 @@ namespace Chasm.SemanticVersioning.Tests
         {
             FixtureAdapter<OperationFixture> adapter = [];
 
-            OperationFixture New(string left, char op, string? right = null)
-                => adapter.Add(new OperationFixture(op, left, right));
+            OperationFixture New(string left, char op, string? right = null, [CallerLineNumber] int line = -1)
+                => adapter.Add(new OperationFixture(op, left, right) { LineNumber = line });
 
             #region Operations with primitives
 
@@ -40,6 +41,8 @@ namespace Chasm.SemanticVersioning.Tests
             New(">=1.2.3", '|', ">3.4.5").Returns(">=1.2.3");
             New("<3.4.5", '|', "<=1.2.3").Returns("<3.4.5");
             New("<=3.4.5", '|', "<1.2.3").Returns("<=3.4.5");
+            // TODO: New(">=1.2.3", '|', "<1.2.3").Returns("*");
+            // TODO: New("<=1.2.3", '|', ">1.2.3").Returns("*");
             // Union: test with equality operators
             // TODO: New("=1.2.3", '|', ">1.2.3").Returns(">=1.2.3", true);
             // TODO: New("=1.2.3", '|', "<1.2.3").Returns("<=1.2.3", true);
@@ -426,14 +429,13 @@ namespace Chasm.SemanticVersioning.Tests
             public string? Right { get; } = right;
 
             public string? Expected { get; private set; }
+            public bool IsCommutative { get; private set; }
 
             public void Returns(string expected, bool isCommutative = true)
             {
                 MarkAsComplete();
                 Expected = expected;
-
-                if (isCommutative && Right is not null)
-                    AddNew(new OperationFixture(Operation, Right, Left)).Returns(expected, false);
+                IsCommutative = isCommutative;
             }
 
             public override void AssertResult(VersionRange? result)

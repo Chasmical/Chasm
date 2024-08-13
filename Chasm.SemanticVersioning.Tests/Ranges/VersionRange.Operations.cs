@@ -10,6 +10,19 @@ namespace Chasm.SemanticVersioning.Tests
         [Theory, MemberData(nameof(CreateOperationFixtures))]
         public void Operations(OperationFixture fixture)
         {
+            AssertOperationFixture(fixture);
+
+            if (fixture.IsCommutative && fixture.Right is not null)
+            {
+                Output.WriteLine("\n");
+                OperationFixture altered = new OperationFixture(fixture.Operation, fixture.Right, fixture.Left);
+                altered.Returns(fixture.Expected!, false);
+                AssertOperationFixture(altered);
+            }
+        }
+
+        private void AssertOperationFixture(OperationFixture fixture)
+        {
             VersionRange leftRange = VersionRange.Parse(fixture.Left);
             VersionRange? rightRange = fixture.Right is null ? null : VersionRange.Parse(fixture.Right);
 

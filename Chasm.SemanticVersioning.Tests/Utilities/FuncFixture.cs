@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Chasm.Utilities;
 using JetBrains.Annotations;
 using Xunit;
@@ -38,6 +39,7 @@ namespace Chasm.SemanticVersioning.Tests
             );
         }
 
+        [StackTraceHidden]
         public void Test([InstantHandle] Func<T> func)
         {
             Exception? exception = Util.Catch(func, out T? result);
