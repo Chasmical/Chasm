@@ -221,7 +221,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
 
-        [Pure] public (PrimitiveComparator? Lower, PrimitiveComparator? Upper) GetBounds()
+        [Pure] internal (PrimitiveComparator? Lower, PrimitiveComparator? Upper) GetBounds()
         {
             PrimitiveComparator? lower = null;
             PrimitiveComparator? upper = null;
@@ -232,7 +232,6 @@ namespace Chasm.SemanticVersioning.Ranges
                 (PrimitiveComparator? left, PrimitiveComparator? right) = comparators[i].AsPrimitives();
                 if (left?.Operator.IsEQ() == true)
                 {
-                    // TODO: need to optimize this, maybe decompose the tuple type further
                     right = PrimitiveComparator.LessThanOrEqual(left.Operand);
                     left = PrimitiveComparator.GreaterThanOrEqual(left.Operand);
                 }
@@ -245,22 +244,74 @@ namespace Chasm.SemanticVersioning.Ranges
 
             return (lower, upper);
         }
+        [Pure] internal (PrimitiveOperator gt, SemanticVersion? gtOp, PrimitiveOperator lt, SemanticVersion? ltOp) GetBoundsCore()
+        {
+            PrimitiveOperator lowerOp = PrimitiveOperator.GreaterThanOrEqual;
+            PrimitiveOperator upperOp = PrimitiveOperator.LessThanOrEqual;
+            SemanticVersion? lower = null;
+            SemanticVersion? upper = null;
+
+            Comparator[] comparators = _comparators;
+            for (int i = 0; i < comparators.Length; i++)
+            {
+                (PrimitiveComparator? leftC, PrimitiveComparator? rightC) = comparators[i].AsPrimitives();
+
+                if (leftC is not null)
+                {
+                    PrimitiveOperator leftOp = leftC.Operator;
+                    SemanticVersion left = leftC.Operand;
+
+                    if (leftOp.IsEQ())
+                    {
+                        if (lower is null || left > lower)
+                        {
+                            lowerOp = PrimitiveOperator.GreaterThanOrEqual;
+                            lower = left;
+                        }
+                        if (upper is null || left < upper)
+                        {
+                            upperOp = PrimitiveOperator.LessThanOrEqual;
+                            upper = left;
+                        }
+                        continue;
+                    }
+                    if (lower is null || Utility.CompareComparators(leftOp, left, lowerOp, lower) > 0)
+                    {
+                        lowerOp = leftOp;
+                        lower = left;
+                    }
+                }
+                if (rightC is not null)
+                {
+                    PrimitiveOperator rightOp = rightC.Operator;
+                    SemanticVersion right = rightC.Operand;
+
+                    if (upper is null || Utility.CompareComparators(rightOp, right, upperOp, upper) < 0)
+                    {
+                        upperOp = rightOp;
+                        upper = right;
+                    }
+                }
+            }
+
+            return (lowerOp, lower, upperOp, upper);
+        }
 
         [Pure] public bool Contains(ComparatorSet other)
         {
-            (PrimitiveComparator? low1, PrimitiveComparator? high1) = GetBounds();
-            (PrimitiveComparator? low2, PrimitiveComparator? high2) = other.GetBounds();
+            var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
+            var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
 
-            return (low1 is null || low2 is not null && Utility.CompareComparators(low1, low2) <= 0) &&
-                   (high1 is null || high2 is not null && Utility.CompareComparators(high1, high2) >= 0);
+            return (low1 is null || low2 is not null && Utility.CompareComparators(lowOp1, low1, lowOp2, low2) <= 0) &&
+                   (high1 is null || high2 is not null && Utility.CompareComparators(highOp1, high1, highOp2, high2) >= 0);
         }
         [Pure] public bool Intersects(ComparatorSet other)
         {
-            (PrimitiveComparator? low1, PrimitiveComparator? high1) = GetBounds();
-            (PrimitiveComparator? low2, PrimitiveComparator? high2) = other.GetBounds();
+            var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
+            var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
 
-            return (high1 is null || low2 is null || Utility.CompareComparators(high1, low2) >= 0) &&
-                   (low1 is null || high2 is null || Utility.CompareComparators(low1, high2) <= 0);
+            return (high1 is null || low2 is null || Utility.CompareComparators(highOp1, high1, lowOp2, low2) >= 0) &&
+                   (low1 is null || high2 is null || Utility.CompareComparators(lowOp1, low1, highOp2, high2) <= 0);
         }
 
         /// <summary>

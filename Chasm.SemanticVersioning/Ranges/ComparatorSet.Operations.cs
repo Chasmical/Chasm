@@ -7,15 +7,20 @@
 
         internal static (Comparator, Comparator?) Complement(ComparatorSet comparatorSet)
         {
-            (PrimitiveComparator? left, PrimitiveComparator? right) = comparatorSet.GetBounds();
+            var (leftOp, left, rightOp, right) = comparatorSet.GetBoundsCore();
 
-            if (left?.Operator.IsEQ() == true)
-                return (PrimitiveComparator.LessThan(left.Operand), PrimitiveComparator.GreaterThan(left.Operand));
+            if (left is not null && leftOp.IsEQ())
+                return (PrimitiveComparator.LessThan(left), PrimitiveComparator.GreaterThan(left));
+
+            if (!Utility.DoComparatorsIntersect(rightOp, right, leftOp, left)) return (XRangeComparator.All, null);
 
             if (left is null)
-                return (right is null ? PrimitiveComparator.None : Comparator.ComplementPrimitive(right), null);
+                return (right is null ? PrimitiveComparator.None : Comparator.ComplementPrimitive(rightOp, right), null);
 
-            return (Comparator.ComplementPrimitive(left), right is null ? null : Comparator.ComplementPrimitive(right));
+            return (
+                Comparator.ComplementPrimitive(leftOp, left),
+                right is null ? null : Comparator.ComplementPrimitive(rightOp, right)
+            );
         }
 
         public static ComparatorSet operator &(ComparatorSet left, ComparatorSet right)

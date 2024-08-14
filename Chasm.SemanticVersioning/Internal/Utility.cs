@@ -199,11 +199,7 @@ namespace Chasm.SemanticVersioning
         [Pure] public static bool DoComparatorsIntersect(PrimitiveComparator? right, PrimitiveComparator? left)
         {
             if (right is null || left is null) return true;
-            Debug.Assert(right.Operator.IsLTOrLTE());
-            Debug.Assert(left.Operator.IsGTOrGTE());
-
-            int cmp = right.Operand.CompareTo(left.Operand);
-            return cmp > 0 || cmp == 0 && right.Operator.IsSthThanOrEqual() && left.Operator.IsSthThanOrEqual();
+            return DoComparatorsIntersect(right.Operator, right.Operand, left.Operator, left.Operand);
         }
         [Pure] public static bool DoComparatorsTouch(PrimitiveComparator? right, PrimitiveComparator? left)
         {
@@ -216,10 +212,14 @@ namespace Chasm.SemanticVersioning
         }
 
         [Pure] public static int CompareComparators(
-            PrimitiveOperator leftOperator, SemanticVersion leftOperand,
-            PrimitiveOperator rightOperator, SemanticVersion rightOperand
+            PrimitiveOperator leftOperator, SemanticVersion? leftOperand,
+            PrimitiveOperator rightOperator, SemanticVersion? rightOperand,
+            int nullSign = 1
         )
         {
+            if (leftOperand is null) return rightOperand is null ? 0 : -nullSign;
+            if (rightOperand is null) return nullSign;
+
             Debug.Assert(!leftOperator.IsEQ() && !rightOperator.IsEQ());
             Debug.Assert(leftOperator.IsGTOrGTE() == rightOperator.IsGTOrGTE());
             Debug.Assert(leftOperator.IsLTOrLTE() == rightOperator.IsLTOrLTE());
@@ -230,6 +230,19 @@ namespace Chasm.SemanticVersioning
             if (cmp == 0 && leftOperator != rightOperator)
                 cmp = leftOperator is PrimitiveOperator.GreaterThan or PrimitiveOperator.LessThanOrEqual ? 1 : -1;
             return cmp;
+        }
+
+        [Pure] public static bool DoComparatorsIntersect(
+            PrimitiveOperator rightOperator, SemanticVersion? rightOperand,
+            PrimitiveOperator leftOperator, SemanticVersion? leftOperand
+        )
+        {
+            if (rightOperand is null || leftOperand is null) return true;
+            Debug.Assert(rightOperator.IsLTOrLTE());
+            Debug.Assert(leftOperator.IsGTOrGTE());
+
+            int cmp = rightOperand.CompareTo(leftOperand);
+            return cmp > 0 || cmp == 0 && rightOperator.IsSthThanOrEqual() && leftOperator.IsSthThanOrEqual();
         }
 
         /// <summary>

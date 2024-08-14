@@ -16,18 +16,22 @@ namespace Chasm.SemanticVersioning.Ranges
                 return (PrimitiveComparator.LessThan(left.Operand), PrimitiveComparator.GreaterThan(left.Operand));
 
             if (left is null)
-                return (right is null ? PrimitiveComparator.None : ComplementPrimitive(right), null);
+                return (right is null ? PrimitiveComparator.None : ComplementPrimitive(right.Operator, right.Operand), null);
 
-            return (ComplementPrimitive(left), right is null ? null : ComplementPrimitive(right));
+            return (
+                ComplementPrimitive(left.Operator, left.Operand),
+                right is null ? null : ComplementPrimitive(right.Operator, right.Operand)
+            );
         }
 
-        [Pure] internal static Comparator ComplementPrimitive(PrimitiveComparator primitive)
+        [Pure] internal static Comparator ComplementPrimitive(PrimitiveOperator @operator, SemanticVersion operand)
         {
-            Debug.Assert(!primitive.Operator.IsEQ());
+            Debug.Assert(!@operator.IsEQ());
 
-            if (primitive.Equals(PrimitiveComparator.None)) return XRangeComparator.All;
+            if (@operator == PrimitiveOperator.LessThan && operand.Equals(SemanticVersion.MinValue))
+                return XRangeComparator.All;
 
-            return new PrimitiveComparator(primitive.Operand, primitive.Operator.Invert());
+            return new PrimitiveComparator(operand, @operator.Invert());
         }
 
     }
