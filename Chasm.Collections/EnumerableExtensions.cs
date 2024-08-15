@@ -21,7 +21,8 @@ namespace Chasm.Collections
         public static IEnumerable<T> NotNull<T>(this IEnumerable<T?> source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
-            return (default(T) is not null ? source : source.Where(static item => item is not null))!;
+            if (default(T) is not null) return source!;
+            return source.Where(static item => item is not null)!;
         }
 
         /// <summary>

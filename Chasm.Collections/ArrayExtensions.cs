@@ -503,5 +503,12 @@ namespace Chasm.Collections
 #endif
         }
 
+        [Pure, ItemNotNull] public static T[] NotNull<T>(this T?[] array)
+        {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+            if (default(T) is not null) return array!;
+            return Array.FindAll(array, item => item is not null)!;
+        }
+
     }
 }
