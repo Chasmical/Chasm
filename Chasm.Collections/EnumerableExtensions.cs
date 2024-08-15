@@ -47,7 +47,7 @@ namespace Chasm.Collections
         /// <returns><paramref name="source"/>, if it's not <see langword="null"/>; otherwise, an empty sequence.</returns>
         [Pure, LinqTunnel]
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source)
-            => source ?? Enumerable.Empty<T>();
+            => source ?? [];
 
         /// <inheritdoc cref="string.Join{T}(char, IEnumerable{T})"/>
         [Pure] public static string Join<T>([InstantHandle] this IEnumerable<T> values, char separator)
