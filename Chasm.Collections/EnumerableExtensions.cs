@@ -70,5 +70,69 @@ namespace Chasm.Collections
 #endif
         }
 
+        [Pure] public static T Only<T>([InstantHandle] this IEnumerable<T> source)
+        {
+            if (OnlyCore(source, out T? result)) return result!;
+            throw new ArgumentException($"{nameof(source)} contains 0 or 2 or more elements.", nameof(source));
+        }
+        [Pure] public static T Only<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            if (OnlyCore(source, predicate, out T? result)) return result!;
+            throw new ArgumentException($"{nameof(source)} contains 0 or 2 or more elements.", nameof(source));
+        }
+
+        [Pure] public static T? OnlyOrDefault<T>([InstantHandle] this IEnumerable<T> source)
+        {
+            OnlyCore(source, out T? result);
+            return result;
+        }
+        [Pure] public static T? OnlyOrDefault<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            OnlyCore(source, predicate, out T? result);
+            return result;
+        }
+
+        [Pure] private static bool OnlyCore<T>([InstantHandle] this IEnumerable<T> source, out T? result)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+
+            using (IEnumerator<T> enumerator = source.GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                {
+                    result = enumerator.Current;
+                    if (!enumerator.MoveNext()) return true;
+                }
+                result = default;
+                return false;
+            }
+        }
+        [Pure] private static bool OnlyCore<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate, out T? result)
+        {
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+
+            using (IEnumerator<T> enumerator = source.GetEnumerator())
+            {
+                bool found = false;
+                result = default;
+
+                while (enumerator.MoveNext())
+                {
+                    T item = enumerator.Current;
+                    if (!predicate(item)) continue;
+
+                    if (found)
+                    {
+                        result = default;
+                        return false;
+                    }
+                    result = item;
+                    found = true;
+                }
+                return found;
+            }
+        }
+
     }
 }
