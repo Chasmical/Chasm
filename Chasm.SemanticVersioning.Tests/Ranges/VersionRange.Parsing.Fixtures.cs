@@ -26,7 +26,7 @@ namespace Chasm.SemanticVersioning.Tests
                 | SemverOptions.OptionalPatch
                 | SemverOptions.AllowLeftovers; // interferes with the rest of the version range
 
-            // Make sure all version comparators work individually
+            // Make sure all comparators work individually
             foreach (PartialVersionTests.ParsingFixture fixture in PartialVersionTests.CreateParsingFixtures())
             {
                 if (!fixture.IsValid) continue;

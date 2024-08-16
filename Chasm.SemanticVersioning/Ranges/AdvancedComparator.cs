@@ -13,20 +13,20 @@ namespace Chasm.SemanticVersioning.Ranges
         // IEquatable<Comparator> implemented, so, that takes care of the generic constraints.
 
         /// <summary>
-        ///   <para>Returns <see langword="false"/>, since this version comparator is not primitive.</para>
+        ///   <para>Returns <see langword="false"/>, since this comparator is not primitive.</para>
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        [Obsolete("You already know that it's not a primitive version comparator.")]
+        [Obsolete("You already know that it's not a primitive comparator.")]
         public new bool IsPrimitive => false;
         /// <summary>
-        ///   <para>Returns <see langword="true"/>, since this version comparator is advanced.</para>
+        ///   <para>Returns <see langword="true"/>, since this comparator is advanced.</para>
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        [Obsolete("You already know that it is an advanced version comparator.")]
+        [Obsolete("You already know that it is an advanced comparator.")]
         public new bool IsAdvanced => true;
 
         /// <summary>
-        ///   <para>Gets the advanced version comparator's operand.</para>
+        ///   <para>Gets the advanced comparator's operand.</para>
         /// </summary>
         public PartialVersion Operand { get; }
 
@@ -39,7 +39,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="AdvancedComparator"/> class with the specified <paramref name="operand"/>.</para>
         /// </summary>
-        /// <param name="operand">The advanced version comparator's operand.</param>
+        /// <param name="operand">The advanced comparator's operand.</param>
         /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         protected AdvancedComparator(PartialVersion operand)
             => Operand = operand ?? throw new ArgumentNullException(nameof(operand));
@@ -59,9 +59,9 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
-        ///   <para>Converts this advanced version comparator into zero, one or two primitive version comparators, a set of which is equivalent to this advanced version comparator.</para>
+        ///   <para>Converts this advanced comparator into zero, one or two primitive comparators, a set of which is equivalent to this advanced comparator.</para>
         /// </summary>
-        /// <returns>A tuple of zero, one or two primitive version comparators, a set of which is equivalent to this advanced version comparator.</returns>
+        /// <returns>A tuple of zero, one or two primitive comparators, a set of which is equivalent to this advanced comparator.</returns>
         [Pure] public (PrimitiveComparator? Left, PrimitiveComparator? Right) ToPrimitives()
         {
             (PrimitiveComparator?, PrimitiveComparator?)? comparators = primitives;
@@ -77,9 +77,9 @@ namespace Chasm.SemanticVersioning.Ranges
             return comparators.GetValueOrDefault();
         }
         /// <summary>
-        ///   <para>Converts this advanced version comparator into zero, one or two primitive version comparators, a set of which is equivalent to this advanced version comparator.</para>
+        ///   <para>Converts this advanced comparator into zero, one or two primitive comparators, a set of which is equivalent to this advanced comparator.</para>
         /// </summary>
-        /// <returns>A tuple of zero, one or two primitive version comparators, a set of which is equivalent to this advanced version comparator.</returns>
+        /// <returns>A tuple of zero, one or two primitive comparators, a set of which is equivalent to this advanced comparator.</returns>
         [Pure] protected abstract (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives();
 
         // TODO: ToPrimitivesArray() could be useful? Maybe think of a better name

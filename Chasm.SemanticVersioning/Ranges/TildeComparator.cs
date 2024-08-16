@@ -14,7 +14,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="TildeComparator"/> class with the specified <paramref name="operand"/>.</para>
         /// </summary>
-        /// <param name="operand">The tilde version comparator's operand.</param>
+        /// <param name="operand">The tilde comparator's operand.</param>
         /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         public TildeComparator(PartialVersion operand) : base(operand) { }
 
