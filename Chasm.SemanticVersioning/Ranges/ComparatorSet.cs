@@ -180,6 +180,9 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             (Comparator? resultLeft, Comparator? resultRight) = tuple;
 
+            // The right comparator may be non-null only if the left one is non-null
+            Debug.Assert(resultLeft is not null || resultRight is null);
+
             // If two comparators were returned, combine them in a set
             if (resultRight is not null)
                 return new ComparatorSet([resultLeft!, resultRight], default);
@@ -310,8 +313,8 @@ namespace Chasm.SemanticVersioning.Ranges
             var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
             var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
 
-            return (high1 is null || low2 is null || RangeUtility.CompareComparators(highOp1, high1, lowOp2, low2) >= 0) &&
-                   (low1 is null || high2 is null || RangeUtility.CompareComparators(lowOp1, low1, highOp2, high2) <= 0);
+            return (high1 is null || low2 is null || RangeUtility.CompareComparators(highOp1, high1, lowOp2, low2, 0) >= 0) &&
+                   (low1 is null || high2 is null || RangeUtility.CompareComparators(lowOp1, low1, highOp2, high2, 0) <= 0);
         }
 
         /// <summary>

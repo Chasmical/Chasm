@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
@@ -9,77 +10,87 @@ namespace Chasm.SemanticVersioning.Ranges
             ComparatorSet[] sets = range._comparatorSets;
 
             // TODO: improve performance and memory usage here?
-
             VersionRange result = ~sets[0];
-
             for (int i = 1; i < sets.Length; i++)
                 result &= ~sets[i];
-
             return result;
         }
 
         public static VersionRange operator &(VersionRange left, VersionRange right)
         {
-            List<ComparatorSet> sets = [];
-
             ComparatorSet[] leftSets = left._comparatorSets;
             ComparatorSet[] rightSets = right._comparatorSets;
+            List<ComparatorSet> results = [];
 
             for (int i = 0; i < leftSets.Length; i++)
-            {
                 for (int j = 0; j < rightSets.Length; j++)
-                {
-                    ComparatorSet intersection = leftSets[i] & rightSets[j];
-                    if (!ReferenceEquals(intersection, ComparatorSet.None) && !sets.Contains(intersection))
-                        sets.Add(intersection);
-                }
-                // TODO: combine similar and exact same intersections
-                // Example:  (~1.2 || ~1.4) & (<3 || <5)
-                // Current:  ~1.2 || ~1.4 || ~1.2 || ~1.4
-                // Expected: ~1.2 || ~1.4
-            }
+                    AddWithCombine(results, leftSets[i] & rightSets[j]);
 
-            if (sets.Count == 0) return None;
-
-            return new VersionRange(sets.ToArray(), default);
+            return FromList(results);
         }
 
         public static VersionRange operator |(VersionRange left, VersionRange right)
         {
-            // TODO: put this in a cycle, combining the sets' ranges, until there are no changes
-            List<ComparatorSet> leftResults = [];
-            List<ComparatorSet> rightResults = [];
-
             ComparatorSet[] leftSets = left._comparatorSets;
             ComparatorSet[] rightSets = right._comparatorSets;
+            List<ComparatorSet> results = [];
 
             for (int i = 0; i < leftSets.Length; i++)
-            {
-                ComparatorSet accumulator = leftSets[i];
+                AddWithCombine(results, leftSets[i]);
+            for (int i = 0; i < rightSets.Length; i++)
+                AddWithCombine(results, rightSets[i]);
 
-                for (int j = 0; j < rightSets.Length; j++)
+            return FromList(results);
+        }
+
+        private static void AddWithCombine(List<ComparatorSet> sets, ComparatorSet append)
+        {
+            if (append.Equals(ComparatorSet.None)) return;
+
+            for (int i = 0; i < sets.Count; i++)
+            {
+                if (append.Intersects(sets[i]))
                 {
-                    // TODO: use a tuple-returning Union method instead
-                    VersionRange range = accumulator | rightSets[j];
-                    // if the sets were combined into one, use the new value
-                    if (range.ComparatorSets.Count == 1)
-                        accumulator = range[0];
-                    else
-                        rightResults.Add(rightSets[j]);
+                    // TODO: optimize this, combine without memory allocation and duplicate GetBounds() calls
+                    VersionRange combined = append | sets[i];
+                    Debug.Assert(combined._comparatorSets.Length == 1);
+                    sets[i] = combined._comparatorSets[0];
+
+                    // see if the resulting set intersects with any other sets,
+                    // and combine the comparator sets until there are no changes
+                    while (TryCombineOneIntersection(sets)) { }
+                    return;
                 }
-                // TODO: check for more intersections?
-
-                leftResults.Add(accumulator);
             }
-            // TODO: check for more intersections?
 
-            if (rightResults.Count == 0)
+            sets.Add(append);
+        }
+        private static bool TryCombineOneIntersection(List<ComparatorSet> sets)
+        {
+            int count = sets.Count;
+            for (int i = 0; i < count; i++)
+                for (int j = i + 1; j < count; j++)
+                    if (sets[i].Intersects(sets[j]))
+                    {
+                        VersionRange combined = sets[i] | sets[j];
+                        Debug.Assert(combined._comparatorSets.Length == 1);
+                        sets[i] = combined._comparatorSets[0];
+                        sets.RemoveAt(j);
+                        return true;
+                    }
+            return false;
+        }
+
+        private static VersionRange FromList(List<ComparatorSet> results)
+        {
+            if (results.Count == 1)
             {
-                if (ReferenceEquals(leftResults[0], ComparatorSet.None)) return None;
-                if (ReferenceEquals(leftResults[0], ComparatorSet.All)) return All;
+                ComparatorSet only = results[0];
+                if (only.Equals(ComparatorSet.None)) return None;
+                if (only.Equals(ComparatorSet.All)) return All;
             }
-
-            return new VersionRange([..leftResults, ..rightResults], default);
+            if (results.Count == 0) return None;
+            return new VersionRange(results.ToArray(), default);
         }
 
     }

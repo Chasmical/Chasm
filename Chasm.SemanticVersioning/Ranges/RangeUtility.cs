@@ -90,12 +90,16 @@ namespace Chasm.SemanticVersioning.Ranges
             int nullSign = 1
         )
         {
+            // nullSign = 1  - comparing > and >=
+            // nullSign = -1 - comparing < and <=
+            // nullSign = 0  - suppress direction mismatch assertion
+
             if (leftOperand is null) return rightOperand is null ? 0 : -nullSign;
             if (rightOperand is null) return nullSign;
 
             Debug.Assert(!leftOperator.IsEQ() && !rightOperator.IsEQ());
-            Debug.Assert(leftOperator.IsGTOrGTE() == rightOperator.IsGTOrGTE());
-            Debug.Assert(leftOperator.IsLTOrLTE() == rightOperator.IsLTOrLTE());
+            Debug.Assert(nullSign == 0 || leftOperator.IsGTOrGTE() == rightOperator.IsGTOrGTE());
+            Debug.Assert(nullSign == 0 || leftOperator.IsLTOrLTE() == rightOperator.IsLTOrLTE());
 
             int cmp = leftOperand.CompareTo(rightOperand);
             // >1.2.3 is greater than >=1.2.3, since it doesn't include =1.2.3

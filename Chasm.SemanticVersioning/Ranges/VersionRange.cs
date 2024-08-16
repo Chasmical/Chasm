@@ -184,6 +184,9 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             (ComparatorSet? resultLeft, ComparatorSet? resultRight) = tuple;
 
+            // The right set may be non-null only if the left one is non-null
+            Debug.Assert(resultLeft is not null || resultRight is null);
+
             // If two comparator sets were returned, combine them in a range
             if (resultRight is not null)
                 return new VersionRange([resultLeft!, resultRight], default);
