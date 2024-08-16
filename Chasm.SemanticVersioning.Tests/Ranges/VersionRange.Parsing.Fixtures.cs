@@ -75,49 +75,49 @@ namespace Chasm.SemanticVersioning.Tests
             New("").Returns(new ComparatorSet());
 
             // Version range with multiple comparators
-            New(">=1.2.3 <5.0.0").Returns(new ComparatorSet([
+            New(">=1.2.3 <5.0.0").Returns(new ComparatorSet(
                 PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(1, 2, 3)),
-                PrimitiveComparator.LessThan(new SemanticVersion(5, 0, 0)),
-            ]));
-            New(">5.0.0 <=12.0.0 <45.0.0").Returns(new ComparatorSet([
+                PrimitiveComparator.LessThan(new SemanticVersion(5, 0, 0))
+            ));
+            New(">5.0.0 <=12.0.0 <45.0.0").Returns(new ComparatorSet(
                 PrimitiveComparator.GreaterThan(new SemanticVersion(5, 0, 0)),
                 PrimitiveComparator.LessThanOrEqual(new SemanticVersion(12, 0, 0)),
-                PrimitiveComparator.LessThan(new SemanticVersion(45, 0, 0)),
-            ]));
+                PrimitiveComparator.LessThan(new SemanticVersion(45, 0, 0))
+            ));
 
             // Version range with multiple comparator sets
             New(">=1.2.0 <=1.5.0 || >1.7.0-alpha.5 <2.0.0-0 || >=3.0.0-beta.4").Returns([
-                new ComparatorSet([
+                new ComparatorSet(
                     PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(1, 2, 0)),
-                    PrimitiveComparator.LessThanOrEqual(new SemanticVersion(1, 5, 0)),
-                ]),
-                new ComparatorSet([
+                    PrimitiveComparator.LessThanOrEqual(new SemanticVersion(1, 5, 0))
+                ),
+                new ComparatorSet(
                     PrimitiveComparator.GreaterThan(new SemanticVersion(1, 7, 0, ["alpha", 5])),
-                    PrimitiveComparator.LessThan(new SemanticVersion(2, 0, 0, [0])),
-                ]),
+                    PrimitiveComparator.LessThan(new SemanticVersion(2, 0, 0, [0]))
+                ),
                 PrimitiveComparator.GreaterThanOrEqual(new SemanticVersion(3, 0, 0, ["beta", 4])),
             ]);
 
             // X-Ranges and Hyphen ranges
             New("1.x 2.0 - 3.0.5 <=3.0.2 || 1.2 - 1.4.5-beta").Returns([
-                new ComparatorSet([
+                new ComparatorSet(
                     XRangeComparator.ImplicitEqual(new PartialVersion(1, 'x')),
                     new HyphenRangeComparator(new PartialVersion(2, 0), new PartialVersion(3, 0, 5)),
-                    PrimitiveComparator.LessThanOrEqual(new SemanticVersion(3, 0, 2)),
-                ]),
+                    PrimitiveComparator.LessThanOrEqual(new SemanticVersion(3, 0, 2))
+                ),
                 new HyphenRangeComparator(new PartialVersion(1, 2), new PartialVersion(1, 4, 5, ["beta"])),
             ]);
 
             // Caret and Tilde ranges
             New("^2.0.0-beta.5 <2.5.0 || ~1.2.* >1.2.4").Returns([
-                new ComparatorSet([
+                new ComparatorSet(
                     new CaretComparator(new PartialVersion(2, 0, 0, ["beta", 5])),
-                    PrimitiveComparator.LessThan(new SemanticVersion(2, 5, 0)),
-                ]),
-                new ComparatorSet([
+                    PrimitiveComparator.LessThan(new SemanticVersion(2, 5, 0))
+                ),
+                new ComparatorSet(
                     new TildeComparator(new PartialVersion(1, 2, '*')),
-                    PrimitiveComparator.GreaterThan(new SemanticVersion(1, 2, 4)),
-                ]),
+                    PrimitiveComparator.GreaterThan(new SemanticVersion(1, 2, 4))
+                ),
             ]);
 
 
@@ -143,10 +143,10 @@ namespace Chasm.SemanticVersioning.Tests
 
             // Only one space between individual comparators
             New(">1.2.3 <3.4.5 || ^5.6.0").Returns([
-                new ComparatorSet([
+                new ComparatorSet(
                     PrimitiveComparator.GreaterThan(new SemanticVersion(1, 2, 3)),
-                    PrimitiveComparator.LessThan(new SemanticVersion(3, 4, 5)),
-                ]),
+                    PrimitiveComparator.LessThan(new SemanticVersion(3, 4, 5))
+                ),
                 new CaretComparator(new PartialVersion(5, 6, 0)),
             ]);
             New(">1.2.3   <3.4.5 || ^5.6.0").Throws(Exceptions.Leftovers);

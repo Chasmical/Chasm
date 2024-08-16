@@ -8,6 +8,8 @@ namespace Chasm.SemanticVersioning.Tests
     public static class TestUtil
     {
         public const SemverOptions PseudoStrict = (SemverOptions)int.MinValue; // only the sign bit is on
+
+        // ReSharper disable once IdentifierTypo
         public const string DeserCtor = "This constructor is only used for deserialization.";
 
         public static T Parse<T>(string text) where T : IParsable<T>

@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Chasm.SemanticVersioning.Tests
 {
-    public partial class ComparatorSetTests(ITestOutputHelper output)
+    public class ComparatorSetTests(ITestOutputHelper output)
     {
         public ITestOutputHelper Output { get; } = output;
 
@@ -30,7 +30,7 @@ namespace Chasm.SemanticVersioning.Tests
             Assert.Same(a, Assert.Single(set.Comparators));
 
             // test params comparators constructor (empty params)
-            set = new ComparatorSet([]);
+            set = new ComparatorSet();
             Assert.Empty(set.Comparators);
 
             // test params comparators constructor

@@ -24,36 +24,36 @@ namespace Chasm.SemanticVersioning.Tests
 
             // Primitive comparators
             New("=1.2.3")
-                .Matches(["1.2.3", "1.2.3+BUILD"])
-                .DoesNotMatch(["1.2.2", "1.2.3-0", "1.2.3-alpha.3", "1.2.4-beta.2", "1.2.4"]);
+                .Matches("1.2.3", "1.2.3+BUILD")
+                .DoesNotMatch("1.2.2", "1.2.3-0", "1.2.3-alpha.3", "1.2.4-beta.2", "1.2.4");
 
             New(">1.2.3")
-                .Matches(["1.2.4", "1.3.5", "9.9.9"])
-                .MatchesWithIncPr(["1.2.4-0", "1.2.4-beta.5", "1.5.4-beta.2", "2.3.5-preview.7"])
-                .DoesNotMatch(["0.0.0", "0.1.2", "1.2.2", "1.2.3-0", "1.2.3-rc.0", "1.2.3"]);
+                .Matches("1.2.4", "1.3.5", "9.9.9")
+                .MatchesWithIncPr("1.2.4-0", "1.2.4-beta.5", "1.5.4-beta.2", "2.3.5-preview.7")
+                .DoesNotMatch("0.0.0", "0.1.2", "1.2.2", "1.2.3-0", "1.2.3-rc.0", "1.2.3");
 
             New("<1.2.3")
-                .Matches(["0.0.0", "0.2.3", "1.2.0", "1.2.2"])
-                .MatchesWithIncPr(["0.1.2-rc.2", "0.8.9-alpha.4", "1.2.3-0", "1.2.3-gamma.5"])
-                .DoesNotMatch(["1.2.3", "1.2.4-0", "1.2.4-rc.2", "9.9.9"]);
+                .Matches("0.0.0", "0.2.3", "1.2.0", "1.2.2")
+                .MatchesWithIncPr("0.1.2-rc.2", "0.8.9-alpha.4", "1.2.3-0", "1.2.3-gamma.5")
+                .DoesNotMatch("1.2.3", "1.2.4-0", "1.2.4-rc.2", "9.9.9");
 
             New(">=1.2.3")
-                .Matches(["1.2.3", "1.2.3+BUILD", "1.2.4", "1.3.5", "9.9.9"])
-                .MatchesWithIncPr(["1.2.4-0", "1.2.4-beta.5", "1.5.4-beta.2", "2.3.5-preview.7"])
-                .DoesNotMatch(["0.0.0", "0.1.2", "1.2.2", "1.2.3-0", "1.2.3-rc.0"]);
+                .Matches("1.2.3", "1.2.3+BUILD", "1.2.4", "1.3.5", "9.9.9")
+                .MatchesWithIncPr("1.2.4-0", "1.2.4-beta.5", "1.5.4-beta.2", "2.3.5-preview.7")
+                .DoesNotMatch("0.0.0", "0.1.2", "1.2.2", "1.2.3-0", "1.2.3-rc.0");
 
             New("<=1.2.3")
-                .Matches(["0.0.0", "0.2.3", "1.2.0", "1.2.2", "1.2.3", "1.2.3+BUILD"])
-                .MatchesWithIncPr(["0.1.2-rc.2", "0.8.9-alpha.4", "1.2.0-0", "1.2.3-0", "1.2.3-gamma.5"])
-                .DoesNotMatch(["1.2.4-0", "1.2.4-rc.2", "9.9.9"]);
+                .Matches("0.0.0", "0.2.3", "1.2.0", "1.2.2", "1.2.3", "1.2.3+BUILD")
+                .MatchesWithIncPr("0.1.2-rc.2", "0.8.9-alpha.4", "1.2.0-0", "1.2.3-0", "1.2.3-gamma.5")
+                .DoesNotMatch("1.2.4-0", "1.2.4-rc.2", "9.9.9");
 
 
 
             // Some simple advanced comparators
             New("^1.2.3 || 12.3 - 14.4 || ~6.7.0 || 4.*.*")
-                .Matches(["1.2.3", "1.5.0", "12.3.0", "13.5.3", "14.4.5", "6.7.9", "4.0.0", "4.9.2"])
-                .MatchesWithIncPr(["1.2.4-beta.2", "12.3.1-rc.5", "14.4.9-alpha.7", "4.0.2-pre.3"])
-                .DoesNotMatch(["1.2.0-pre.6", "14.5.2-gamma.8", "4.0.0-rc.1"]);
+                .Matches("1.2.3", "1.5.0", "12.3.0", "13.5.3", "14.4.5", "6.7.9", "4.0.0", "4.9.2")
+                .MatchesWithIncPr("1.2.4-beta.2", "12.3.1-rc.5", "14.4.9-alpha.7", "4.0.2-pre.3")
+                .DoesNotMatch("1.2.0-pre.6", "14.5.2-gamma.8", "4.0.0-rc.1");
 
             // We also have desugaring tests to ensure advanced comparators desugar
             // to primitives correctly, so there's no need to check all scenarios.
@@ -62,30 +62,30 @@ namespace Chasm.SemanticVersioning.Tests
 
             // Range with a hole in [1.2.3, 2.0.0)
             New("<1.2.3 || >=2.0.0")
-                .Matches(["1.0.4", "1.2.2", "2.0.0", "2.3.4", "9.9.9"])
-                .MatchesWithIncPr(["1.2.0-alpha.1", "1.2.3-0", "1.2.3-alpha", "2.0.1-0", "2.0.3-rc.6", "2.7.9-beta.0"])
-                .DoesNotMatch(["1.2.3", "1.5.4", "1.5.6-0", "2.0.0-0"]);
+                .Matches("1.0.4", "1.2.2", "2.0.0", "2.3.4", "9.9.9")
+                .MatchesWithIncPr("1.2.0-alpha.1", "1.2.3-0", "1.2.3-alpha", "2.0.1-0", "2.0.3-rc.6", "2.7.9-beta.0")
+                .DoesNotMatch("1.2.3", "1.5.4", "1.5.6-0", "2.0.0-0");
 
             // Range with a hole in 1.2.3
             New("<1.2.3 || >1.2.3")
-                .Matches(["0.0.0", "0.3.4", "1.2.2", "1.2.4", "9.8.7"])
-                .MatchesWithIncPr(["0.7.2-alpha.8", "1.2.0-0", "1.2.3-0", "1.2.3-beta.3", "1.2.4-0", "1.2.4-rc.3", "5.6.1-pre.2"])
-                .DoesNotMatch(["1.2.3", "1.2.3+BUILD"]);
+                .Matches("0.0.0", "0.3.4", "1.2.2", "1.2.4", "9.8.7")
+                .MatchesWithIncPr("0.7.2-alpha.8", "1.2.0-0", "1.2.3-0", "1.2.3-beta.3", "1.2.4-0", "1.2.4-rc.3", "5.6.1-pre.2")
+                .DoesNotMatch("1.2.3", "1.2.3+BUILD");
 
             // Full range with three intersecting sets
             New("<1.2.0 || >1.0.3 <1.5.0 || >=1.4.0")
-                .Matches(["1.0.0", "1.1.0", "1.2.0", "1.3.0", "1.4.0", "1.5.0", "1.6.0"])
-                .MatchesWithIncPr(["1.0.0-0", "1.4.0-0", "2.0.0-0"]);
+                .Matches("1.0.0", "1.1.0", "1.2.0", "1.3.0", "1.4.0", "1.5.0", "1.6.0")
+                .MatchesWithIncPr("1.0.0-0", "1.4.0-0", "2.0.0-0");
 
             // Ranges with pre-releases
             New(">=1.2.0-alpha.4 <1.3.0-0")
-                .Matches(["1.2.0-alpha.4", "1.2.0-alpha.12", "1.2.5", "1.2.99"])
-                .MatchesWithIncPr(["1.2.1-rc.4", "1.2.9-0"])
-                .DoesNotMatch(["1.1.0", "1.2.0-alpha.3", "1.3.0-0", "1.3.0-alpha.3"]);
+                .Matches("1.2.0-alpha.4", "1.2.0-alpha.12", "1.2.5", "1.2.99")
+                .MatchesWithIncPr("1.2.1-rc.4", "1.2.9-0")
+                .DoesNotMatch("1.1.0", "1.2.0-alpha.3", "1.3.0-0", "1.3.0-alpha.3");
 
             New(">5.6.0-0 <5.6.0-alpha.1")
-                .Matches(["5.6.0-0.1", "5.6.0-1", "5.6.0-ALPHA", "5.6.0-alpha", "5.6.0-alpha.0"])
-                .DoesNotMatch(["1.2.3", "5.6.0-0", "5.6.0-alpha.1", "5.6.0-beta.4", "5.6.0"]);
+                .Matches("5.6.0-0.1", "5.6.0-1", "5.6.0-ALPHA", "5.6.0-alpha", "5.6.0-alpha.0")
+                .DoesNotMatch("1.2.3", "5.6.0-0", "5.6.0-alpha.1", "5.6.0-beta.4", "5.6.0");
 
 
 

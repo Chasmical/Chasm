@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace Chasm.SemanticVersioning.Tests
 {
-    public partial class ComparatorTests(ITestOutputHelper output)
+    public class ComparatorTests(ITestOutputHelper output)
     {
         public ITestOutputHelper Output { get; } = output;
 
