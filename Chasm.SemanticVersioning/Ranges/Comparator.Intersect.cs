@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -6,9 +7,13 @@ namespace Chasm.SemanticVersioning.Ranges
     public abstract partial class Comparator
     {
         [Pure] public static ComparatorSet operator &(Comparator left, Comparator right)
-            => ComparatorSet.FromTuple(Intersect(left, right));
+        {
+            if (left is null) throw new ArgumentNullException(nameof(left));
+            if (right is null) throw new ArgumentNullException(nameof(right));
+            return ComparatorSet.FromTuple(Intersect(left, right));
+        }
 
-        [Pure] internal static (Comparator?, Comparator?) Intersect(Comparator left, Comparator right)
+        [Pure] private static (Comparator?, Comparator?) Intersect(Comparator left, Comparator right)
         {
             if (left is PrimitiveComparator primitiveLeft && right is PrimitiveComparator primitiveRight)
             {
@@ -22,9 +27,11 @@ namespace Chasm.SemanticVersioning.Ranges
             return IntersectAdvanced(left1, right1, left2, right2, left, right);
         }
 
-        [Pure] internal static (Comparator?, Comparator?) IntersectAdvanced(PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh,
-                                                                            PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh,
-                                                                            Comparator sugared1, Comparator sugared2)
+        [Pure] private static (Comparator?, Comparator?) IntersectAdvanced(
+            PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh,
+            PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh,
+            Comparator sugared1, Comparator sugared2
+        )
         {
             // =1.2.3 & ^1.0.0 ⇒ =1.2.3
             // =1.2.3 & ^2.0.0 ⇒ <0.0.0-0
@@ -77,7 +84,7 @@ namespace Chasm.SemanticVersioning.Ranges
             return (leftResult, rightResult);
         }
 
-        [Pure] internal static PrimitiveComparator? TryIntersectPrimitivesSingle(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] private static PrimitiveComparator? TryIntersectPrimitivesSingle(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Same direction primitive comparators (not equality)
             if (RangeUtility.SameDirection(left.Operator, right.Operator))
@@ -99,7 +106,7 @@ namespace Chasm.SemanticVersioning.Ranges
             // At this point, the comparison directions are different
             return TryIntersectOppositeSingle(left, right);
         }
-        [Pure] internal static PrimitiveComparator? TryIntersectOppositeSingle(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] private static PrimitiveComparator? TryIntersectOppositeSingle(PrimitiveComparator left, PrimitiveComparator right)
         {
             // The arguments must compare in opposite directions
             Debug.Assert(!left.Operator.IsEQ() && !right.Operator.IsEQ());

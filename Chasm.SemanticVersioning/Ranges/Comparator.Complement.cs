@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -6,17 +7,20 @@ namespace Chasm.SemanticVersioning.Ranges
     public abstract partial class Comparator
     {
         [Pure] public static VersionRange operator ~(Comparator comparator)
-            => VersionRange.FromTuple(Complement(comparator));
+        {
+            if (comparator is null) throw new ArgumentNullException(nameof(comparator));
+            return VersionRange.FromTuple(Complement(comparator));
+        }
 
-        [Pure] internal static (Comparator, Comparator?) Complement(Comparator comparator)
+        [Pure] private static (Comparator, Comparator?) Complement(Comparator comparator)
         {
             (PrimitiveComparator? left, PrimitiveComparator? right) = comparator.AsPrimitives();
 
-            if (left?.Operator.IsEQ() == true)
-                return (PrimitiveComparator.LessThan(left.Operand), PrimitiveComparator.GreaterThan(left.Operand));
-
             if (left is null)
                 return (right is null ? PrimitiveComparator.None : ComplementPrimitive(right.Operator, right.Operand), null);
+
+            if (left.Operator.IsEQ())
+                return (PrimitiveComparator.LessThan(left.Operand), PrimitiveComparator.GreaterThan(left.Operand));
 
             return (
                 ComplementPrimitive(left.Operator, left.Operand),

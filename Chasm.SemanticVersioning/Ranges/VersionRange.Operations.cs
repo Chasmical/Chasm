@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
     public sealed partial class VersionRange
     {
-        public static VersionRange operator ~(VersionRange range)
+        [Pure] public static VersionRange operator ~(VersionRange range)
         {
-            ComparatorSet[] sets = range._comparatorSets;
+            if (range is null) throw new ArgumentNullException(nameof(range));
 
+            ComparatorSet[] sets = range._comparatorSets;
             // TODO: improve performance and memory usage here?
             VersionRange result = ~sets[0];
             for (int i = 1; i < sets.Length; i++)
@@ -16,8 +19,11 @@ namespace Chasm.SemanticVersioning.Ranges
             return result;
         }
 
-        public static VersionRange operator &(VersionRange left, VersionRange right)
+        [Pure] public static VersionRange operator &(VersionRange left, VersionRange right)
         {
+            if (left is null) throw new ArgumentNullException(nameof(left));
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
             ComparatorSet[] leftSets = left._comparatorSets;
             ComparatorSet[] rightSets = right._comparatorSets;
             List<ComparatorSet> results = [];
@@ -29,8 +35,11 @@ namespace Chasm.SemanticVersioning.Ranges
             return FromList(results);
         }
 
-        public static VersionRange operator |(VersionRange left, VersionRange right)
+        [Pure] public static VersionRange operator |(VersionRange left, VersionRange right)
         {
+            if (left is null) throw new ArgumentNullException(nameof(left));
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
             ComparatorSet[] leftSets = left._comparatorSets;
             ComparatorSet[] rightSets = right._comparatorSets;
             List<ComparatorSet> results = [];
@@ -65,7 +74,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
             sets.Add(append);
         }
-        private static bool TryCombineOneIntersection(List<ComparatorSet> sets)
+        [Pure] private static bool TryCombineOneIntersection(List<ComparatorSet> sets)
         {
             int count = sets.Count;
             for (int i = 0; i < count; i++)
@@ -80,8 +89,7 @@ namespace Chasm.SemanticVersioning.Ranges
                     }
             return false;
         }
-
-        private static VersionRange FromList(List<ComparatorSet> results)
+        [Pure] private static VersionRange FromList(List<ComparatorSet> results)
         {
             if (results.Count == 1)
             {

@@ -302,6 +302,8 @@ namespace Chasm.SemanticVersioning.Ranges
 
         [Pure] public bool Contains(ComparatorSet other)
         {
+            if (other is null) throw new ArgumentNullException(nameof(other));
+
             var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
             var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
 
@@ -310,6 +312,8 @@ namespace Chasm.SemanticVersioning.Ranges
         }
         [Pure] public bool Intersects(ComparatorSet other)
         {
+            if (other is null) throw new ArgumentNullException(nameof(other));
+
             var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
             var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
 

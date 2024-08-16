@@ -58,7 +58,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="version">The semantic version to match.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version comparator; otherwise, <see langword="false"/>.</returns>
-        protected internal abstract bool IsSatisfiedByCore(SemanticVersion version);
+        [Pure] protected internal abstract bool IsSatisfiedByCore(SemanticVersion version);
 
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> is a pre-release version, and has the specified <paramref name="major"/>, <paramref name="minor"/> and <paramref name="patch"/> version components.</para>

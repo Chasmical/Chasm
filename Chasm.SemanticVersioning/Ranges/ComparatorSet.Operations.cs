@@ -1,11 +1,17 @@
-﻿namespace Chasm.SemanticVersioning.Ranges
+﻿using System;
+using JetBrains.Annotations;
+
+namespace Chasm.SemanticVersioning.Ranges
 {
     public sealed partial class ComparatorSet
     {
-        public static VersionRange operator ~(ComparatorSet comparatorSet)
-            => VersionRange.FromTuple(Complement(comparatorSet));
+        [Pure] public static VersionRange operator ~(ComparatorSet comparatorSet)
+        {
+            if (comparatorSet is null) throw new ArgumentNullException(nameof(comparatorSet));
+            return VersionRange.FromTuple(Complement(comparatorSet));
+        }
 
-        internal static (Comparator, Comparator?) Complement(ComparatorSet comparatorSet)
+        [Pure] private static (Comparator, Comparator?) Complement(ComparatorSet comparatorSet)
         {
             var (leftOp, left, rightOp, right) = comparatorSet.GetBoundsCore();
 
@@ -24,8 +30,11 @@
             );
         }
 
-        public static ComparatorSet operator &(ComparatorSet left, ComparatorSet right)
+        [Pure] public static ComparatorSet operator &(ComparatorSet left, ComparatorSet right)
         {
+            if (left is null) throw new ArgumentNullException(nameof(left));
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
             // each set represents a contiguous range of versions
             (PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh) = left.GetBounds();
             (PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh) = right.GetBounds();
@@ -65,8 +74,11 @@
             return new ComparatorSet([lowR, highR], default);
         }
 
-        public static VersionRange operator |(ComparatorSet left, ComparatorSet right)
+        [Pure] public static VersionRange operator |(ComparatorSet left, ComparatorSet right)
         {
+            if (left is null) throw new ArgumentNullException(nameof(left));
+            if (right is null) throw new ArgumentNullException(nameof(right));
+
             // each set represents a contiguous range of versions
             (PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh) = left.GetBounds();
             (PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh) = right.GetBounds();

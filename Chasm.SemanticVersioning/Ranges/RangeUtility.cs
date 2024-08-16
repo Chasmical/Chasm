@@ -5,14 +5,14 @@ using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
-    public static class RangeUtility
+    internal static class RangeUtility
     {
         /// <summary>
         ///   <para>Handles the conversion of a partial version to a semantic one the same way as <c>node-semver</c>: ignores components and pre-releases after an unspecified component, and removes build metadata. Major version component must be numeric at this point.</para>
         /// </summary>
         /// <param name="partial"></param>
         /// <returns></returns>
-        public static SemanticVersion NodeSemverTrim(PartialVersion partial)
+        [Pure] public static SemanticVersion NodeSemverTrim(PartialVersion partial)
         {
             int major = (int)partial.Major._value;
 
