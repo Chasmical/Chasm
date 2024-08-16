@@ -43,7 +43,7 @@ namespace Chasm.SemanticVersioning.Ranges
             PrimitiveComparator? from = ConvertFrom(From);
             PrimitiveComparator? to = ConvertTo(To);
 
-            if (from is not null && to is not null && !Utility.DoComparatorsComplement(to, from))
+            if (from is not null && to is not null && !RangeUtility.DoComparatorsComplement(to, from))
                 return (null, None);
 
             return (from, to);
@@ -66,7 +66,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 // 1.x.x    - ... ⇒ >=1.0.0    ...
                 // 1.x.x-rc - ... ⇒ >=1.0.0    ...
 
-                return GreaterThanOrEqual(Utility.NodeSemverTrim(from));
+                return GreaterThanOrEqual(RangeUtility.NodeSemverTrim(from));
             }
             static PrimitiveComparator? ConvertTo(PartialVersion to)
             {
@@ -100,7 +100,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 // ... - 1.2.3    ⇒ ... <=1.2.3
                 // ... - 1.2.3-rc ⇒ ... <=1.2.3-rc
 
-                return LessThanOrEqual(Utility.NodeSemverTrim(to));
+                return LessThanOrEqual(RangeUtility.NodeSemverTrim(to));
             }
         }
 

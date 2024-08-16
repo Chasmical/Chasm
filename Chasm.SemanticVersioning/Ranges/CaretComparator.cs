@@ -49,7 +49,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
                 if (major == int.MaxValue) throw new InvalidOperationException(Exceptions.MajorTooBig);
                 return (
-                    GreaterThanOrEqual(Utility.NodeSemverTrim(Operand)),
+                    GreaterThanOrEqual(RangeUtility.NodeSemverTrim(Operand)),
                     LessThan(new SemanticVersion(major + 1, 0, 0, SemverPreRelease.ZeroArray, null, null, null))
                 );
             }
@@ -71,7 +71,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
                 if (minor == int.MaxValue) throw new InvalidOperationException(Exceptions.MinorTooBig);
                 return (
-                    GreaterThanOrEqual(Utility.NodeSemverTrim(Operand)),
+                    GreaterThanOrEqual(RangeUtility.NodeSemverTrim(Operand)),
                     LessThan(new SemanticVersion(0, minor + 1, 0, SemverPreRelease.ZeroArray, null, null, null))
                 );
             }

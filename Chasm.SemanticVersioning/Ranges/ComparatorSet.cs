@@ -236,9 +236,9 @@ namespace Chasm.SemanticVersioning.Ranges
                     left = PrimitiveComparator.GreaterThanOrEqual(left.Operand);
                 }
 
-                if (left is not null && (lower is null || Utility.CompareComparators(left, lower) > 0))
+                if (left is not null && (lower is null || RangeUtility.CompareComparators(left, lower) > 0))
                     lower = left;
-                if (right is not null && (upper is null || Utility.CompareComparators(right, upper) < 0))
+                if (right is not null && (upper is null || RangeUtility.CompareComparators(right, upper) < 0))
                     upper = right;
             }
 
@@ -275,7 +275,7 @@ namespace Chasm.SemanticVersioning.Ranges
                         }
                         continue;
                     }
-                    if (lower is null || Utility.CompareComparators(leftOp, left, lowerOp, lower) > 0)
+                    if (lower is null || RangeUtility.CompareComparators(leftOp, left, lowerOp, lower) > 0)
                     {
                         lowerOp = leftOp;
                         lower = left;
@@ -286,7 +286,7 @@ namespace Chasm.SemanticVersioning.Ranges
                     PrimitiveOperator rightOp = rightC.Operator;
                     SemanticVersion right = rightC.Operand;
 
-                    if (upper is null || Utility.CompareComparators(rightOp, right, upperOp, upper) < 0)
+                    if (upper is null || RangeUtility.CompareComparators(rightOp, right, upperOp, upper) < 0)
                     {
                         upperOp = rightOp;
                         upper = right;
@@ -302,16 +302,16 @@ namespace Chasm.SemanticVersioning.Ranges
             var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
             var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
 
-            return (low1 is null || low2 is not null && Utility.CompareComparators(lowOp1, low1, lowOp2, low2) <= 0) &&
-                   (high1 is null || high2 is not null && Utility.CompareComparators(highOp1, high1, highOp2, high2) >= 0);
+            return (low1 is null || low2 is not null && RangeUtility.CompareComparators(lowOp1, low1, lowOp2, low2) <= 0) &&
+                   (high1 is null || high2 is not null && RangeUtility.CompareComparators(highOp1, high1, highOp2, high2) >= 0);
         }
         [Pure] public bool Intersects(ComparatorSet other)
         {
             var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
             var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
 
-            return (high1 is null || low2 is null || Utility.CompareComparators(highOp1, high1, lowOp2, low2) >= 0) &&
-                   (low1 is null || high2 is null || Utility.CompareComparators(lowOp1, low1, highOp2, high2) <= 0);
+            return (high1 is null || low2 is null || RangeUtility.CompareComparators(highOp1, high1, lowOp2, low2) >= 0) &&
+                   (low1 is null || high2 is null || RangeUtility.CompareComparators(lowOp1, low1, highOp2, high2) <= 0);
         }
 
         /// <summary>

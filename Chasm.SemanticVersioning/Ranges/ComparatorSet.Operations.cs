@@ -12,7 +12,8 @@
             if (left is not null && leftOp.IsEQ())
                 return (PrimitiveComparator.LessThan(left), PrimitiveComparator.GreaterThan(left));
 
-            if (!Utility.DoComparatorsIntersect(rightOp, right, leftOp, left)) return (XRangeComparator.All, null);
+            if (!RangeUtility.DoComparatorsIntersect(rightOp, right, leftOp, left))
+                return (XRangeComparator.All, null);
 
             if (left is null)
                 return (right is null ? PrimitiveComparator.None : Comparator.ComplementPrimitive(rightOp, right), null);
@@ -30,8 +31,8 @@
             (PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh) = right.GetBounds();
 
             // -1 - second, 1 - first, 0 - either
-            int leftC = Utility.CompareComparators(leftLow, rightLow);
-            int rightC = Utility.CompareComparators(leftHigh, rightHigh, -1);
+            int leftC = RangeUtility.CompareComparators(leftLow, rightLow);
+            int rightC = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
 
             if (leftC == 0 && rightC == 0)
                 return left.IsSugared || !right.IsSugared ? left : right;
@@ -76,14 +77,14 @@
                 return left;
 
             // if the ranges do not intersect, combine them in a version range
-            if (!Utility.DoComparatorsIntersect(rightHigh, leftLow) || !Utility.DoComparatorsIntersect(leftHigh, rightLow))
+            if (!RangeUtility.DoComparatorsIntersect(rightHigh, leftLow) || !RangeUtility.DoComparatorsIntersect(leftHigh, rightLow))
             {
                 return new VersionRange([left, right], default);
             }
 
             // -1 - first, 1 - second, 0 - either
-            int lowC = Utility.CompareComparators(leftLow, rightLow);
-            int highC = Utility.CompareComparators(leftHigh, rightHigh, -1);
+            int lowC = RangeUtility.CompareComparators(leftLow, rightLow);
+            int highC = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
 
             if (lowC == 0 && highC == 0)
                 return left.IsSugared || !right.IsSugared ? left : right;

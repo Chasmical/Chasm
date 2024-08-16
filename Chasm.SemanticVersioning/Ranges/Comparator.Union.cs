@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using System.Diagnostics;
 
 namespace Chasm.SemanticVersioning.Ranges
 {
@@ -44,12 +43,12 @@ namespace Chasm.SemanticVersioning.Ranges
 
             // >=1.0.0 <2.0.0-0 | >=3.0.0 <4.0.0-0 ⇒ as is
             //         --------   -------
-            if (leftHigh is not null && rightLow is not null && !Utility.DoComparatorsComplement(leftHigh, rightLow))
+            if (leftHigh is not null && rightLow is not null && !RangeUtility.DoComparatorsComplement(leftHigh, rightLow))
                 return (sugared1, sugared2);
 
             // >=3.0.0 <4.0.0-0 | >=1.0.0 <2.0.0-0 ⇒ as is
             // -------                    --------
-            if (rightHigh is not null && leftLow is not null && !Utility.DoComparatorsComplement(rightHigh, leftLow))
+            if (rightHigh is not null && leftLow is not null && !RangeUtility.DoComparatorsComplement(rightHigh, leftLow))
                 return (sugared1, sugared2);
 
             isRange = false;
@@ -60,8 +59,8 @@ namespace Chasm.SemanticVersioning.Ranges
             // <1.2.3 | <2.3.4 ⇒ <2.3.4
 
             // -1 - first, 1 - second, 0 - either
-            int leftC = Utility.CompareComparators(leftLow, rightLow);
-            int rightC = Utility.CompareComparators(leftHigh, rightHigh, -1);
+            int leftC = RangeUtility.CompareComparators(leftLow, rightLow);
+            int rightC = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
 
             if (leftC == 0 && rightC == 0)
                 return (sugared1.IsAdvanced || !sugared2.IsAdvanced ? sugared1 : sugared2, null);
@@ -95,9 +94,9 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] internal static Comparator? TryUnionPrimitivesSingle(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Same direction primitive comparators (not equality)
-            if (Utility.SameDirection(left.Operator, right.Operator))
+            if (RangeUtility.SameDirection(left.Operator, right.Operator))
             {
-                int cmp = Utility.CompareComparators(left, right);
+                int cmp = RangeUtility.CompareComparators(left, right);
                 return (left.Operator.IsGTOrGTE() ? cmp <= 0 : cmp >= 0) ? left : right;
             }
 

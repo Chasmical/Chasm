@@ -36,8 +36,8 @@ namespace Chasm.SemanticVersioning.Ranges
                 return (sugared1.IsSatisfiedBy(rightLow.Operand) ? sugared2 : PrimitiveComparator.None, null);
 
             // -1 - second, 1 - first, 0 - either
-            int leftC = Utility.CompareComparators(leftLow, rightLow);
-            int rightC = Utility.CompareComparators(leftHigh, rightHigh, -1);
+            int leftC = RangeUtility.CompareComparators(leftLow, rightLow);
+            int rightC = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
 
             if (leftC == 0 && rightC == 0)
                 return (sugared1.IsAdvanced || !sugared2.IsAdvanced ? sugared1 : sugared2, null);
@@ -80,9 +80,9 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] internal static PrimitiveComparator? TryIntersectPrimitivesSingle(PrimitiveComparator left, PrimitiveComparator right)
         {
             // Same direction primitive comparators (not equality)
-            if (Utility.SameDirection(left.Operator, right.Operator))
+            if (RangeUtility.SameDirection(left.Operator, right.Operator))
             {
-                int cmp = Utility.CompareComparators(left, right);
+                int cmp = RangeUtility.CompareComparators(left, right);
                 return (left.Operator.IsGTOrGTE() ? cmp >= 0 : cmp <= 0) ? left : right;
             }
 
