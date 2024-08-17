@@ -7,6 +7,12 @@ namespace Chasm.SemanticVersioning.Ranges
 {
     public sealed partial class VersionRange
     {
+        /// <summary>
+        ///   <para>Returns the complement of the specified version <paramref name="range"/>.</para>
+        /// </summary>
+        /// <param name="range">The version range to get the complement of.</param>
+        /// <returns>The complement of the specified version <paramref name="range"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="range"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator ~(VersionRange range)
         {
             if (range is null) throw new ArgumentNullException(nameof(range));
@@ -19,6 +25,13 @@ namespace Chasm.SemanticVersioning.Ranges
             return result;
         }
 
+        /// <summary>
+        ///   <para>Returns the intersection of the two specified version ranges.</para>
+        /// </summary>
+        /// <param name="left">The first version range to intersect.</param>
+        /// <param name="right">The second version range to intersect.</param>
+        /// <returns>The intersection of <paramref name="left"/> and <paramref name="right"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator &(VersionRange left, VersionRange right)
         {
             if (left is null) throw new ArgumentNullException(nameof(left));
@@ -35,6 +48,13 @@ namespace Chasm.SemanticVersioning.Ranges
             return FromList(results);
         }
 
+        /// <summary>
+        ///   <para>Returns the union of the two specified version ranges.</para>
+        /// </summary>
+        /// <param name="left">The first version range to union.</param>
+        /// <param name="right">The second version range to union.</param>
+        /// <returns>The union of <paramref name="left"/> and <paramref name="right"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator |(VersionRange left, VersionRange right)
         {
             if (left is null) throw new ArgumentNullException(nameof(left));

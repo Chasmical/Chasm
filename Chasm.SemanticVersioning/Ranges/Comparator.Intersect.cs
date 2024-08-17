@@ -6,6 +6,13 @@ namespace Chasm.SemanticVersioning.Ranges
 {
     public abstract partial class Comparator
     {
+        /// <summary>
+        ///   <para>Returns the intersection of the two specified comparators.</para>
+        /// </summary>
+        /// <param name="left">The first comparator to intersect.</param>
+        /// <param name="right">The second comparator to intersect.</param>
+        /// <returns>The intersection of <paramref name="left"/> and <paramref name="right"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static ComparatorSet operator &(Comparator left, Comparator right)
         {
             if (left is null) throw new ArgumentNullException(nameof(left));

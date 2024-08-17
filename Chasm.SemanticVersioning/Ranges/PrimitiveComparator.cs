@@ -131,13 +131,27 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         public static PrimitiveComparator All { get; } = GreaterThanOrEqual(new SemanticVersion(0, 0, 0));
 
+        /// <summary>
+        ///   <para>Determines whether this primitive comparator is equal to another specified primitive comparator.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
+        /// </summary>
+        /// <param name="other">The primitive comparator to compare with this primitive comparator.</param>
+        /// <returns><see langword="true"/>, if this primitive comparator is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(PrimitiveComparator? other)
         {
             if (ReferenceEquals(this, other)) return true;
             return other is not null && Operator.Normalize() == other.Operator.Normalize() && Operand.Equals(other.Operand);
         }
+        /// <summary>
+        ///   <para>Determines whether this primitive comparator is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="obj">The object to compare with this primitive comparator.</param>
+        /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="PrimitiveComparator"/> instance equal to this primitive comparator; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => Equals(obj as PrimitiveComparator);
+        /// <summary>
+        ///   <para>Returns a hash code for this primitive comparator.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <returns>A hash code for this primitive comparator.</returns>
         [Pure] public override int GetHashCode()
         {
             // We won't add the type hashcode here for performance reasons, since

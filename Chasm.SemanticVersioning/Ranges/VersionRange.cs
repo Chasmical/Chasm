@@ -243,13 +243,27 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The comparator set at the specified index.</returns>
         public ComparatorSet this[int index] => _comparatorSets[index];
 
+        /// <summary>
+        ///   <para>Determines whether this version range is equal to another specified version range.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="other">The version range to compare with this version range.</param>
+        /// <returns><see langword="true"/>, if this version range is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(VersionRange? other)
         {
             if (other is null) return false;
             return Utility.SequenceEqual(_comparatorSets, other._comparatorSets);
         }
+        /// <summary>
+        ///   <para>Determines whether this version range is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="obj">The object to compare with this version range.</param>
+        /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="VersionRange"/> instance equal to this version range; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => Equals(obj as VersionRange);
+        /// <summary>
+        ///   <para>Returns a hash code for this version range.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <returns>A hash code for this version range.</returns>
         [Pure] public override int GetHashCode()
         {
             HashCode hash = new();
@@ -259,8 +273,20 @@ namespace Chasm.SemanticVersioning.Ranges
             return hash.ToHashCode();
         }
 
+        /// <summary>
+        ///   <para>Determines whether two specified version ranges are equal.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="left">The first version range to compare.</param>
+        /// <param name="right">The second version range to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator ==(VersionRange? left, VersionRange? right)
             => left is null ? right is null : left.Equals(right);
+        /// <summary>
+        ///   <para>Determines whether two specified version ranges are not equal.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="left">The first version range to compare.</param>
+        /// <param name="right">The second version range to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(VersionRange? left, VersionRange? right)
             => !(left == right);
 

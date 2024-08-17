@@ -5,6 +5,13 @@ namespace Chasm.SemanticVersioning.Ranges
 {
     public abstract partial class Comparator
     {
+        /// <summary>
+        ///   <para>Returns the union of the two specified comparators.</para>
+        /// </summary>
+        /// <param name="left">The first comparator to union.</param>
+        /// <param name="right">The second comparator to union.</param>
+        /// <returns>The union of <paramref name="left"/> and <paramref name="right"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator |(Comparator left, Comparator right)
         {
             if (left is null) throw new ArgumentNullException(nameof(left));

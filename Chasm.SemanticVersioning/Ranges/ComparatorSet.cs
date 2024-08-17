@@ -300,6 +300,12 @@ namespace Chasm.SemanticVersioning.Ranges
             return (lowerOp, lower, upperOp, upper);
         }
 
+        /// <summary>
+        ///   <para>Determines whether this comparator set contains the specified <paramref name="other"/> comparator set.</para>
+        /// </summary>
+        /// <param name="other">The comparator set to contain.</param>
+        /// <returns><see langword="true"/>, if this comparator set contains <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
         [Pure] public bool Contains(ComparatorSet other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
@@ -310,6 +316,12 @@ namespace Chasm.SemanticVersioning.Ranges
             return (low1 is null || low2 is not null && RangeUtility.CompareComparators(lowOp1, low1, lowOp2, low2) <= 0) &&
                    (high1 is null || high2 is not null && RangeUtility.CompareComparators(highOp1, high1, highOp2, high2) >= 0);
         }
+        /// <summary>
+        ///   <para>Determines whether this comparator set intersects the specified <paramref name="other"/> comparator set.</para>
+        /// </summary>
+        /// <param name="other">The comparator set to intersect with.</param>
+        /// <returns><see langword="true"/>, if this comparator set intersects <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
         [Pure] public bool Intersects(ComparatorSet other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
@@ -342,13 +354,27 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The comparator at the specified index.</returns>
         public Comparator this[int index] => _comparators[index];
 
+        /// <summary>
+        ///   <para>Determines whether this comparator set is equal to another specified comparator set.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="other">The comparator set to compare with this comparator set.</param>
+        /// <returns><see langword="true"/>, if this comparator set is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(ComparatorSet? other)
         {
             if (other is null) return false;
             return Utility.SequenceEqual(_comparators, other._comparators);
         }
+        /// <summary>
+        ///   <para>Determines whether this comparator set is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="obj">The object to compare with this comparator set.</param>
+        /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="ComparatorSet"/> instance equal to this comparator set; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => Equals(obj as ComparatorSet);
+        /// <summary>
+        ///   <para>Returns a hash code for this comparator set.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <returns>A hash code for this comparator set.</returns>
         [Pure] public override int GetHashCode()
         {
             HashCode hash = new();
@@ -358,8 +384,20 @@ namespace Chasm.SemanticVersioning.Ranges
             return hash.ToHashCode();
         }
 
+        /// <summary>
+        ///   <para>Determines whether two specified comparator sets are equal.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="left">The first comparator set to compare.</param>
+        /// <param name="right">The second comparator set to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator ==(ComparatorSet? left, ComparatorSet? right)
             => left is null ? right is null : left.Equals(right);
+        /// <summary>
+        ///   <para>Determines whether two specified comparator sets are not equal.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="left">The first comparator set to compare.</param>
+        /// <param name="right">The second comparator set to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(ComparatorSet? left, ComparatorSet? right)
             => !(left == right);
 

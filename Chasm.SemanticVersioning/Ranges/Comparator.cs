@@ -97,11 +97,32 @@ namespace Chasm.SemanticVersioning.Ranges
 
         [Pure] bool IEquatable<Comparator>.Equals(Comparator? other)
             => Equals(other);
+        /// <summary>
+        ///   <para>Determines whether this comparator is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="obj">The object to compare with this comparator.</param>
+        /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="Comparator"/> instance equal to this comparator; otherwise, <see langword="false"/>.</returns>
         [Pure] public abstract override bool Equals(object? obj);
+        /// <summary>
+        ///   <para>Returns a hash code for this comparator.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <returns>A hash code for this comparator.</returns>
         [Pure] public abstract override int GetHashCode();
 
+        /// <summary>
+        ///   <para>Determines whether two specified comparators are equal.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="left">The first comparator to compare.</param>
+        /// <param name="right">The second comparator to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator ==(Comparator? left, Comparator? right)
             => left is null ? right is null : left.Equals(right);
+        /// <summary>
+        ///   <para>Determines whether two specified comparators are not equal.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="left">The first comparator to compare.</param>
+        /// <param name="right">The second comparator to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(Comparator? left, Comparator? right)
             => !(left == right);
 

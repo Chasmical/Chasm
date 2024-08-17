@@ -6,6 +6,12 @@ namespace Chasm.SemanticVersioning.Ranges
 {
     public abstract partial class Comparator
     {
+        /// <summary>
+        ///   <para>Returns the complement of the specified <paramref name="comparator"/>.</para>
+        /// </summary>
+        /// <param name="comparator">The comparator to get the complement of.</param>
+        /// <returns>The complement of the specified <paramref name="comparator"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="comparator"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator ~(Comparator comparator)
         {
             if (comparator is null) throw new ArgumentNullException(nameof(comparator));

@@ -104,13 +104,27 @@ namespace Chasm.SemanticVersioning.Ranges
             }
         }
 
+        /// <summary>
+        ///   <para>Determines whether this hyphen range comparator is equal to another specified hyphen range comparator.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
+        /// </summary>
+        /// <param name="other">The hyphen range comparator to compare with this hyphen range comparator.</param>
+        /// <returns><see langword="true"/>, if this hyphen range comparator is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(HyphenRangeComparator? other)
         {
             if (ReferenceEquals(this, other)) return true;
             return other is not null && From.Equals(other.From) && To.Equals(other.To);
         }
+        /// <summary>
+        ///   <para>Determines whether this hyphen range comparator is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
+        /// </summary>
+        /// <param name="obj">The object to compare with this hyphen range comparator.</param>
+        /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="HyphenRangeComparator"/> instance equal to this hyphen range comparator; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => Equals(obj as HyphenRangeComparator);
+        /// <summary>
+        ///   <para>Returns a hash code for this hyphen range comparator.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
+        /// </summary>
+        /// <returns>A hash code for this hyphen range comparator.</returns>
         [Pure] public override int GetHashCode()
         {
             // Add the type hashcode as well to avoid collisions between different types of comparators

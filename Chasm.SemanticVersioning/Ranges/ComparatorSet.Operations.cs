@@ -5,6 +5,12 @@ namespace Chasm.SemanticVersioning.Ranges
 {
     public sealed partial class ComparatorSet
     {
+        /// <summary>
+        ///   <para>Returns the complement of the specified <paramref name="comparatorSet"/>.</para>
+        /// </summary>
+        /// <param name="comparatorSet">The comparator set to get the complement of.</param>
+        /// <returns>The complement of the specified <paramref name="comparatorSet"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="comparatorSet"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator ~(ComparatorSet comparatorSet)
         {
             if (comparatorSet is null) throw new ArgumentNullException(nameof(comparatorSet));
@@ -30,6 +36,13 @@ namespace Chasm.SemanticVersioning.Ranges
             );
         }
 
+        /// <summary>
+        ///   <para>Returns the intersection of the two specified comparator sets.</para>
+        /// </summary>
+        /// <param name="left">The first comparator set to intersect.</param>
+        /// <param name="right">The second comparator set to intersect.</param>
+        /// <returns>The intersection of <paramref name="left"/> and <paramref name="right"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static ComparatorSet operator &(ComparatorSet left, ComparatorSet right)
         {
             if (left is null) throw new ArgumentNullException(nameof(left));
@@ -74,6 +87,13 @@ namespace Chasm.SemanticVersioning.Ranges
             return new ComparatorSet([lowR, highR], default);
         }
 
+        /// <summary>
+        ///   <para>Returns the union of the two specified comparator sets.</para>
+        /// </summary>
+        /// <param name="left">The first comparator set to union.</param>
+        /// <param name="right">The second comparator set to union.</param>
+        /// <returns>The union of <paramref name="left"/> and <paramref name="right"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator |(ComparatorSet left, ComparatorSet right)
         {
             if (left is null) throw new ArgumentNullException(nameof(left));
