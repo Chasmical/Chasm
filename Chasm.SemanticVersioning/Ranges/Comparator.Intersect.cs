@@ -22,118 +22,106 @@ namespace Chasm.SemanticVersioning.Ranges
 
         [Pure] private static (Comparator?, Comparator?) Intersect(Comparator left, Comparator right)
         {
+            // if both are primitives, use the simple IntersectPrimitives method
             if (left is PrimitiveComparator primitiveLeft && right is PrimitiveComparator primitiveRight)
             {
-                PrimitiveComparator? result = TryIntersectPrimitivesSingle(primitiveLeft, primitiveRight);
+                PrimitiveComparator? result = IntersectPrimitives(primitiveLeft, primitiveRight);
                 return result is not null ? (result, null) : (left, right);
             }
 
-            (PrimitiveComparator? left1, PrimitiveComparator? right1) = left.AsPrimitives();
-            (PrimitiveComparator? left2, PrimitiveComparator? right2) = right.AsPrimitives();
+            // otherwise (if one of them is advanced), use the IntersectAdvanced method
+            (PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh) = left.AsPrimitives();
+            (PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh) = right.AsPrimitives();
 
-            return IntersectAdvanced(left1, right1, left2, right2, left, right);
+            return IntersectAdvanced(leftLow, leftHigh, rightLow, rightHigh, left, right);
         }
-
         [Pure] private static (Comparator?, Comparator?) IntersectAdvanced(
             PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh,
             PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh,
-            Comparator sugared1, Comparator sugared2
+            Comparator original1, Comparator original2
         )
         {
-            // =1.2.3 & ^1.0.0 ⇒ =1.2.3
-            // =1.2.3 & ^2.0.0 ⇒ <0.0.0-0
+            // if one of the operands is an equality primitive, return either that primitive, or <0.0.0-0
             if (leftLow?.Operator.IsEQ() == true)
-                return (sugared2.IsSatisfiedBy(leftLow.Operand) ? sugared1 : PrimitiveComparator.None, null);
-            // ^1.0.0 & =1.2.3 ⇒ =1.2.3
-            // ^2.0.0 & =1.2.3 ⇒ <0.0.0-0
+                return (original2.IsSatisfiedByCore(leftLow.Operand) ? original1 : PrimitiveComparator.None, null);
             if (rightLow?.Operator.IsEQ() == true)
-                return (sugared1.IsSatisfiedBy(rightLow.Operand) ? sugared2 : PrimitiveComparator.None, null);
+                return (original1.IsSatisfiedByCore(rightLow.Operand) ? original2 : PrimitiveComparator.None, null);
 
-            // -1 - second, 1 - first, 0 - either
-            int leftC = RangeUtility.CompareComparators(leftLow, rightLow);
-            int rightC = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
+            // determine the resulting intersection's bounds
+            int lowK = RangeUtility.CompareComparators(leftLow, rightLow);
+            int highK = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
 
-            if (leftC == 0 && rightC == 0)
-                return (sugared1.IsAdvanced || !sugared2.IsAdvanced ? sugared1 : sugared2, null);
+            // both operands' bounds are the same, return whichever one's an advanced comparator, or the left one
+            if (lowK == 0 && highK == 0)
+                return (original1.IsAdvanced || !original2.IsAdvanced ? original1 : original2, null);
 
-            if (leftC >= 0 && rightC <= 0) return (sugared1, null);
-            if (leftC <= 0 && rightC >= 0) return (sugared2, null);
+            // left is inside right (leftLow >= rightLow && leftHigh <= rightHigh), return original left comparator
+            if (lowK >= 0 && highK <= 0) return (original1, null);
+            // right is inside left (leftLow <= rightLow && leftHigh >= rightHigh), return original right comparator
+            if (lowK <= 0 && highK >= 0) return (original2, null);
 
-            PrimitiveComparator? leftResult = leftC >= 0 ? leftLow : rightLow;
-            PrimitiveComparator? rightResult = rightC <= 0 ? leftHigh : rightHigh;
+            // store the resulting intersection's bounds
+            PrimitiveComparator? resultLow = lowK >= 0 ? leftLow : rightLow;
+            PrimitiveComparator? resultHigh = highK <= 0 ? leftHigh : rightHigh;
 
-            if (leftResult is not null && rightResult is not null)
+            // see if two primitives can be turned into one (i.e. =1.2.3 or <0.0.0-0)
+            if (resultLow is not null && resultHigh is not null)
             {
-                // see if the two primitives can be turned into one (e.g. =1.2.3 or <0.0.0-0)
-                PrimitiveComparator? singleResult = TryIntersectOppositeSingle(leftResult, rightResult);
-                // if it's null, it's either an equality primitive or a <0.0.0-0
+                PrimitiveComparator? singleResult = IntersectOpposite(resultLow, resultHigh);
                 if (singleResult is not null) return (singleResult, null);
             }
 
-            // At this point, we only have >, >=, <, <= primitives
+            // at this point, we only have >/>=/</<= primitives, which definitely intersect
+            Debug.Assert(RangeUtility.DoComparatorsIntersect(resultHigh, resultLow));
 
-            if (sugared1 is AdvancedComparator advanced1)
-            {
-                AdvancedComparator? resugared = Resugar(advanced1, leftResult, rightResult);
-                if (resugared is not null) return (resugared, null);
-            }
-            if (sugared2 is AdvancedComparator advanced2)
-            {
-                AdvancedComparator? resugared = Resugar(advanced2, leftResult, rightResult);
-                if (resugared is not null) return (resugared, null);
-            }
+            // see if any of the advanced comparator can be resugared back
+            if (original1 is AdvancedComparator advanced1 && Resugar(advanced1, resultLow, resultHigh) is { } resugared1)
+                return (resugared1, null);
+            if (original2 is AdvancedComparator advanced2 && Resugar(advanced2, resultLow, resultHigh) is { } resugared2)
+                return (resugared2, null);
 
-            if (leftResult is null)
-                return (rightResult is null ? XRangeComparator.All : rightResult, null);
-            if (rightResult is null)
-                return (leftResult, null);
+            // arrange the primitives to be used in FromTuple method
+            if (resultLow is null)
+                return (resultHigh is null ? XRangeComparator.All : resultHigh, null);
+            if (resultHigh is null)
+                return (resultLow, null);
 
-            return (leftResult, rightResult);
+            return (resultLow, resultHigh);
         }
 
-        [Pure] private static PrimitiveComparator? TryIntersectPrimitivesSingle(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] private static PrimitiveComparator? IntersectPrimitives(PrimitiveComparator left, PrimitiveComparator right)
         {
-            // Same direction primitive comparators (not equality)
+            // if the primitives compare in the same direction (but not equality), pick whichever one's more restricting
             if (RangeUtility.SameDirection(left.Operator, right.Operator))
             {
                 int cmp = RangeUtility.CompareComparators(left, right);
                 return (left.Operator.IsGTOrGTE() ? cmp >= 0 : cmp <= 0) ? left : right;
             }
 
-            // =1.2.3 & <3.4.5 ⇒ =1.2.3
-            // =1.2.3 & >3.4.5 ⇒ <0.0.0-0
+            // if one of the operands is an equality primitive, return either that primitive, or <0.0.0-0
             if (left.Operator.IsEQ())
                 return right.IsSatisfiedByCore(left.Operand) ? left : PrimitiveComparator.None;
-
-            // >1.2.3 & =3.4.5 ⇒ =3.4.5
-            // <1.2.3 & =3.4.5 ⇒ <0.0.0-0
             if (right.Operator.IsEQ())
                 return left.IsSatisfiedByCore(right.Operand) ? right : PrimitiveComparator.None;
 
-            // At this point, the comparison directions are different
-            return TryIntersectOppositeSingle(left, right);
+            // at this point, the comparison directions are different
+            return IntersectOpposite(left, right);
         }
-        [Pure] private static PrimitiveComparator? TryIntersectOppositeSingle(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] private static PrimitiveComparator? IntersectOpposite(PrimitiveComparator left, PrimitiveComparator right)
         {
-            // The arguments must compare in opposite directions
+            // the primitives must compare in opposite directions here
             Debug.Assert(!left.Operator.IsEQ() && !right.Operator.IsEQ());
             Debug.Assert(left.Operator.IsGTOrGTE() != right.Operator.IsGTOrGTE());
 
-            //  <1.2.3 &  >3.4.5 ⇒ <0.0.0-0
-            //  >3.4.5 &  <1.2.3 ⇒ <0.0.0-0
-            // >=1.2.3 &  <1.2.3 ⇒ <0.0.0-0
+            // if one of their bounds doesn't satisfy the other comparator, then return <0.0.0-0
             if (!left.IsSatisfiedByCore(right.Operand) || !right.IsSatisfiedByCore(left.Operand))
                 return PrimitiveComparator.None;
 
-            // >=1.2.3 & <=1.2.3 ⇒ =1.2.3
+            // try to combine >= and <= primitives into an equality primitive
             if (left.Operator.IsSthThanOrEqual() && right.Operator.IsSthThanOrEqual() && left.Operand.Equals(right.Operand))
                 return PrimitiveComparator.Equal(left.Operand);
 
-            // The comparators can't be combined into a primitive, meaning that in order
-            // to intersect these two, a memory allocation (ComparatorSet) is required.
-
-            //  >1.2.3 &  <3.4.5 ⇒ >1.2.3 <3.4.5
-            // >=1.2.3 & <=3.4.5 ⇒ >=1.2.3 <=3.4.5
+            // the comparators can't be combined into a single primitive, meaning that a ComparatorSet is required
             return null;
         }
 

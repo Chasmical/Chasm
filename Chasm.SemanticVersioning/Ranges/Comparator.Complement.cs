@@ -20,28 +20,39 @@ namespace Chasm.SemanticVersioning.Ranges
 
         [Pure] private static (Comparator, Comparator?) Complement(Comparator comparator)
         {
-            (PrimitiveComparator? left, PrimitiveComparator? right) = comparator.AsPrimitives();
+            (PrimitiveComparator? low, PrimitiveComparator? high) = comparator.AsPrimitives();
 
-            if (left is null)
-                return (right is null ? PrimitiveComparator.None : ComplementPrimitive(right.Operator, right.Operand), null);
+            // if both bounds are null, return <0.0.0-0, otherwise if the lower one is null, complement the upper bound
+            if (low is null)
+                return (high is null ? PrimitiveComparator.None : ComplementComparisonPrimitive(high.Operator, high.Operand), null);
 
-            if (left.Operator.IsEQ())
-                return (PrimitiveComparator.LessThan(left.Operand), PrimitiveComparator.GreaterThan(left.Operand));
+            // if it's an equality primitive, return <a.b.c || >a.b.c
+            if (low.Operator.IsEQ())
+                return (PrimitiveComparator.LessThan(low.Operand), PrimitiveComparator.GreaterThan(low.Operand));
 
+            // complement one or both bounds, return <a.b.c || >x.y.z
             return (
-                ComplementPrimitive(left.Operator, left.Operand),
-                right is null ? null : ComplementPrimitive(right.Operator, right.Operand)
+                ComplementComparisonPrimitive(low.Operator, low.Operand),
+                high is null ? null : ComplementComparisonPrimitive(high.Operator, high.Operand)
             );
         }
-
-        [Pure] internal static Comparator ComplementPrimitive(PrimitiveOperator @operator, SemanticVersion operand)
+        [Pure] internal static Comparator ComplementComparisonPrimitive(PrimitiveOperator @operator, SemanticVersion operand)
         {
+            // accept only comparison-operator primitives
             Debug.Assert(!@operator.IsEQ());
 
+            // special case for <0.0.0-0 - return *
             if (@operator == PrimitiveOperator.LessThan && operand.Equals(SemanticVersion.MinValue))
                 return XRangeComparator.All;
 
-            return new PrimitiveComparator(operand, @operator.Invert());
+            // assert that the values are as expected
+            Debug.Assert(7 - PrimitiveOperator.GreaterThan == PrimitiveOperator.LessThanOrEqual);
+            Debug.Assert(7 - PrimitiveOperator.LessThan == PrimitiveOperator.GreaterThanOrEqual);
+            Debug.Assert(7 - PrimitiveOperator.GreaterThanOrEqual == PrimitiveOperator.LessThan);
+            Debug.Assert(7 - PrimitiveOperator.LessThanOrEqual == PrimitiveOperator.GreaterThan);
+
+            // return a primitive with the same operand and inverted operator
+            return new PrimitiveComparator(operand, 7 - @operator);
         }
 
     }

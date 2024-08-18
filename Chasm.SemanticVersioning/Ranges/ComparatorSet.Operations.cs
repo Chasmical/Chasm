@@ -28,11 +28,11 @@ namespace Chasm.SemanticVersioning.Ranges
                 return (XRangeComparator.All, null);
 
             if (left is null)
-                return (right is null ? PrimitiveComparator.None : Comparator.ComplementPrimitive(rightOp, right), null);
+                return (right is null ? PrimitiveComparator.None : Comparator.ComplementComparisonPrimitive(rightOp, right), null);
 
             return (
-                Comparator.ComplementPrimitive(leftOp, left),
-                right is null ? null : Comparator.ComplementPrimitive(rightOp, right)
+                Comparator.ComplementComparisonPrimitive(leftOp, left),
+                right is null ? null : Comparator.ComplementComparisonPrimitive(rightOp, right)
             );
         }
 
