@@ -165,6 +165,35 @@ namespace Chasm.SemanticVersioning.Ranges
 
             return new ComparatorSet(desugared.ToArray(), default);
         }
+        // TODO: make Normalize() public
+        [Pure] internal ComparatorSet Normalize()
+        {
+            Comparator[] comparators = _comparators;
+
+            // if there's only one comparator, normalize >x.x.x to <0.0.0-0, or just return this
+            if (comparators.Length <= 1)
+            {
+                if (comparators.Length == 1 && comparators[0] is AdvancedComparator advanced)
+                {
+                    var (desugaredLeft, desugaredRight) = advanced.ToPrimitives();
+                    if (desugaredLeft is null && PrimitiveComparator.None.Equals(desugaredRight))
+                        return None;
+                }
+                return this;
+            }
+
+            var (low, high) = GetBounds();
+            if (!RangeUtility.DoComparatorsIntersect(high, low)) return None;
+
+            // if this set contains two comparators, and it's already normalized, just return it
+            if (comparators.Length == 2 && ReferenceEquals(comparators[0], low) && ReferenceEquals(comparators[1], high))
+                return this;
+
+            // rearrange comparators in a normalized way
+            if (low is null) return high is null ? All : high;
+            if (high is null) return low;
+            return new ComparatorSet([low, high], default);
+        }
 
         /// <summary>
         ///   <para>Gets a comparator set (<c>&lt;0.0.0-0</c>) that doesn't match any versions.</para>
