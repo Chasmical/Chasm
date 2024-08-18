@@ -78,7 +78,7 @@ namespace Chasm.SemanticVersioning.Ranges
 
             for (int i = 0; i < sets.Count; i++)
             {
-                if (append.Intersects(sets[i]))
+                if (append.Touches(sets[i]))
                 {
                     // TODO: optimize this, combine without memory allocation and duplicate GetBounds() calls
                     VersionRange combined = append | sets[i];
@@ -99,7 +99,7 @@ namespace Chasm.SemanticVersioning.Ranges
             int count = sets.Count;
             for (int i = 0; i < count; i++)
                 for (int j = i + 1; j < count; j++)
-                    if (sets[i].Intersects(sets[j]))
+                    if (sets[i].Touches(sets[j]))
                     {
                         VersionRange combined = sets[i] | sets[j];
                         Debug.Assert(combined._comparatorSets.Length == 1);

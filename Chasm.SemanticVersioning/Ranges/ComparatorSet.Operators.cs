@@ -19,20 +19,20 @@ namespace Chasm.SemanticVersioning.Ranges
 
         [Pure] private static (Comparator, Comparator?) Complement(ComparatorSet comparatorSet)
         {
-            var (leftOp, left, rightOp, right) = comparatorSet.GetBoundsCore();
+            var (lowOp, low, highOp, high) = comparatorSet.GetBoundsCore();
 
-            if (left is not null && leftOp.IsEQ())
-                return (PrimitiveComparator.LessThan(left), PrimitiveComparator.GreaterThan(left));
+            if (low is not null && lowOp.IsEQ())
+                return (PrimitiveComparator.LessThan(low), PrimitiveComparator.GreaterThan(low));
 
-            if (!RangeUtility.DoComparatorsIntersect(rightOp, right, leftOp, left))
+            if (!RangeUtility.DoComparatorsIntersect(highOp, high, lowOp, low))
                 return (XRangeComparator.All, null);
 
-            if (left is null)
-                return (right is null ? PrimitiveComparator.None : Comparator.ComplementComparison(rightOp, right), null);
+            if (low is null)
+                return (high is null ? PrimitiveComparator.None : Comparator.ComplementComparison(highOp, high), null);
 
             return (
-                Comparator.ComplementComparison(leftOp, left),
-                right is null ? null : Comparator.ComplementComparison(rightOp, right)
+                Comparator.ComplementComparison(lowOp, low),
+                high is null ? null : Comparator.ComplementComparison(highOp, high)
             );
         }
 
@@ -49,42 +49,41 @@ namespace Chasm.SemanticVersioning.Ranges
             if (right is null) throw new ArgumentNullException(nameof(right));
 
             // each set represents a contiguous range of versions
+            // TODO: refactor to use GetBoundsCore() to minimize allocations with = primitives?
             (PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh) = left.GetBounds();
             (PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh) = right.GetBounds();
 
-            // -1 - second, 1 - first, 0 - either
-            int leftC = RangeUtility.CompareComparators(leftLow, rightLow);
-            int rightC = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
+            // determine the resulting intersection's bounds
+            int lowK = RangeUtility.CompareComparators(leftLow, rightLow);
+            int highK = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
 
-            if (leftC == 0 && rightC == 0)
+            // both operands' bounds are the same, return whichever one contains advanced comparators, or the left one
+            if (lowK == 0 && highK == 0)
                 return left.IsSugared || !right.IsSugared ? left : right;
 
-            if (leftC >= 0 && rightC <= 0) return left;
-            if (leftC <= 0 && rightC >= 0) return right;
+            // left is inside right (leftLow >= rightLow && leftHigh <= rightHigh), return original left set
+            if (lowK >= 0 && highK <= 0) return left;
+            // right is inside left (leftLow <= rightLow && leftHigh >= rightHigh), return original right set
+            if (lowK <= 0 && highK >= 0) return right;
 
-            PrimitiveComparator? lowR = leftC >= 0 ? leftLow : rightLow;
-            PrimitiveComparator? highR = rightC <= 0 ? leftHigh : rightHigh;
+            // store the resulting intersection's bounds
+            PrimitiveComparator? resultLow = lowK >= 0 ? leftLow : rightLow;
+            PrimitiveComparator? resultHigh = highK <= 0 ? leftHigh : rightHigh;
 
-            // if the intersection is invalid or empty, return <0.0.0-0
-            if (lowR is not null && highR is not null)
+            // see if two primitives can be turned into one (i.e. =1.2.3 or <0.0.0-0)
+            if (resultLow is not null && resultHigh is not null)
             {
-                if (!lowR.IsSatisfiedByCore(highR.Operand) || !highR.IsSatisfiedByCore(lowR.Operand))
-                    return None;
+                PrimitiveComparator? singleResult = Comparator.IntersectOpposite(resultLow, resultHigh);
+                if (singleResult is not null) return singleResult;
             }
 
-            // combine into an equality primitive
-            if (lowR?.Operator is PrimitiveOperator.GreaterThanOrEqual
-             && highR?.Operator is PrimitiveOperator.LessThanOrEqual
-             && lowR.Operand.Equals(highR.Operand))
-                return PrimitiveComparator.Equal(lowR.Operand);
+            // return the intersection as a comparator set
+            if (resultLow is null)
+                return resultHigh is null ? All : resultHigh;
+            if (resultHigh is null)
+                return resultLow;
 
-            // return the intersection
-            if (lowR is null)
-                return highR is null ? All : highR;
-            if (highR is null)
-                return lowR;
-
-            return new ComparatorSet([lowR, highR], default);
+            return new ComparatorSet([resultLow, resultHigh], default);
         }
 
         /// <summary>
@@ -100,34 +99,35 @@ namespace Chasm.SemanticVersioning.Ranges
             if (right is null) throw new ArgumentNullException(nameof(right));
 
             // each set represents a contiguous range of versions
+            // TODO: refactor to use GetBoundsCore() to minimize allocations with = primitives?
             (PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh) = left.GetBounds();
             (PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh) = right.GetBounds();
 
-            if (PrimitiveComparator.None.Equals(leftHigh))
-                return right;
-            if (PrimitiveComparator.None.Equals(rightHigh))
-                return left;
+            if (PrimitiveComparator.None.Equals(leftHigh)) return right;
+            if (PrimitiveComparator.None.Equals(rightHigh)) return left;
 
-            // if the ranges do not intersect, combine them in a version range
-            if (!RangeUtility.DoComparatorsIntersect(rightHigh, leftLow) || !RangeUtility.DoComparatorsIntersect(leftHigh, rightLow))
-            {
+            // if the sets do not intersect, combine them in a version range
+            if (!RangeUtility.DoComparatorsComplement(rightHigh, leftLow) || !RangeUtility.DoComparatorsComplement(leftHigh, rightLow))
                 return new VersionRange([left, right], default);
-            }
 
-            // -1 - first, 1 - second, 0 - either
-            int lowC = RangeUtility.CompareComparators(leftLow, rightLow);
-            int highC = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
+            // determine the resulting union's bounds
+            int lowK = RangeUtility.CompareComparators(leftLow, rightLow);
+            int highK = RangeUtility.CompareComparators(leftHigh, rightHigh, -1);
 
-            if (lowC == 0 && highC == 0)
+            // both operands' bounds are the same, return whichever one's an advanced comparator, or the left one
+            if (lowK == 0 && highK == 0)
                 return left.IsSugared || !right.IsSugared ? left : right;
 
-            if (lowC <= 0 && highC >= 0) return left;
-            if (lowC >= 0 && highC <= 0) return right;
+            // left contains right (leftLow <= rightLow && leftHigh >= rightHigh), return original left comparator
+            if (lowK <= 0 && highK >= 0) return left;
+            // right contains left (leftLow >= rightLow && leftHigh <= rightHigh), return original right comparator
+            if (lowK >= 0 && highK <= 0) return right;
 
-            PrimitiveComparator? resultLow = lowC <= 0 ? leftLow : rightLow;
-            PrimitiveComparator? resultHigh = highC >= 0 ? leftHigh : rightHigh;
+            // store the resulting union's bounds
+            PrimitiveComparator? resultLow = lowK <= 0 ? leftLow : rightLow;
+            PrimitiveComparator? resultHigh = highK >= 0 ? leftHigh : rightHigh;
 
-            // return the union
+            // return the union as a version range
             if (resultLow is null)
                 return resultHigh is null ? VersionRange.All : resultHigh;
             if (resultHigh is null)

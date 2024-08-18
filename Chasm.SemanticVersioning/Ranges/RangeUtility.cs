@@ -69,11 +69,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public static bool DoComparatorsComplement(PrimitiveComparator? high, PrimitiveComparator? low)
         {
             if (high is null || low is null) return true;
-            Debug.Assert(high.Operator.IsLTOrLTE());
-            Debug.Assert(low.Operator.IsGTOrGTE());
-
-            int cmp = high.Operand.CompareTo(low.Operand);
-            return cmp > 0 || cmp == 0 && (high.Operator.IsSthThanOrEqual() || low.Operator.IsSthThanOrEqual());
+            return DoComparatorsComplement(high.Operator, high.Operand, low.Operator, low.Operand);
         }
 
         [Pure] public static int CompareComparators(
@@ -112,6 +108,18 @@ namespace Chasm.SemanticVersioning.Ranges
 
             int cmp = highOperand.CompareTo(lowOperand);
             return cmp > 0 || cmp == 0 && highOperator.IsSthThanOrEqual() && lowOperator.IsSthThanOrEqual();
+        }
+        [Pure] public static bool DoComparatorsComplement(
+            PrimitiveOperator highOperator, SemanticVersion? highOperand,
+            PrimitiveOperator lowOperator, SemanticVersion? lowOperand
+        )
+        {
+            if (highOperand is null || lowOperand is null) return true;
+            Debug.Assert(highOperator.IsLTOrLTE());
+            Debug.Assert(lowOperator.IsGTOrGTE());
+
+            int cmp = highOperand.CompareTo(lowOperand);
+            return cmp > 0 || cmp == 0 && (highOperator.IsSthThanOrEqual() || lowOperator.IsSthThanOrEqual());
         }
 
     }

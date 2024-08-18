@@ -336,7 +336,7 @@ namespace Chasm.SemanticVersioning.Ranges
             return (lowerOp, lower, upperOp, upper);
         }
 
-        // TODO: make Contains and Intersects public after testing
+        // TODO: maybe make Contains, Intersects and Touches public after testing
         /// <summary>
         ///   <para>Determines whether this comparator set contains the specified <paramref name="other"/> comparator set.</para>
         /// </summary>
@@ -376,6 +376,21 @@ namespace Chasm.SemanticVersioning.Ranges
 
             return RangeUtility.DoComparatorsIntersect(highOp1, high1, lowOp2, low2) &&
                    RangeUtility.DoComparatorsIntersect(highOp2, high2, lowOp1, low1);
+        }
+        [Pure] internal bool Touches(ComparatorSet other)
+        {
+            if (other is null) throw new ArgumentNullException(nameof(other));
+
+            var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
+            var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
+
+            if (highOp1 == PrimitiveOperator.LessThan && SemanticVersion.MinValue.Equals(high1))
+                return highOp2 == PrimitiveOperator.LessThan && SemanticVersion.MinValue.Equals(high2);
+            if (highOp2 == PrimitiveOperator.LessThan && SemanticVersion.MinValue.Equals(high2))
+                return false;
+
+            return RangeUtility.DoComparatorsComplement(highOp1, high1, lowOp2, low2) &&
+                   RangeUtility.DoComparatorsComplement(highOp2, high2, lowOp1, low1);
         }
 
         /// <summary>

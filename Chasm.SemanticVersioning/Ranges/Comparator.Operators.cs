@@ -156,7 +156,7 @@ namespace Chasm.SemanticVersioning.Ranges
             // at this point, the comparison directions are different
             return IntersectOpposite(left, right);
         }
-        [Pure] private static PrimitiveComparator? IntersectOpposite(PrimitiveComparator left, PrimitiveComparator right)
+        [Pure] internal static PrimitiveComparator? IntersectOpposite(PrimitiveComparator left, PrimitiveComparator right)
         {
             // the primitives must compare in opposite directions here
             Debug.Assert(!left.Operator.IsEQ() && !right.Operator.IsEQ());
@@ -220,14 +220,8 @@ namespace Chasm.SemanticVersioning.Ranges
             if (rightLow?.Operator.IsEQ() == true)
                 return sugared1.IsSatisfiedByCore(rightLow.Operand) ? (sugared1, null) : (sugared1, sugared2);
 
-            // >=1.0.0 <2.0.0-0 | >=3.0.0 <4.0.0-0 ⇒ as is
-            //         --------   -------
-            if (leftHigh is not null && rightLow is not null && !RangeUtility.DoComparatorsComplement(leftHigh, rightLow))
-                return (sugared1, sugared2);
-
-            // >=3.0.0 <4.0.0-0 | >=1.0.0 <2.0.0-0 ⇒ as is
-            // -------                    --------
-            if (rightHigh is not null && leftLow is not null && !RangeUtility.DoComparatorsComplement(rightHigh, leftLow))
+            // if the comparators don't intersect, combine them in a version range
+            if (!RangeUtility.DoComparatorsComplement(leftHigh, rightLow) || !RangeUtility.DoComparatorsComplement(rightHigh, leftLow))
                 return (sugared1, sugared2);
 
             isRange = false; // resulting comparators are intersected as one set (>a.b.c <x.y.z)
