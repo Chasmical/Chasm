@@ -224,6 +224,7 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] int ISpanBuildable.CalculateLength() => CalculateLength();
         void ISpanBuildable.BuildString(ref SpanBuilder sb) => BuildString(ref sb);
 
+        // TODO: make GetBounds() public
         [Pure] internal (PrimitiveComparator? Lower, PrimitiveComparator? Upper) GetBounds()
         {
             PrimitiveComparator? lower = null;
@@ -244,6 +245,9 @@ namespace Chasm.SemanticVersioning.Ranges
                 if (right is not null && (upper is null || RangeUtility.CompareComparators(right, upper) < 0))
                     upper = right;
             }
+
+            if (!RangeUtility.DoComparatorsIntersect(upper, lower))
+                return (null, PrimitiveComparator.None);
 
             return (lower, upper);
         }
@@ -297,21 +301,28 @@ namespace Chasm.SemanticVersioning.Ranges
                 }
             }
 
+            if (!RangeUtility.DoComparatorsIntersect(upperOp, upper, lowerOp, lower))
+                return (default, null, PrimitiveOperator.LessThan, SemanticVersion.MinValue);
+
             return (lowerOp, lower, upperOp, upper);
         }
 
+        // TODO: make Contains and Intersects public after testing
         /// <summary>
         ///   <para>Determines whether this comparator set contains the specified <paramref name="other"/> comparator set.</para>
         /// </summary>
         /// <param name="other">The comparator set to contain.</param>
         /// <returns><see langword="true"/>, if this comparator set contains <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        [Pure] public bool Contains(ComparatorSet other)
+        [Pure] internal bool Contains(ComparatorSet other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
 
             var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
             var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
+
+            if (highOp2 == PrimitiveOperator.LessThan && SemanticVersion.MinValue.Equals(high2))
+                return true;
 
             return (low1 is null || low2 is not null && RangeUtility.CompareComparators(lowOp1, low1, lowOp2, low2) <= 0) &&
                    (high1 is null || high2 is not null && RangeUtility.CompareComparators(highOp1, high1, highOp2, high2) >= 0);
@@ -322,15 +333,20 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="other">The comparator set to intersect with.</param>
         /// <returns><see langword="true"/>, if this comparator set intersects <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        [Pure] public bool Intersects(ComparatorSet other)
+        [Pure] internal bool Intersects(ComparatorSet other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
 
             var (lowOp1, low1, highOp1, high1) = GetBoundsCore();
             var (lowOp2, low2, highOp2, high2) = other.GetBoundsCore();
 
-            return (high1 is null || low2 is null || RangeUtility.CompareComparators(highOp1, high1, lowOp2, low2, 0) >= 0) &&
-                   (low1 is null || high2 is null || RangeUtility.CompareComparators(lowOp1, low1, highOp2, high2, 0) <= 0);
+            if (highOp1 == PrimitiveOperator.LessThan && SemanticVersion.MinValue.Equals(high1))
+                return highOp2 == PrimitiveOperator.LessThan && SemanticVersion.MinValue.Equals(high2);
+            if (highOp2 == PrimitiveOperator.LessThan && SemanticVersion.MinValue.Equals(high2))
+                return false;
+
+            return RangeUtility.DoComparatorsIntersect(highOp1, high1, lowOp2, low2) &&
+                   RangeUtility.DoComparatorsIntersect(highOp2, high2, lowOp1, low1);
         }
 
         /// <summary>
