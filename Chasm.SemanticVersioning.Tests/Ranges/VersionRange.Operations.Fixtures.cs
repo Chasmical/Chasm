@@ -17,15 +17,15 @@ namespace Chasm.SemanticVersioning.Tests
 
             #region Operations with primitives
 
-            // Complement: test with comparison operators
+            // Complement: test comparison operators
             New(">1.2.3", '~').Returns("<=1.2.3");
             New("<1.2.3", '~').Returns(">=1.2.3");
             New(">=1.2.3", '~').Returns("<1.2.3");
             New("<=1.2.3", '~').Returns(">1.2.3");
-            // Complement: test with equality operators
+            // Complement: test equality operators
             New("=1.2.3", '~').Returns("<1.2.3 || >1.2.3");
             New("1.2.3", '~').Returns("<1.2.3 || >1.2.3");
-            // Complement: test with special versions
+            // Complement: test special versions
             New("*", '~').Returns("<0.0.0-0");
             New("<0.0.0-0", '~').Returns("*");
 
@@ -34,21 +34,35 @@ namespace Chasm.SemanticVersioning.Tests
             New("<1.2.3", '|', "<3.4.5").Returns("<3.4.5");
             New(">=1.2.3", '|', ">=3.4.5").Returns(">=1.2.3");
             New("<=1.2.3", '|', "<=3.4.5").Returns("<=3.4.5");
-            // Union: test precedence with inclusive/exclusive
+            // Union: test same direction comparison operators
             New(">1.2.3", '|', ">=1.2.3").Returns(">=1.2.3");
             New("<1.2.3", '|', "<=1.2.3").Returns("<=1.2.3");
             New(">1.2.3", '|', ">=3.4.5").Returns(">1.2.3");
             New(">=1.2.3", '|', ">3.4.5").Returns(">=1.2.3");
             New("<3.4.5", '|', "<=1.2.3").Returns("<3.4.5");
             New("<=3.4.5", '|', "<1.2.3").Returns("<=3.4.5");
-            // TODO: New(">=1.2.3", '|', "<1.2.3").Returns("*");
-            // TODO: New("<=1.2.3", '|', ">1.2.3").Returns("*");
-            // Union: test with equality operators
-            // TODO: New("=1.2.3", '|', ">1.2.3").Returns(">=1.2.3", true);
-            // TODO: New("=1.2.3", '|', "<1.2.3").Returns("<=1.2.3", true);
-            New("=1.2.3", '|', ">=1.2.3").Returns(">=1.2.3");
-            New("=1.2.3", '|', "<=1.2.3").Returns("<=1.2.3");
-            // Union: test with special versions
+            // Union: test opposite direction comparison operators
+            New(">1.2.3", '|', "<1.2.3").Returns(">1.2.3 || <1.2.3", false);
+            New("<1.2.3", '|', ">1.2.3").Returns("<1.2.3 || >1.2.3", false);
+            New(">1.2.3", '|', "<=1.2.3").Returns("*");
+            New("<1.2.3", '|', ">=1.2.3").Returns("*");
+            New(">=1.2.3", '|', "<=1.2.3").Returns("*");
+            New("<1.2.3", '|', ">3.4.5").Returns("<1.2.3 || >3.4.5", false);
+            New(">3.4.5", '|', "<1.2.3").Returns(">3.4.5 || <1.2.3", false);
+            New(">1.2.3", '|', "<3.4.5").Returns("*");
+            New(">=1.2.3", '|', "<3.4.5").Returns("*");
+            New(">1.2.3", '|', "<=3.4.5").Returns("*");
+            New(">=1.2.3", '|', "<=3.4.5").Returns("*");
+            // Union: test equality operators
+            New(">1.2.3", '|', "=3.4.5").Returns(">1.2.3");
+            New("<1.2.3", '|', "=0.7.8").Returns("<1.2.3");
+            // TODO: New(">1.2.3", '|', "=1.2.3").Returns(">=1.2.3");
+            // TODO: New("<1.2.3", '|', "=1.2.3").Returns("<=1.2.3");
+            New(">=1.2.3", '|', "=1.2.3").Returns(">=1.2.3");
+            New("<=1.2.3", '|', "=1.2.3").Returns("<=1.2.3");
+            New(">=1.2.3", '|', "=0.7.8").Returns(">=1.2.3 || =0.7.8", false);
+            New("<=1.2.3", '|', "=3.4.5").Returns("<=1.2.3 || =3.4.5", false);
+            // Union: test special versions
             New(">1.2.3", '|', "*").Returns("*");
             New("<1.2.3", '|', "*").Returns("*");
             New(">=1.2.3", '|', "*").Returns("*");
@@ -63,19 +77,33 @@ namespace Chasm.SemanticVersioning.Tests
             New("<1.2.3", '&', "<3.4.5").Returns("<1.2.3");
             New(">=1.2.3", '&', ">=3.4.5").Returns(">=3.4.5");
             New("<=1.2.3", '&', "<=3.4.5").Returns("<=1.2.3");
-            // Union: test precedence with inclusive/exclusive
+            // Intersection: test same direction comparison operators
             New(">1.2.3", '&', ">=1.2.3").Returns(">1.2.3");
             New("<1.2.3", '&', "<=1.2.3").Returns("<1.2.3");
             New(">1.2.3", '&', ">=3.4.5").Returns(">=3.4.5");
             New(">=1.2.3", '&', ">3.4.5").Returns(">3.4.5");
             New("<3.4.5", '&', "<=1.2.3").Returns("<=1.2.3");
             New("<=3.4.5", '&', "<1.2.3").Returns("<1.2.3");
-            // Intersection: test with equality operators
+            // Intersection: test opposite direction comparison operators
+            New(">1.2.3", '&', "<1.2.3").Returns("<0.0.0-0");
+            New(">1.2.3", '&', "<=1.2.3").Returns("<0.0.0-0");
+            New(">=1.2.3", '&', "<1.2.3").Returns("<0.0.0-0");
+            New(">=1.2.3", '&', "<=1.2.3").Returns("=1.2.3");
+            New(">1.2.3", '&', "<3.4.5").Returns(">1.2.3 <3.4.5", false);
+            New(">=1.2.3", '&', "<3.4.5").Returns(">=1.2.3 <3.4.5", false);
+            New(">1.2.3", '&', "<=3.4.5").Returns(">1.2.3 <=3.4.5", false);
+            New(">=1.2.3", '&', "<=3.4.5").Returns(">=1.2.3 <=3.4.5", false);
+            New("<1.2.3", '&', ">3.4.5").Returns("<0.0.0-0");
+            New("<=1.2.3", '&', ">3.4.5").Returns("<0.0.0-0");
+            New("<1.2.3", '&', ">=3.4.5").Returns("<0.0.0-0");
+            New("<=1.2.3", '&', ">=3.4.5").Returns("<0.0.0-0");
+            // Intersection: test equality operators
             New("=1.2.3", '&', ">1.2.3").Returns("<0.0.0-0");
-            New("=1.2.3", '&', "<1.2.3").Returns("<0.0.0-0");
+            New("=1.2.3", '&', ">3.4.5").Returns("<0.0.0-0");
+            New("=1.2.3", '&', "<0.7.8").Returns("<0.0.0-0");
             New("=1.2.3", '&', ">=1.2.3").Returns("=1.2.3");
             New("=1.2.3", '&', "<=1.2.3").Returns("=1.2.3");
-            // Intersection: test with special versions
+            // Intersection: test special versions
             New(">1.2.3", '&', "*").Returns(">1.2.3");
             New("<1.2.3", '&', "*").Returns("<1.2.3");
             New(">=1.2.3", '&', "*").Returns(">=1.2.3");
