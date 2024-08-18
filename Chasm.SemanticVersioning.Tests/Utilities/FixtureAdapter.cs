@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -10,9 +11,10 @@ namespace Chasm.SemanticVersioning.Tests
     {
         public string? Name { get; }
         private readonly List<TFixture> fixtures = [];
+        public ReadOnlyCollection<TFixture> Fixtures { get; }
 
-        public FixtureAdapter() { }
-        public FixtureAdapter(string? name) => Name = name;
+        public FixtureAdapter() => Fixtures = fixtures.AsReadOnly();
+        public FixtureAdapter(string? name) : this() => Name = name;
 
         public TFixture Add(TFixture fixture)
         {
