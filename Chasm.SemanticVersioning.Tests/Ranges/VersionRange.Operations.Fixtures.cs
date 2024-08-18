@@ -160,6 +160,8 @@ namespace Chasm.SemanticVersioning.Tests
             New("^0.0.3-rc", '~').Returns("<0.0.3-rc || >=0.0.4-0");
 
             // Caret: union, no changes
+            New("^1.2.3", '|', "^1.2.3").Returns("^1.2.3");
+            New("^1.*.x", '|', "^1.*.x").Returns("^1.*.x");
             New("^1.2.3", '|', ">=1.3.0 <1.4.0-0").Returns("^1.2.3");
             New("^1.2.3", '|', ">=1.2.3 <1.4.0-0").Returns("^1.2.3");
             New("^1.2.3", '|', ">=1.3.0 <2.0.0-0").Returns("^1.2.3");
@@ -174,6 +176,8 @@ namespace Chasm.SemanticVersioning.Tests
             New("^1.2.3", '|', ">=1.5.0 <3.0.0-0").Returns(">=1.2.3 <3.0.0-0");
 
             // Caret: intersection, no changes
+            New("^1.2.3", '&', "^1.2.3").Returns("^1.2.3");
+            New("^1.*.x", '&', "^1.*.x").Returns("^1.*.x");
             New("^1.2.3", '&', ">=1.0.0 <3.0.0-0").Returns("^1.2.3");
             New("^1.2.3", '&', ">=1.2.3 <3.0.0-0").Returns("^1.2.3");
             New("^1.2.3", '&', ">=1.0.0 <2.0.0-0").Returns("^1.2.3");
@@ -188,7 +192,7 @@ namespace Chasm.SemanticVersioning.Tests
 
             #endregion
 
-            #region #region Operations with advanced comparators (hyphen)
+            #region Operations with advanced comparators (hyphen)
 
             // Hyphen: complement
             New("1.2.3 - 3.4.5", '~').Returns("<1.2.3 || >3.4.5");
@@ -199,6 +203,8 @@ namespace Chasm.SemanticVersioning.Tests
             New("1.2 - *", '~').Returns("<1.2.0");
 
             // Hyphen: union, no changes
+            New("1.2.3 - 3.4.5", '|', "1.2.3 - 3.4.5").Returns("1.2.3 - 3.4.5");
+            New("1.* - 3.4", '|', "1.* - 3.4").Returns("1.* - 3.4");
             New("1.2.3 - 3.4.5", '|', ">=2.0.0 <=3.0.0").Returns("1.2.3 - 3.4.5");
             New("1.2.3 - 3.4.5", '|', ">=1.2.3 <=3.0.0").Returns("1.2.3 - 3.4.5");
             New("1.2.3 - 3.4.5", '|', ">=2.0.0 <=3.4.5").Returns("1.2.3 - 3.4.5");
@@ -223,6 +229,8 @@ namespace Chasm.SemanticVersioning.Tests
             New("1.x - 3.4.x", '|', ">=1.5.0 <=4.0.0-0").Returns(">=1.0.0 <=4.0.0-0"); // TODO: resugar as 1.0 - 4.0.0-0
 
             // Hyphen: intersection, no changes
+            New("1.2.3 - 3.4.5", '&', "1.2.3 - 3.4.5").Returns("1.2.3 - 3.4.5");
+            New("1.* - 3.4", '&', "1.* - 3.4").Returns("1.* - 3.4");
             New("1.2.3 - 3.4.5", '&', ">=1.0.0 <=5.0.0").Returns("1.2.3 - 3.4.5");
             New("1.2.3 - 3.4.5", '&', ">=1.2.3 <=5.0.0").Returns("1.2.3 - 3.4.5");
             New("1.2.3 - 3.4.5", '&', ">=1.0.0 <=3.4.5").Returns("1.2.3 - 3.4.5");
@@ -249,7 +257,7 @@ namespace Chasm.SemanticVersioning.Tests
 
             #endregion
 
-            #region #region Operations with advanced comparators (tilde)
+            #region Operations with advanced comparators (tilde)
 
             // Tilde: complement
             New("~1.2.3-rc", '~').Returns("<1.2.3-rc || >=1.3.0-0");
@@ -259,6 +267,8 @@ namespace Chasm.SemanticVersioning.Tests
             New("~1", '~').Returns("<1.0.0 || >=2.0.0-0");
 
             // Tilde: union, no changes
+            New("~1.2.3", '|', "~1.2.3").Returns("~1.2.3");
+            New("~1.X.*", '|', "~1.X.*").Returns("~1.X.*");
             New("~1.2.3", '|', ">=1.2.5 <=1.2.8").Returns("~1.2.3");
             New("~1.2.3", '|', ">=1.2.3 <=1.2.8").Returns("~1.2.3");
             New("~1.2.3", '|', ">=1.2.5 <1.3.0-0").Returns("~1.2.3");
@@ -274,6 +284,8 @@ namespace Chasm.SemanticVersioning.Tests
             New("~1.x", '|', ">=1.2.5 <3.0.0-0").Returns(">=1.0.0 <3.0.0-0");
 
             // Tilde: intersection, no changes
+            New("~1.2.3", '&', "~1.2.3").Returns("~1.2.3");
+            New("~1.X.*", '&', "~1.X.*").Returns("~1.X.*");
             New("~1.2.3", '&', ">=1.0.0 <2.0.0-0").Returns("~1.2.3");
             New("~1.2.3", '&', ">=1.2.3 <2.0.0-0").Returns("~1.2.3");
             New("~1.2.3", '&', ">=1.0.0 <1.3.0-0").Returns("~1.2.3");
@@ -289,7 +301,7 @@ namespace Chasm.SemanticVersioning.Tests
 
             #endregion
 
-            #region #region Operations with advanced comparators (X-Range)
+            #region Operations with advanced comparators (X-Range)
 
             // X-Range: complement
             New("=1.2.x", '~').Returns("<1.2.0 || >=1.3.0-0");
@@ -311,6 +323,13 @@ namespace Chasm.SemanticVersioning.Tests
             New("<=x.x.x", '~').Returns("<0.0.0-0");
 
             // X-Range: union, no changes
+            New("1.2.x", '|', "1.2.x").Returns("1.2.x");
+            New("=1.2.x", '|', "=1.2.x").Returns("=1.2.x");
+            New(">1.2.x", '|', ">1.2.x").Returns(">1.2.x");
+            New("<1.2.x", '|', "<1.2.x").Returns("<1.2.x");
+            New(">=1.2.x", '|', ">=1.2.x").Returns(">=1.2.x");
+            New("<=1.2.x", '|', "<=1.2.x").Returns("<=1.2.x");
+
             New("=1.2.x", '|', ">=1.2.3 <1.2.8-0").Returns("=1.2.x");
             New("=1.2.x", '|', ">=1.2.0 <1.2.8-0").Returns("=1.2.x");
             New("=1.2.x", '|', ">=1.2.3 <1.3.0-0").Returns("=1.2.x");
@@ -356,6 +375,13 @@ namespace Chasm.SemanticVersioning.Tests
             New("<=1.2.x", '|', "<2.0.0-0").Returns("<2.0.0-0"); // TODO: resugar as <=1.x.x
 
             // X-Range: intersection, no changes
+            New("1.2.x", '&', "1.2.x").Returns("1.2.x");
+            New("=1.2.x", '&', "=1.2.x").Returns("=1.2.x");
+            New(">1.2.x", '&', ">1.2.x").Returns(">1.2.x");
+            New("<1.2.x", '&', "<1.2.x").Returns("<1.2.x");
+            New(">=1.2.x", '&', ">=1.2.x").Returns(">=1.2.x");
+            New("<=1.2.x", '&', "<=1.2.x").Returns("<=1.2.x");
+
             New("=1.2.x", '&', ">=1.0.0 <1.5.0-0").Returns("=1.2.x");
             New("=1.2.x", '&', ">=1.2.0 <1.5.0-0").Returns("=1.2.x");
             New("=1.2.x", '&', ">=1.0.0 <1.3.0-0").Returns("=1.2.x");
@@ -436,6 +462,64 @@ namespace Chasm.SemanticVersioning.Tests
             New("<=1.x.x", '&', ">=1.0.0").Returns(">=1.0.0 <2.0.0-0"); // TODO: resugar as =1.x.x
             New("<=1.x.x", '&', ">=1.3.0").Returns(">=1.3.0 <2.0.0-0");
             New("<=1.x.x", '&', ">=1.7.0 <1.8.0-0").Returns(">=1.7.0 <1.8.0-0"); // TODO: resugar as =1.7.x
+
+            #endregion
+
+            #region Operations with primitives and advanced comparators
+            
+            // Union: advanced and equality primitive
+            New("^1.2.3", '|', "=1.2.3").Returns("^1.2.3");
+            New("^1.2.3", '|', "=1.7.8").Returns("^1.2.3");
+            New("^1.2.3", '|', "=2.3.4").Returns("^1.2.3 || =2.3.4", false);
+            New("=2.3.4", '|', "^1.2.3").Returns("=2.3.4 || ^1.2.3", false);
+            New("1.x - 3.4", '|', "=1.0.0").Returns("1.x - 3.4");
+            New("1.x - 3.4", '|', "=2.3.4").Returns("1.x - 3.4");
+            New("1.x - 3.4", '|', "=4.0.0").Returns("1.x - 3.4 || =4.0.0", false);
+            New("=4.0.0", '|', "1.x - 3.4").Returns("=4.0.0 || 1.x - 3.4", false);
+            New("~1.2.3", '|', "=1.2.3").Returns("~1.2.3");
+            New("~1.2.3", '|', "=1.2.7").Returns("~1.2.3");
+            New("~1.2.3", '|', "=1.7.8").Returns("~1.2.3 || =1.7.8", false);
+            New("=1.7.8", '|', "~1.2.3").Returns("=1.7.8 || ~1.2.3", false);
+            New("=1.2.x", '|', "=1.2.0").Returns("=1.2.x");
+            New("=1.2.x", '|', "=1.2.3").Returns("=1.2.x");
+            New("=1.2.x", '|', "=1.4.7").Returns("=1.2.x || =1.4.7", false);
+            New("=1.4.7", '|', "=1.2.x").Returns("=1.4.7 || =1.2.x", false);
+
+            // Intersection: advanced and equality primitive
+            New("^1.2.3", '&', "=1.2.3").Returns("=1.2.3");
+            New("^1.2.3", '&', "=1.7.8").Returns("=1.7.8");
+            New("^1.2.3", '&', "=2.3.4").Returns("<0.0.0-0");
+            New("1.x - 3.4", '&', "=1.0.0").Returns("=1.0.0");
+            New("1.x - 3.4", '&', "=2.3.4").Returns("=2.3.4");
+            New("1.x - 3.4", '&', "=4.0.0").Returns("<0.0.0-0");
+            New("~1.2.3", '&', "=1.2.3").Returns("=1.2.3");
+            New("~1.2.3", '&', "=1.2.7").Returns("=1.2.7");
+            New("~1.2.3", '&', "=1.7.8").Returns("<0.0.0-0");
+            New("=1.2.x", '&', "=1.2.0").Returns("=1.2.0");
+            New("=1.2.x", '&', "=1.2.8").Returns("=1.2.8");
+            New("=1.2.x", '&', "=1.4.7").Returns("<0.0.0-0");
+
+            #endregion
+
+            #region Operations with different advanced comparators
+
+            // Union: advanced with advanced
+            New("^1.2.3", '|', "~1.3").Returns("^1.2.3");
+            New("^1.2.3", '|', "~1.x").Returns("~1.x");
+            New("1 - x", '|', "2 - x").Returns("1 - x");
+            New("3 - 5", '|', "2 - 4").Returns(">=2.0.0 <6.0.0-0"); // TODO: resugar as 2 - 5
+            New("3 - 5", '|', "<4.0.0-0").Returns("<6.0.0-0"); // TODO: resugar as x - 5
+            New("3 - 5", '|', ">=4.0.0").Returns(">=3.0.0"); // TODO: resugar as 3 - x
+            New("x - 3", '|', "2 - x").Returns("*");
+            New("1 - 2", '|', "4 - 5").Returns("1 - 2 || 4 - 5", false);
+            New("4 - 5", '|', "1 - 2").Returns("4 - 5 || 1 - 2", false);
+
+            // Intersection: advanced with advanced
+            New("^1.2.3", '&', "~1.3").Returns("~1.3");
+            New("^1.2.3", '&', "~1.x").Returns("^1.2.3");
+            New("1 - x", '&', "2 - x").Returns("2 - x");
+            New("3 - 5", '&', "2 - 4").Returns(">=3.0.0 <5.0.0-0"); // TODO: resugar as 3 - 4
+            New("1 - 2", '&', "4 - 5").Returns("<0.0.0-0");
 
             #endregion
 
