@@ -129,6 +129,10 @@ namespace Chasm.SemanticVersioning.Ranges
             if (original2 is AdvancedComparator advanced2 && Resugar(advanced2, resultLow, resultHigh) is { } resugared2)
                 return (resugared2, null);
 
+            // at this point, I think it's impossible for any of these to be null,
+            // but I'll leave the null checks with returns just in case.
+            Debug.Assert(resultLow is not null && resultHigh is not null);
+
             // arrange the primitives to be used in FromTuple method
             if (resultLow is null)
                 return (resultHigh is null ? XRangeComparator.All : resultHigh, null);
@@ -250,7 +254,13 @@ namespace Chasm.SemanticVersioning.Ranges
                 return (resugared2, null);
 
             // at this point, simple combining and resugaring failed, so we'll just AND the results
-            // TODO: does anything even hit this case?
+
+            // arrange the primitives to be used in FromTuple method
+            if (resultLow is null)
+                return (resultHigh is null ? XRangeComparator.All : resultHigh, null);
+            if (resultHigh is null)
+                return (resultLow, null);
+
             return (resultLow, resultHigh);
         }
 
@@ -295,7 +305,6 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] private static AdvancedComparator? ResugarCore(AdvancedComparator advanced, PrimitiveComparator? left, PrimitiveComparator? right)
         {
             (PrimitiveComparator? origLeft, PrimitiveComparator? origRight) = advanced.ToPrimitives();
-            if (ReferenceEquals(left, origLeft) && ReferenceEquals(right, origRight)) return advanced;
 
             // TODO: resugar comparators
 
