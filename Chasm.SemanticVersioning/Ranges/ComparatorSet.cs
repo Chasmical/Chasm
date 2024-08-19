@@ -336,14 +336,13 @@ namespace Chasm.SemanticVersioning.Ranges
             return (lowerOp, lower, upperOp, upper);
         }
 
-        // TODO: maybe make Contains, Intersects and Touches public after testing
         /// <summary>
         ///   <para>Determines whether this comparator set contains the specified <paramref name="other"/> comparator set.</para>
         /// </summary>
         /// <param name="other">The comparator set to contain.</param>
         /// <returns><see langword="true"/>, if this comparator set contains <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        [Pure] internal bool Contains(ComparatorSet other)
+        [Pure] public bool Contains(ComparatorSet other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
 
@@ -362,7 +361,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="other">The comparator set to intersect with.</param>
         /// <returns><see langword="true"/>, if this comparator set intersects <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        [Pure] internal bool Intersects(ComparatorSet other)
+        [Pure] public bool Intersects(ComparatorSet other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
 
@@ -377,7 +376,13 @@ namespace Chasm.SemanticVersioning.Ranges
             return RangeUtility.DoComparatorsIntersect(highOp1, high1, lowOp2, low2) &&
                    RangeUtility.DoComparatorsIntersect(highOp2, high2, lowOp1, low1);
         }
-        [Pure] internal bool Touches(ComparatorSet other)
+        /// <summary>
+        ///   <para>Determines whether this comparator set touches the specified <paramref name="other"/> comparator set.</para>
+        /// </summary>
+        /// <param name="other">The comparator set to touch.</param>
+        /// <returns><see langword="true"/>, if this comparator set touches <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
+        [Pure] public bool Touches(ComparatorSet other)
         {
             if (other is null) throw new ArgumentNullException(nameof(other));
 
