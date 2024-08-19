@@ -12,6 +12,8 @@ A library designed for efficiently working with [SemVer 2.0.0](https://semver.or
 
 - **Implements `node-semver`'s version ranges.** Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, instead of being desugared into primitives like in all other libraries. That allows to interpret and manipulate version ranges more precisely. `VersionRange`, `ComparatorSet`, `Comparator`, `PartialVersion`, `PartialComponent`, `PrimitiveComparator`, `AdvancedComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`.
 
+- **Operations with version ranges.** Now this is definitely a unique feature - this library defines operations for `Comparator`, `ComparatorSet` and `VersionRange`. You can complement (`~`), union (`|`), intersect (`&`) and desugar ranges. Soon you'll also be able to normalize, transform and minimize ranges.
+
 - **Default comparison ignores build metadata.** I think it's more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuild`.
 
 - **Out-of-the-box serialization support.** Supports serialization/deserialization with `Newtonsoft.Json`, `System.Text.Json` and `System.Xml` (and any libraries using `TypeConverter`s) with no extra configuration needed.

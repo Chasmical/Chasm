@@ -11,6 +11,8 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 - **Implements [`node-semver`](https://github.com/npm/node-semver)'s version ranges.** Notably, advanced comparators and wildcards (`^1.2.x`, `~5.3`) are preserved as is, instead of being desugared into primitives like in all other libraries. That allows to interpret and manipulate version ranges more precisely. `VersionRange`, `ComparatorSet`, `Comparator`, `PartialVersion`, `PartialComponent`, `PrimitiveComparator`, `AdvancedComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`.
 
+- **Operations with version ranges.** Now this is definitely a unique feature - this library defines operations for `Comparator`, `ComparatorSet` and `VersionRange`. You can complement (`~`), union (`|`), intersect (`&`) and desugar ranges. Soon you'll also be able to normalize, transform and minimize ranges.
+
 - **Default comparison ignores build metadata.** I think it's more correct to have the default comparison be compliant with SemVer's specification. You can still do metadata-sensitive comparison using a custom comparer, if you want - `SemverComparer.IncludeBuild`.
 
 - **Out-of-the-box serialization support.** Supports serialization/deserialization with `Newtonsoft.Json`, `System.Text.Json` and `System.Xml` (and any libraries using `TypeConverter`s) with no extra configuration needed.
@@ -42,9 +44,11 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 ### Version ranges
 
-- [ ] Operators (union `|`, intersection `&`, absolute complement `~`);
-- [ ] IsSubset/Superset methods;
+- [ ] IsSubset/IsSuperset methods;
 - [ ] Simplify methods;
+- [ ] Normalize methods;
+- [ ] Style transform methods;
+- [ ] Minimize methods;
 
 
 
@@ -97,6 +101,19 @@ Console.WriteLine($"{c} satisfies {range}: {range.IsSatisfiedBy(c)}");
 // 5.0.1 satisfies ~5.3: False
 // 5.3.2 satisfies ~5.3: True
 // 5.5.0 satisfies ~5.3: False
+```
+
+Additionally, you can complement (`~`), union (`|`) and intersect (`&`) these version ranges! That's the best and the most complicated feature provided by this library. You can also `Desugar` version ranges (`^1.2.3` ⇒ `>=1.2.3 <2.0.0-0`), and check if comparator sets contain, intersect or touch other comparator sets (`Contains`, `Intersects`, `Touches`).
+
+```cs
+var A = VersionRange.Parse(">=1.0.0 <2.0.0-0");
+var B = VersionRange.Parse(">=1.3.0 <1.5.0-0");
+Console.WriteLine($"A & B = {A & B}");
+// A & B = >=1.3.0 <1.5.0-0
+
+var C = VersionRange.Parse(">=1.4.0 <1.7.5");
+Console.WriteLine($"(A & B) | C = {(A & B) | C}");
+// (A & B) | C = >=1.3.0 <1.7.5
 ```
 
 > [!IMPORTANT]
