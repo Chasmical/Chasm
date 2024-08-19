@@ -16,7 +16,7 @@ namespace Chasm.SemanticVersioning.Tests
             // test null argument exceptions
             Assert.Throws<ArgumentNullException>(static () => new VersionRange((ComparatorSet)null!));
             Assert.Throws<ArgumentNullException>(static () => new VersionRange((ComparatorSet[])null!));
-            Assert.Throws<ArgumentNullException>(static () => new VersionRange(null!, [ComparatorSet.None]));
+            Assert.Throws<ArgumentNullException>(static () => new VersionRange(null!, ComparatorSet.None));
 
             // test constructors with null comparator sets
             ArgumentException ex = Assert.Throws<ArgumentException>(static () => new VersionRange([null!]));

@@ -1,5 +1,21 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.7.0
+- 💥 Invalid hyphen ranges (e.g. `3.0.0 - 1.0.0`) now desugar to `<0.0.0-0`;
+- ✨ Added `static operator ~(Comparator)`;
+- ✨ Added `static operator &(Comparator, Comparator)`;
+- ✨ Added `static operator |(Comparator, Comparator)`;
+- ✨ Added `static operator ~(ComparatorSet)`;
+- ✨ Added `static operator &(ComparatorSet, ComparatorSet)`;
+- ✨ Added `static operator |(ComparatorSet, ComparatorSet)`;
+- ✨ Added `static operator ~(VersionRange)`;
+- ✨ Added `static operator &(VersionRange, VersionRange)`;
+- ✨ Added `static operator |(VersionRange, VersionRange)`;
+- ✨ Added `ComparatorSet.Contains(ComparatorSet)`;
+- ✨ Added `ComparatorSet.Intersects(ComparatorSet)`;
+- ✨ Added `ComparatorSet.Touches(ComparatorSet)`;
+- 🩹 Added `[Pure]` attribute to `protected Comparator.IsSatisfiedByCore(SemanticVersion)`;
+
 ### v2.6.1
 - 🐛 Added missing `TypeConverter`s for .NET Framework targets;
 
@@ -7,7 +23,7 @@
 - ✨ Implemented `IEquatable<T>` methods in types: `Comparator`, `PrimitiveComparator`, `CaretComparator`, `HyphenRangeComparator`, `TildeComparator`, `XRangeComparator`;
 - ✨ Implemented `IEqualityOperators<T,T,bool>` methods in `Comparator`;
 - ✨ Added `abstract Comparator.Equals(object? obj)`;
-- ✨ Added `abstarct Comparator.GetHashCode()`;
+- ✨ Added `abstract Comparator.GetHashCode()`;
 - ✨ Added `static operator ==(Comparator?, Comparator?)`;
 - ✨ Added `static operator !=(Comparator?, Comparator?)`;
 - ✨ Added `PrimitiveComparator.Equals(PrimitiveComparator?)`;

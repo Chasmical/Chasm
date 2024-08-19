@@ -9,6 +9,7 @@ namespace Chasm.SemanticVersioning.Tests
     {
         public string? Id { get; set; }
         public IFixtureAdapter? Adapter { get; internal set; }
+        public int? LineNumber { get; init; }
 
         public bool IsComplete { get; private set; }
         public bool IsValid { get; private set; }
@@ -21,13 +22,19 @@ namespace Chasm.SemanticVersioning.Tests
         }
 
         public override string ToString()
-            => $"{Id ?? "Unnamed"} {(IsValid ? '\u2705' : '\u274C')}";
+            => $"{Id ?? "Unnamed"}{(LineNumber is null ? null : $" (line {LineNumber})")} {(IsValid ? '\u2705' : '\u274C')}";
 
         protected TExtender Extend<TExtender>() where TExtender : IFixtureExtender<Fixture>, new()
         {
             TExtender extender = new TExtender();
             extender.SetPrototype(this);
             return extender;
+        }
+
+        protected TFixture AddNew<TFixture>(TFixture fixture) where TFixture : Fixture
+        {
+            Adapter!.Add(fixture);
+            return fixture;
         }
 
         void IXunitSerializable.Deserialize(IXunitSerializationInfo info)

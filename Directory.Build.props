@@ -27,6 +27,7 @@
 
     <!-- Wanna support as many target frameworks as possible -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <CheckNotRecommendedTargetFramework>false</CheckNotRecommendedTargetFramework>
     <NuGetAudit>false</NuGetAudit>
 
   </PropertyGroup>

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Chasm.Formatting;
-using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
@@ -60,38 +58,6 @@ namespace Chasm.SemanticVersioning
             public static readonly ReadOnlyCollection<T> Empty = new([]);
         }
 #endif
-
-        /// <summary>
-        ///   <para>Handles the conversion of a partial version to a semantic one the same way as <c>node-semver</c>: ignores components and pre-releases after an unspecified component, and removes build metadata. Major version component must be numeric at this point.</para>
-        /// </summary>
-        /// <param name="partial"></param>
-        /// <returns></returns>
-        public static SemanticVersion NodeSemverTrim(PartialVersion partial)
-        {
-            int major = (int)partial.Major._value;
-
-            // Major is guaranteed to be numeric, since non-numerics are handled in AdvancedComparators
-            Debug.Assert(major >= 0);
-
-            int minor = (int)partial.Minor._value;
-            int patch = minor >= 0 ? (int)partial.Patch._value : -1;
-
-            SemverPreRelease[]? preReleases = null;
-            ReadOnlyCollection<SemverPreRelease>? preReleasesReadonly = null;
-            if (patch >= 0)
-            {
-                preReleases = partial._preReleases;
-                preReleasesReadonly = partial._preReleasesReadonly;
-            }
-            else
-            {
-                patch = 0;
-                if (minor < 0)
-                    minor = 0;
-            }
-
-            return new SemanticVersion(major, minor, patch, preReleases, null, preReleasesReadonly, null);
-        }
 
         [Pure] public static ReadOnlySpan<char> Trim(ReadOnlySpan<char> text, SemverOptions options)
         {
@@ -165,22 +131,6 @@ namespace Chasm.SemanticVersioning
             return true;
 #endif
         }
-
-        [Pure] public static PrimitiveOperator Normalize(this PrimitiveOperator op)
-            => (PrimitiveOperator)Math.Max((byte)op, (byte)1);
-
-        /*
-        [Pure] public static bool SameDirection(PrimitiveOperator a, PrimitiveOperator b)
-            => a > PrimitiveOperator.Equal && b > PrimitiveOperator.Equal && (((byte)a + (byte)b) & 1) == 0;
-        [Pure] public static bool IsGTOrGTE(this PrimitiveOperator op)
-            => op is PrimitiveOperator.GreaterThan or PrimitiveOperator.GreaterThanOrEqual;
-        [Pure] public static bool IsLTOrLTE(this PrimitiveOperator op)
-            => op is PrimitiveOperator.LessThan or PrimitiveOperator.LessThanOrEqual;
-        [Pure] public static bool IsEQ(this PrimitiveOperator op)
-            => op <= PrimitiveOperator.Equal;
-        [Pure] public static bool IsSthThanOrEqual(this PrimitiveOperator op)
-            => op is PrimitiveOperator.GreaterThanOrEqual or PrimitiveOperator.LessThanOrEqual;
-        */
 
     }
 }

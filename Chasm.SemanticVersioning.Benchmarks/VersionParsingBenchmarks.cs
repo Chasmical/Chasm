@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿// ReSharper disable IdentifierTypo
+using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using ChasmVersion = Chasm.SemanticVersioning.SemanticVersion;

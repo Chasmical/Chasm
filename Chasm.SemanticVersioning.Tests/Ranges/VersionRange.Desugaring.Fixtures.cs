@@ -163,10 +163,10 @@ namespace Chasm.SemanticVersioning.Tests
             // Hyphen Range comparator overflow exceptions
             New($"1.2.{max} - 3.4.5").DesugarsTo($">=1.2.{max} <=3.4.5");
             New($"1.{max}.3 - 3.4.5").DesugarsTo($">=1.{max}.3 <=3.4.5");
-            New($"{max}.2.3 - 3.4.5").DesugarsTo($">={max}.2.3 <=3.4.5");
+            New($"{max}.2.3 - {max}.4.5").DesugarsTo($">={max}.2.3 <={max}.4.5");
             New($"1.{max} - 3.4.5").DesugarsTo($">=1.{max}.0 <=3.4.5");
-            New($"{max}.2 - 3.4.5").DesugarsTo($">={max}.2.0 <=3.4.5");
-            New($"{max} - 3.4.5").DesugarsTo($">={max}.0.0 <=3.4.5");
+            New($"{max}.2 - {max}.4.5").DesugarsTo($">={max}.2.0 <={max}.4.5");
+            New($"{max} - {max}.4.5").DesugarsTo($">={max}.0.0 <={max}.4.5");
 
             New($"1.2.3 - 3.4.{max}").DesugarsTo($">=1.2.3 <=3.4.{max}");
             New($"1.2.3 - 3.{max}.5").DesugarsTo($">=1.2.3 <=3.{max}.5");

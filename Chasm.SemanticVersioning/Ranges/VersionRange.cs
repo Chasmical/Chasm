@@ -29,7 +29,7 @@ namespace Chasm.SemanticVersioning.Ranges
         internal readonly ComparatorSet[] _comparatorSets;
         internal ReadOnlyCollection<ComparatorSet>? _comparatorSetsReadonly;
         /// <summary>
-        ///   <para>Gets a read-only collection of this version range's version comparator sets.</para>
+        ///   <para>Gets a read-only collection of this version range's comparator sets.</para>
         /// </summary>
         public ReadOnlyCollection<ComparatorSet> ComparatorSets
             => _comparatorSetsReadonly ??= _comparatorSets.AsReadOnly();
@@ -45,9 +45,9 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
-        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version <paramref name="comparatorSet"/>.</para>
+        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified <paramref name="comparatorSet"/>.</para>
         /// </summary>
-        /// <param name="comparatorSet">The version range's version comparator set.</param>
+        /// <param name="comparatorSet">The version range's comparator set.</param>
         /// <exception cref="ArgumentNullException"><paramref name="comparatorSet"/> is <see langword="null"/>.</exception>
         public VersionRange(ComparatorSet comparatorSet)
         {
@@ -55,10 +55,10 @@ namespace Chasm.SemanticVersioning.Ranges
             _comparatorSets = [comparatorSet];
         }
         /// <summary>
-        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version comparator sets.</para>
+        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified comparator sets.</para>
         /// </summary>
-        /// <param name="firstComparatorSet">The version range's first version comparator set.</param>
-        /// <param name="otherComparatorSets">The version range's subsequent version comparator sets.</param>
+        /// <param name="firstComparatorSet">The version range's first comparator set.</param>
+        /// <param name="otherComparatorSets">The version range's subsequent comparator sets.</param>
         /// <exception cref="ArgumentNullException"><paramref name="firstComparatorSet"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="otherComparatorSets"/> contains <see langword="null"/>.</exception>
         public VersionRange(ComparatorSet firstComparatorSet, params ComparatorSet[]? otherComparatorSets)
@@ -78,9 +78,9 @@ namespace Chasm.SemanticVersioning.Ranges
             _comparatorSets = array;
         }
         /// <summary>
-        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified version <paramref name="comparatorSets"/>.</para>
+        ///   <para>Initializes a new instance of the <see cref="VersionRange"/> class with the specified <paramref name="comparatorSets"/>.</para>
         /// </summary>
-        /// <param name="comparatorSets">The version range's version comparator sets.</param>
+        /// <param name="comparatorSets">The version range's comparator sets.</param>
         /// <exception cref="ArgumentNullException"><paramref name="comparatorSets"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="comparatorSets"/> is empty, or contains <see langword="null"/>.</exception>
         public VersionRange([InstantHandle] IEnumerable<ComparatorSet> comparatorSets)
@@ -93,16 +93,16 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
-        ///   <para>Defines an implicit conversion of a version comparator to a version range.</para>
+        ///   <para>Defines an implicit conversion of a comparator to a version range.</para>
         /// </summary>
-        /// <param name="comparator">The version comparator to construct a version range from.</param>
+        /// <param name="comparator">The comparator to construct a version range from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparator))]
         public static implicit operator VersionRange?(Comparator? comparator)
             => comparator is null ? null : new VersionRange(new ComparatorSet(comparator));
         /// <summary>
-        ///   <para>Defines an implicit conversion of a version comparator set to a version range.</para>
+        ///   <para>Defines an implicit conversion of a comparator set to a version range.</para>
         /// </summary>
-        /// <param name="comparatorSet">The version comparator set to construct a version range from.</param>
+        /// <param name="comparatorSet">The comparator set to construct a version range from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparatorSet))]
         public static implicit operator VersionRange?(ComparatorSet? comparatorSet)
             => comparatorSet is null ? null : new VersionRange(comparatorSet);
@@ -157,7 +157,7 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
-        ///   <para>Returns a desugared copy of this version range, that is, with advanced version comparators replaced by equivalent primitive version comparators.</para>
+        ///   <para>Returns a desugared copy of this version range, that is, with advanced comparators replaced by equivalent primitive comparators.</para>
         /// </summary>
         /// <returns>A desugared copy of this version range.</returns>
         [Pure] public VersionRange Desugar()
@@ -178,6 +178,28 @@ namespace Chasm.SemanticVersioning.Ranges
         ///   <para>Gets a version range (<c>*</c>) that matches all non-pre-release versions (or all versions, with <c>includePreReleases</c> option).</para>
         /// </summary>
         public static VersionRange All { get; } = new VersionRange(ComparatorSet.All);
+
+        // Internal helper to minimize allocations during range operations
+        [Pure] internal static VersionRange FromTuple((ComparatorSet?, ComparatorSet?) tuple)
+        {
+            (ComparatorSet? resultLeft, ComparatorSet? resultRight) = tuple;
+
+            // The right set may be non-null only if the left one is non-null
+            Debug.Assert(resultLeft is not null || resultRight is null);
+
+            // If two comparator sets were returned, combine them in a range
+            if (resultRight is not null)
+                return new VersionRange([resultLeft!, resultRight], default);
+
+            // if it's one of the pre-defined ones, use the singletons
+            if (resultLeft is null || ReferenceEquals(resultLeft, ComparatorSet.None))
+                return None;
+            if (ReferenceEquals(resultLeft, ComparatorSet.All))
+                return All;
+
+            // return a range with a single comparator set
+            return resultLeft;
+        }
 
         [Pure] internal int CalculateLength()
         {
@@ -221,13 +243,27 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <returns>The comparator set at the specified index.</returns>
         public ComparatorSet this[int index] => _comparatorSets[index];
 
+        /// <summary>
+        ///   <para>Determines whether this version range is equal to another specified version range.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="other">The version range to compare with this version range.</param>
+        /// <returns><see langword="true"/>, if this version range is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(VersionRange? other)
         {
             if (other is null) return false;
             return Utility.SequenceEqual(_comparatorSets, other._comparatorSets);
         }
+        /// <summary>
+        ///   <para>Determines whether this version range is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="obj">The object to compare with this version range.</param>
+        /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="VersionRange"/> instance equal to this version range; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => Equals(obj as VersionRange);
+        /// <summary>
+        ///   <para>Returns a hash code for this version range.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <returns>A hash code for this version range.</returns>
         [Pure] public override int GetHashCode()
         {
             HashCode hash = new();
@@ -237,8 +273,20 @@ namespace Chasm.SemanticVersioning.Ranges
             return hash.ToHashCode();
         }
 
+        /// <summary>
+        ///   <para>Determines whether two specified version ranges are equal.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="left">The first version range to compare.</param>
+        /// <param name="right">The second version range to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator ==(VersionRange? left, VersionRange? right)
             => left is null ? right is null : left.Equals(right);
+        /// <summary>
+        ///   <para>Determines whether two specified version ranges are not equal.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
+        /// </summary>
+        /// <param name="left">The first version range to compare.</param>
+        /// <param name="right">The second version range to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public static bool operator !=(VersionRange? left, VersionRange? right)
             => !(left == right);
 
@@ -260,8 +308,6 @@ namespace Chasm.SemanticVersioning.Ranges
         #endregion
 
         // TODO: Implement >, <, >=, <= operators
-
-        // TODO: Implement &, |, ~ operators
 
     }
 }

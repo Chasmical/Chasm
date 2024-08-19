@@ -13,16 +13,16 @@ namespace Chasm.SemanticVersioning.Ranges
     public sealed class HyphenRangeComparator : AdvancedComparator, IEquatable<HyphenRangeComparator>
     {
         /// <summary>
-        ///   <para>Gets the hyphen range version comparator's lower bound.</para>
+        ///   <para>Gets the hyphen range comparator's lower bound.</para>
         /// </summary>
         public PartialVersion From => base.Operand;
         /// <summary>
-        ///   <para>Gets the hyphen range version comparator's upper bound.</para>
+        ///   <para>Gets the hyphen range comparator's upper bound.</para>
         /// </summary>
         public PartialVersion To { get; }
 
         /// <summary>
-        ///   <para>Gets the hyphen range version comparator's lower bound.<br/>You should use <see cref="From"/> property instead.</para>
+        ///   <para>Gets the hyphen range comparator's lower bound.<br/>You should use <see cref="From"/> property instead.</para>
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         [Obsolete($"You should use {nameof(From)} property instead, when you know it's an instance of the {nameof(HyphenRangeComparator)} class.")]
@@ -31,8 +31,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <summary>
         ///   <para>Initializes a new instance of the <see cref="HyphenRangeComparator"/> class with the specified <paramref name="from"/> and <paramref name="to"/> operands.</para>
         /// </summary>
-        /// <param name="from">The hyphen range version comparator's lower bound.</param>
-        /// <param name="to">The hyphen range version comparator's upper bound.</param>
+        /// <param name="from">The hyphen range comparator's lower bound.</param>
+        /// <param name="to">The hyphen range comparator's upper bound.</param>
         /// <exception cref="ArgumentNullException"><paramref name="from"/> or <paramref name="to"/> is <see langword="null"/>.</exception>
         public HyphenRangeComparator(PartialVersion from, PartialVersion to) : base(from)
             => To = to ?? throw new ArgumentNullException(nameof(to));
@@ -40,7 +40,13 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <inheritdoc/>
         [Pure] protected override (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives()
         {
-            return (ConvertFrom(From), ConvertTo(To));
+            PrimitiveComparator? from = ConvertFrom(From);
+            PrimitiveComparator? to = ConvertTo(To);
+
+            if (from is not null && to is not null && !RangeUtility.DoComparatorsComplement(to, from))
+                return (null, None);
+
+            return (from, to);
 
             static PrimitiveComparator? ConvertFrom(PartialVersion from)
             {
@@ -60,7 +66,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 // 1.x.x    - ... ⇒ >=1.0.0    ...
                 // 1.x.x-rc - ... ⇒ >=1.0.0    ...
 
-                return GreaterThanOrEqual(Utility.NodeSemverTrim(from));
+                return GreaterThanOrEqual(RangeUtility.NodeSemverTrim(from));
             }
             static PrimitiveComparator? ConvertTo(PartialVersion to)
             {
@@ -94,17 +100,31 @@ namespace Chasm.SemanticVersioning.Ranges
                 // ... - 1.2.3    ⇒ ... <=1.2.3
                 // ... - 1.2.3-rc ⇒ ... <=1.2.3-rc
 
-                return LessThanOrEqual(Utility.NodeSemverTrim(to));
+                return LessThanOrEqual(RangeUtility.NodeSemverTrim(to));
             }
         }
 
+        /// <summary>
+        ///   <para>Determines whether this hyphen range comparator is equal to another specified hyphen range comparator.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
+        /// </summary>
+        /// <param name="other">The hyphen range comparator to compare with this hyphen range comparator.</param>
+        /// <returns><see langword="true"/>, if this hyphen range comparator is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(HyphenRangeComparator? other)
         {
             if (ReferenceEquals(this, other)) return true;
             return other is not null && From.Equals(other.From) && To.Equals(other.To);
         }
+        /// <summary>
+        ///   <para>Determines whether this hyphen range comparator is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
+        /// </summary>
+        /// <param name="obj">The object to compare with this hyphen range comparator.</param>
+        /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="HyphenRangeComparator"/> instance equal to this hyphen range comparator; otherwise, <see langword="false"/>.</returns>
         [Pure] public override bool Equals(object? obj)
             => Equals(obj as HyphenRangeComparator);
+        /// <summary>
+        ///   <para>Returns a hash code for this hyphen range comparator.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
+        /// </summary>
+        /// <returns>A hash code for this hyphen range comparator.</returns>
         [Pure] public override int GetHashCode()
         {
             // Add the type hashcode as well to avoid collisions between different types of comparators
