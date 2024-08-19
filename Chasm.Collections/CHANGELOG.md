@@ -1,5 +1,12 @@
 # Chasm.Collections Changelog
 
+### v2.3.0
+- ✨ Added `ArrayExtensions.NotNull<T>(this T[])`;
+- ✨ Added `EnumerableExtensions.Only<T>(this IEnumerable<T>)`;
+- ✨ Added `EnumerableExtensions.Only<T>(this IEnumerable<T>, Func<T, bool>)`;
+- ✨ Added `EnumerableExtensions.OnlyOrDefault<T>(this IEnumerable<T>)`;
+- ✨ Added `EnumerableExtensions.OnlyOrDefault<T>(this IEnumerable<T>, Func<T, bool>)`;
+
 ### v2.2.7
 - 🧩 Added `net35` target. Now targets: `net8.0`, `net6.0`, `net5.0`, `netcoreapp3.0`,  `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.3`, `netstandard1.0`, `net47`, `net46`, `net45`, `net35`;
 
