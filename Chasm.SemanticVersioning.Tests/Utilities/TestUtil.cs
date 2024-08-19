@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Chasm.Collections;
 using Xunit;
 
@@ -58,6 +59,9 @@ namespace Chasm.SemanticVersioning.Tests
             if (right.Length > 0) right[0] = right[0][prefix.Length..];
             return (left, right);
         }
+
+        public static IEnumerable<T> GetFixtures<T>(this TheoryData<T> data)
+            => data.Select(args => (T)args[0]!);
 
     }
 }

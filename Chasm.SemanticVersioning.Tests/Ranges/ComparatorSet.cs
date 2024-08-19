@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Chasm.Collections;
 using Chasm.SemanticVersioning.Ranges;
 using Xunit;
 using Xunit.Abstractions;
@@ -87,89 +85,6 @@ namespace Chasm.SemanticVersioning.Tests
             // make sure that properties aren't constantly creating new instances
             Assert.Same(ComparatorSet.None, ComparatorSet.None);
             Assert.Same(ComparatorSet.All, ComparatorSet.All);
-        }
-
-        private static TheoryData<string>? comparatorSetFixturesCache;
-        public static TheoryData<string> GetComparatorSetFixtures()
-        {
-            if (comparatorSetFixturesCache is not null) return comparatorSetFixturesCache;
-            TheoryData<string> adapter = comparatorSetFixturesCache = [];
-
-            var fixtures = VersionRangeTests.CreateOperationFixtures().Fixtures
-                                            .SelectMany(f => new[] { f.Left, f.Right, f.Expected })
-                                            .NotNull().Where(r => r.Length > 0 && !r.Contains('|'))
-                                            .Distinct().ToArray();
-
-            adapter.AddRange(fixtures);
-
-            return adapter;
-        }
-
-        [Theory, MemberData(nameof(GetComparatorSetFixtures))]
-        public void ContainsMethod(string aStr)
-        {
-            ComparatorSet a = VersionRange.Parse(aStr)._comparatorSets[0];
-
-            foreach (var args in GetComparatorSetFixtures())
-            {
-                string bStr = (string)args[0];
-                ComparatorSet b = VersionRange.Parse(bStr)._comparatorSets[0];
-
-                try
-                {
-                    if (a.Normalize().Desugar() == b.Normalize().Desugar())
-                    {
-                        Assert.True(a.Contains(b));
-                        Assert.True(b.Contains(a));
-                    }
-                    else
-                    {
-                        ComparatorSet intersection = (a & b).Normalize().Desugar();
-                        Assert.Equal(intersection == b.Normalize().Desugar(), a.Contains(b));
-                        Assert.Equal(intersection == a.Normalize().Desugar(), b.Contains(a));
-                    }
-                }
-                catch
-                {
-                    Output.WriteLine($"A    : {aStr}");
-                    Output.WriteLine($"B    : {bStr}");
-                    Output.WriteLine($"A & B: {a & b}");
-                    throw;
-                }
-            }
-        }
-        [Theory, MemberData(nameof(GetComparatorSetFixtures))]
-        public void IntersectsMethod(string aStr)
-        {
-            ComparatorSet a = VersionRange.Parse(aStr)._comparatorSets[0];
-
-            foreach (var args in GetComparatorSetFixtures())
-            {
-                string bStr = (string)args[0];
-                ComparatorSet b = VersionRange.Parse(bStr)._comparatorSets[0];
-
-                try
-                {
-                    if (a.Normalize().Desugar() == b.Normalize().Desugar())
-                    {
-                        Assert.True(a.Intersects(b));
-                        Assert.True(b.Intersects(a));
-                    }
-                    else
-                    {
-                        ComparatorSet intersection = (a & b).Normalize().Desugar();
-                        Assert.Equal(intersection != ComparatorSet.None, a.Intersects(b));
-                        Assert.Equal(intersection != ComparatorSet.None, b.Intersects(a));
-                    }
-                }
-                catch
-                {
-                    Output.WriteLine($"A    : {aStr}");
-                    Output.WriteLine($"B    : {bStr}");
-                    Output.WriteLine($"A & B: {(a & b).Normalize().Desugar()}");
-                    throw;
-                }
-            }
         }
 
     }
