@@ -269,9 +269,9 @@ namespace Chasm.SemanticVersioning.Ranges
                     left = PrimitiveComparator.GreaterThanOrEqual(left.Operand);
                 }
 
-                if (left is not null && (lower is null || RangeUtility.CompareComparators(left, lower) > 0))
+                if (RangeUtility.CompareComparators(left, lower) > 0)
                     lower = left;
-                if (right is not null && (upper is null || RangeUtility.CompareComparators(right, upper) < 0))
+                if (RangeUtility.CompareComparators(right, upper, -1) < 0)
                     upper = right;
             }
 

@@ -21,12 +21,6 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             var (lowOp, low, highOp, high) = comparatorSet.GetBoundsCore();
 
-            if (low is not null && lowOp.IsEQ())
-                return (PrimitiveComparator.LessThan(low), PrimitiveComparator.GreaterThan(low));
-
-            if (!RangeUtility.DoComparatorsIntersect(highOp, high, lowOp, low))
-                return (XRangeComparator.All, null);
-
             if (low is null)
                 return (high is null ? PrimitiveComparator.None : Comparator.ComplementComparison(highOp, high), null);
 
@@ -47,6 +41,8 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             if (left is null) throw new ArgumentNullException(nameof(left));
             if (right is null) throw new ArgumentNullException(nameof(right));
+
+            // TODO: rewrite the entire method, to account for resugaring of advanced comparators
 
             // each set represents a contiguous range of versions
             // TODO: refactor to use GetBoundsCore() to minimize allocations with = primitives?
@@ -98,6 +94,8 @@ namespace Chasm.SemanticVersioning.Ranges
             if (left is null) throw new ArgumentNullException(nameof(left));
             if (right is null) throw new ArgumentNullException(nameof(right));
 
+            // TODO: rewrite the entire method, to account for resugaring of advanced comparators
+
             // each set represents a contiguous range of versions
             // TODO: refactor to use GetBoundsCore() to minimize allocations with = primitives?
             (PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh) = left.GetBounds();
@@ -126,6 +124,8 @@ namespace Chasm.SemanticVersioning.Ranges
             // store the resulting union's bounds
             PrimitiveComparator? resultLow = lowK <= 0 ? leftLow : rightLow;
             PrimitiveComparator? resultHigh = highK >= 0 ? leftHigh : rightHigh;
+
+            if (resultLow is null && resultHigh is null) return All;
 
             // return the union as a version range
             if (resultLow is null)

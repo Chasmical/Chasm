@@ -123,11 +123,7 @@ namespace Chasm.SemanticVersioning.Ranges
             // at this point, we only have >/>=/</<= primitives, which definitely intersect
             Debug.Assert(RangeUtility.DoComparatorsIntersect(resultHigh, resultLow));
 
-            // see if any of the advanced comparator can be resugared back
-            if (original1 is AdvancedComparator advanced1 && Resugar(advanced1, resultLow, resultHigh) is { } resugared1)
-                return (resugared1, null);
-            if (original2 is AdvancedComparator advanced2 && Resugar(advanced2, resultLow, resultHigh) is { } resugared2)
-                return (resugared2, null);
+            // TODO: try to resugar advanced comparators
 
             // at this point, I think it's impossible for any of these to be null,
             // but I'll leave the null checks with returns just in case.
@@ -190,7 +186,7 @@ namespace Chasm.SemanticVersioning.Ranges
             if (left is null) throw new ArgumentNullException(nameof(left));
             if (right is null) throw new ArgumentNullException(nameof(right));
             (Comparator?, Comparator?) tuple = Union(left, right, out bool isRange);
-            return VersionRange.FromTuple(isRange ? tuple : (ComparatorSet.FromTuple(tuple), null));
+            return VersionRange.FromTuple(isRange ? tuple! : (ComparatorSet.FromTuple(tuple), null));
         }
 
         [Pure] private static (Comparator?, Comparator?) Union(Comparator left, Comparator right, out bool isRange)
@@ -213,20 +209,20 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] private static (Comparator?, Comparator?) UnionAdvanced(
             PrimitiveComparator? leftLow, PrimitiveComparator? leftHigh,
             PrimitiveComparator? rightLow, PrimitiveComparator? rightHigh,
-            Comparator sugared1, Comparator sugared2, out bool isRange
+            Comparator original1, Comparator original2, out bool isRange
         )
         {
             isRange = true; // resulting comparators are unioned as one/two sets (<a.b.c || >x.y.z)
 
             // if one of the operands is an equality primitive, return either the other comparator, or union both of them
             if (leftLow?.Operator.IsEQ() == true)
-                return sugared2.IsSatisfiedByCore(leftLow.Operand) ? (sugared2, null) : (sugared1, sugared2);
+                return original2.IsSatisfiedByCore(leftLow.Operand) ? (original2, null) : (original1, original2);
             if (rightLow?.Operator.IsEQ() == true)
-                return sugared1.IsSatisfiedByCore(rightLow.Operand) ? (sugared1, null) : (sugared1, sugared2);
+                return original1.IsSatisfiedByCore(rightLow.Operand) ? (original1, null) : (original1, original2);
 
             // if the comparators don't intersect, combine them in a version range
             if (!RangeUtility.DoComparatorsComplement(leftHigh, rightLow) || !RangeUtility.DoComparatorsComplement(rightHigh, leftLow))
-                return (sugared1, sugared2);
+                return (original1, original2);
 
             isRange = false; // resulting comparators are intersected as one set (>a.b.c <x.y.z)
 
@@ -236,22 +232,21 @@ namespace Chasm.SemanticVersioning.Ranges
 
             // both operands' bounds are the same, return whichever one's an advanced comparator, or the left one
             if (lowK == 0 && highK == 0)
-                return (sugared1.IsAdvanced || !sugared2.IsAdvanced ? sugared1 : sugared2, null);
+                return (original1.IsAdvanced || !original2.IsAdvanced ? original1 : original2, null);
 
             // left contains right (leftLow <= rightLow && leftHigh >= rightHigh), return original left comparator
-            if (lowK <= 0 && highK >= 0) return (sugared1, null);
+            if (lowK <= 0 && highK >= 0) return (original1, null);
             // right contains left (leftLow >= rightLow && leftHigh <= rightHigh), return original right comparator
-            if (lowK >= 0 && highK <= 0) return (sugared2, null);
+            if (lowK >= 0 && highK <= 0) return (original2, null);
 
             // store the resulting union's bounds
             PrimitiveComparator? resultLow = lowK <= 0 ? leftLow : rightLow;
             PrimitiveComparator? resultHigh = highK >= 0 ? leftHigh : rightHigh;
 
-            // see if any of the advanced comparator can be resugared back
-            if (sugared1 is AdvancedComparator advanced1 && Resugar(advanced1, resultLow, resultHigh) is { } resugared1)
-                return (resugared1, null);
-            if (sugared2 is AdvancedComparator advanced2 && Resugar(advanced2, resultLow, resultHigh) is { } resugared2)
-                return (resugared2, null);
+            if (resultLow is null && resultHigh is null)
+                return (XRangeComparator.All, null);
+
+            // TODO: try to resugar advanced comparators
 
             // at this point, simple combining and resugaring failed, so we'll just AND the results
 
@@ -292,22 +287,6 @@ namespace Chasm.SemanticVersioning.Ranges
             if (high.Equals(PrimitiveComparator.None)) return low;
 
             // the comparators can't be combined into a single primitive, meaning that a VersionRange is required
-            return null;
-        }
-
-        [Pure] private static AdvancedComparator? Resugar(AdvancedComparator advanced, PrimitiveComparator? left, PrimitiveComparator? right)
-        {
-            AdvancedComparator? resugared = ResugarCore(advanced, left, right);
-            Debug.Assert(resugared is null || resugared.ToPrimitives() == (left, right));
-            // TODO: set _primitives on AdvancedComparator
-            return resugared;
-        }
-        [Pure] private static AdvancedComparator? ResugarCore(AdvancedComparator advanced, PrimitiveComparator? left, PrimitiveComparator? right)
-        {
-            (PrimitiveComparator? origLeft, PrimitiveComparator? origRight) = advanced.ToPrimitives();
-
-            // TODO: resugar comparators
-
             return null;
         }
 
