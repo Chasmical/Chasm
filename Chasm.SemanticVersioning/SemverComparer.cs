@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 
@@ -14,15 +15,25 @@ namespace Chasm.SemanticVersioning
                                        , IComparer<SemanticVersion>, IEqualityComparer<SemanticVersion>
                                        , IComparer<PartialVersion>, IEqualityComparer<PartialVersion>
                                        , IComparer<PartialComponent>, IEqualityComparer<PartialComponent>
+                                       , IEqualityComparer<VersionRange>
+                                       , IEqualityComparer<ComparatorSet>
+                                       , IEqualityComparer<Comparator>
     {
-        private const string supportedTypes = $"{nameof(SemanticVersion)}, {nameof(PartialVersion)} or {nameof(PartialComponent)}";
+        private const string supportedComparisonTypes = $"{nameof(SemanticVersion)}, {nameof(PartialVersion)}, {nameof(PartialComponent)}";
+        private const string supportedEqualityTypes = $"{supportedComparisonTypes}, {nameof(VersionRange)}, {nameof(ComparatorSet)}," +
+                                                      $"{nameof(Comparator)}";
 
+        private readonly bool isDefault;
         private readonly bool includeBuild;
         private readonly bool diffWildcards;
         private readonly bool diffEquality;
 
         private SemverComparer(SemverComparison comparison)
         {
+            if (comparison > SemverComparison.Exact)
+                throw new InvalidEnumArgumentException(nameof(comparison), (int)comparison, typeof(SemverComparison));
+
+            isDefault = comparison == SemverComparison.Default;
             includeBuild = (comparison & SemverComparison.IncludeBuild) != 0;
             diffWildcards = (comparison & SemverComparison.DiffWildcards) != 0;
             diffEquality = (comparison & SemverComparison.DiffEquality) != 0;
@@ -40,7 +51,7 @@ namespace Chasm.SemanticVersioning
             if (a is PartialComponent componentA && b is PartialComponent componentB)
                 return Compare(componentA, componentB);
 
-            throw new ArgumentException($"The objects must be of type {supportedTypes}.");
+            throw new ArgumentException($"The objects must be of one of the following types: {supportedComparisonTypes}.");
         }
         [Pure] bool IEqualityComparer.Equals(object? a, object? b)
         {
@@ -53,8 +64,14 @@ namespace Chasm.SemanticVersioning
                 return Equals(partialA, partialB);
             if (a is PartialComponent componentA && b is PartialComponent componentB)
                 return Equals(componentA, componentB);
+            if (a is VersionRange rangeA && b is VersionRange rangeB)
+                return Equals(rangeA, rangeB);
+            if (a is ComparatorSet setA && b is ComparatorSet setB)
+                return Equals(setA, setB);
+            if (a is Comparator comparatorA && b is Comparator comparatorB)
+                return Equals(comparatorA, comparatorB);
 
-            throw new ArgumentException($"The objects must be of type {supportedTypes}.");
+            throw new ArgumentException($"The objects must be of one of the following types: {supportedEqualityTypes}.");
         }
         [Pure] int IEqualityComparer.GetHashCode(object? obj)
         {
@@ -62,7 +79,10 @@ namespace Chasm.SemanticVersioning
             if (obj is SemanticVersion version) return GetHashCode(version);
             if (obj is PartialVersion partial) return GetHashCode(partial);
             if (obj is PartialComponent component) return GetHashCode(component);
-            throw new ArgumentException($"The object must be of type {supportedTypes}.", nameof(obj));
+            if (obj is VersionRange range) return GetHashCode(range);
+            if (obj is ComparatorSet set) return GetHashCode(set);
+            if (obj is Comparator comparator) return GetHashCode(comparator);
+            throw new ArgumentException($"The object must be of one of the following types: {supportedEqualityTypes}.", nameof(obj));
         }
 
         /// <summary>
@@ -235,6 +255,89 @@ namespace Chasm.SemanticVersioning
         [Pure] public int GetHashCode(PartialComponent component)
             => diffWildcards ? (int)component._value : component.GetHashCode();
 
+        [Pure] public bool Equals(VersionRange? a, VersionRange? b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
+            if (isDefault) return a.Equals(b);
+            return Utility.SequenceEqual(a._comparatorSets.AsSpan(), b._comparatorSets, this);
+        }
+        [Pure] public int GetHashCode(VersionRange? range)
+        {
+            if (range is null) return 0;
+            if (isDefault) return range.GetHashCode();
+
+            HashCode hash = new();
+            ComparatorSet[] sets = range._comparatorSets;
+            for (int i = 0; i < sets.Length; i++)
+                hash.Add(GetHashCode(sets[i]));
+            return hash.ToHashCode();
+        }
+
+        [Pure] public bool Equals(ComparatorSet? a, ComparatorSet? b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
+            if (isDefault) return a.Equals(b);
+            return Utility.SequenceEqual(a._comparators.AsSpan(), b._comparators, this);
+        }
+        [Pure] public int GetHashCode(ComparatorSet? set)
+        {
+            if (set is null) return 0;
+            if (isDefault) return set.GetHashCode();
+
+            HashCode hash = new();
+            Comparator[] comparators = set._comparators;
+            for (int i = 0; i < comparators.Length; i++)
+                hash.Add(GetHashCode(comparators[i]));
+            return hash.ToHashCode();
+        }
+
+        [Pure] public bool Equals(Comparator? a, Comparator? b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
+            if (isDefault) return a.Equals(b);
+
+            return a switch
+            {
+                PrimitiveComparator primitiveA => b is PrimitiveComparator primitiveB
+                                               && Equals(primitiveA.Operator, primitiveB.Operator)
+                                               && Equals(primitiveA.Operand, primitiveB.Operand),
+                CaretComparator caretA => b is CaretComparator caretB
+                                       && Equals(caretA.Operand, caretB.Operand),
+                HyphenRangeComparator hyphenA => b is HyphenRangeComparator hyphenB
+                                              && Equals(hyphenA.From, hyphenB.From)
+                                              && Equals(hyphenA.To, hyphenB.To),
+                TildeComparator tildeA => b is TildeComparator tildeB
+                                       && Equals(tildeA.Operand, tildeB.Operand),
+                XRangeComparator xRangeA => b is XRangeComparator xRangeB
+                                         && Equals(xRangeA.Operator, xRangeB.Operator)
+                                         && Equals(xRangeA.Operand, xRangeB.Operand),
+                _ => a.Equals(b),
+            };
+        }
+        [Pure] public int GetHashCode(Comparator? comparator)
+        {
+            if (comparator is null) return 0;
+            if (isDefault) return comparator.GetHashCode();
+
+            return comparator switch
+            {
+                PrimitiveComparator primitive => HashCode.Combine(GetHashCode(primitive.Operand), GetHashCode(primitive.Operator)),
+                CaretComparator caret => HashCode.Combine(caret.GetType(), GetHashCode(caret.Operand)),
+                HyphenRangeComparator hyphen => HashCode.Combine(hyphen.GetType(), GetHashCode(hyphen.From), GetHashCode(hyphen.To)),
+                TildeComparator tilde => HashCode.Combine(tilde.GetType(), GetHashCode(tilde.Operand)),
+                XRangeComparator xRange => HashCode.Combine(xRange.GetType(), GetHashCode(xRange.Operand), GetHashCode(xRange.Operator)),
+                _ => comparator.GetHashCode(),
+            };
+        }
+
+        private bool Equals(PrimitiveOperator a, PrimitiveOperator b)
+            => diffEquality ? a == b : a.Normalize() == b.Normalize();
+        private int GetHashCode(PrimitiveOperator @operator)
+            => (int)(diffEquality ? @operator : @operator.Normalize());
+
         /// <summary>
         ///   <para>Returns a <see cref="SemverComparer"/> that uses the specified semantic version <paramref name="comparison"/> rules.</para>
         /// </summary>
@@ -247,7 +350,7 @@ namespace Chasm.SemanticVersioning
             SemverComparison.IncludeBuild => IncludeBuild,
             SemverComparison.DiffWildcards => DiffWildcards,
             SemverComparison.Exact => Exact,
-            _ => throw new InvalidEnumArgumentException(nameof(comparison), (int)comparison, typeof(SemverComparison)),
+            _ => new SemverComparer(comparison),
         };
 
         /// <summary>

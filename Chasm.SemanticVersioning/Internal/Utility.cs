@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Chasm.Formatting;
 using JetBrains.Annotations;
@@ -127,6 +128,19 @@ namespace Chasm.SemanticVersioning
             if (length != right.Length) return false;
             for (int i = 0; i < length; i++)
                 if (!left[i].Equals(right[i]))
+                    return false;
+            return true;
+#endif
+        }
+        [Pure] public static bool SequenceEqual<T>(Span<T> span, ReadOnlySpan<T> other, IEqualityComparer<T> comparer)
+        {
+#if NET6_0_OR_GREATER
+            return span.SequenceEqual(other, comparer);
+#else
+            int length = span.Length;
+            if (length != other.Length) return false;
+            for (int i = 0; i < length; i++)
+                if (!comparer.Equals(span[i], other[i]))
                     return false;
             return true;
 #endif
