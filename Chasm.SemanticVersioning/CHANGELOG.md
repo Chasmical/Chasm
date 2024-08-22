@@ -1,5 +1,21 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.7.1
+- ✨ Implemented `IEqualityComparer<VersionRange>` methods in `SemverComparer`;
+- ✨ Implemented `IEqualityComparer<ComparatorSet>` methods in `SemverComparer`;
+- ✨ Implemented `IEqualityComparer<Comparator>` methods in `SemverComparer`;
+- ✨ Added `SemverComparer.Compare(VersionRange?, VersionRange?)`;
+- ✨ Added `SemverComparer.Equals(VersionRange?, VersionRange?)`;
+- ✨ Added `SemverComparer.GetHashCode(VersionRange?)`;
+- ✨ Added `SemverComparer.Compare(ComparatorSet?, ComparatorSet?)`;
+- ✨ Added `SemverComparer.Equals(ComparatorSet?, ComparatorSet?)`;
+- ✨ Added `SemverComparer.GetHashCode(ComparatorSet?)`;
+- ✨ Added `SemverComparer.Compare(Comparator?, Comparator?)`;
+- ✨ Added `SemverComparer.Equals(Comparator?, Comparator?)`;
+- ✨ Added `SemverComparer.GetHashCode(Comparator?)`;
+- 🐛 Now `SemverComparer.FromComparison` doesn't throw on `SemverComparison` combinations that don't have an associated singleton;
+- ♻️ Slightly refactored version range operations, removed resugaring code for now;
+
 ### v2.7.0
 - 💥 Invalid hyphen ranges (e.g. `3.0.0 - 1.0.0`) now desugar to `<0.0.0-0`;
 - ✨ Added `static operator ~(Comparator)`;
