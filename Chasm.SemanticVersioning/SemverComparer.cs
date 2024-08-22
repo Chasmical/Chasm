@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
+using System.Diagnostics;
 using Chasm.SemanticVersioning.Ranges;
 using JetBrains.Annotations;
 
@@ -299,38 +299,50 @@ namespace Chasm.SemanticVersioning
             if (a is null || b is null) return false;
             if (isDefault) return a.Equals(b);
 
-            return a switch
+            switch (a)
             {
-                PrimitiveComparator primitiveA => b is PrimitiveComparator primitiveB
-                                               && Equals(primitiveA.Operator, primitiveB.Operator)
-                                               && Equals(primitiveA.Operand, primitiveB.Operand),
-                CaretComparator caretA => b is CaretComparator caretB
-                                       && Equals(caretA.Operand, caretB.Operand),
-                HyphenRangeComparator hyphenA => b is HyphenRangeComparator hyphenB
-                                              && Equals(hyphenA.From, hyphenB.From)
-                                              && Equals(hyphenA.To, hyphenB.To),
-                TildeComparator tildeA => b is TildeComparator tildeB
-                                       && Equals(tildeA.Operand, tildeB.Operand),
-                XRangeComparator xRangeA => b is XRangeComparator xRangeB
-                                         && Equals(xRangeA.Operator, xRangeB.Operator)
-                                         && Equals(xRangeA.Operand, xRangeB.Operand),
-                _ => a.Equals(b),
-            };
+                case PrimitiveComparator primitiveA:
+                    return b is PrimitiveComparator primitiveB && Equals(primitiveA.Operator, primitiveB.Operator) &&
+                           Equals(primitiveA.Operand, primitiveB.Operand);
+                case CaretComparator caretA:
+                    return b is CaretComparator caretB && Equals(caretA.Operand, caretB.Operand);
+                case HyphenRangeComparator hyphenA:
+                    return b is HyphenRangeComparator hyphenB && Equals(hyphenA.From, hyphenB.From) && Equals(hyphenA.To, hyphenB.To);
+                case TildeComparator tildeA:
+                    return b is TildeComparator tildeB && Equals(tildeA.Operand, tildeB.Operand);
+                case XRangeComparator xRangeA:
+                    return b is XRangeComparator xRangeB && Equals(xRangeA.Operator, xRangeB.Operator) &&
+                           Equals(xRangeA.Operand, xRangeB.Operand);
+                default:
+                    // dotcover disable
+                    Debug.Fail("Invalid comparator type");
+                    return a.Equals(b);
+                    // dotcover enable
+            }
         }
         [Pure] public int GetHashCode(Comparator? comparator)
         {
             if (comparator is null) return 0;
             if (isDefault) return comparator.GetHashCode();
 
-            return comparator switch
+            switch (comparator)
             {
-                PrimitiveComparator primitive => HashCode.Combine(GetHashCode(primitive.Operand), GetHashCode(primitive.Operator)),
-                CaretComparator caret => HashCode.Combine(caret.GetType(), GetHashCode(caret.Operand)),
-                HyphenRangeComparator hyphen => HashCode.Combine(hyphen.GetType(), GetHashCode(hyphen.From), GetHashCode(hyphen.To)),
-                TildeComparator tilde => HashCode.Combine(tilde.GetType(), GetHashCode(tilde.Operand)),
-                XRangeComparator xRange => HashCode.Combine(xRange.GetType(), GetHashCode(xRange.Operand), GetHashCode(xRange.Operator)),
-                _ => comparator.GetHashCode(),
-            };
+                case PrimitiveComparator primitive:
+                    return HashCode.Combine(GetHashCode(primitive.Operand), GetHashCode(primitive.Operator));
+                case CaretComparator caret:
+                    return HashCode.Combine(caret.GetType(), GetHashCode(caret.Operand));
+                case HyphenRangeComparator hyphen:
+                    return HashCode.Combine(hyphen.GetType(), GetHashCode(hyphen.From), GetHashCode(hyphen.To));
+                case TildeComparator tilde:
+                    return HashCode.Combine(tilde.GetType(), GetHashCode(tilde.Operand));
+                case XRangeComparator xRange:
+                    return HashCode.Combine(xRange.GetType(), GetHashCode(xRange.Operand), GetHashCode(xRange.Operator));
+                default:
+                    // dotcover disable
+                    Debug.Fail("Invalid comparator type");
+                    return comparator.GetHashCode();
+                // dotcover enable
+            }
         }
 
         private bool Equals(PrimitiveOperator a, PrimitiveOperator b)

@@ -82,5 +82,37 @@ namespace Chasm.SemanticVersioning.Tests
             }
 
         }
+
+        [Fact]
+        public void OperationsNull()
+        {
+            Comparator comparator = XRangeComparator.All;
+
+            Assert.Throws<ArgumentNullException>(() => ~(Comparator)null!);
+            Assert.Throws<ArgumentNullException>(() => comparator & null!);
+            Assert.Throws<ArgumentNullException>(() => null! & comparator);
+            Assert.Throws<ArgumentNullException>(() => comparator | null!);
+            Assert.Throws<ArgumentNullException>(() => null! | comparator);
+
+            ComparatorSet set = ComparatorSet.All;
+            Assert.Throws<ArgumentNullException>(() => ~(ComparatorSet)null!);
+            Assert.Throws<ArgumentNullException>(() => set & null!);
+            Assert.Throws<ArgumentNullException>(() => null! & set);
+            Assert.Throws<ArgumentNullException>(() => set | null!);
+            Assert.Throws<ArgumentNullException>(() => null! | set);
+
+            Assert.Throws<ArgumentNullException>(() => set.Contains(null!));
+            Assert.Throws<ArgumentNullException>(() => set.Intersects(null!));
+            Assert.Throws<ArgumentNullException>(() => set.Touches(null!));
+
+            VersionRange range = VersionRange.All;
+            Assert.Throws<ArgumentNullException>(() => ~(VersionRange)null!);
+            Assert.Throws<ArgumentNullException>(() => range & null!);
+            Assert.Throws<ArgumentNullException>(() => null! & range);
+            Assert.Throws<ArgumentNullException>(() => range | null!);
+            Assert.Throws<ArgumentNullException>(() => null! | range);
+
+        }
+
     }
 }

@@ -17,7 +17,7 @@ You're probably wondering "Why should I use this library instead of any other mo
 
 - **Out-of-the-box serialization support.** Supports serialization/deserialization with `Newtonsoft.Json`, `System.Text.Json` and `System.Xml` (and any libraries using `TypeConverter`s) with no extra configuration needed.
 
-- **Thoroughly tested, 100% code coverage.** As of v2.5.1, all of the library's functionality has been covered by tests. Of course, like with all tests, there may be some really obscure edge cases that haven't been covered, but it's really unlikely you'll ever run into them. And if you do, [file an issue here](https://github.com/Chasmical/Chasm/issues)!
+- **Thoroughly tested, 99.5% code coverage.** Most of the functionality has been covered by tests. Regular semantic versions are fully tested, it's just the `node-semver` version ranges that are tricky. There may be some really obscure edge cases that haven't been covered, if you encounter them, [file an issue here](https://github.com/Chasmical/Chasm/issues)!
 
 - **.NET-style documentation.** Written in the style of `System` namespace docs. I don't know if it's worth advertising, but I really like how descriptive and consistent it is, so I thought I should mention that.
 
