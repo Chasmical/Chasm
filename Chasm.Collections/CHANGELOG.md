@@ -1,5 +1,8 @@
 # Chasm.Collections Changelog
 
+### v2.3.1
+- 📝 Added missing XML docs;
+
 ### v2.3.0
 - ✨ Added `ArrayExtensions.NotNull<T>(this T[])`;
 - ✨ Added `EnumerableExtensions.Only<T>(this IEnumerable<T>)`;
