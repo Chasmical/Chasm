@@ -20,7 +20,7 @@ namespace Chasm.SemanticVersioning
                                        , IEqualityComparer<Comparator>
     {
         private const string supportedComparisonTypes = $"{nameof(SemanticVersion)}, {nameof(PartialVersion)}, {nameof(PartialComponent)}";
-        private const string supportedEqualityTypes = $"{supportedComparisonTypes}, {nameof(VersionRange)}, {nameof(ComparatorSet)}," +
+        private const string supportedEqualityTypes = $"{supportedComparisonTypes}, {nameof(VersionRange)}, {nameof(ComparatorSet)}, " +
                                                       $"{nameof(Comparator)}";
 
         private readonly bool isDefault;
@@ -255,6 +255,12 @@ namespace Chasm.SemanticVersioning
         [Pure] public int GetHashCode(PartialComponent component)
             => diffWildcards ? (int)component._value : component.GetHashCode();
 
+        /// <summary>
+        ///   <para>Determines whether one version range is equal to another version range.</para>
+        /// </summary>
+        /// <param name="a">The first version range to compare.</param>
+        /// <param name="b">The second version range to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(VersionRange? a, VersionRange? b)
         {
             if (ReferenceEquals(a, b)) return true;
@@ -262,6 +268,11 @@ namespace Chasm.SemanticVersioning
             if (isDefault) return a.Equals(b);
             return Utility.SequenceEqual(a._comparatorSets.AsSpan(), b._comparatorSets, this);
         }
+        /// <summary>
+        ///   <para>Returns a hash code for the specified version range.</para>
+        /// </summary>
+        /// <param name="range">The version range to get a hash code for.</param>
+        /// <returns>The hash code for the specified version range.</returns>
         [Pure] public int GetHashCode(VersionRange? range)
         {
             if (range is null) return 0;
@@ -274,6 +285,12 @@ namespace Chasm.SemanticVersioning
             return hash.ToHashCode();
         }
 
+        /// <summary>
+        ///   <para>Determines whether one comparator set is equal to another comparator set.</para>
+        /// </summary>
+        /// <param name="a">The first comparator set to compare.</param>
+        /// <param name="b">The second comparator set to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(ComparatorSet? a, ComparatorSet? b)
         {
             if (ReferenceEquals(a, b)) return true;
@@ -281,6 +298,11 @@ namespace Chasm.SemanticVersioning
             if (isDefault) return a.Equals(b);
             return Utility.SequenceEqual(a._comparators.AsSpan(), b._comparators, this);
         }
+        /// <summary>
+        ///   <para>Returns a hash code for the specified comparator set.</para>
+        /// </summary>
+        /// <param name="set">The comparator set to get a hash code for.</param>
+        /// <returns>The hash code for the specified comparator set.</returns>
         [Pure] public int GetHashCode(ComparatorSet? set)
         {
             if (set is null) return 0;
@@ -293,6 +315,12 @@ namespace Chasm.SemanticVersioning
             return hash.ToHashCode();
         }
 
+        /// <summary>
+        ///   <para>Determines whether one comparator is equal to another comparator.</para>
+        /// </summary>
+        /// <param name="a">The first comparator to compare.</param>
+        /// <param name="b">The second comparator to compare.</param>
+        /// <returns><see langword="true"/>, if <paramref name="a"/> is equal to <paramref name="b"/>; otherwise, <see langword="false"/>.</returns>
         [Pure] public bool Equals(Comparator? a, Comparator? b)
         {
             if (ReferenceEquals(a, b)) return true;
@@ -320,6 +348,11 @@ namespace Chasm.SemanticVersioning
                     // dotcover enable
             }
         }
+        /// <summary>
+        ///   <para>Returns a hash code for the specified comparator.</para>
+        /// </summary>
+        /// <param name="comparator">The comparator to get a hash code for.</param>
+        /// <returns>The hash code for the specified comparator.</returns>
         [Pure] public int GetHashCode(Comparator? comparator)
         {
             if (comparator is null) return 0;
