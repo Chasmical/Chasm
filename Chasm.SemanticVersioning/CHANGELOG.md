@@ -1,5 +1,10 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.7.2
+- 📝 Added missing XML docs;
+- ♻️ Removed some unnecessary code in utility methods;
+- ♻️ Refactored conversion operators to use static property instances when possible;
+
 ### v2.7.1
 - ✨ Implemented `IEqualityComparer<VersionRange>` methods in `SemverComparer`;
 - ✨ Implemented `IEqualityComparer<ComparatorSet>` methods in `SemverComparer`;
@@ -13,7 +18,7 @@
 - ✨ Added `SemverComparer.Compare(Comparator?, Comparator?)`;
 - ✨ Added `SemverComparer.Equals(Comparator?, Comparator?)`;
 - ✨ Added `SemverComparer.GetHashCode(Comparator?)`;
-- 🐛 Now `SemverComparer.FromComparison` doesn't throw on `SemverComparison` combinations that don't have an associated singleton;
+- 🐛 Now `SemverComparer.FromComparison` doesn't throw on `SemverComparison` combinations that don't have an associated static property instance;
 - ♻️ Slightly refactored version range operations, removed resugaring code for now;
 
 ### v2.7.0
