@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -66,19 +67,19 @@ namespace Chasm.SemanticVersioning.Ranges
             PrimitiveComparator? resultLow = lowK >= 0 ? leftLow : rightLow;
             PrimitiveComparator? resultHigh = highK <= 0 ? leftHigh : rightHigh;
 
+            // at this point, both bounds are guaranteed to be non-null
+            // (* - *) & (* - *) ⇒ *
+            // (* - 1) & (* - 3) ⇒ * - 1
+            // (1 - *) & (3 - *) ⇒ 3 - *
+            // (* - 1) * (3 - *) ⇒ <0.0.0-0
+            // (* - 3) & (2 - *) ⇒ >=2.0.0 <3.0.0-0
+            Debug.Assert(resultLow is not null && resultHigh is not null);
+
             // see if two primitives can be turned into one (i.e. =1.2.3 or <0.0.0-0)
-            if (resultLow is not null && resultHigh is not null)
-            {
-                PrimitiveComparator? singleResult = Comparator.IntersectOpposite(resultLow, resultHigh);
-                if (singleResult is not null) return singleResult;
-            }
+            PrimitiveComparator? singleResult = Comparator.IntersectOpposite(resultLow, resultHigh);
+            if (singleResult is not null) return singleResult;
 
             // return the intersection as a comparator set
-            if (resultLow is null)
-                return resultHigh is null ? All : resultHigh;
-            if (resultHigh is null)
-                return resultLow;
-
             return new ComparatorSet([resultLow, resultHigh], default);
         }
 

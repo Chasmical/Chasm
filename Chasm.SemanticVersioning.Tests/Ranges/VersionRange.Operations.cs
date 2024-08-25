@@ -37,8 +37,6 @@ namespace Chasm.SemanticVersioning.Tests
             Comparator? leftComparator = AsSingle(leftSet?.Comparators);
             Comparator? rightComparator = AsSingle(rightSet?.Comparators);
 
-            // TODO: add tests to ensure that singleton All and None instances are used when possible
-
             switch (fixture.Operation)
             {
                 case '~':

@@ -111,13 +111,8 @@ namespace Chasm.SemanticVersioning.Ranges
         }
         [Pure] private static VersionRange FromList(List<ComparatorSet> results)
         {
-            if (results.Count == 1)
-            {
-                ComparatorSet only = results[0];
-                if (only.Equals(ComparatorSet.None)) return None;
-                if (only.Equals(ComparatorSet.All)) return All;
-            }
             if (results.Count == 0) return None;
+            if (results.Count == 1) return results[0];
             return new VersionRange(results.ToArray(), default);
         }
 

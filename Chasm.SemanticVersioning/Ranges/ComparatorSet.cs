@@ -68,7 +68,11 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="comparator">The comparator to construct a comparator set from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparator))]
         public static implicit operator ComparatorSet?(Comparator? comparator)
-            => comparator is null ? null : new ComparatorSet([comparator], default);
+        {
+            if (ReferenceEquals(comparator, PrimitiveComparator.None)) return None;
+            if (ReferenceEquals(comparator, XRangeComparator.All)) return All;
+            return comparator is null ? null : new ComparatorSet([comparator], default);
+        }
 
         /// <summary>
         ///   <para>Determines whether this comparator set contains any advanced comparators.</para>
@@ -209,21 +213,12 @@ namespace Chasm.SemanticVersioning.Ranges
         {
             (Comparator? resultLeft, Comparator? resultRight) = tuple;
 
-            // The right comparator may be non-null only if the left one is non-null
-            Debug.Assert(resultLeft is not null || resultRight is null);
+            // if it's just a single comparator, use the implicit conversion operator
+            if (resultRight is null) return resultLeft is null ? All : resultLeft;
 
-            // If two comparators were returned, combine them in a set
-            if (resultRight is not null)
-                return new ComparatorSet([resultLeft!, resultRight], default);
-
-            // if it's one of the pre-defined ones, use the singletons
-            if (resultLeft is null || ReferenceEquals(resultLeft, XRangeComparator.All))
-                return All;
-            if (ReferenceEquals(resultLeft, PrimitiveComparator.None))
-                return None;
-
-            // return a set with a single comparator
-            return resultLeft;
+            // combine both comparators in a set
+            Debug.Assert(resultLeft is not null);
+            return new ComparatorSet([resultLeft, resultRight], default);
         }
 
         [Pure] internal int CalculateLength()

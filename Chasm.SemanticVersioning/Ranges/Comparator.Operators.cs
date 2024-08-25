@@ -125,15 +125,13 @@ namespace Chasm.SemanticVersioning.Ranges
 
             // TODO: try to resugar advanced comparators
 
-            // at this point, I think it's impossible for any of these to be null,
-            // but I'll leave the null checks with returns just in case.
+            // at this point, both bounds are guaranteed to be non-null
+            // (* - *) & (* - *) ⇒ *
+            // (* - 1) & (* - 3) ⇒ * - 1
+            // (1 - *) & (3 - *) ⇒ 3 - *
+            // (* - 1) * (3 - *) ⇒ <0.0.0-0
+            // (* - 3) & (2 - *) ⇒ >=2.0.0 <3.0.0-0
             Debug.Assert(resultLow is not null && resultHigh is not null);
-
-            // arrange the primitives to be used in FromTuple method
-            if (resultLow is null)
-                return (resultHigh is null ? XRangeComparator.All : resultHigh, null);
-            if (resultHigh is null)
-                return (resultLow, null);
 
             return (resultLow, resultHigh);
         }

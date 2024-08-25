@@ -98,14 +98,18 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="comparator">The comparator to construct a version range from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparator))]
         public static implicit operator VersionRange?(Comparator? comparator)
-            => comparator is null ? null : new VersionRange(new ComparatorSet(comparator));
+            => (ComparatorSet?)comparator;
         /// <summary>
         ///   <para>Defines an implicit conversion of a comparator set to a version range.</para>
         /// </summary>
         /// <param name="comparatorSet">The comparator set to construct a version range from.</param>
         [Pure] [return: NotNullIfNotNull(nameof(comparatorSet))]
         public static implicit operator VersionRange?(ComparatorSet? comparatorSet)
-            => comparatorSet is null ? null : new VersionRange(comparatorSet);
+        {
+            if (ReferenceEquals(comparatorSet, ComparatorSet.None)) return None;
+            if (ReferenceEquals(comparatorSet, ComparatorSet.All)) return All;
+            return comparatorSet is null ? null : new VersionRange(comparatorSet);
+        }
 
         /// <summary>
         ///   <para>Determines whether this version range contains any advanced comparators.</para>
@@ -183,18 +187,13 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] internal static VersionRange FromTuple((ComparatorSet, ComparatorSet?) tuple)
         {
             (ComparatorSet resultLeft, ComparatorSet? resultRight) = tuple;
-            Debug.Assert(tuple.Item1 is not null);
+            Debug.Assert(resultLeft is not null);
 
-            // If two comparator sets were returned, combine them in a range
-            if (resultRight is not null)
-                return new VersionRange([resultLeft, resultRight], default);
+            // if it's just a single comparator set, use the implicit conversion operator
+            if (resultRight is null) return resultLeft;
 
-            // if it's one of the pre-defined ones, use the singletons
-            if (ReferenceEquals(resultLeft, ComparatorSet.None)) return None;
-            if (ReferenceEquals(resultLeft, ComparatorSet.All)) return All;
-
-            // return a range with a single comparator set
-            return resultLeft;
+            // combine both comparator sets in a range
+            return new VersionRange([resultLeft, resultRight], default);
         }
 
         [Pure] internal int CalculateLength()
