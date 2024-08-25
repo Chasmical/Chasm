@@ -53,12 +53,13 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public static bool IsSthThanOrEqual(this PrimitiveOperator op)
             => op is PrimitiveOperator.GreaterThanOrEqual or PrimitiveOperator.LessThanOrEqual;
 
-        [Pure] public static int CompareComparators(PrimitiveComparator? left, PrimitiveComparator? right, int sign = 1)
+        [Pure] public static int CompareComparators(PrimitiveComparator? left, PrimitiveComparator? right, int nullSign = 1)
         {
-            // 1 should be used when comparing > and >=, while -1 - when comparing < and <=
+            // nullSign = 1  - comparing > and >=
+            // nullSign = -1 - comparing < and <=
 
-            if (left is null) return right is null ? 0 : -sign;
-            if (right is null) return sign;
+            if (left is null) return right is null ? 0 : -nullSign;
+            if (right is null) return nullSign;
             return CompareComparators(left.Operator, left.Operand, right.Operator, right.Operand);
         }
         [Pure] public static bool DoComparatorsIntersect(PrimitiveComparator? high, PrimitiveComparator? low)
@@ -73,22 +74,10 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         [Pure] public static int CompareComparators(
-            PrimitiveOperator leftOperator, SemanticVersion? leftOperand,
-            PrimitiveOperator rightOperator, SemanticVersion? rightOperand,
-            int nullSign = 1
+            PrimitiveOperator leftOperator, SemanticVersion leftOperand,
+            PrimitiveOperator rightOperator, SemanticVersion rightOperand
         )
         {
-            // nullSign = 1  - comparing > and >=
-            // nullSign = -1 - comparing < and <=
-            // nullSign = 0  - suppress direction mismatch assertion
-
-            if (leftOperand is null) return rightOperand is null ? 0 : -nullSign;
-            if (rightOperand is null) return nullSign;
-
-            Debug.Assert(!leftOperator.IsEQ() && !rightOperator.IsEQ());
-            Debug.Assert(nullSign == 0 || leftOperator.IsGTOrGTE() == rightOperator.IsGTOrGTE());
-            Debug.Assert(nullSign == 0 || leftOperator.IsLTOrLTE() == rightOperator.IsLTOrLTE());
-
             int cmp = leftOperand.CompareTo(rightOperand);
             // >1.2.3 is greater than >=1.2.3, since it doesn't include =1.2.3
             // <=1.2.3 is greater than <1.2.3, since it also includes =1.2.3
