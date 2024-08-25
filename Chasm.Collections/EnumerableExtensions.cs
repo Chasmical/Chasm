@@ -71,22 +71,54 @@ namespace Chasm.Collections
 #endif
         }
 
+        /// <summary>
+        ///   <para>Returns the only element of the sequence. The sequence must contain exactly one element, no less, no more.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">The sequence of elements to enumerate.</param>
+        /// <returns>The only element of the source sequence.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="source"/> contains 0 or 2 or more elements.</exception>
         [Pure] public static T Only<T>([InstantHandle] this IEnumerable<T> source)
         {
             if (OnlyCore(source, out T? result)) return result!;
             throw new ArgumentException($"{nameof(source)} contains 0 or 2 or more elements.", nameof(source));
         }
+        /// <summary>
+        ///   <para>Returns the only element of the sequence that satisfies the specified <paramref name="predicate"/>. The sequence must contain exactly one such element, no less, no more.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">The sequence of elements to enumerate.</param>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>The only element of the source sequence that satisfies the specified <paramref name="predicate"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="predicate"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="source"/> contains 0 or 2 or more elements that satisfy the specified <paramref name="predicate"/>.</exception>
         [Pure] public static T Only<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate)
         {
             if (OnlyCore(source, predicate, out T? result)) return result!;
             throw new ArgumentException($"{nameof(source)} contains 0 or 2 or more elements.", nameof(source));
         }
 
+        /// <summary>
+        ///   <para>Returns the only element of the sequence, or <see langword="default"/>(<typeparamref name="T"/>), if the sequence contains 0 or 2 or more elements.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">The sequence of elements to enumerate.</param>
+        /// <returns>The only element of the source sequence, or <see langword="default"/>(<typeparamref name="T"/>), if the sequence contains 0 or 2 or more elements.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         [Pure] public static T? OnlyOrDefault<T>([InstantHandle] this IEnumerable<T> source)
         {
             OnlyCore(source, out T? result);
             return result;
         }
+        /// <summary>
+        ///   <para>Returns the only element of the sequence that satisfies the specified <paramref name="predicate"/>, or <see langword="default"/>(<typeparamref name="T"/>), if the sequence contains 0 or 2 or more such elements.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">The sequence of elements to enumerate.</param>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>The only element of the source sequence that satisfies the specified <paramref name="predicate"/>, or <see langword="default"/>(<typeparamref name="T"/>), if the sequence contains 0 or 2 or more such elements.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="predicate"/> is <see langword="null"/>.</exception>
         [Pure] public static T? OnlyOrDefault<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate)
         {
             OnlyCore(source, predicate, out T? result);

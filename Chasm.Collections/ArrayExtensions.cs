@@ -503,6 +503,13 @@ namespace Chasm.Collections
 #endif
         }
 
+        /// <summary>
+        ///   <para>Retrieves non-null elements of the specified one-dimensional, zero-based <paramref name="array"/>.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of the array.</typeparam>
+        /// <param name="array">The one-dimensional, zero-based array whose elements to filter.</param>
+        /// <returns>If <typeparamref name="T"/> is a reference type, an array that contains non-null elements from the source <paramref name="array"/>; otherwise, if <typeparamref name="T"/> is a value type, returns the same <paramref name="array"/> unchanged.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
         [Pure, ItemNotNull] public static T[] NotNull<T>(this T?[] array)
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
