@@ -186,7 +186,11 @@ namespace Chasm.SemanticVersioning.Tests
             public void Returns(ComparatorSet[] comparatorSets) => MarkDiscard(Expected = new VersionRange(comparatorSets));
 
             public override void AssertResult(VersionRange? result)
-                => Assert.Equal(Expected, result);
+            {
+                Assert.Equal(Expected, result);
+                Assert.Equal(Expected, result, SemverComparer.Exact!);
+                Assert.Equal(Expected?.ToString(), result?.ToString());
+            }
 
             public override string ToString() => $"{base.ToString()} \"{Source}\" ({Options})";
         }

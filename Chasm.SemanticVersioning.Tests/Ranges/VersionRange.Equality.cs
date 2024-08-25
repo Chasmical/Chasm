@@ -106,6 +106,7 @@ namespace Chasm.SemanticVersioning.Tests
                 T nil = null!;
 
                 Assert.True(a == b);
+                Assert.False(a != b);
                 Assert.True(a.Equals(b));
                 Assert.True(cmp.Equals(a, b));
                 Assert.True(cmpT.Equals(a, b));
@@ -114,6 +115,8 @@ namespace Chasm.SemanticVersioning.Tests
 
                 Assert.False(a == nil);
                 Assert.False(nil == a);
+                Assert.True(a != nil);
+                Assert.True(nil != a);
                 Assert.False(a.Equals(nil));
                 Assert.False(cmp.Equals(a, nil));
                 Assert.False(cmp.Equals(nil, a));
@@ -148,6 +151,7 @@ namespace Chasm.SemanticVersioning.Tests
                 T nil = null!;
 
                 Assert.True(nil == nil);
+                Assert.False(nil != nil);
                 Assert.True(cmp.Equals(nil, nil));
                 Assert.True(cmpT.Equals(nil, nil));
                 Assert.True(exact.Equals(nil, nil));
