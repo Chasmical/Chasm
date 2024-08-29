@@ -34,6 +34,8 @@ namespace Chasm.Collections
 
         public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
         {
+            if (key is null) throw new ArgumentNullException(nameof(key));
+            if (valueFactory is null) throw new ArgumentNullException(nameof(valueFactory));
             TValue? result = default;
 
             _dict.AddOrUpdate(
@@ -57,6 +59,9 @@ namespace Chasm.Collections
 
         public TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
         {
+            if (key is null) throw new ArgumentNullException(nameof(key));
+            if (addValueFactory is null) throw new ArgumentNullException(nameof(addValueFactory));
+            if (updateValueFactory is null) throw new ArgumentNullException(nameof(updateValueFactory));
             TValue? result = default;
 
             _dict.AddOrUpdate(
@@ -288,6 +293,8 @@ namespace Chasm.Collections
             => TryRemove(entry.Key, out _);
         void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
         {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+
             foreach (KeyValuePair<TKey, TValue> entry in this)
                 array[index++] = entry;
         }

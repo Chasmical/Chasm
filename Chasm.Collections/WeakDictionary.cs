@@ -216,6 +216,8 @@ namespace Chasm.Collections
             => ((ICollection<KeyValuePair<TKey, TValue>>)this).Contains(entry) && Remove(entry.Key);
         void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
         {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+
             foreach (KeyValuePair<TKey, TValue> entry in this)
                 array[index++] = entry;
         }
