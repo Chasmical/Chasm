@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Chasm.Collections
@@ -76,6 +77,14 @@ namespace Chasm.Collections
             => (list ?? throw new ArgumentNullException(nameof(list))).Add((t1, t2, t3, t4, t5, t6, t7));
 #pragma warning restore CS1573, CS1712
 #endif
+
+        public static DictionaryEntry AsEntry<TKey, TValue>(this KeyValuePair<TKey, TValue> entry)
+        {
+            // constructor throws on null key only on .NET Framework 1.0 and 1.1
+            return new DictionaryEntry(entry.Key!, entry.Value);
+        }
+        public static KeyValuePair<TKey, TValue> Cast<TKey, TValue>(this DictionaryEntry entry)
+            => new KeyValuePair<TKey, TValue>((TKey)entry.Key, (TValue)entry.Value!);
 
     }
 }
