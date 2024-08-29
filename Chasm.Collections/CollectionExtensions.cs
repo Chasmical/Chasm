@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Chasm.Collections
 {
@@ -78,13 +79,44 @@ namespace Chasm.Collections
 #pragma warning restore CS1573, CS1712
 #endif
 
-        public static DictionaryEntry AsEntry<TKey, TValue>(this KeyValuePair<TKey, TValue> entry)
+        [Pure] public static DictionaryEntry AsEntry<TKey, TValue>(this KeyValuePair<TKey, TValue> entry)
         {
             // constructor throws on null key only on .NET Framework 1.0 and 1.1
             return new DictionaryEntry(entry.Key!, entry.Value);
         }
-        public static KeyValuePair<TKey, TValue> Cast<TKey, TValue>(this DictionaryEntry entry)
+        [Pure] public static KeyValuePair<TKey, TValue> Cast<TKey, TValue>(this DictionaryEntry entry)
             => new KeyValuePair<TKey, TValue>((TKey)entry.Key, (TValue)entry.Value!);
+
+        [Pure, MustDisposeResource]
+        public static IDictionaryEnumerator ToDictionaryEnumerator<TKey, TValue>(
+            [HandlesResourceDisposal] this IEnumerator<KeyValuePair<TKey, TValue>> enumerator
+        )
+        {
+            if (enumerator is null) throw new ArgumentNullException(nameof(enumerator));
+            return new DictionaryEnumerator<TKey, TValue>(enumerator);
+        }
+
+        private readonly struct DictionaryEnumerator<TKey, TValue> : IDictionaryEnumerator, IEnumerator<DictionaryEntry>
+        {
+            private readonly IEnumerator<KeyValuePair<TKey, TValue>> _enumerator;
+
+            public DictionaryEnumerator(IEnumerator<KeyValuePair<TKey, TValue>> enumerator)
+                => _enumerator = enumerator;
+
+            public DictionaryEntry Current => _enumerator.Current.AsEntry();
+            public DictionaryEntry Entry => Current;
+            object IEnumerator.Current => Current;
+            public object Key => _enumerator.Current.Key!;
+            public object? Value => _enumerator.Current.Value;
+
+            public bool MoveNext()
+                => _enumerator.MoveNext();
+            public void Reset()
+                => _enumerator.Reset();
+            public void Dispose()
+                => _enumerator.Dispose();
+
+        }
 
     }
 }
