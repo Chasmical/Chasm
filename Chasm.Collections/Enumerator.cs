@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 #if NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 using System.Threading.Tasks;
@@ -32,20 +31,20 @@ namespace Chasm.Collections
             public static readonly IEnumerator Instance = new EmptyEnumerator();
 
             private EmptyEnumerator() { }
-            object? IEnumerator.Current => null;
-            bool IEnumerator.MoveNext() => false;
-            void IEnumerator.Reset() { }
+            public object? Current => null;
+            public bool MoveNext() => false;
+            public void Reset() { }
         }
         private sealed class EmptyEnumerator<T> : IEnumerator<T>
         {
             public static readonly IEnumerator<T> Instance = new EmptyEnumerator<T>();
 
             private EmptyEnumerator() { }
+            public T Current => default!;
             object? IEnumerator.Current => null;
-            T IEnumerator<T>.Current => default!;
-            bool IEnumerator.MoveNext() => false;
-            void IEnumerator.Reset() { }
-            void IDisposable.Dispose() { }
+            public bool MoveNext() => false;
+            public void Reset() { }
+            public void Dispose() { }
         }
 
 #if NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -62,11 +61,9 @@ namespace Chasm.Collections
             public static readonly IAsyncEnumerator<T> Instance = new EmptyAsyncEnumerator<T>();
 
             private EmptyAsyncEnumerator() { }
-            T IAsyncEnumerator<T>.Current => default!;
-            ValueTask IAsyncDisposable.DisposeAsync()
-                => new ValueTask(Task.CompletedTask);
-            ValueTask<bool> IAsyncEnumerator<T>.MoveNextAsync()
-                => new ValueTask<bool>(false);
+            public T Current => default!;
+            public ValueTask DisposeAsync() => default; // equivalent to ValueTask.CompletedTask
+            public ValueTask<bool> MoveNextAsync() => default; // equivalent to new ValueTask<bool>(false)
         }
 #endif
 

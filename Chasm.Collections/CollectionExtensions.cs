@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Chasm.Collections
 {
@@ -76,6 +78,29 @@ namespace Chasm.Collections
             => (list ?? throw new ArgumentNullException(nameof(list))).Add((t1, t2, t3, t4, t5, t6, t7));
 #pragma warning restore CS1573, CS1712
 #endif
+
+        /// <summary>
+        ///   <para>Converts the specified key-value <paramref name="pair"/> to an equivalent <see cref="DictionaryEntry"/> struct.</para>
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="pair">The <see cref="KeyValuePair{TKey,TValue}"/> struct to convert.</param>
+        /// <returns>The <see cref="DictionaryEntry"/> struct equivalent to the specified key-value <paramref name="pair"/>.</returns>
+        [Pure] public static DictionaryEntry AsEntry<TKey, TValue>(this KeyValuePair<TKey, TValue> pair)
+        {
+            // constructor throws on null key only on .NET Framework 1.0 and 1.1
+            return new DictionaryEntry(pair.Key!, pair.Value);
+        }
+        /// <summary>
+        ///   <para>Casts the specified dictionary <paramref name="entry"/> to the specified <see cref="KeyValuePair{TKey,TValue}"/> type.</para>
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key to cast to.</typeparam>
+        /// <typeparam name="TValue">The type of the value to cast to.</typeparam>
+        /// <param name="entry">The <see cref="DictionaryEntry"/> to cast to the specified <see cref="KeyValuePair{TKey,TValue}"/> type.</param>
+        /// <returns>The <see cref="KeyValuePair{TKey,TValue}"/> struct equivalent to the specified dictionary <paramref name="entry"/>.</returns>
+        /// <exception cref="InvalidCastException"><paramref name="entry"/>'s key cannot be cast to type <typeparamref name="TKey"/> or its value cannot be cast to type <typeparamref name="TValue"/>.</exception>
+        [Pure] public static KeyValuePair<TKey, TValue> Cast<TKey, TValue>(this DictionaryEntry entry)
+            => new KeyValuePair<TKey, TValue>((TKey)entry.Key, (TValue)entry.Value!);
 
     }
 }
