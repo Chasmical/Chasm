@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text;
+using JetBrains.Annotations;
 
 namespace Chasm.Formatting
 {
@@ -45,6 +47,20 @@ namespace Chasm.Formatting
             bool res = span.TryCopyTo(destination);
             itemsWritten = res ? span.Length : 0;
             return res;
+        }
+
+        /// <summary>
+        ///   <para>Gets the specified <paramref name="stringBuilder"/>'s built string and clears the builder.</para>
+        /// </summary>
+        /// <param name="stringBuilder"><paramref name="stringBuilder"/> to get the built string of, and to clear.</param>
+        /// <returns>The specified <paramref name="stringBuilder"/>'s built string.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="stringBuilder"/> is <see langword="null"/>.</exception>
+        [Pure] public static string ToStringAndClear(this StringBuilder stringBuilder)
+        {
+            if (stringBuilder is null) throw new ArgumentNullException(nameof(stringBuilder));
+            string result = stringBuilder.ToString();
+            stringBuilder.Clear();
+            return result;
         }
 
     }
