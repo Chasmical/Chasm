@@ -62,10 +62,8 @@ namespace Chasm.Collections
 
             private EmptyAsyncEnumerator() { }
             public T Current => default!;
-            public ValueTask DisposeAsync()
-                => new ValueTask(Task.CompletedTask);
-            public ValueTask<bool> MoveNextAsync()
-                => new ValueTask<bool>(false);
+            public ValueTask DisposeAsync() => default; // equivalent to ValueTask.CompletedTask
+            public ValueTask<bool> MoveNextAsync() => default; // equivalent to new ValueTask<bool>(false)
         }
 #endif
 
