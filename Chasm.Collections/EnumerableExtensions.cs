@@ -22,7 +22,16 @@ namespace Chasm.Collections
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
             if (default(T) is not null) return source!;
-            return source.Where(static item => item is not null)!;
+
+            // Note: Compiler-generated iterators and custom enumerators end up being slower
+            //   than LINQ's Where, because Where handles some commonly used collection types,
+            //   and most other LINQ methods are optimized to work with the returned iterators.
+            return source.Where(Typed<T>.NotNullPredicate)!;
+        }
+
+        private static class Typed<T>
+        {
+            public static readonly Func<T?, bool> NotNullPredicate = static v => v is not null;
         }
 
         /// <summary>
