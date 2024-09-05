@@ -1,5 +1,11 @@
 # Chasm.Utilities Changelog
 
+### v2.4.0
+- ✨ Added `static class WeakReferenceExtensions`;
+- ✨ Added `WeakReferenceExtensions.TryGetTarget(this WeakReference, out object?)`;
+- ✨ Added `WeakReferenceExtensions.GetTargetOrDefault(this WeakReference)`;
+- ✨ Added `WeakReferenceExtensions.GetTargetOrDefault<T>(this WeakReference<T>)`;
+
 ### v2.3.7
 - ♻️ Refactored shimmed attributes;
 

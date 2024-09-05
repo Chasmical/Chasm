@@ -24,7 +24,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Utilities</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.3.7</Version>
+    <Version>2.4.0</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
