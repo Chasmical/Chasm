@@ -1,5 +1,8 @@
 # Chasm.Formatting Changelog
 
+### v2.3.6
+- ✨ Added `FormattingExtensions.ToStringAndClear(this StringBuilder)`;
+
 ### v2.3.5
 - 🐛 Fixed usage of `Math.DivRem(,,out)` for .NET Framework targets;
 - 🩹 Fixed unnecessary inclusion of the `InAttribute` shim;
