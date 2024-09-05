@@ -1,5 +1,13 @@
 # Chasm.Collections Changelog
 
+### v2.4.0
+- ✨ Added `CollectionExtensions.AsEntry(this KeyValuePair<TKey, TValue>)`;
+- ✨ Added `CollectionExtensions.Cast<TKey, TValue>(this DictionaryEntry)`;
+- ✨ Added `static class EnumeratorExtensions`;
+- ✨ Added `EnumeratorExtensions.ToDictionaryEnumerator<TKey, TValue>(this IEnumerator<KeyValuePair<TKey, TValue>>)`;
+- ♻️⚡️ Refactored and slightly optimized empty enumerator types;
+- ⚡️ Slightly improved the performance of `NotNull` extensions by storing the used predicates in fields;
+
 ### v2.3.1
 - 📝 Added missing XML docs;
 
