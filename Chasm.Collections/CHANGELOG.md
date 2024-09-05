@@ -1,5 +1,41 @@
 # Chasm.Collections Changelog
 
+### v2.4.0
+- ✨ Added `CollectionExtensions.AsEntry(this KeyValuePair<TKey, TValue>)`;
+- ✨ Added `CollectionExtensions.Cast<TKey, TValue>(this DictionaryEntry)`;
+- ✨ Added `CollectionExtensions.ToDictionaryEnumerator<TKey, TValue>(this IEnumerator<KeyValuePair<TKey, TValue>>)`;
+- ✨ Added `sealed class WeakDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>`;
+- ✨ Added `WeakDictionary<TKey, TValue>()`;
+- ✨ Added `WeakDictionary<TKey, TValue>(IEqualityComparer<TKey>?)`;
+- ✨ Added `WeakDictionary<TKey, TValue>.TryGetValue(TKey, out TValue?)`;
+- ✨ Added `WeakDictionary<TKey, TValue>.Add(TKey, TValue)`;
+- ✨ Added `WeakDictionary<TKey, TValue>.TryAdd(TKey, TValue)`;
+- ✨ Added `WeakDictionary<TKey, TValue>.Remove(TKey)`;
+- ✨ Added `WeakDictionary<TKey, TValue>.Remove(TKey, out TValue?)`;
+- ✨ Added `WeakDictionary<TKey, TValue>.TrimExcess()`;
+- ✨ Added `WeakDictionary<TKey, TValue>.Clear()`;
+- ✨ Added `WeakDictionary<TKey, TValue>.GetEnumerator()`;
+- ✨ Added `WeakDictionary<TKey, TValue>.this[TKey]`;
+- ✨ Added `WeakDictionary<TKey, TValue>.Count`;
+- ✨ Added `WeakDictionary<TKey, TValue>.Keys`;
+- ✨ Added `WeakDictionary<TKey, TValue>.Values`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>()`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>(IEqualityComparer<TKey>?)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.TryGetValue(TKey, out TValue?)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.GetOrAdd(TKey, Func<TKey, TValue>)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.GetOrAdd(TKey, TValue)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.AddOrUpdate(TKey, Func<TKey, TValue, Func<TKey, TValue, TValue>)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.AddOrUpdate(TKey, TValue, Func<TKey, TValue, TValue>)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.TryAdd(TKey, TValue)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.TryUpdate(TKey, TValue, TValue)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.TryRemove(TKey, out TValue?)`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.Clear()`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.GetEnumerator()`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.this[TKey]`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.Count`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.Keys`;
+- ✨ Added `ConcurrentWeakDictionary<TKey, TValue>.Values`;
+
 ### v2.3.1
 - 📝 Added missing XML docs;
 

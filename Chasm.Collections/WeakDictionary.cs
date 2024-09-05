@@ -12,6 +12,11 @@ using JetBrains.Annotations;
 
 namespace Chasm.Collections
 {
+    /// <summary>
+    ///   <para>Represents a weakly-valued dictionary.</para>
+    /// </summary>
+    /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+    /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
     public sealed class WeakDictionary<TKey, TValue>
         : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
         where TKey : notnull where TValue : class
