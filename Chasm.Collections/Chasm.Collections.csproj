@@ -16,6 +16,7 @@
       net47;
       net46;
       net45;
+      net40;
       net35;
     </TargetFrameworks>
     <!--
@@ -28,7 +29,7 @@
       | netcoreapp2.0 | netstandard2.0 | net47  | - ValueTuple
       | netcoreapp2.0 | netstandard2.1 | net40  | - Array.Fill, string.Join(char,)
       | netcoreapp2.0 | netstandard2.0 | net20- | - Array.ForEach, Array.ConvertAll, Converter<,>
-      | netcoreapp1.0 | netstandard1.3 | net46  | - Array.Empty
+      | netcoreapp1.0 | netstandard1.3 | net46  | - Array.Empty ([] expression)
       | netcoreapp1.0 | netstandard1.0 | net45  | - ReadOnlyDictionary<,>
       | netcoreapp1.0 | netstandard1.0 | net35  | - lowest supported API, Extension attribute
     -->
