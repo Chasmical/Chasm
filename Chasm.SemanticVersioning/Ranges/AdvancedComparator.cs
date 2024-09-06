@@ -42,7 +42,10 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="operand">The advanced comparator's operand.</param>
         /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         protected AdvancedComparator(PartialVersion operand)
-            => Operand = operand ?? throw new ArgumentNullException(nameof(operand));
+        {
+            if (operand is null) throw new ArgumentNullException(nameof(operand));
+            Operand = operand;
+        }
 
         /// <inheritdoc/>
         [Pure] public override bool CanMatchPreRelease(int major, int minor, int patch)

@@ -35,7 +35,10 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="to">The hyphen range comparator's upper bound.</param>
         /// <exception cref="ArgumentNullException"><paramref name="from"/> or <paramref name="to"/> is <see langword="null"/>.</exception>
         public HyphenRangeComparator(PartialVersion from, PartialVersion to) : base(from)
-            => To = to ?? throw new ArgumentNullException(nameof(to));
+        {
+            if (to is null) throw new ArgumentNullException(nameof(to));
+            To = to;
+        }
 
         /// <inheritdoc/>
         [Pure] protected override (PrimitiveComparator?, PrimitiveComparator?) ConvertToPrimitives()

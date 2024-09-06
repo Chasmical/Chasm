@@ -18,7 +18,10 @@ namespace Chasm.Utilities
         /// </summary>
         /// <param name="dispose">The action to invoke when the <see cref="DelegateDisposable"/> is disposed.</param>
         public DelegateDisposable(Action dispose)
-            => disposeAction = dispose ?? throw new ArgumentNullException(nameof(dispose));
+        {
+            if (dispose is null) throw new ArgumentNullException(nameof(dispose));
+            disposeAction = dispose;
+        }
 
         /// <inheritdoc/>
         public void Dispose()
