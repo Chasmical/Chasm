@@ -226,6 +226,7 @@ namespace Chasm.Utilities
         public static void Swap<T>(ref T a, ref T b)
         {
 #pragma warning disable IDE0180 // Suppress 'Use tuple to swap values' message
+            // ReSharper disable once SwapViaDeconstruction
             T temp = a;
             a = b;
             b = temp;

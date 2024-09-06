@@ -1,5 +1,14 @@
 # Chasm.Utilities Changelog
 
+### v2.5.0
+- ✨ Added `static class HashCodeExtensions`;
+- ✨ Added `HashCodeExtensions.AddRange<T>(this HashCode, ReadOnlySpan<T>)`;
+- ✨ Added `HashCodeExtensions.AddRange<T>(this HashCode, ReadOnlySpan<T>, IEqualityComparer<T>?)`;
+- ✨ Added `HashCodeExtensions.AddRange<T>(this HashCode, IEnumerable<T>)`;
+- ✨ Added `HashCodeExtensions.AddRange<T>(this HashCode, IEnumerable<T>, IEqualityComparer<T>?)`;
+- 🧩 Added `netcoreapp2.1` and `netstandard2.0` targets. Now targets: `net8.0`, `netcoreapp3.0`, `netcoreapp2.1`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.0`, `net45`, `net35`;
+- ⚡️ Microoptimized IL code size of `DelegateDisposable`'s constructor;
+
 ### v2.4.0
 - ✨ Added `static class WeakReferenceExtensions`;
 - ✨ Added `WeakReferenceExtensions.TryGetTarget(this WeakReference, out object?)`;

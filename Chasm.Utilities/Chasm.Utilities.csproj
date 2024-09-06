@@ -6,8 +6,10 @@
     <TargetFrameworks>
       net8.0;
       netcoreapp3.0;
+      netcoreapp2.1;
       netcoreapp1.0;
       netstandard2.1;
+      netstandard2.0;
       netstandard1.0;
       net45;
       net35;
@@ -17,6 +19,7 @@
       |================|=================|=========|==============================
       | net8.0         |                 |         | - latest API, for use in IDE
       | netcoreapp3.0  | netstandard2.1  |         | - NotNullWhenAttribute
+      | netcoreapp2.1  | netstandard2.0  |         | - HashCode
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
       | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API, Extension attribute
     -->
@@ -24,7 +27,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Utilities</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.4.0</Version>
+    <Version>2.5.0</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
