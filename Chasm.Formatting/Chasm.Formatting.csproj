@@ -17,16 +17,17 @@
       net45;
     </TargetFrameworks>
     <!--
-      |            Target Frameworks            | - Justification
-      |===============|================|========|==============================
-      | net8.0        |                |        | - latest API, for use in IDE
-      | net6.0        |                |        | - span interpolation, tuple Math.DivRem, string.TryCopyTo
-      | net5.0        |                |        | - SkipLocalsInit
-      | netcoreapp2.1 | netstandard2.1 |        | - span support, string.Create(,,)
-      | netcoreapp2.0 | netstandard2.1 |        | - Array.Fill
-      | netcoreapp2.0 | netstandard2.0 |        | - Math.DivRem(,,out)
-      | netcoreapp1.0 | netstandard1.1 | net45  | - System.Memory package targets
-      | netcoreapp1.0 | netstandard1.0 | net45  | - lowest supported API, legacy System.Memory package targets
+      |       Target Frameworks (-excluded)        | - Justification
+      |================|=================|=========|==============================
+      | net8.0         |                 |         | - latest API, for use in IDE
+      | net6.0         |                 |         | - span interpolation, tuple Math.DivRem, string.TryCopyTo
+      | net5.0         |                 |         | - SkipLocalsInit
+      | netcoreapp2.1  | netstandard2.1  |         | - span support, string.Create(,,)
+      | netcoreapp2.0  | netstandard2.1  |         | - Array.Fill
+      | netcoreapp2.0  | netstandard2.0  | net11-  | - Math.DivRem(,,out)
+      | netcoreapp1.0  | netstandard1.1  | net11-  | - InAttribute
+      | netcoreapp1.0  | netstandard1.1  | net45   | - System.Memory package targets
+      | netcoreapp1.0  | netstandard1.0  | net45   | - lowest supported API, legacy System.Memory package targets
     -->
 
     <!-- Header -->
