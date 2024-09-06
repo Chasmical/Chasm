@@ -9,7 +9,6 @@
       netcoreapp2.1;
       netcoreapp1.0;
       netstandard2.1;
-      netstandard2.0;
       netstandard1.0;
       net45;
       net35;
@@ -19,7 +18,7 @@
       |================|=================|=========|==============================
       | net8.0         |                 |         | - latest API, for use in IDE
       | netcoreapp3.0  | netstandard2.1  |         | - NotNullWhenAttribute
-      | netcoreapp2.1  | netstandard2.0  |         | - HashCode
+      | netcoreapp2.1  | netstandard2.1  |         | - HashCode
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
       | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API, Extension attribute
     -->
