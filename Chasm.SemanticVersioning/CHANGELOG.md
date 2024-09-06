@@ -1,5 +1,8 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.7.3 (next)
+- ⚡️ Microoptimized IL code size of `AdvancedComparator`'s and `HyphenRangeComparator`'s constructors;
+
 ### v2.7.2
 - 📝 Added missing XML docs;
 - ♻️ Removed some unnecessary code in utility methods;

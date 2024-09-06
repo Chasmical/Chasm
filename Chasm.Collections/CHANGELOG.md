@@ -1,5 +1,8 @@
 # Chasm.Collections Changelog
 
+### v2.4.2 (next)
+- ⚡️ Microoptimized IL code size of `CollectionExtensions.Add` extensions;
+
 ### v2.4.1
 - 🧩 Added `net40` target. Now targets: `net8.0`, `net6.0`, `net5.0`, `netcoreapp3.0`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.3`, `netstandard1.0`, `net47`, `net46`, `net45`, `net40`, `net35`;
 
