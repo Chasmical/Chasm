@@ -514,12 +514,15 @@ namespace Chasm.Collections
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
             if (default(T) is not null) return array!;
-            return Array.FindAll(array, Typed<T>.NotNullPredicate)!;
-        }
 
-        private static class Typed<T>
-        {
-            public static readonly Predicate<T?> NotNullPredicate = static v => v is not null;
+            List<T> results = [];
+            for (int i = 0; i < array.Length; i++)
+            {
+                T? item = array[i];
+                if (item is not null)
+                    results.Add(item);
+            }
+            return results.ToArray();
         }
 
     }
