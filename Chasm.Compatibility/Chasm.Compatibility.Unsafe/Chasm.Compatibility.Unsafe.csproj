@@ -29,9 +29,9 @@
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
       | net8.0         |                 |         | - latest API, for use in IDE
-      | netcoreapp3.0  |                 |         | - Unsafe API introduced
-      | netcoreapp3.1- | netstandard2.0  | net461  | - Unsafe package v6
-      | netcoreapp1.0  | netstandard1.0  | net45   | - Unsafe package v5
+      | netcoreapp3.0  |                 |         | - Unsafe introduced
+      | netcoreapp3.1- | netstandard2.0  | net461  | - Unsafe package v6 targets
+      | netcoreapp1.0  | netstandard1.0  | net45   | - Unsafe package v5 targets
       | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API
     -->
 
@@ -59,24 +59,26 @@
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- Unsafe introduced in netcoreapp3.0 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netstandard2.0' or
     '$(TargetFramework)'=='net461'
   )">
+    <!-- Unsafe package v6 targets netcoreapp3.1-, netstandard2.0, net461 -->
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
-
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp1.0' or
     '$(TargetFramework)'=='netstandard1.0' or
     '$(TargetFramework)'=='net45'
   )">
+    <!-- Unsafe package v5 targets netcoreapp1.0, netstandard1.0, net45 -->
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
   </ItemGroup>
-
   <ItemGroup Condition="(
     '$(TargetFramework)'=='net35'
   )">
+    <!-- Use Fody to compile Unsafe.cs -->
     <PackageReference Include="Fody" Version="6.8.1" PrivateAssets="all" />
     <PackageReference Include="FodyHelpers" Version="6.8.1" PrivateAssets="all" />
     <!-- Use a custom version of InlineIL.Fody that targets net35 -->

@@ -33,8 +33,8 @@
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
       | net8.0         |                 |         | - latest API, for use in IDE
-      | netcoreapp2.1  | netstandard2.1  |         | - System.HashCode
-      | netcoreapp2.0  | netstandard2.0  | net461  | - Microsoft.Bcl.HashCode
+      | netcoreapp2.1  | netstandard2.1  |         | - System.HashCode introduced
+      | netcoreapp2.0  | netstandard2.0  | net461  | - Microsoft.Bcl.HashCode package targets
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
       | netcoreapp1.0  | netstandard1.3  | net11-  | - RandomNumberGenerator
       | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API
@@ -64,13 +64,13 @@
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- System.HashCode supported since netcoreapp2.1, netstandard2.1 -->
-  <!-- Microsoft.Bcl.HashCode package targets netcoreapp2.0, netstandard2.0, net461 -->
+  <!-- System.HashCode introduced in netcoreapp2.1, netstandard2.1 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp2.0' or
     '$(TargetFramework)'=='netstandard2.0' or
     '$(TargetFramework)'=='net461'
   )">
+    <!-- Microsoft.Bcl.HashCode package targets netcoreapp2.0, netstandard2.0, net461 -->
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
   </ItemGroup>
 

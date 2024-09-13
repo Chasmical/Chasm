@@ -54,27 +54,32 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Always include Compatibility.Attributes - new attributes get introduced all the time -->
     <ProjectReference Include="../Chasm.Compatibility.Attributes/Chasm.Compatibility.Attributes.csproj" />
   </ItemGroup>
 
-  <!-- System.ValueTuple supported since netcoreapp2.0, netstandard2.0, net47 -->
-  <!-- System.ValueTuple package targets netcoreapp1.0, netstandard1.0, net45 -->
+  <!-- System.ValueTuple introduced in netcoreapp2.0, netstandard2.0, net47 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp1.1' or
     '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard1.3' or
     '$(TargetFramework)'=='netstandard1.1' or
     '$(TargetFramework)'=='netstandard1.0' or
+    '$(TargetFramework)'=='net461' or
     '$(TargetFramework)'=='net45'
   )">
-    <!-- Add the official package -->
+    <!-- System.ValueTuple package targets netcoreapp1.0, netstandard1.0, net45 -->
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
-    <!-- Use Compatibility.ValueTuple -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='net40' or
+    '$(TargetFramework)'=='net35'
+  )">
+    <!-- Use Compatibility.ValueTuple otherwise -->
     <ProjectReference Include="../Chasm.Compatibility.ValueTuple/Chasm.Compatibility.ValueTuple.csproj" />
   </ItemGroup>
 
-  <!-- System.Index and System.Range supported since netcoreapp3.0, netstandard2.1 -->
+  <!-- System.Index and System.Range introduced in netcoreapp3.0, netstandard2.1 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp2.1' or
     '$(TargetFramework)'=='netcoreapp2.0' or
@@ -90,22 +95,20 @@
     '$(TargetFramework)'=='net40' or
     '$(TargetFramework)'=='net35'
   )">
-    <!-- Use Compatibility.IndexRange -->
+    <!-- Use Compatibility.IndexRange otherwise -->
     <ProjectReference Include="../Chasm.Compatibility.IndexRange/Chasm.Compatibility.IndexRange.csproj" />
   </ItemGroup>
 
-  <!-- Unsafe supported since netcoreapp3.0 -->
-  <!-- Unsafe package v6 targets netcoreapp3.1-, netstandard2.0, net461 -->
+  <!-- Unsafe introduced in netcoreapp3.0 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netstandard2.1' or
     '$(TargetFramework)'=='netstandard2.0' or
     '$(TargetFramework)'=='net47' or
     '$(TargetFramework)'=='net461'
   )">
+    <!-- Unsafe package v6 targets netcoreapp3.1-, netstandard2.0, net461 -->
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
-
-  <!-- Unsafe package v5 targets netcoreapp1.0, netstandard1.0, net45 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp2.1' or
     '$(TargetFramework)'=='netcoreapp2.0' or
@@ -116,26 +119,25 @@
     '$(TargetFramework)'=='netstandard1.0' or
     '$(TargetFramework)'=='net45'
   )">
+    <!-- Unsafe package v5 targets netcoreapp1.0, netstandard1.0, net45 -->
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
   </ItemGroup>
-
-  <!-- Use Compatibility.Unsafe on net40, net35 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='net40' or
     '$(TargetFramework)'=='net35'
   )">
+    <!-- Use Compatibility.Unsafe otherwise -->
     <ProjectReference Include="../Chasm.Compatibility.Unsafe/Chasm.Compatibility.Unsafe.csproj" />
   </ItemGroup>
 
-  <!-- System.HashCode supported since netcoreapp2.1, netstandard2.1 -->
-  <!-- Microsoft.Bcl.HashCode package targets netcoreapp2.0, netstandard2.0, net461 -->
+  <!-- System.HashCode introduced in netcoreapp2.1, netstandard2.1 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp2.0' or
     '$(TargetFramework)'=='netstandard2.0' or
     '$(TargetFramework)'=='net47' or
     '$(TargetFramework)'=='net461'
   )">
-    <!-- Add the official package -->
+    <!-- Microsoft.Bcl.HashCode package targets netcoreapp2.0, netstandard2.0, net461 -->
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup Condition="(
@@ -148,7 +150,7 @@
     '$(TargetFramework)'=='net40' or
     '$(TargetFramework)'=='net35'
   )">
-    <!-- Use Compatibility.HashCode -->
+    <!-- Use Compatibility.HashCode otherwise -->
     <ProjectReference Include="../Chasm.Compatibility.HashCode/Chasm.Compatibility.HashCode.csproj" />
   </ItemGroup>
 

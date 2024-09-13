@@ -32,7 +32,8 @@
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
       | net8.0         |                 |         | - latest API, for use in IDE
-      | netcoreapp2.0  | netstandard2.0  | net47   | - System.ValueTuple
+      | netcoreapp2.0  | netstandard2.0  | net47   | - System.ValueTuple introduced
+      | netcoreapp1.0  | netstandard1.0  | net45   | - System.ValueTuple package lowest targets
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
       | netcoreapp1.0  | netstandard1.0  | net40   | - System.Tuple, IStructuralEquatable/Comparable
       | netcoreapp1.0  | netstandard1.3  | net11-  | - RandomNumberGenerator
@@ -63,12 +64,14 @@
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- System.ValueTuple introduced in netcoreapp2.0, netstandard2.0, net47 -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp1.0' or
     '$(TargetFramework)'=='netstandard1.3' or
     '$(TargetFramework)'=='netstandard1.0' or
     '$(TargetFramework)'=='net45'
   )">
+    <!-- System.ValueTuple package targets netcoreapp1.0, netstandard1.0, net45 -->
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
