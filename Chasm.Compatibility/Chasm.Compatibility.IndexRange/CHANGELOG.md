@@ -4,6 +4,7 @@
 - 🐛 Fixed usage of `RandomNumberGenerator` for hashing for .NET Framework targets;
 
 ### v2.2.0
+- 🧩 Added `netcoreapp2.0`, `netstandard2.0`, `net47`, `net40` targets. Now targets: `net8.0`, `netcoreapp3.0`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.0`, `net47`, `net45`, `net40`, `net35`;
 - ♻️ Refactored shimmed attributes;
 
 ### v2.1.0
