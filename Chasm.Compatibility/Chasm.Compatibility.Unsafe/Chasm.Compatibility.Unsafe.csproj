@@ -1,0 +1,86 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Project Properties -->
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <TargetFrameworks>
+      net8.0;
+      netcoreapp3.0;
+      netcoreapp1.0;
+      netstandard2.0;
+      netstandard1.0;
+      net461;
+      net45;
+      net35;
+    </TargetFrameworks>
+    <!--
+      | Target Framework | - Status
+      |==================|======================
+      | net8.0           | - supported
+      | netcoreapp3.0    | - supported
+      | netcoreapp1.0    | - Unsafe package v5 (legacy)
+      | netstandard2.0   | - Unsafe package v6
+      | netstandard1.0   | - Unsafe package v5 (legacy)
+      | net461           | - Unsafe package v6
+      | net45            | - Unsafe package v5 (legacy)
+      | net35            | - own implementation
+    -->
+    <!--
+      |       Target Frameworks (-excluded)        | - Justification
+      |================|=================|=========|==============================
+      | net8.0         |                 |         | - latest API, for use in IDE
+      | netcoreapp3.0  |                 |         | - Unsafe API introduced
+      | netcoreapp3.1- | netstandard2.0  | net461  | - Unsafe package v6
+      | netcoreapp1.0  | netstandard1.0  | net45   | - Unsafe package v5
+      | netcoreapp1.0  | netstandard1.0  | net35   | - lowest supported API
+    -->
+
+    <!-- Header -->
+    <AssemblyName>Chasm.Compatibility.Unsafe</AssemblyName>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Version>2.0.0</Version>
+
+    <!-- Title, Description, Tags -->
+    <Title>$(AssemblyName)</Title>
+    <Description>
+      Polyfills System.Runtime.CompilerServices.Unsafe for a wide selection of target frameworks.
+    </Description>
+    <PackageTags>compatibility polyfills shims unsafe</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Chasm.Compatibility.Unsafe.csproj.DotSettings" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
+    <InternalsVisibleTo Include="Chasm.Compatibility.Tests" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='net461'
+  )">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard1.0' or
+    '$(TargetFramework)'=='net45'
+  )">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='net35'
+  )">
+    <PackageReference Include="Fody" Version="6.8.1" PrivateAssets="all" />
+    <PackageReference Include="FodyHelpers" Version="6.8.1" PrivateAssets="all" />
+    <!-- Use a custom version of InlineIL.Fody that targets net35 -->
+    <PackageReference Include="InlineIL.Fody" Version="9999.0.0-local" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
