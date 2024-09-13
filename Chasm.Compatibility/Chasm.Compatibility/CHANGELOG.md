@@ -1,5 +1,9 @@
 # Chasm.Compatibility Changelog
 
+### v2.5.0
+- ⬆️ Chasm.Compatibility.Unsafe v2.0.0;
+- ♻️ Refactored dependencies for target frameworks;
+
 ### v2.4.1
 - ⬆️ Chasm.Compatibility.Attributes v2.1.2;
 - ⬆️ Chasm.Compatibility.HashCode v2.1.1;
