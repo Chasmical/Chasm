@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -127,11 +126,7 @@ namespace Chasm.SemanticVersioning
                         if (parser.OnAsciiDigit)
                         {
                             ReadOnlySpan<char> digits = parser.ReadAsciiDigits();
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                            preReleaseIndex = int.Parse(digits, NumberStyles.None);
-#else
-                            preReleaseIndex = int.Parse(digits.ToString(), NumberStyles.None);
-#endif
+                            preReleaseIndex = Utility.ParseNonNegativeInt32(digits);
                         }
                         if (preReleaseIndex < preReleases.Length)
                         {
@@ -155,11 +150,7 @@ namespace Chasm.SemanticVersioning
                         if (parser.OnAsciiDigit)
                         {
                             ReadOnlySpan<char> digits = parser.ReadAsciiDigits();
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                            buildMetadataIndex = int.Parse(digits, NumberStyles.None);
-#else
-                            buildMetadataIndex = int.Parse(digits.ToString(), NumberStyles.None);
-#endif
+                            buildMetadataIndex = Utility.ParseNonNegativeInt32(digits);
                         }
                         if (buildMetadataIndex < buildMetadata.Length)
                         {
@@ -262,11 +253,7 @@ namespace Chasm.SemanticVersioning
                         if (parser.OnAsciiDigit)
                         {
                             ReadOnlySpan<char> digits = parser.ReadAsciiDigits();
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                            preReleaseIndex = int.Parse(digits, NumberStyles.None);
-#else
-                            preReleaseIndex = int.Parse(digits.ToString(), NumberStyles.None);
-#endif
+                            preReleaseIndex = Utility.ParseNonNegativeInt32(digits);
                         }
                         // write the next pre-release
                         if (preReleaseIndex < preReleases.Length)
@@ -295,11 +282,7 @@ namespace Chasm.SemanticVersioning
                         if (parser.OnAsciiDigit)
                         {
                             ReadOnlySpan<char> digits = parser.ReadAsciiDigits();
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                            buildMetadataIndex = int.Parse(digits, NumberStyles.None);
-#else
-                            buildMetadataIndex = int.Parse(digits.ToString(), NumberStyles.None);
-#endif
+                            buildMetadataIndex = Utility.ParseNonNegativeInt32(digits);
                         }
                         // write the next build metadata
                         if (buildMetadataIndex < buildMetadata.Length)

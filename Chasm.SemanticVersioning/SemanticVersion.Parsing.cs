@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -49,11 +48,7 @@ namespace Chasm.SemanticVersioning
             ReadOnlySpan<char> read = parser.ReadAsciiDigits();
             if (read.IsEmpty) return SemverErrorCode.MajorNotFound;
             if (read[0] == '0' && read.Length > 1) return SemverErrorCode.MajorLeadingZeroes;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            if (!int.TryParse(read, NumberStyles.None, null, out int major))
-#else
-            if (!int.TryParse(read.ToString(), NumberStyles.None, null, out int major))
-#endif
+            if (!Utility.TryParseNonNegativeInt32(read, out int major))
                 return SemverErrorCode.MajorTooBig;
 
             if (!parser.Skip('.')) return SemverErrorCode.MinorNotFound;
@@ -61,11 +56,7 @@ namespace Chasm.SemanticVersioning
             read = parser.ReadAsciiDigits();
             if (read.IsEmpty) return SemverErrorCode.MinorNotFound;
             if (read[0] == '0' && read.Length > 1) return SemverErrorCode.MinorLeadingZeroes;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            if (!int.TryParse(read, NumberStyles.None, null, out int minor))
-#else
-            if (!int.TryParse(read.ToString(), NumberStyles.None, null, out int minor))
-#endif
+            if (!Utility.TryParseNonNegativeInt32(read, out int minor))
                 return SemverErrorCode.MinorTooBig;
 
             if (!parser.Skip('.')) return SemverErrorCode.PatchNotFound;
@@ -73,11 +64,7 @@ namespace Chasm.SemanticVersioning
             read = parser.ReadAsciiDigits();
             if (read.IsEmpty) return SemverErrorCode.PatchNotFound;
             if (read[0] == '0' && read.Length > 1) return SemverErrorCode.PatchLeadingZeroes;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            if (!int.TryParse(read, NumberStyles.None, null, out int patch))
-#else
-            if (!int.TryParse(read.ToString(), NumberStyles.None, null, out int patch))
-#endif
+            if (!Utility.TryParseNonNegativeInt32(read, out int patch))
                 return SemverErrorCode.PatchTooBig;
 
             SemverPreRelease[]? preReleases = null;
@@ -143,11 +130,7 @@ namespace Chasm.SemanticVersioning
             ReadOnlySpan<char> read = parser.ReadAsciiDigits();
             if (read.IsEmpty) return SemverErrorCode.MajorNotFound;
             if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.MajorLeadingZeroes;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            if (!int.TryParse(read, NumberStyles.None, null, out int major))
-#else
-            if (!int.TryParse(read.ToString(), NumberStyles.None, null, out int major))
-#endif
+            if (!Utility.TryParseNonNegativeInt32(read, out int major))
                 return SemverErrorCode.MajorTooBig;
             if (innerWhite) parser.SkipWhitespaces();
 
@@ -164,22 +147,14 @@ namespace Chasm.SemanticVersioning
             if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadAsciiDigits()).IsEmpty)
             {
                 if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.MinorLeadingZeroes;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                if (!int.TryParse(read, NumberStyles.None, null, out minor))
-#else
-                if (!int.TryParse(read.ToString(), NumberStyles.None, null, out minor))
-#endif
+                if (!Utility.TryParseNonNegativeInt32(read, out minor))
                     return SemverErrorCode.MinorTooBig;
                 if (innerWhite) parser.SkipWhitespaces();
 
                 if (SkipAndWhitespace(ref parser, '.', innerWhite) && !(read = parser.ReadAsciiDigits()).IsEmpty)
                 {
                     if (!allowLeadingZeroes && read[0] == '0' && read.Length > 1) return SemverErrorCode.PatchLeadingZeroes;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                    if (!int.TryParse(read, NumberStyles.None, null, out patch))
-#else
-                    if (!int.TryParse(read.ToString(), NumberStyles.None, null, out patch))
-#endif
+                    if (!Utility.TryParseNonNegativeInt32(read, out patch))
                         return SemverErrorCode.PatchTooBig;
                     if (innerWhite) parser.SkipWhitespaces();
 

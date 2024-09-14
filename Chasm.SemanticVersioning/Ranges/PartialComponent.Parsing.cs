@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning.Ranges
@@ -68,11 +67,7 @@ namespace Chasm.SemanticVersioning.Ranges
             {
                 if ((options & SemverOptions.AllowLeadingZeroes) == 0 && text[0] == '0' && text.Length > 1)
                     return SemverErrorCode.ComponentLeadingZeroes;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                if (!int.TryParse(text, NumberStyles.None, null, out int value))
-#else
-                if (!int.TryParse(text.ToString(), NumberStyles.None, null, out int value))
-#endif
+                if (!Utility.TryParseNonNegativeInt32(text, out int value))
                     return SemverErrorCode.ComponentTooBig;
                 component = new PartialComponent(value, default);
                 return SemverErrorCode.Success;

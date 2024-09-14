@@ -60,6 +60,36 @@ namespace Chasm.SemanticVersioning
         }
 #endif
 
+        [Pure] public static bool TryParseNonNegativeInt32(ReadOnlySpan<char> text, out int result)
+        {
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            return int.TryParse(text, default, null, out result);
+#else
+            int value = text[0] - '0';
+            for (int i = 1; i < text.Length; i++)
+            {
+                if ((uint)value > int.MaxValue / 10)
+                {
+                    result = default;
+                    return false;
+                }
+                value = value * 10 + (text[i] - '0');
+            }
+            result = value;
+            return value >= 0;
+#endif
+        }
+        [Pure] public static int ParseNonNegativeInt32(ReadOnlySpan<char> text)
+        {
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            // ReSharper disable once RedundantArgumentDefaultValue
+            return int.Parse(text, default, null);
+#else
+            const string overflowMsg = "Value was either too large or too small for an Int32.";
+            return TryParseNonNegativeInt32(text, out int result) ? result : throw new OverflowException(overflowMsg);
+#endif
+        }
+
         [Pure] public static ReadOnlySpan<char> Trim(ReadOnlySpan<char> text, SemverOptions options)
         {
             const SemverOptions bothTrim = SemverOptions.AllowLeadingWhite | SemverOptions.AllowTrailingWhite;

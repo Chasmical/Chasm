@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using JetBrains.Annotations;
 
 namespace Chasm.SemanticVersioning
@@ -27,11 +26,7 @@ namespace Chasm.SemanticVersioning
             {
                 if (!allowLeadingZeroes && text[0] == '0' && text.Length > 1)
                     return SemverErrorCode.PreReleaseLeadingZeroes;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                if (!int.TryParse(text, NumberStyles.None, null, out result))
-#else
-                if (!int.TryParse(text.ToString(), NumberStyles.None, null, out result))
-#endif
+                if (!Utility.TryParseNonNegativeInt32(text, out result))
                     return SemverErrorCode.PreReleaseTooBig;
             }
             return SemverErrorCode.Success;
