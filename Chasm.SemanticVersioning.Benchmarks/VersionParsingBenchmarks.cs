@@ -2,42 +2,14 @@
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
-using ChasmVersion = Chasm.SemanticVersioning.SemanticVersion;
-using McSherryVersion = McSherry.SemanticVersioning.SemanticVersion;
-using ReeveVersion = SemanticVersioning.Version;
-using HauserVersion = Semver.SemVersion;
-using NuGetVersion = NuGet.Versioning.SemanticVersion;
 
 namespace Chasm.SemanticVersioning.Benchmarks
 {
+    using static VersionSamples; // See the samples here
+
     [MemoryDiagnoser, GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory), CategoriesColumn]
     public class VersionParsingBenchmarks
     {
-        public static readonly string[] Sample1 =
-        [
-            "0.0.0",
-            "1.0.0",
-            "2.3.4",
-            "12.34.56",
-            "99999.333444.767676767",
-        ];
-        public static readonly string[] Sample2 =
-        [
-            "1.0.0-0",
-            "1.2.3-alpha.5.test",
-            "4.7.2-nightly-beta.542",
-            "7.21.8-pre.2.beta.7",
-            "1212122.43434.465643565-pre-beta-test.70.pre-alpha",
-        ];
-        public static readonly string[] Sample3 =
-        [
-            "0.0.1-pre.67+DEV.BUILD",
-            "1.2.3-alpha.beta.2.theta.70+BUILD.METADATA.0090.DEV",
-            "8.12.5-nightly-beta.7.pre+TEST-BUILD-NOT-FOR-USE",
-            "67.2.50-beta-test.07t.5+DEV-TEST.05.03.2023",
-            "12222223.5545454.7-alpha.34.beta.23+TEST.BUILD-METADATA.0123456789000.230",
-        ];
-
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void Use<T>(T _) { }
 

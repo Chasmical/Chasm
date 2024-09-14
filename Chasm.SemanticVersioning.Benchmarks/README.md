@@ -1,7 +1,6 @@
-
 ## Benchmarked libraries
 
-- `Chasm` - [Chasm.SemanticVersioning](https://github.com/Chasmical/Chasm/tree/main/Chasm.SemanticVersioning#readme) ([NuGet](https://www.nuget.org/packages/Chasm.SemanticVersioning)), this project, v2.7.0 (Aug 2024);
+- `Chasm` - [Chasm.SemanticVersioning](https://github.com/Chasmical/Chasm/tree/main/Chasm.SemanticVersioning#readme) ([NuGet](https://www.nuget.org/packages/Chasm.SemanticVersioning)), this project, v2.7.2 (Aug 2024);
 - `McSherry` - [McSherry.SemanticVersioning](https://github.com/McSherry/McSherry.SemanticVersioning) ([NuGet](https://www.nuget.org/packages/McSherry.SemanticVersioning)) v1.4.1 (Jan 2021);
 - `Reeve` - [SemanticVersioning](https://github.com/adamreeve/semver.net) ([NuGet](https://www.nuget.org/packages/SemanticVersioning)) v3.0.0-beta2 (Nov 2023);
 - `Hauser` - [Semver](https://github.com/maxhauser/semver) ([NuGet](https://www.nuget.org/packages/Semver)) v3.0.0-beta.1 (Aug 2023);
@@ -9,7 +8,13 @@
 
 
 
-## Benchmark results
+## Overview of all benchmarks
+
+.
+
+
+
+## Version parsing benchmarks
 
 ```
 
@@ -41,11 +46,47 @@ AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
 | Hauser3   | Sample3    | 4,238.6 ns | 49.45 ns | 41.29 ns |  2.74 |    0.03 | 0.9003 |    7592 B |        2.48 |
 | NuGet3    | Sample3    | 1,889.0 ns | 15.35 ns | 14.36 ns |  1.22 |    0.01 | 0.4864 |    4072 B |        1.33 |
 
-
-
-## Conclusion
+### Results
 
 `Chasm` outperforms all of the benchmarked alternatives. It's closely followed by `NuGet` (ratios: 1.22, 1.63, 3.07), then by `McSherry` (ratios: 2.90, 3.27, 6.20) and `Hauser` (ratios: 2.74, 3.82, 8.19). Additionally, `Chasm` allocates as little unnecessary memory as possible during parsing through the use of read-only spans, available on newer framework versions.
+
+
+
+## Version formatting benchmarks
+
+```
+
+BenchmarkDotNet v0.14.0, Windows 11 (10.0.22631.4169/23H2/2023Update/SunValley3)
+AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
+.NET SDK 9.0.100-rc.1.24452.12
+  [Host]     : .NET 8.0.8 (8.0.824.36612), X64 RyuJIT AVX2
+  DefaultJob : .NET 8.0.8 (8.0.824.36612), X64 RyuJIT AVX2
+
+
+```
+| Method    | Categories | Mean         | Error      | StdDev     | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
+|---------- |----------- |-------------:|-----------:|-----------:|------:|--------:|-------:|----------:|------------:|
+| Chasm1    | Sample1    |   119.972 ns |  1.5447 ns |  1.3694 ns |  1.00 |    0.02 | 0.0248 |     208 B |        1.00 |
+| McSherry1 | Sample1    |   441.908 ns |  4.9343 ns |  4.3741 ns |  3.68 |    0.05 | 0.1469 |    1232 B |        5.92 |
+| Reeve1    | Sample1    |     7.492 ns |  0.0149 ns |  0.0132 ns |  0.06 |    0.00 |      - |         - |        0.00 |
+| Hauser1   | Sample1    |   484.191 ns |  2.9618 ns |  2.7705 ns |  4.04 |    0.05 | 0.0954 |     800 B |        3.85 |
+| NuGet1    | Sample1    |   379.446 ns |  1.9825 ns |  1.7575 ns |  3.16 |    0.04 | 0.0248 |     208 B |        1.00 |
+|           |            |              |            |            |       |         |        |           |             |
+| Chasm2    | Sample2    |   203.332 ns |  1.6338 ns |  1.5282 ns |  1.00 |    0.01 | 0.0439 |     368 B |        1.00 |
+| McSherry2 | Sample2    |   903.403 ns |  6.7064 ns |  5.6002 ns |  4.44 |    0.04 | 0.2193 |    1840 B |        5.00 |
+| Reeve2    | Sample2    |     7.440 ns |  0.0193 ns |  0.0171 ns |  0.04 |    0.00 |      - |         - |        0.00 |
+| Hauser2   | Sample2    |   516.083 ns |  3.7395 ns |  3.4979 ns |  2.54 |    0.03 | 0.1297 |    1088 B |        2.96 |
+| NuGet2    | Sample2    |   561.246 ns |  5.5950 ns |  5.2336 ns |  2.76 |    0.03 | 0.0715 |     600 B |        1.63 |
+|           |            |              |            |            |       |         |        |           |             |
+| Chasm3    | Sample3    |   294.951 ns |  5.7919 ns |  5.6885 ns |  1.00 |    0.03 | 0.0715 |     600 B |        1.00 |
+| McSherry3 | Sample3    | 1,518.798 ns | 14.4458 ns | 12.8059 ns |  5.15 |    0.10 | 0.3281 |    2744 B |        4.57 |
+| Reeve3    | Sample3    |     7.650 ns |  0.0440 ns |  0.0411 ns |  0.03 |    0.00 |      - |         - |        0.00 |
+| Hauser3   | Sample3    |   576.248 ns | 11.4104 ns | 11.7177 ns |  1.95 |    0.05 | 0.1822 |    1528 B |        2.55 |
+| NuGet3    | Sample3    |   579.960 ns |  9.3017 ns |  8.7008 ns |  1.97 |    0.05 | 0.0772 |     648 B |        1.08 |
+
+### Results
+
+`Reeve` stores the original string, resulting in a simple field read. Then, `Chasm` is in second, followed by `Hauser` (ratios: 1.95, 2.54, 4.04) and `NuGet` (ratios: 1.97, 2.76, 3.16). `McSherry` is far behind. Additionally, `Chasm` allocates as little unnecessary memory as possible; `NuGet` behaves similarly, but it's not ideal.
 
 
 
