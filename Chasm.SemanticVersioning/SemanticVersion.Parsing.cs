@@ -38,65 +38,69 @@ namespace Chasm.SemanticVersioning
 
         [Pure] internal static SemverErrorCode ParseStrict(ReadOnlySpan<char> text, out SemanticVersion? version)
         {
-            SpanParser parser = new SpanParser(text);
-            return ParseStrict(ref parser, out version);
-        }
-        [Pure] internal static SemverErrorCode ParseStrict(ref SpanParser parser, out SemanticVersion? version)
-        {
             version = null;
 
-            ReadOnlySpan<char> read = parser.ReadAsciiDigits();
-            if (read.IsEmpty) return SemverErrorCode.MajorNotFound;
-            if (read[0] == '0' && read.Length > 1) return SemverErrorCode.MajorLeadingZeroes;
+            int i = 0, length = text.Length;
+
+            while (i < length && (uint)text[i] - '0' <= '9' - '0') i++;
+            if (i == 0) return SemverErrorCode.MajorNotFound;
+            if (text[0] == '0' && i > 1) return SemverErrorCode.MajorLeadingZeroes;
+            ReadOnlySpan<char> read = text.Slice(0, i);
             if (!Utility.TryParseNonNegativeInt32(read, out int major))
                 return SemverErrorCode.MajorTooBig;
 
-            if (!parser.Skip('.')) return SemverErrorCode.MinorNotFound;
+            if (i >= length || text[i] != '.') return SemverErrorCode.MinorNotFound;
 
-            read = parser.ReadAsciiDigits();
-            if (read.IsEmpty) return SemverErrorCode.MinorNotFound;
-            if (read[0] == '0' && read.Length > 1) return SemverErrorCode.MinorLeadingZeroes;
+            int start = ++i;
+            while (i < length && (uint)text[i] - '0' <= '9' - '0') i++;
+            if (i == start) return SemverErrorCode.MinorNotFound;
+            if (text[start] == '0' && i - start > 1) return SemverErrorCode.MinorLeadingZeroes;
+            read = text.Slice(start, i - start);
             if (!Utility.TryParseNonNegativeInt32(read, out int minor))
                 return SemverErrorCode.MinorTooBig;
 
-            if (!parser.Skip('.')) return SemverErrorCode.PatchNotFound;
+            if (i >= length || text[i] != '.') return SemverErrorCode.PatchNotFound;
 
-            read = parser.ReadAsciiDigits();
-            if (read.IsEmpty) return SemverErrorCode.PatchNotFound;
-            if (read[0] == '0' && read.Length > 1) return SemverErrorCode.PatchLeadingZeroes;
+            start = ++i;
+            while (i < length && (uint)text[i] - '0' <= '9' - '0') i++;
+            if (i == start) return SemverErrorCode.PatchNotFound;
+            if (text[start] == '0' && i - start > 1) return SemverErrorCode.PatchLeadingZeroes;
+            read = text.Slice(start, i - start);
             if (!Utility.TryParseNonNegativeInt32(read, out int patch))
                 return SemverErrorCode.PatchTooBig;
 
             SemverPreRelease[]? preReleases = null;
             string[]? buildMetadata = null;
 
-            if (parser.Skip('-'))
+            if (i < length && text[i] == '-')
             {
                 List<SemverPreRelease> list = [];
                 do
                 {
-                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
-                    SemverErrorCode code = SemverPreRelease.ParseValidated(read, false, out SemverPreRelease preRelease);
+                    start = ++i;
+                    while (i < length && Utility.IsValidCharacter(text[i])) i++;
+                    SemverErrorCode code = SemverPreRelease.ParseValidated(text.Slice(start, i - start), false, out SemverPreRelease preRelease);
                     if (code is not SemverErrorCode.Success) return code;
                     list.Add(preRelease);
                 }
-                while (parser.Skip('.'));
+                while (i < length && text[i] == '.');
                 preReleases = list.ToArray();
             }
-            if (parser.Skip('+'))
+            if (i < length && text[i] == '+')
             {
                 List<string> list = [];
                 do
                 {
-                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
-                    if (read.IsEmpty) return SemverErrorCode.BuildMetadataEmpty;
-                    list.Add(read.ToString());
+                    start = ++i;
+                    while (i < length && Utility.IsValidCharacter(text[i])) i++;
+                    if (i == start) return SemverErrorCode.BuildMetadataEmpty;
+                    list.Add(text.Slice(start, i - start).ToString());
                 }
-                while (parser.Skip('.'));
+                while (i < length && text[i] == '.');
                 buildMetadata = list.ToArray();
             }
 
-            if (parser.CanRead()) return SemverErrorCode.Leftovers;
+            if (i < length) return SemverErrorCode.Leftovers;
 
             version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, null, null);
             return SemverErrorCode.Success;
