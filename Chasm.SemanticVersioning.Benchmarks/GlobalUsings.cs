@@ -1,3 +1,4 @@
+// ReSharper disable IdentifierTypo
 global using ChasmVersion = Chasm.SemanticVersioning.SemanticVersion;
 global using McSherryVersion = McSherry.SemanticVersioning.SemanticVersion;
 global using ReeveVersion = SemanticVersioning.Version;

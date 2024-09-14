@@ -15,8 +15,8 @@ namespace Chasm.SemanticVersioning
         }
         [Pure] public static unsafe ReadOnlySpan<char> ReadPartialComponent(ref SpanParser parser)
         {
-            char read = parser.Peek();
-            if ((uint)read - '0' <= '9' - '0')
+            char next = parser.Peek();
+            if ((uint)next - '0' <= '9' - '0')
                 return parser.ReadAsciiDigits();
 
             return parser.ReadWhile(&IsPartialChar);

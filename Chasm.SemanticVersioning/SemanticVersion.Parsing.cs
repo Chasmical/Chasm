@@ -42,31 +42,36 @@ namespace Chasm.SemanticVersioning
 
             int i = 0, length = text.Length;
 
+            // read all ASCII digits at current position
             while (i < length && (uint)text[i] - '0' <= '9' - '0') i++;
+            // if the position is still zero, return MajorNotFound
             if (i == 0) return SemverErrorCode.MajorNotFound;
+            // if the first digit is zero, and the position is greater than 1 (position == component length)
             if (text[0] == '0' && i > 1) return SemverErrorCode.MajorLeadingZeroes;
-            ReadOnlySpan<char> read = text.Slice(0, i);
-            if (!Utility.TryParseNonNegativeInt32(read, out int major))
+            // try to parse the major component
+            if (!Utility.TryParseNonNegativeInt32(text.Slice(0, i), out int major))
                 return SemverErrorCode.MajorTooBig;
 
+            // the next character must be a '.'
             if (i >= length || text[i] != '.') return SemverErrorCode.MinorNotFound;
 
-            int start = ++i;
+            int start = ++i; // move past '.', and save current position as start
             while (i < length && (uint)text[i] - '0' <= '9' - '0') i++;
             if (i == start) return SemverErrorCode.MinorNotFound;
             if (text[start] == '0' && i - start > 1) return SemverErrorCode.MinorLeadingZeroes;
-            read = text.Slice(start, i - start);
-            if (!Utility.TryParseNonNegativeInt32(read, out int minor))
+            // try to parse the minor component
+            if (!Utility.TryParseNonNegativeInt32(text.Slice(start, i - start), out int minor))
                 return SemverErrorCode.MinorTooBig;
 
+            // the next character must be a '.'
             if (i >= length || text[i] != '.') return SemverErrorCode.PatchNotFound;
 
-            start = ++i;
+            start = ++i; // move past '.', and save current position as start
             while (i < length && (uint)text[i] - '0' <= '9' - '0') i++;
             if (i == start) return SemverErrorCode.PatchNotFound;
             if (text[start] == '0' && i - start > 1) return SemverErrorCode.PatchLeadingZeroes;
-            read = text.Slice(start, i - start);
-            if (!Utility.TryParseNonNegativeInt32(read, out int patch))
+            // try to parse the patch component
+            if (!Utility.TryParseNonNegativeInt32(text.Slice(start, i - start), out int patch))
                 return SemverErrorCode.PatchTooBig;
 
             SemverPreRelease[]? preReleases = null;
@@ -77,13 +82,18 @@ namespace Chasm.SemanticVersioning
                 List<SemverPreRelease> list = [];
                 do
                 {
-                    start = ++i;
+                    start = ++i; // move past '-' or '.', and save current position as start
                     while (i < length && Utility.IsValidCharacter(text[i])) i++;
-                    SemverErrorCode code = SemverPreRelease.ParseValidated(text.Slice(start, i - start), false, out SemverPreRelease preRelease);
+                    // parse the pre-release identifier
+                    SemverErrorCode code = SemverPreRelease.ParseValidated(
+                        text.Slice(start, i - start), false, out SemverPreRelease preRelease
+                    );
+                    // add the identifier to the list, if successful
                     if (code is not SemverErrorCode.Success) return code;
                     list.Add(preRelease);
                 }
                 while (i < length && text[i] == '.');
+                // store the array with the results
                 preReleases = list.ToArray();
             }
             if (i < length && text[i] == '+')
@@ -91,15 +101,18 @@ namespace Chasm.SemanticVersioning
                 List<string> list = [];
                 do
                 {
-                    start = ++i;
+                    start = ++i; // move past '+' or '.', and save current position as start
                     while (i < length && Utility.IsValidCharacter(text[i])) i++;
+                    // add the identifier to the list, if not empty
                     if (i == start) return SemverErrorCode.BuildMetadataEmpty;
                     list.Add(text.Slice(start, i - start).ToString());
                 }
                 while (i < length && text[i] == '.');
+                // store the array with the results
                 buildMetadata = list.ToArray();
             }
 
+            // if there are still unprocessed characters left, return Leftovers code
             if (i < length) return SemverErrorCode.Leftovers;
 
             version = new SemanticVersion(major, minor, patch, preReleases, buildMetadata, null, null);
