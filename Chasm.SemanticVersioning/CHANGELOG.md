@@ -1,6 +1,9 @@
 # Chasm.SemanticVersioning Changelog
 
-### v2.7.3 (next)
+### v2.7.4
+- ⚡️ Significantly improved performance of `SemanticVersion`'s strict parsing methods;
+
+### v2.7.3
 - ⚡️ Improved performance of parsing and custom pattern formatting on older targets: `netcoreapp2.0`, `netstandard2.0` and `net461`;
 - ⚡️ Microoptimized IL code size of `AdvancedComparator`'s and `HyphenRangeComparator`'s constructors;
 
