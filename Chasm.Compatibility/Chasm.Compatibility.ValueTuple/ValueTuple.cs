@@ -16,13 +16,11 @@ using System.Runtime.CompilerServices;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 #if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET40_OR_GREATER
 using System.Runtime.CompilerServices;
-#endif
-#if !(NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER)
-using NotNullWhenAttribute = System.Diagnostics.CodeAnalysis.ShimNotNullWhenAttribute;
 #endif
 
 #pragma warning disable IDE0251 // Member can be made 'readonly'

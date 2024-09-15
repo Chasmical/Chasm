@@ -57,6 +57,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Include the required shims/polyfills -->
+    <Folder Include="Shims/" />
+    <Compile Include="../Shared/MethodImplAttribute.cs" Link="Shims/MethodImplAttribute.cs" />
+    <Compile Include="../Shared/NotNullWhenAttribute.cs" Link="Shims/NotNullWhenAttribute.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Chasm.Compatibility.ValueTuple.csproj.DotSettings" />
     <None Include="README.md" Pack="true" PackagePath="\" />
     <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />

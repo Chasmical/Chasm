@@ -472,3 +472,12 @@ namespace System.Runtime.CompilerServices
     }
 }
 #endif
+
+#if !(NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER)
+// ReSharper disable once CheckNamespace
+namespace System.Runtime.Versioning
+{
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method | AttributeTargets.Constructor, Inherited = false)]
+    internal sealed class NonVersionableAttribute : Attribute;
+}
+#endif

@@ -1,10 +1,10 @@
 ﻿#if NET6_0_OR_GREATER
 global using ANE = System.ArgumentNullException;
 #else
-using System;
 using System.Runtime.CompilerServices;
 
-namespace Chasm.SemanticVersioning
+// ReSharper disable once CheckNamespace
+namespace System
 {
     // ReSharper disable once InconsistentNaming
     internal static class ANE
@@ -18,6 +18,7 @@ namespace Chasm.SemanticVersioning
     }
 }
 #endif
+
 #if !NETCOREAPP3_0_OR_GREATER
 // ReSharper disable once CheckNamespace
 namespace System.Runtime.CompilerServices
