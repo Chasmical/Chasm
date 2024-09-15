@@ -55,8 +55,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindIndex{T}(T[], Predicate{T})"/>
         [Pure] public static int FindIndex<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = 0; i < array.Length; i++)
                 if (predicate(array[i], i))
                     return i;
@@ -65,8 +65,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindIndex{T}(T[], Predicate{T})"/>
         [Pure] public static int FindIndex<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = 0; i < array.Length; i++)
                 if (predicate(array[i], i, array))
                     return i;
@@ -79,8 +79,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindLastIndex{T}(T[], Predicate{T})"/>
         [Pure] public static int FindLastIndex<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = array.Length - 1; i >= 0; i--)
                 if (predicate(array[i], i))
                     return i;
@@ -89,8 +89,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindLastIndex{T}(T[], Predicate{T})"/>
         [Pure] public static int FindLastIndex<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = array.Length - 1; i >= 0; i--)
                 if (predicate(array[i], i, array))
                     return i;
@@ -113,8 +113,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.TrueForAll{T}(T[], Predicate{T})"/>
         [Pure] public static bool TrueForAll<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = 0; i < array.Length; i++)
                 if (!predicate(array[i], i))
                     return false;
@@ -123,8 +123,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.TrueForAll{T}(T[], Predicate{T})"/>
         [Pure] public static bool TrueForAll<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = 0; i < array.Length; i++)
                 if (!predicate(array[i], i, array))
                     return false;
@@ -137,8 +137,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.Find{T}(T[], Predicate{T})"/>
         [Pure] public static T? Find<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = 0; i < array.Length; i++)
                 if (predicate(array[i], i))
                     return array[i];
@@ -147,8 +147,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.Find{T}(T[], Predicate{T})"/>
         [Pure] public static T? Find<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = 0; i < array.Length; i++)
                 if (predicate(array[i], i, array))
                     return array[i];
@@ -161,8 +161,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindLast{T}(T[], Predicate{T})"/>
         [Pure] public static T? FindLast<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = array.Length - 1; i >= 0; i--)
                 if (predicate(array[i], i))
                     return array[i];
@@ -171,8 +171,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindLast{T}(T[], Predicate{T})"/>
         [Pure] public static T? FindLast<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             for (int i = array.Length - 1; i >= 0; i--)
                 if (predicate(array[i], i, array))
                     return array[i];
@@ -185,8 +185,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindAll{T}(T[], Predicate{T})"/>
         [Pure] public static T[] FindAll<T>(this T[] array, [InstantHandle] Func<T, int, bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             List<T> list = [];
             for (int i = 0; i < array.Length; i++)
                 if (predicate(array[i], i))
@@ -196,8 +196,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.FindAll{T}(T[], Predicate{T})"/>
         [Pure] public static T[] FindAll<T>(this T[] array, [InstantHandle] Func<T, int, T[], bool> predicate)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(predicate);
             List<T> list = [];
             for (int i = 0; i < array.Length; i++)
                 if (predicate(array[i], i, array))
@@ -218,8 +218,8 @@ namespace Chasm.Collections
 #if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET20_OR_GREATER
             return Array.ConvertAll(array, new Converter<TInput, TOutput>(converter));
 #else
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (converter is null) throw new ArgumentNullException(nameof(converter));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(converter);
             TOutput[] result = new TOutput[array.Length];
             for (int i = 0; i < array.Length; i++)
                 result[i] = converter(array[i]);
@@ -230,8 +230,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.ConvertAll{TInput, TOutput}(TInput[], Converter{TInput, TOutput})"/>
         [Pure] public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array, [InstantHandle] Func<TInput, int, TOutput> converter)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (converter is null) throw new ArgumentNullException(nameof(converter));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(converter);
             TOutput[] result = new TOutput[array.Length];
             for (int i = 0; i < array.Length; i++)
                 result[i] = converter(array[i], i);
@@ -240,8 +240,8 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.ConvertAll{TInput, TOutput}(TInput[], Converter{TInput, TOutput})"/>
         [Pure] public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array, [InstantHandle] Func<TInput, int, TInput[], TOutput> converter)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (converter is null) throw new ArgumentNullException(nameof(converter));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(converter);
             TOutput[] result = new TOutput[array.Length];
             for (int i = 0; i < array.Length; i++)
                 result[i] = converter(array[i], i, array);
@@ -254,7 +254,7 @@ namespace Chasm.Collections
 #if NET6_0_OR_GREATER
             Array.Clear(array);
 #else
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ANE.ThrowIfNull(array);
             Array.Clear(array, 0, array.Length);
 #endif
         }
@@ -268,7 +268,7 @@ namespace Chasm.Collections
 #if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Array.Fill(array, value);
 #else
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ANE.ThrowIfNull(array);
             Fill(array, value, 0, array.Length);
 #endif
         }
@@ -278,7 +278,7 @@ namespace Chasm.Collections
 #if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Array.Fill(array, value, startIndex, count);
 #else
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ANE.ThrowIfNull(array);
             const string outOfRangeMsg = "Index was out of range. Must be non-negative and less than or equal to the size of the collection.";
             if (startIndex < 0 || startIndex > array.Length) throw new ArgumentOutOfRangeException(nameof(startIndex), outOfRangeMsg);
             const string outOfRangeMsg2 = "Count must be positive and count must refer to a location within the string/array/collection.";
@@ -359,8 +359,8 @@ namespace Chasm.Collections
 #if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET20_OR_GREATER
             Array.ForEach(array, action);
 #else
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(action);
             for (int i = 0; i < array.Length; i++)
                 action(array[i]);
 #endif
@@ -368,16 +368,16 @@ namespace Chasm.Collections
         /// <inheritdoc cref="Array.ForEach{T}(T[], Action{T})"/>
         public static void ForEach<T>(this T[] array, [InstantHandle] Action<T, int> action)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(action);
             for (int i = 0; i < array.Length; i++)
                 action(array[i], i);
         }
         /// <inheritdoc cref="Array.ForEach{T}(T[], Action{T})"/>
         public static void ForEach<T>(this T[] array, [InstantHandle] Action<T, int, T[]> action)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            ANE.ThrowIfNull(array);
+            ANE.ThrowIfNull(action);
             for (int i = 0; i < array.Length; i++)
                 action(array[i], i, array);
         }
@@ -418,7 +418,7 @@ namespace Chasm.Collections
         /// <exception cref="InvalidCastException">An element in the <paramref name="array"/> cannot be cast to type <typeparamref name="TOutput"/>.</exception>
         [Pure] public static TOutput[] Cast<TOutput>(this Array array)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ANE.ThrowIfNull(array);
             if (array.Rank != 1) throw new RankException($"{nameof(array)} is multidimensional.");
             if (array.GetLowerBound(0) != 0) throw new ArgumentException($"{nameof(array)} is not zero-based.");
 
@@ -446,7 +446,7 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentException"><paramref name="array"/> is not zero-based.</exception>
         [Pure] public static TOutput[] OfType<TOutput>(this Array array)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ANE.ThrowIfNull(array);
             if (array.Rank != 1) throw new RankException($"{nameof(array)} is multidimensional.");
             if (array.GetLowerBound(0) != 0) throw new ArgumentException($"{nameof(array)} is not zero-based.");
 
@@ -475,7 +475,7 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
         [Pure] public static T[] Copy<T>(this T[] array)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ANE.ThrowIfNull(array);
 #if NET5_0_OR_GREATER
             T[] copy = GC.AllocateUninitializedArray<T>(array.Length);
 #else
@@ -494,7 +494,7 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
         [Pure] public static ReadOnlyCollection<T> AsReadOnly<T>(this T[] array)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ANE.ThrowIfNull(array);
             if (array.Length != 0) return new ReadOnlyCollection<T>(array);
 #if NET8_0_OR_GREATER
             return ReadOnlyCollection<T>.Empty;
@@ -512,7 +512,7 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
         [Pure, ItemNotNull] public static T[] NotNull<T>(this T?[] array)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ANE.ThrowIfNull(array);
             if (default(T) is not null) return array!;
 
             List<T> results = [];

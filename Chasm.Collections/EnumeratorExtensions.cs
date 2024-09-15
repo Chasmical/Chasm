@@ -23,7 +23,7 @@ namespace Chasm.Collections
             [HandlesResourceDisposal] this IEnumerator<KeyValuePair<TKey, TValue>> enumerator
         )
         {
-            if (enumerator is null) throw new ArgumentNullException(nameof(enumerator));
+            ANE.ThrowIfNull(enumerator);
             return new DictionaryEnumerator<TKey, TValue>(enumerator);
         }
 

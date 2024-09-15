@@ -21,7 +21,7 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
         public static void Add<TKey, TValue>(this ICollection<KeyValuePair<TKey, TValue>> list, TKey key, TValue value)
         {
-            if (list is null) throw new ArgumentNullException(nameof(list));
+            ANE.ThrowIfNull(list);
             list.Add(new KeyValuePair<TKey, TValue>(key, value));
         }
         /// <summary>
@@ -34,7 +34,7 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>
         public static void Add<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, KeyValuePair<TKey, TValue> entry) where TKey : notnull
         {
-            if (dictionary is null) throw new ArgumentNullException(nameof(dictionary));
+            ANE.ThrowIfNull(dictionary);
             dictionary.Add(entry.Key, entry.Value);
         }
 
@@ -51,7 +51,7 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
         public static void Add<T1, T2>(this ICollection<(T1, T2)> list, T1 t1, T2 t2)
         {
-            if (list is null) throw new ArgumentNullException(nameof(list));
+            ANE.ThrowIfNull(list);
             list.Add((t1, t2));
         }
         /// <inheritdoc cref="Add{T1, T2}(ICollection{ValueTuple{T1, T2}}, T1, T2)"/>
@@ -59,7 +59,7 @@ namespace Chasm.Collections
         /// <param name="t3">The third element of the tuple.</param>
         public static void Add<T1, T2, T3>(this ICollection<(T1, T2, T3)> list, T1 t1, T2 t2, T3 t3)
         {
-            if (list is null) throw new ArgumentNullException(nameof(list));
+            ANE.ThrowIfNull(list);
             list.Add((t1, t2, t3));
         }
         /// <inheritdoc cref="Add{T1, T2, T3}(ICollection{ValueTuple{T1, T2, T3}}, T1, T2, T3)"/>
@@ -67,7 +67,7 @@ namespace Chasm.Collections
         /// <param name="t4">The fourth element of the tuple.</param>
         public static void Add<T1, T2, T3, T4>(this ICollection<(T1, T2, T3, T4)> list, T1 t1, T2 t2, T3 t3, T4 t4)
         {
-            if (list is null) throw new ArgumentNullException(nameof(list));
+            ANE.ThrowIfNull(list);
             list.Add((t1, t2, t3, t4));
         }
         /// <inheritdoc cref="Add{T1, T2, T3, T4}(ICollection{ValueTuple{T1, T2, T3, T4}}, T1, T2, T3, T4)"/>
@@ -75,7 +75,7 @@ namespace Chasm.Collections
         /// <param name="t5">The fifth element of the tuple.</param>
         public static void Add<T1, T2, T3, T4, T5>(this ICollection<(T1, T2, T3, T4, T5)> list, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
         {
-            if (list is null) throw new ArgumentNullException(nameof(list));
+            ANE.ThrowIfNull(list);
             list.Add((t1, t2, t3, t4, t5));
         }
         /// <inheritdoc cref="Add{T1, T2, T3, T4, T5}(ICollection{ValueTuple{T1, T2, T3, T4, T5}}, T1, T2, T3, T4, T5)"/>
@@ -83,7 +83,7 @@ namespace Chasm.Collections
         /// <param name="t6">The sixth element of the tuple.</param>
         public static void Add<T1, T2, T3, T4, T5, T6>(this ICollection<(T1, T2, T3, T4, T5, T6)> list, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
         {
-            if (list is null) throw new ArgumentNullException(nameof(list));
+            ANE.ThrowIfNull(list);
             list.Add((t1, t2, t3, t4, t5, t6));
         }
         /// <inheritdoc cref="Add{T1, T2, T3, T4, T5, T6}(ICollection{ValueTuple{T1, T2, T3, T4, T5, T6}}, T1, T2, T3, T4, T5, T6)"/>
@@ -91,7 +91,7 @@ namespace Chasm.Collections
         /// <param name="t7">The seventh element of the tuple.</param>
         public static void Add<T1, T2, T3, T4, T5, T6, T7>(this ICollection<(T1, T2, T3, T4, T5, T6, T7)> list, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
         {
-            if (list is null) throw new ArgumentNullException(nameof(list));
+            ANE.ThrowIfNull(list);
             list.Add((t1, t2, t3, t4, t5, t6, t7));
         }
 #pragma warning restore CS1573, CS1712

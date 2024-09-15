@@ -2,6 +2,7 @@
 
 ### v2.4.2 (next)
 - ⚡️ Improved the performance of `NotNull` array extension by inlining the `Array.FindAll` call;
+- ⚡️ Replaced `ArgumentNullException` throws with `ArgumentNullException.ThrowIfNull`;
 - ⚡️ Microoptimized IL code size of `CollectionExtensions.Add` extensions;
 
 ### v2.4.1

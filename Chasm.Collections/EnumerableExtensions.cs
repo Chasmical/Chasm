@@ -20,7 +20,7 @@ namespace Chasm.Collections
         [Pure, LinqTunnel, ItemNotNull]
         public static IEnumerable<T> NotNull<T>(this IEnumerable<T?> source)
         {
-            if (source is null) throw new ArgumentNullException(nameof(source));
+            ANE.ThrowIfNull(source);
             if (default(T) is not null) return source!;
 
             // Note: Compiler-generated iterators and custom enumerators end up being slower
@@ -43,8 +43,8 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="action"/> is <see langword="null"/>.</exception>
         public static void ForEach<T>([InstantHandle] this IEnumerable<T> source, [InstantHandle] Action<T> action)
         {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            ANE.ThrowIfNull(source);
+            ANE.ThrowIfNull(action);
             foreach (T item in source)
                 action(item);
         }
@@ -136,7 +136,7 @@ namespace Chasm.Collections
 
         [Pure] private static bool OnlyCore<T>([InstantHandle] this IEnumerable<T> source, out T? result)
         {
-            if (source is null) throw new ArgumentNullException(nameof(source));
+            ANE.ThrowIfNull(source);
 
             using (IEnumerator<T> enumerator = source.GetEnumerator())
             {
@@ -151,8 +151,8 @@ namespace Chasm.Collections
         }
         [Pure] private static bool OnlyCore<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate, out T? result)
         {
-            if (source is null) throw new ArgumentNullException(nameof(source));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            ANE.ThrowIfNull(source);
+            ANE.ThrowIfNull(predicate);
 
             using (IEnumerator<T> enumerator = source.GetEnumerator())
             {
