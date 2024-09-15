@@ -1,5 +1,8 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.7.5
+- ⚡️ Replaced `ArgumentNullException` throws with `ArgumentNullException.ThrowIfNull`;
+
 ### v2.7.4
 - ⚡️ Significantly improved performance of `SemanticVersion`'s strict parsing methods;
 
