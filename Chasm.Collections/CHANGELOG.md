@@ -1,6 +1,6 @@
 # Chasm.Collections Changelog
 
-### v2.4.2 (next)
+### v2.4.2
 - ⚡️ Improved the performance of `NotNull` array extension by inlining the `Array.FindAll` call;
 - ⚡️ Replaced `ArgumentNullException` throws with `ArgumentNullException.ThrowIfNull`;
 - ⚡️ Microoptimized IL code size of `CollectionExtensions.Add` extensions;
