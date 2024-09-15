@@ -227,7 +227,10 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid partial version.</exception>
         [Pure] public static PartialVersion Parse(string text, SemverOptions options)
-            => text is null ? throw new ArgumentNullException(nameof(text)) : Parse(text.AsSpan(), options);
+        {
+            ANE.ThrowIfNull(text);
+            return Parse(text.AsSpan(), options);
+        }
         /// <summary>
         ///   <para>Converts the specified read-only span of characters representing a partial version to an equivalent <see cref="PartialVersion"/> instance, using the specified parsing <paramref name="options"/>.</para>
         /// </summary>

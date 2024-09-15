@@ -14,7 +14,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="comparatorSet"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator ~(ComparatorSet comparatorSet)
         {
-            if (comparatorSet is null) throw new ArgumentNullException(nameof(comparatorSet));
+            ANE.ThrowIfNull(comparatorSet);
             return VersionRange.FromTuple(Complement(comparatorSet));
         }
 
@@ -40,8 +40,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static ComparatorSet operator &(ComparatorSet left, ComparatorSet right)
         {
-            if (left is null) throw new ArgumentNullException(nameof(left));
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            ANE.ThrowIfNull(left);
+            ANE.ThrowIfNull(right);
 
             // TODO: rewrite the entire method, to account for resugaring of advanced comparators
 
@@ -92,8 +92,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator |(ComparatorSet left, ComparatorSet right)
         {
-            if (left is null) throw new ArgumentNullException(nameof(left));
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            ANE.ThrowIfNull(left);
+            ANE.ThrowIfNull(right);
 
             // TODO: rewrite the entire method, to account for resugaring of advanced comparators
 

@@ -36,7 +36,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="from"/> or <paramref name="to"/> is <see langword="null"/>.</exception>
         public HyphenRangeComparator(PartialVersion from, PartialVersion to) : base(from)
         {
-            if (to is null) throw new ArgumentNullException(nameof(to));
+            ANE.ThrowIfNull(to);
             To = to;
         }
 

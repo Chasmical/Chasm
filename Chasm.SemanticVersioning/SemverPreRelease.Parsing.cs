@@ -75,7 +75,7 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid pre-release identifier.</exception>
         [Pure] public static SemverPreRelease Parse(string text)
         {
-            if (text is null) throw new ArgumentNullException(nameof(text));
+            ANE.ThrowIfNull(text);
             return ParseTrimmed(text, false, out SemverPreRelease preRelease).ReturnOrThrow(preRelease, nameof(text));
         }
         /// <summary>
@@ -113,7 +113,7 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid pre-release identifier.</exception>
         [Pure] public static SemverPreRelease Parse(string text, SemverOptions options)
         {
-            if (text is null) throw new ArgumentNullException(nameof(text));
+            ANE.ThrowIfNull(text);
             ReadOnlySpan<char> trimmed = Utility.Trim(text.AsSpan(), options);
             bool alz = (options & SemverOptions.AllowLeadingZeroes) != 0;
             SemverErrorCode code = trimmed.Length != text.Length

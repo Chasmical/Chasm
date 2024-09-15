@@ -110,7 +110,7 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="ArgumentNullException"><paramref name="systemVersion"/> is <see langword="null"/>.</exception>
         public SemanticVersion(Version systemVersion)
         {
-            if (systemVersion is null) throw new ArgumentNullException(nameof(systemVersion));
+            ANE.ThrowIfNull(systemVersion);
             _major = systemVersion.Major;
             _minor = systemVersion.Minor;
             _patch = Math.Max(systemVersion.Build, 0);

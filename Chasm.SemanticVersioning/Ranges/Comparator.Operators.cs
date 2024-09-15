@@ -14,7 +14,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="comparator"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator ~(Comparator comparator)
         {
-            if (comparator is null) throw new ArgumentNullException(nameof(comparator));
+            ANE.ThrowIfNull(comparator);
             return VersionRange.FromTuple(Complement(comparator));
         }
 
@@ -64,8 +64,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static ComparatorSet operator &(Comparator left, Comparator right)
         {
-            if (left is null) throw new ArgumentNullException(nameof(left));
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            ANE.ThrowIfNull(left);
+            ANE.ThrowIfNull(right);
             return ComparatorSet.FromTuple(Intersect(left, right));
         }
 
@@ -181,8 +181,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator |(Comparator left, Comparator right)
         {
-            if (left is null) throw new ArgumentNullException(nameof(left));
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            ANE.ThrowIfNull(left);
+            ANE.ThrowIfNull(right);
             (Comparator?, Comparator?) tuple = Union(left, right, out bool isRange);
             return VersionRange.FromTuple(isRange ? tuple! : (ComparatorSet.FromTuple(tuple), null));
         }

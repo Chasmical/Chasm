@@ -43,7 +43,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="operand"/> is <see langword="null"/>.</exception>
         protected AdvancedComparator(PartialVersion operand)
         {
-            if (operand is null) throw new ArgumentNullException(nameof(operand));
+            ANE.ThrowIfNull(operand);
             Operand = operand;
         }
 

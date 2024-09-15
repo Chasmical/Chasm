@@ -51,7 +51,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="comparatorSet"/> is <see langword="null"/>.</exception>
         public VersionRange(ComparatorSet comparatorSet)
         {
-            if (comparatorSet is null) throw new ArgumentNullException(nameof(comparatorSet));
+            ANE.ThrowIfNull(comparatorSet);
             _comparatorSets = [comparatorSet];
         }
         /// <summary>
@@ -63,7 +63,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentException"><paramref name="otherComparatorSets"/> contains <see langword="null"/>.</exception>
         public VersionRange(ComparatorSet firstComparatorSet, params ComparatorSet[]? otherComparatorSets)
         {
-            if (firstComparatorSet is null) throw new ArgumentNullException(nameof(firstComparatorSet));
+            ANE.ThrowIfNull(firstComparatorSet);
             ComparatorSet[] array;
             if (otherComparatorSets?.Length > 0)
             {
@@ -85,7 +85,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentException"><paramref name="comparatorSets"/> is empty, or contains <see langword="null"/>.</exception>
         public VersionRange([InstantHandle] IEnumerable<ComparatorSet> comparatorSets)
         {
-            if (comparatorSets is null) throw new ArgumentNullException(nameof(comparatorSets));
+            ANE.ThrowIfNull(comparatorSets);
             ComparatorSet[] array = comparatorSets.ToArray();
             if (array.Length == 0) throw new ArgumentException(Exceptions.VersionRangeEmpty, nameof(comparatorSets));
             if (Array.IndexOf(array, null) >= 0) throw new ArgumentException(Exceptions.ComparatorSetsNull, nameof(comparatorSets));

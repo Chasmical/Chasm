@@ -15,7 +15,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="range"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator ~(VersionRange range)
         {
-            if (range is null) throw new ArgumentNullException(nameof(range));
+            ANE.ThrowIfNull(range);
 
             ComparatorSet[] sets = range._comparatorSets;
             // TODO: improve performance and memory usage here?
@@ -34,8 +34,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator &(VersionRange left, VersionRange right)
         {
-            if (left is null) throw new ArgumentNullException(nameof(left));
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            ANE.ThrowIfNull(left);
+            ANE.ThrowIfNull(right);
 
             ComparatorSet[] leftSets = left._comparatorSets;
             ComparatorSet[] rightSets = right._comparatorSets;
@@ -57,8 +57,8 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure] public static VersionRange operator |(VersionRange left, VersionRange right)
         {
-            if (left is null) throw new ArgumentNullException(nameof(left));
-            if (right is null) throw new ArgumentNullException(nameof(right));
+            ANE.ThrowIfNull(left);
+            ANE.ThrowIfNull(right);
 
             ComparatorSet[] leftSets = left._comparatorSets;
             ComparatorSet[] rightSets = right._comparatorSets;

@@ -138,7 +138,7 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="ArgumentNullException"><paramref name="version"/> is <see langword="null"/>.</exception>
         public SemanticVersionBuilder(SemanticVersion version)
         {
-            if (version is null) throw new ArgumentNullException(nameof(version));
+            ANE.ThrowIfNull(version);
             _major = version.Major;
             _minor = version.Minor;
             _patch = version.Patch;
@@ -212,7 +212,7 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="ArgumentException"><paramref name="identifier"/> is not a valid build metadata identifier.</exception>
         public SemanticVersionBuilder AppendBuildMetadata(string identifier)
         {
-            if (identifier is null) throw new ArgumentNullException(nameof(identifier));
+            ANE.ThrowIfNull(identifier);
             Utility.ValidateBuildMetadataItem(identifier, nameof(identifier));
             _buildMetadata.Add(identifier);
             return this;
@@ -269,7 +269,7 @@ namespace Chasm.SemanticVersioning
             /// <exception cref="ArgumentException"><paramref name="item"/> is not a valid build metadata identifier.</exception>
             protected override void InsertItem(int index, string item)
             {
-                if (item is null) throw new ArgumentNullException(nameof(item));
+                ANE.ThrowIfNull(item);
                 Utility.ValidateBuildMetadataItem(item, nameof(item));
                 base.InsertItem(index, item);
             }
@@ -278,7 +278,7 @@ namespace Chasm.SemanticVersioning
             /// <exception cref="ArgumentException"><paramref name="item"/> is not a valid build metadata identifier.</exception>
             protected override void SetItem(int index, string item)
             {
-                if (item is null) throw new ArgumentNullException(nameof(item));
+                ANE.ThrowIfNull(item);
                 Utility.ValidateBuildMetadataItem(item, nameof(item));
                 base.SetItem(index, item);
             }

@@ -266,7 +266,10 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid semantic version.</exception>
         [Pure] public static SemanticVersion Parse(string text)
-            => text is null ? throw new ArgumentNullException(nameof(text)) : Parse(text.AsSpan());
+        {
+            ANE.ThrowIfNull(text);
+            return Parse(text.AsSpan());
+        }
         /// <summary>
         ///   <para>Converts the specified read-only span of characters representing a semantic version to an equivalent <see cref="SemanticVersion"/> instance.</para>
         /// </summary>
@@ -301,7 +304,10 @@ namespace Chasm.SemanticVersioning
         /// <exception cref="ArgumentNullException"><paramref name="text"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> is not a valid semantic version.</exception>
         [Pure] public static SemanticVersion Parse(string text, SemverOptions options)
-            => text is null ? throw new ArgumentNullException(nameof(text)) : Parse(text.AsSpan(), options);
+        {
+            ANE.ThrowIfNull(text);
+            return Parse(text.AsSpan(), options);
+        }
         /// <summary>
         ///   <para>Converts the specified read-only span of characters representing a semantic version to an equivalent <see cref="SemanticVersion"/> instance, using the specified parsing <paramref name="options"/>.</para>
         /// </summary>

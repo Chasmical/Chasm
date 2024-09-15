@@ -48,7 +48,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="InvalidEnumArgumentException"><paramref name="operator"/> is not a valid primitive operator.</exception>
         public PrimitiveComparator(SemanticVersion operand, PrimitiveOperator @operator)
         {
-            if (operand is null) throw new ArgumentNullException(nameof(operand));
+            ANE.ThrowIfNull(operand);
             if (@operator > PrimitiveOperator.LessThanOrEqual)
                 throw new InvalidEnumArgumentException(nameof(@operator), (int)@operator, typeof(PrimitiveOperator));
             Operand = operand;

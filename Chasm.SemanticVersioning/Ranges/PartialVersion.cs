@@ -127,7 +127,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="systemVersion"/> is <see langword="null"/>.</exception>
         public PartialVersion(Version systemVersion)
         {
-            if (systemVersion is null) throw new ArgumentNullException(nameof(systemVersion));
+            ANE.ThrowIfNull(systemVersion);
             _major = new PartialComponent(systemVersion.Major, default);
             _minor = new PartialComponent(systemVersion.Minor, default);
             _patch = new PartialComponent(systemVersion.Build, default);
@@ -141,7 +141,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <exception cref="ArgumentNullException"><paramref name="semanticVersion"/> is <see langword="null"/>.</exception>
         public PartialVersion(SemanticVersion semanticVersion)
         {
-            if (semanticVersion is null) throw new ArgumentNullException(nameof(semanticVersion));
+            ANE.ThrowIfNull(semanticVersion);
             _major = new PartialComponent(semanticVersion.Major, default);
             _minor = new PartialComponent(semanticVersion.Minor, default);
             _patch = new PartialComponent(semanticVersion.Patch, default);
