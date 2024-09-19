@@ -154,4 +154,27 @@
     <ProjectReference Include="../Chasm.Compatibility.HashCode/Chasm.Compatibility.HashCode.csproj" />
   </ItemGroup>
 
+  <!-- System.Memory introduced in netcoreapp2.1, netstandard2.1 -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp2.0' or
+    '$(TargetFramework)'=='netcoreapp1.1' or
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='netstandard1.3' or
+    '$(TargetFramework)'=='netstandard1.1' or
+    '$(TargetFramework)'=='net47' or
+    '$(TargetFramework)'=='net461'
+  )">
+    <!-- System.Memory package targets netcoreapp1.0, netstandard1.1, net461 -->
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netstandard1.0' or
+    '$(TargetFramework)'=='net45' or
+    '$(TargetFramework)'=='net40' or
+    '$(TargetFramework)'=='net35'
+  )">
+    <!-- TODO: Use Compatibility.Memory otherwise -->
+  </ItemGroup>
+
 </Project>
