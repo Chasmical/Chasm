@@ -1,5 +1,8 @@
 # Chasm.Compatibility Changelog
 
+### v2.6.0
+- ➕ Added System.Memory package on targets that don't have spans in the BCL;
+
 ### v2.5.0
 - ⬆️ Chasm.Compatibility.Unsafe v2.0.0;
 - ♻️ Refactored dependencies for target frameworks;
