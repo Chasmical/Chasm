@@ -1,5 +1,13 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.8.0
+- 💥 `SemverOptions.Loose` is now a combination of all currently existing flags, instead of `~0` (all bits set);
+- ✨ Added `SemanticVersionBuilder.AppendPreReleases(IEnumerable<SemverPreRelease>)`;
+- ✨ Added `SemanticVersionBuilder.AppendBuildMetadata(IEnumerable<string>)`;
+- ✨ Added `explicit SemanticVersion?(string?)`;
+- ✨ Added `explicit PartialVersion?(string?)`;
+- ✨ Added `explicit VersionRange?(string?)`;
+
 ### v2.7.5
 - ⚡️ Replaced `ArgumentNullException` throws with `ArgumentNullException.ThrowIfNull`;
 
