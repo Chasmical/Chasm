@@ -194,6 +194,18 @@ namespace Chasm.SemanticVersioning
             return this;
         }
         /// <summary>
+        ///   <para>Appends the specified <paramref name="preReleases"/> to the semantic version.</para>
+        /// </summary>
+        /// <param name="preReleases">A collection of pre-release identifiers to append.</param>
+        /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="preReleases"/> is <see langword="null"/>.</exception>
+        public SemanticVersionBuilder AppendPreReleases([InstantHandle] IEnumerable<SemverPreRelease> preReleases)
+        {
+            ANE.ThrowIfNull(preReleases);
+            _preReleases.AddRange(preReleases);
+            return this;
+        }
+        /// <summary>
         ///   <para>Removes all pre-release identifiers from the semantic version.</para>
         /// </summary>
         /// <returns>A reference to this instance after the operation has completed.</returns>
@@ -215,6 +227,29 @@ namespace Chasm.SemanticVersioning
             ANE.ThrowIfNull(identifier);
             Utility.ValidateBuildMetadataItem(identifier, nameof(identifier));
             _buildMetadata.Add(identifier);
+            return this;
+        }
+        /// <summary>
+        ///   <para>Appends the specified build metadata <paramref name="identifiers"/> to the semantic version.</para>
+        /// </summary>
+        /// <param name="identifiers">A collection of build metadata identifiers to append.</param>
+        /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="identifiers"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="identifiers"/> contains <see langword="null"/> or an invalid build metadata identifier.</exception>
+        public SemanticVersionBuilder AppendBuildMetadata([InstantHandle] IEnumerable<string> identifiers)
+        {
+            ANE.ThrowIfNull(identifiers);
+            string[] array = identifiers.ToArray();
+
+            // Note: need to check the collection first, otherwise the user may end up with an invalid state
+            for (int i = 0; i < array.Length; i++)
+                Utility.ValidateBuildMetadataItem(array[i], nameof(identifiers));
+
+#if NET8_0_OR_GREATER
+            _buildMetadata.AddRange((ReadOnlySpan<string>)array);
+#else
+            _buildMetadata.AddRange(array);
+#endif
             return this;
         }
         /// <summary>

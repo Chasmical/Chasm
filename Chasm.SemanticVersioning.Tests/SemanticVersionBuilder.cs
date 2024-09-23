@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using JetBrains.Annotations;
 using Xunit;
@@ -147,6 +148,24 @@ namespace Chasm.SemanticVersioning.Tests
         }
 
         [Fact]
+        public void FluentBuilding2()
+        {
+            SemanticVersionBuilder builder = new(1, 2, 3);
+
+            Assert.Same(builder, builder.AppendBuildMetadata(["test", "000"]));
+            Assert.Equal("1.2.3+test.000", builder.ToString());
+
+            Assert.Same(builder, builder.AppendPreReleases([5, "beta"]));
+            Assert.Equal("1.2.3-5.beta+test.000", builder.ToString());
+
+            Assert.Same(builder, builder.AppendBuildMetadata([]));
+            Assert.Equal("1.2.3-5.beta+test.000", builder.ToString());
+            Assert.Same(builder, builder.AppendPreReleases([]));
+            Assert.Equal("1.2.3-5.beta+test.000", builder.ToString());
+
+        }
+
+        [Fact]
         public void FluentBuildingArguments()
         {
             SemanticVersion version = new SemanticVersion(1, 2, 3, ["dev", 7], ["BUILD", "-007-"]);
@@ -182,8 +201,13 @@ namespace Chasm.SemanticVersioning.Tests
                 Assert.Equal(version, builder.ToVersion());
             }
 
-            // try adding null build metadata identifier
-            Assert.Throws<ArgumentNullException>(() => builder.AppendBuildMetadata(null!));
+            // try adding null pre-release identifiers
+            Assert.Throws<ArgumentNullException>(() => builder.AppendPreReleases(null!));
+
+            // try adding null build metadata identifiers
+            Assert.Throws<ArgumentNullException>(() => builder.AppendBuildMetadata((string)null!));
+            Assert.Throws<ArgumentNullException>(() => builder.AppendBuildMetadata((IEnumerable<string>)null!));
+            Assert.Throws<ArgumentException>(() => builder.AppendBuildMetadata([null!]));
             Assert.Throws<ArgumentNullException>(() => builder.BuildMetadata.Add(null!));
             Assert.Throws<ArgumentNullException>(() => builder.BuildMetadata[1] = null!);
 
