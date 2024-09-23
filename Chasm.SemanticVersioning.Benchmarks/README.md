@@ -109,7 +109,7 @@ AMD Ryzen 5 3500X, 1 CPU, 6 logical and 6 physical cores
 
 | Library    | Raw total |  Packaged |
 |------------|----------:|----------:|
-| Chasm      |  92.5 KiB |  35.6 KiB |
+| Chasm      |  94.5 KiB |  36.3 KiB |
 | McSherry   |  50.0 KiB |  19.8 KiB |
 | Reeve      |  34.0 KiB |  14.1 KiB |
 | Hauser     |  74.5 KiB |  28.4 KiB |

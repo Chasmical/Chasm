@@ -40,5 +40,8 @@
         ///   <para>Specifies incrementing to the next pre-release.</para>
         /// </summary>
         PreRelease,
+
+        // TODO (v3): It would have been nice if PreRelease was put right after Major, Minor and Patch.
+        // Then it'd be possible to combine values: PreRelease (0b100) | Minor (0b010) = PreMinor (0b110)
     }
 }

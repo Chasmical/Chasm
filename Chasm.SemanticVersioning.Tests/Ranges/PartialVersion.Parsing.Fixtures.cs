@@ -39,7 +39,7 @@ namespace Chasm.SemanticVersioning.Tests
                     continue;
                 }
 
-                object[] identifiers = [.. other.BuildMetadata ?? []];
+                object[] identifiers = [..other.BuildMetadata ?? []];
                 if (identifiers.Length > 0) identifiers[0] = $"+{identifiers[0]}";
                 identifiers = (other.PreReleases ?? []).Concat(identifiers).ToArray();
 
