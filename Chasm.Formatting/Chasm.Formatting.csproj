@@ -51,7 +51,6 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
     <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
     <InternalsVisibleTo Include="Chasm.Formatting.Tests" />
-    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Spans supported since netstandard2.1, netcoreapp2.1 -->

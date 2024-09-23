@@ -62,7 +62,6 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
     <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
     <InternalsVisibleTo Include="Chasm.Compatibility.Tests" />
-    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Unsafe introduced in netcoreapp3.0 -->

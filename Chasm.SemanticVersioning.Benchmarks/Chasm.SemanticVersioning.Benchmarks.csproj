@@ -20,7 +20,7 @@
     <ProjectReference Include="..\Chasm.Utilities\Chasm.Utilities.csproj" />
     <ProjectReference Include="..\Chasm.Collections\Chasm.Collections.csproj" />
     <ProjectReference Include="..\Chasm.SemanticVersioning\Chasm.SemanticVersioning.csproj" />
-    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="all" />
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageReference Include="McSherry.SemanticVersioning" Version="1.4.1" />
     <PackageReference Include="NuGet.Versioning" Version="6.11.0" />
