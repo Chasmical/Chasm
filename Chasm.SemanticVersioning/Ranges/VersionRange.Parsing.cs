@@ -97,9 +97,8 @@ namespace Chasm.SemanticVersioning.Ranges
                 return SemverErrorCode.Leftovers;
 
             ComparatorSet[] createdComparatorSets = new ComparatorSet[comparatorSets.Count];
-            // TODO: Is it more efficient to use the array's length here instead?
-            // I feel like there's a better chance of JIT optimizing the list enumeration if the list's Count is used
-            for (int i = 0; i < comparatorSets.Count; i++)
+            // Note: according to somewhat ambiguous benchmark results, it's faster to use array's length here
+            for (int i = 0; i < createdComparatorSets.Length; i++)
                 createdComparatorSets[i] = new ComparatorSet(comparatorSets[i].ToArray(), default);
 
             range = new VersionRange(createdComparatorSets, default);
