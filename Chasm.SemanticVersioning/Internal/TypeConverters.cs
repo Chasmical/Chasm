@@ -7,12 +7,12 @@
 // ConvertTo methods work as needed with strings, so we only need to override the ConvertFrom methods
 
 #if NET7_0_OR_GREATER
+using System;
+using System.ComponentModel;
+using System.Globalization;
+
 namespace Chasm.SemanticVersioning
 {
-    using System;
-    using System.ComponentModel;
-    using System.Globalization;
-
     // Use a generic type converter, that uses the IParsable<T> interface, if possible
     internal sealed class ParsableTypeConverter<T> : TypeConverter where T : IParsable<T>
     {
@@ -26,7 +26,7 @@ namespace Chasm.SemanticVersioning
                 if (default(T) is null && text.Length == 0) return null;
                 return T.Parse(text, culture);
             }
-            return base.ConvertFrom(context, culture, value!);
+            throw GetConvertFromException(value);
         }
     }
 
@@ -47,12 +47,12 @@ namespace Chasm.SemanticVersioning.Ranges
     public sealed partial class VersionRange;
 }
 #elif NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER || NET11_OR_GREATER
+using System;
+using System.ComponentModel;
+using System.Globalization;
+
 namespace Chasm.SemanticVersioning
 {
-    using System;
-    using System.ComponentModel;
-    using System.Globalization;
-
     // Otherwise, use a generic type converter that uses an abstract method
     internal abstract class ParsableTypeConverter<T> : TypeConverter where T : notnull
     {
@@ -66,7 +66,7 @@ namespace Chasm.SemanticVersioning
                 if (default(T) is null && text.Length == 0) return null;
                 return ConvertString(text);
             }
-            return base.ConvertFrom(context!, culture!, value!);
+            throw GetConvertFromException(value);
         }
 
         protected abstract T ConvertString(string text);
