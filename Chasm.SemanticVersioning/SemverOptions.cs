@@ -69,6 +69,6 @@ namespace Chasm.SemanticVersioning
         /// <summary>
         ///   <para>Specifies all parsing options, to be able to parse normally invalid semantic versions.</para>
         /// </summary>
-        Loose = ~0,
+        Loose = (1 << 13) - 1, // 13 set bits
     }
 }
