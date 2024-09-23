@@ -1,7 +1,10 @@
 # Chasm.Compatibility Changelog
 
+### v2.6.1
+- 🧩 Added System.Memory to `net45` target as well;
+
 ### v2.6.0
-- ➕ Added System.Memory package on targets that don't have spans in the BCL;
+- ➕ Added System.Memory package on supported targets that don't have spans in the BCL;
 
 ### v2.5.0
 - ⬆️ Chasm.Compatibility.Unsafe v2.0.0;
