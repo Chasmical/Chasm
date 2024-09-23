@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <!-- Project Properties -->
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
         net8.0;
         net7.0;
@@ -163,14 +164,14 @@
     '$(TargetFramework)'=='netstandard1.3' or
     '$(TargetFramework)'=='netstandard1.1' or
     '$(TargetFramework)'=='net47' or
-    '$(TargetFramework)'=='net461'
+    '$(TargetFramework)'=='net461' or
+    '$(TargetFramework)'=='net45'
   )">
-    <!-- System.Memory package targets netcoreapp1.0, netstandard1.1, net461 -->
+    <!-- System.Memory package targets netcoreapp1.0, netstandard1.1, net45 -->
     <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netstandard1.0' or
-    '$(TargetFramework)'=='net45' or
     '$(TargetFramework)'=='net40' or
     '$(TargetFramework)'=='net35'
   )">
