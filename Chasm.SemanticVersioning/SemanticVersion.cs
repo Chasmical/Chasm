@@ -135,6 +135,15 @@ namespace Chasm.SemanticVersioning
             => semanticVersion is null ? null : new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch);
 
         /// <summary>
+        ///   <para>Defines an explicit conversion of a version string to a semantic version.</para>
+        /// </summary>
+        /// <param name="versionString">The string containing a semantic version to convert.</param>
+        /// <exception cref="ArgumentException"><paramref name="versionString"/> is not a valid semantic version.</exception>
+        [Pure] [return: NotNullIfNotNull(nameof(versionString))]
+        public static explicit operator SemanticVersion?(string? versionString)
+            => versionString is null ? null : Parse(versionString);
+
+        /// <summary>
         ///   <para>Determines whether the semantic version is considered stable, that is, has a major version component greater than zero, and has no pre-release identifiers.</para>
         /// </summary>
         public bool IsStable => Major != 0 && _preReleases.Length == 0;

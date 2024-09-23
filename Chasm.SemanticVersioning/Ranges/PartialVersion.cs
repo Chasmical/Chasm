@@ -199,6 +199,15 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
+        ///   <para>Defines an explicit conversion of a version string to a partial version.</para>
+        /// </summary>
+        /// <param name="versionString">The string containing a partial version to convert.</param>
+        /// <exception cref="ArgumentException"><paramref name="versionString"/> is not a valid partial version.</exception>
+        [Pure] [return: NotNullIfNotNull(nameof(versionString))]
+        public static explicit operator PartialVersion?(string? versionString)
+            => versionString is null ? null : Parse(versionString);
+
+        /// <summary>
         ///   <para>Determines whether the partial version has any wildcard or omitted version components.</para>
         /// </summary>
         public bool IsPartial => !Major.IsNumeric || !Minor.IsNumeric || !Patch.IsNumeric;

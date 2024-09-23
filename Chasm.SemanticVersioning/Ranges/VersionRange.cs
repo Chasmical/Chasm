@@ -112,6 +112,15 @@ namespace Chasm.SemanticVersioning.Ranges
         }
 
         /// <summary>
+        ///   <para>Defines an explicit conversion of a version string to a version range.</para>
+        /// </summary>
+        /// <param name="rangeString">The string containing a version range to convert.</param>
+        /// <exception cref="ArgumentException"><paramref name="rangeString"/> is not a valid version range.</exception>
+        [Pure] [return: NotNullIfNotNull(nameof(rangeString))]
+        public static explicit operator VersionRange?(string? rangeString)
+            => rangeString is null ? null : Parse(rangeString);
+
+        /// <summary>
         ///   <para>Determines whether this version range contains any advanced comparators.</para>
         /// </summary>
         public bool IsSugared
