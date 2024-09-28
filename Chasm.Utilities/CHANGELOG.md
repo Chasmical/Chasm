@@ -1,5 +1,9 @@
 # Chasm.Utilities Changelog
 
+### v2.5.2
+- 🧩 Replaced `net8.0` target with `net9.0`. Now targets: `net9.0`, `netcoreapp3.0`, `netcoreapp2.1`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`, `net35`;
+- ✨ Added `allows ref struct` anti-constraints where needed;
+
 ### v2.5.1
 - 🧩 Removed unnecessary `netstandard2.0` target. Now targets: `net8.0`, `netcoreapp3.0`, `netcoreapp2.1`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`, `net35`;
 
