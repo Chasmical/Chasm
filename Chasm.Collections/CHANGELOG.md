@@ -1,5 +1,9 @@
 # Chasm.Collections Changelog
 
+### v2.4.3
+- 🧩 Added `net9.0` target. Now targets: `net9.0`, `net8.0`, `net6.0`, `net5.0`, `netcoreapp3.0`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.3`, `netstandard1.0`, `net47`, `net46`, `net45`, `net40`, `net35`;
+- ✨ Added `allows ref struct` anti-constraints where needed;
+- 
 ### v2.4.2
 - ⚡️ Improved the performance of `NotNull` array extension by inlining the `Array.FindAll` call;
 - ⚡️ Replaced `ArgumentNullException` throws with `ArgumentNullException.ThrowIfNull`;
