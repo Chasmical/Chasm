@@ -1,5 +1,8 @@
 # Chasm.SemanticVersioning Changelog
 
+### v2.8.1 (next)
+- 🧩 Added `net9.0` target. Now targets: `net9.0`, `net8.0`, `net7.0`, `net6.0`, `net5.0`, `netcoreapp3.0`, `netcoreapp2.0`, `netstandard2.1`, `netstandard2.0`, `net461`;
+
 ### v2.8.0
 - 💥 `SemverOptions.Loose` is now a combination of all currently existing flags, instead of `~0` (all bits set);
 - ✨ Added `SemanticVersionBuilder.AppendPreReleases(IEnumerable<SemverPreRelease>)`;

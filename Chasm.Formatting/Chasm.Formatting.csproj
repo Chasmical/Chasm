@@ -19,7 +19,7 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net9.0         |                 |         | - latest API, for use in IDE
+      | net9.0         |                 |         | - allows ref struct
       | net6.0         |                 |         | - span interpolation, tuple Math.DivRem, string.TryCopyTo
       | net5.0         |                 |         | - SkipLocalsInit
       | netcoreapp2.1  | netstandard2.1  |         | - span support, string.Create(,,)

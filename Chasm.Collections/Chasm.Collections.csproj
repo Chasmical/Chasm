@@ -23,7 +23,7 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net9.0         |                 |         | - latest API for use in IDE
+      | net9.0         |                 |         | - allows ref struct
       | net8.0         |                 |         | - ReadOnlyCollection<T>.Empty
       | net6.0         |                 |         | - Array.Clear
       | net5.0         |                 |         | - GC.AllocateUninitializedArray

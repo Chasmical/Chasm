@@ -16,7 +16,7 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net9.0         |                 |         | - latest API, for use in IDE
+      | net9.0         |                 |         | - allows ref struct
       | netcoreapp3.0  | netstandard2.1  |         | - NotNullWhenAttribute
       | netcoreapp2.1  | netstandard2.1  |         | - HashCode
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
