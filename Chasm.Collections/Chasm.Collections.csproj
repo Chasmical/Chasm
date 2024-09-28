@@ -3,6 +3,7 @@
   <PropertyGroup>
     <!-- Project Properties -->
     <TargetFrameworks>
+      net9.0;
       net8.0;
       net6.0;
       net5.0;
@@ -22,7 +23,8 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net8.0         |                 |         | - latest API for use in IDE, ReadOnlyCollection<T>.Empty
+      | net9.0         |                 |         | - latest API for use in IDE
+      | net8.0         |                 |         | - ReadOnlyCollection<T>.Empty
       | net6.0         |                 |         | - Array.Clear
       | net5.0         |                 |         | - GC.AllocateUninitializedArray
       | netcoreapp3.0  | netstandard2.1  |         | - IAsyncEnumerator

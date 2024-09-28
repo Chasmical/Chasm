@@ -3,22 +3,22 @@
   <PropertyGroup>
     <!-- Project Properties -->
     <TargetFrameworks>
-        net8.0;
-        netcoreapp2.1;
-        netcoreapp2.0;
-        netcoreapp1.0;
-        netstandard2.1;
-        netstandard2.0;
-        netstandard1.3;
-        netstandard1.0;
-        net461;
-        net45;
-        net35;
+      net9.0;
+      netcoreapp2.1;
+      netcoreapp2.0;
+      netcoreapp1.0;
+      netstandard2.1;
+      netstandard2.0;
+      netstandard1.3;
+      netstandard1.0;
+      net461;
+      net45;
+      net35;
     </TargetFrameworks>
     <!--
       | Target Framework | - Status
       |==================|======================
-      | net8.0           | - supported
+      | net9.0           | - supported
       | netcoreapp2.1    | - supported
       | netcoreapp2.0    | - Microsoft.Bcl.HashCode package
       | netcoreapp1.0    | - own implementation
@@ -32,7 +32,7 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net8.0         |                 |         | - latest API, for use in IDE
+      | net9.0         |                 |         | - latest API, for use in IDE
       | netcoreapp2.1  | netstandard2.1  |         | - System.HashCode introduced
       | netcoreapp2.0  | netstandard2.0  | net461  | - Microsoft.Bcl.HashCode package targets
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining

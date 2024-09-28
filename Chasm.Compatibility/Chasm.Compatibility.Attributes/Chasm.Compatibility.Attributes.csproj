@@ -3,26 +3,28 @@
   <PropertyGroup>
     <!-- Project Properties -->
     <TargetFrameworks>
-        net8.0;
-        net7.0;
-        net6.0;
-        net5.0;
-        netcoreapp3.0;
-        netcoreapp2.0;
-        netcoreapp1.1;
-        netcoreapp1.0;
-        netstandard2.1;
-        netstandard2.0;
-        netstandard1.1;
-        netstandard1.0;
-        net45;
-        net40;
-        net35;
+      net9.0;
+      net8.0;
+      net7.0;
+      net6.0;
+      net5.0;
+      netcoreapp3.0;
+      netcoreapp2.0;
+      netcoreapp1.1;
+      netcoreapp1.0;
+      netstandard2.1;
+      netstandard2.0;
+      netstandard1.1;
+      netstandard1.0;
+      net45;
+      net40;
+      net35;
     </TargetFrameworks>
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net8.0         |                 |         | - latest API, for use in IDE, Experimental, RequiresLocation, CollectionBuilder attributes
+      | net9.0         |                 |         | - latest API, for use in IDE
+      | net8.0         |                 |         | - Experimental, RequiresLocation, CollectionBuilder attributes
       | net7.0         |                 |         | - ConstantExpected, StringSyntax, RequiredMember, SetsRequiredMembers, UnscopedRef, CompilerFeatureRequired attributes
       | net6.0         |                 |         | - InterpolatedStringHandler, StackTraceHidden, RequiresPreviewFeatures attributes
       | net5.0         |                 |         | - MemberNotNull[When], IsExternalInit, SkipLocalsInit, ModuleInitializer, UnconditionalSuppressMessage attributes

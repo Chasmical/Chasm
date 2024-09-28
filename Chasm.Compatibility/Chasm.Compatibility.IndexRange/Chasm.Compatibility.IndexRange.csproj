@@ -3,23 +3,23 @@
   <PropertyGroup>
     <!-- Project Properties -->
     <TargetFrameworks>
-        net8.0;
-        netcoreapp3.0;
-        netcoreapp2.0;
-        netcoreapp1.0;
-        netstandard2.1;
-        netstandard2.0;
-        netstandard1.3;
-        netstandard1.0;
-        net47;
-        net45;
-        net40;
-        net35;
+      net9.0;
+      netcoreapp3.0;
+      netcoreapp2.0;
+      netcoreapp1.0;
+      netstandard2.1;
+      netstandard2.0;
+      netstandard1.3;
+      netstandard1.0;
+      net47;
+      net45;
+      net40;
+      net35;
     </TargetFrameworks>
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net8.0         |                 |         | - latest API, for use in IDE
+      | net9.0         |                 |         | - latest API, for use in IDE
       | netcoreapp3.0  | netstandard2.1  |         | - Index and Range introduced
       | netcoreapp2.0  | netstandard2.0  | net47   | - System.ValueTuple introduced
       | netcoreapp1.0  | netstandard1.0  | net45   | - System.ValueTuple package targets

@@ -4,6 +4,7 @@
     <!-- Project Properties -->
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
+      net9.0;
       net8.0;
       net7.0;
       net6.0;
@@ -17,7 +18,8 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net8.0         |                 |         | - latest API, for use in IDE, ReadOnlyCollection<T>.Empty
+      | net9.0         |                 |         | - latest API, for use in IDE
+      | net8.0         |                 |         | - ReadOnlyCollection<T>.Empty
       | net7.0         |                 |         | - IParsable/ISpanParsable, operators interfaces
       | net6.0         |                 |         | - ISpanFormattable, span SequenceEqual, string.TryCopyTo
       | net5.0         |                 |         | - CollectionsMarshal.AsSpan

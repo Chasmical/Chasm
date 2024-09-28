@@ -14,7 +14,7 @@
 
     <!-- Targets -->
     <TargetFrameworks>
-      net8.0;
+      net9.0;
       netcoreapp3.1;
       netstandard2.1;
     </TargetFrameworks>
