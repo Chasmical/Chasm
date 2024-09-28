@@ -1,5 +1,9 @@
 # Chasm.Formatting Changelog
 
+### v2.3.7
+- 🧩 Replaced `net8.0` target with `net9.0`. Now targets: `net9.0`, `net6.0`, `net5.0`, `netcoreapp2.1`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.1`, `netstandard1.0`, `net45`;
+- ⚡️ Improved performance of the formatting method with specified format span;
+
 ### v2.3.6
 - ✨ Added `FormattingExtensions.ToStringAndClear(this StringBuilder)`;
 
