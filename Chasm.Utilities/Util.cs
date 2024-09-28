@@ -18,6 +18,9 @@ namespace Chasm.Utilities
         /// <returns><see langword="false"/>.</returns>
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Fail<T>(out T? result)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             result = default;
             return false;
@@ -32,6 +35,9 @@ namespace Chasm.Utilities
         /// <returns><see langword="false"/>.</returns>
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Fail<T1, T2>(out T1? result1, out T2? result2)
+#if NET9_0_OR_GREATER
+            where T1 : allows ref struct where T2 : allows ref struct
+#endif
         {
             result1 = default;
             result2 = default;
@@ -49,6 +55,9 @@ namespace Chasm.Utilities
         /// <returns><see langword="false"/>.</returns>
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Fail<T1, T2, T3>(out T1? result1, out T2? result2, out T3? result3)
+#if NET9_0_OR_GREATER
+            where T1 : allows ref struct where T2 : allows ref struct where T3 : allows ref struct
+#endif
         {
             result1 = default;
             result2 = default;
@@ -66,6 +75,9 @@ namespace Chasm.Utilities
         /// <returns>The specified <paramref name="returnValue"/>.</returns>
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TReturn Fail<TReturn, T>(TReturn returnValue, out T? result)
+#if NET9_0_OR_GREATER
+            where TReturn : allows ref struct where T : allows ref struct
+#endif
         {
             result = default;
             return returnValue;
@@ -82,6 +94,9 @@ namespace Chasm.Utilities
         /// <returns>The specified <paramref name="returnValue"/>.</returns>
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TReturn Fail<TReturn, T1, T2>(TReturn returnValue, out T1? result1, out T2? result2)
+#if NET9_0_OR_GREATER
+            where TReturn : allows ref struct where T1 : allows ref struct where T2 : allows ref struct
+#endif
         {
             result1 = default;
             result2 = default;
@@ -101,6 +116,9 @@ namespace Chasm.Utilities
         /// <returns>The specified <paramref name="returnValue"/>.</returns>
         [Pure, MustUseReturnValue, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TReturn Fail<TReturn, T1, T2, T3>(TReturn returnValue, out T1? result1, out T2? result2, out T3? result3)
+#if NET9_0_OR_GREATER
+            where TReturn : allows ref struct where T1 : allows ref struct where T2 : allows ref struct where T3 : allows ref struct
+#endif
         {
             result1 = default;
             result2 = default;
@@ -197,6 +215,9 @@ namespace Chasm.Utilities
         /// <returns>The result of invoking the specified <paramref name="function"/>.</returns>
         [Pure, MustUseReturnValue]
         public static TResult With<TResult>([HandlesResourceDisposal] IDisposable disposable, [InstantHandle] Func<TResult> function)
+#if NET9_0_OR_GREATER
+            where TResult : allows ref struct
+#endif
         {
             using (disposable)
                 return function();
@@ -210,7 +231,12 @@ namespace Chasm.Utilities
         /// <param name="function">The function to invoke with the specified <paramref name="disposable"/>.</param>
         /// <returns>The result of invoking the specified <paramref name="function"/>.</returns>
         [Pure, MustUseReturnValue]
-        public static TResult With<T, TResult>([HandlesResourceDisposal] T disposable, [InstantHandle] Func<T, TResult> function) where T : IDisposable
+        public static TResult With<T, TResult>([HandlesResourceDisposal] T disposable, [InstantHandle] Func<T, TResult> function)
+#if NET9_0_OR_GREATER
+            where T : IDisposable, allows ref struct where TResult : allows ref struct
+#else
+            where T : IDisposable
+#endif
         {
             using (disposable)
                 return function(disposable);
@@ -224,6 +250,9 @@ namespace Chasm.Utilities
         /// <param name="b">The second location to swap the values of. When this method returns, contains the value from <paramref name="a"/>.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Swap<T>(ref T a, ref T b)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
 #pragma warning disable IDE0180 // Suppress 'Use tuple to swap values' message
             // ReSharper disable once SwapViaDeconstruction

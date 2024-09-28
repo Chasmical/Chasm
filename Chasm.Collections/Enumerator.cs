@@ -24,7 +24,12 @@ namespace Chasm.Collections
         /// <typeparam name="T">The type of the elements to enumerate.</typeparam>
         /// <returns>An empty enumerator.</returns>
         [Pure] public static IEnumerator<T> Empty<T>()
-            => EmptyEnumerator<T>.Instance;
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
+        {
+            return EmptyEnumerator<T>.Instance;
+        }
 
         private sealed class EmptyEnumerator : IEnumerator
         {
@@ -36,6 +41,9 @@ namespace Chasm.Collections
             public void Reset() { }
         }
         private sealed class EmptyEnumerator<T> : IEnumerator<T>
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             public static readonly IEnumerator<T> Instance = new EmptyEnumerator<T>();
 
@@ -54,9 +62,17 @@ namespace Chasm.Collections
         /// <typeparam name="T">The type of the elements to enumerate.</typeparam>
         /// <returns>An empty asynchronous enumerator.</returns>
         [Pure] public static IAsyncEnumerator<T> EmptyAsync<T>()
-            => EmptyAsyncEnumerator<T>.Instance;
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
+        {
+            return EmptyAsyncEnumerator<T>.Instance;
+        }
 
         private sealed class EmptyAsyncEnumerator<T> : IAsyncEnumerator<T>
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             public static readonly IAsyncEnumerator<T> Instance = new EmptyAsyncEnumerator<T>();
 

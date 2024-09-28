@@ -20,6 +20,9 @@ namespace Chasm.Collections
         [Pure, LinqTunnel, ItemNotNull]
         public static IEnumerable<T> NotNull<T>(this IEnumerable<T?> source)
         {
+            // TODO: Is there any way here at all to allow T to be a ref struct?
+            // LINQ's Where doesn't accept ref structs, but it wouldn't receive them due to the default(T) check below
+
             ANE.ThrowIfNull(source);
             if (default(T) is not null) return source!;
 
@@ -42,6 +45,9 @@ namespace Chasm.Collections
         /// <param name="action">The <see cref="Action{T}"/> to invoke with each element.</param>
         /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="action"/> is <see langword="null"/>.</exception>
         public static void ForEach<T>([InstantHandle] this IEnumerable<T> source, [InstantHandle] Action<T> action)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             ANE.ThrowIfNull(source);
             ANE.ThrowIfNull(action);
@@ -57,10 +63,18 @@ namespace Chasm.Collections
         /// <returns><paramref name="source"/>, if it's not <see langword="null"/>; otherwise, an empty sequence.</returns>
         [Pure, LinqTunnel]
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source)
-            => source ?? [];
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
+        {
+            return source ?? [];
+        }
 
         /// <inheritdoc cref="string.Join{T}(char, IEnumerable{T})"/>
         [Pure] public static string Join<T>([InstantHandle] this IEnumerable<T> values, char separator)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
 #if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return string.Join(separator, values);
@@ -72,6 +86,9 @@ namespace Chasm.Collections
         }
         /// <inheritdoc cref="string.Join{T}(string, IEnumerable{T})"/>
         [Pure] public static string Join<T>([InstantHandle] this IEnumerable<T> values, string? separator)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
 #if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET40_OR_GREATER
             return string.Join(separator, values);
@@ -89,6 +106,9 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="source"/> contains 0 or 2 or more elements.</exception>
         [Pure] public static T Only<T>([InstantHandle] this IEnumerable<T> source)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             if (OnlyCore(source, out T? result)) return result!;
             throw new ArgumentException($"{nameof(source)} contains 0 or 2 or more elements.", nameof(source));
@@ -103,6 +123,9 @@ namespace Chasm.Collections
         /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="predicate"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException"><paramref name="source"/> contains 0 or 2 or more elements that satisfy the specified <paramref name="predicate"/>.</exception>
         [Pure] public static T Only<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             if (OnlyCore(source, predicate, out T? result)) return result!;
             throw new ArgumentException($"{nameof(source)} contains 0 or 2 or more elements.", nameof(source));
@@ -116,6 +139,9 @@ namespace Chasm.Collections
         /// <returns>The only element of the source sequence, or <see langword="default"/>(<typeparamref name="T"/>), if the sequence contains 0 or 2 or more elements.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         [Pure] public static T? OnlyOrDefault<T>([InstantHandle] this IEnumerable<T> source)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             OnlyCore(source, out T? result);
             return result;
@@ -129,12 +155,18 @@ namespace Chasm.Collections
         /// <returns>The only element of the source sequence that satisfies the specified <paramref name="predicate"/>, or <see langword="default"/>(<typeparamref name="T"/>), if the sequence contains 0 or 2 or more such elements.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="predicate"/> is <see langword="null"/>.</exception>
         [Pure] public static T? OnlyOrDefault<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             OnlyCore(source, predicate, out T? result);
             return result;
         }
 
         [Pure] private static bool OnlyCore<T>([InstantHandle] this IEnumerable<T> source, out T? result)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             ANE.ThrowIfNull(source);
 
@@ -150,6 +182,9 @@ namespace Chasm.Collections
             }
         }
         [Pure] private static bool OnlyCore<T>([InstantHandle] this IEnumerable<T> source, Func<T, bool> predicate, out T? result)
+#if NET9_0_OR_GREATER
+            where T : allows ref struct
+#endif
         {
             ANE.ThrowIfNull(source);
             ANE.ThrowIfNull(predicate);

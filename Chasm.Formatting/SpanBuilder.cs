@@ -4,6 +4,9 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
+#pragma warning disable IDE0049
+// ReSharper disable BuiltInTypeReferenceStyleForMemberAccess
+
 namespace Chasm.Formatting
 {
     /// <summary>
@@ -13,10 +16,11 @@ namespace Chasm.Formatting
 #if NET5_0_OR_GREATER
     [SkipLocalsInit]
 #endif
-#if NETSTANDARD1_0 // System.Memory for netstandard1.0 doesn't have annotations
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "PossiblyImpureMethodCallOnReadonlyVariable")]
-#endif
+#if NET9_0_OR_GREATER
+    public ref struct SpanBuilder
+#else
     public unsafe ref struct SpanBuilder
+#endif
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private SpanBuilder(Span<char> buffer) => this.buffer = buffer;
@@ -193,10 +197,7 @@ namespace Chasm.Formatting
         [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Format(ISpanBuildable buildable)
         {
-#pragma warning disable IDE0049
-            // ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess
             return String.Create(buildable.CalculateLength(), buildable, BuildSimpleDelegate);
-#pragma warning restore IDE0049
         }
         /// <summary>
         ///   <para>Returns the string representation of the specified <paramref name="buildable"/> instance, using the specified <paramref name="format"/>.</para>
@@ -207,14 +208,16 @@ namespace Chasm.Formatting
         [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Format(ISpanBuildableFormat buildable, ReadOnlySpan<char> format)
         {
+#if NET9_0_OR_GREATER
+            FormatInfo info = new FormatInfo(buildable, format);
+            return String.Create(buildable.CalculateLength(format), info, BuildFormatDelegate);
+#else
             fixed (char* formatPointer = format)
             {
                 FormatInfo info = new FormatInfo(buildable, formatPointer, format.Length);
-#pragma warning disable IDE0049
-                // ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess
                 return String.Create(buildable.CalculateLength(format), info, BuildFormatDelegate);
-#pragma warning restore IDE0049
             }
+#endif
         }
         /// <summary>
         ///   <para>Creates a string of the specified <paramref name="length"/>, constructed by the specified <paramref name="action"/>.</para>
@@ -225,10 +228,7 @@ namespace Chasm.Formatting
         [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Format(int length, SpanBuilderAction action)
         {
-#pragma warning disable IDE0049
-            // ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess
             return String.Create(length, action, BuildActionDelegate);
-#pragma warning restore IDE0049
         }
 
         /// <summary>
@@ -290,7 +290,11 @@ namespace Chasm.Formatting
         private static void BuildFormat(Span<char> span, FormatInfo info)
         {
             SpanBuilder sb = new SpanBuilder(span);
+#if NET9_0_OR_GREATER
+            ReadOnlySpan<char> format = info.FormatSpan;
+#else
             ReadOnlySpan<char> format = new ReadOnlySpan<char>(info.FormatStart, info.FormatLength);
+#endif
             info.Buildable.BuildString(ref sb, format);
             if (sb.pos != span.Length) throw new InvalidOperationException();
         }
@@ -308,11 +312,19 @@ namespace Chasm.Formatting
         /// <param name="sb">The <see cref="SpanBuilder"/> instance to use.</param>
         public delegate void SpanBuilderAction(ref SpanBuilder sb);
 
+#if NET9_0_OR_GREATER
+        private readonly ref struct FormatInfo(ISpanBuildableFormat buildable, ReadOnlySpan<char> format)
+#else
         private readonly struct FormatInfo(ISpanBuildableFormat buildable, char* formatStart, int formatLength)
+#endif
         {
             public readonly ISpanBuildableFormat Buildable = buildable;
+#if NET9_0_OR_GREATER
+            public readonly ReadOnlySpan<char> FormatSpan = format;
+#else
             public readonly char* FormatStart = formatStart;
             public readonly int FormatLength = formatLength;
+#endif
         }
 
     }

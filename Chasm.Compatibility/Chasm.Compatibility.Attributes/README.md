@@ -82,7 +82,6 @@ I'm not sure how the attributes below work, so I'll put it off for now:
 - [ ] `[DisableRuntimeMarshalling]`;
 - [ ] `[SuppressGCTransition]`;
 - [ ] `[UnmanagedCallersOnly]`;
-- [ ] `[UnsafeAccessor]`;
 - [ ] `[InlineArray]`;
 - [ ] `[DynamicallyAccessedMembers]`;
 - [ ] `enum DynamicallyAccessedMemberTypes`;
@@ -110,5 +109,6 @@ The following attributes are not provided by this package:
 ## Can't be added
 
 - `[PreserveBaseOverrides]` - requires runtime support of covariant return types;
+- `[UnsafeAccessor]` - requires runtime support;
 
 
