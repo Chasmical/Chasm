@@ -1,5 +1,11 @@
 # Chasm.Compatibility Changelog
 
+### v2.6.2
+- ⬆️ Chasm.Compatibility.HashCode v2.1.2;
+- ⬆️ Chasm.Compatibility.IndexRange v2.2.2;
+- ⬆️ Chasm.Compatibility.Unsafe v2.0.1;
+- ⬆️ Chasm.Compatibility.ValueTuple v2.2.2;
+
 ### v2.6.1
 - 🧩 Added System.Memory to `net45` target as well;
 

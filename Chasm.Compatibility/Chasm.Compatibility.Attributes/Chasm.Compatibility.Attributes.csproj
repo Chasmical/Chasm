@@ -3,7 +3,6 @@
   <PropertyGroup>
     <!-- Project Properties -->
     <TargetFrameworks>
-      net9.0;
       net8.0;
       net7.0;
       net6.0;
@@ -23,7 +22,6 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net9.0         |                 |         | - latest API, for use in IDE
       | net8.0         |                 |         | - Experimental, RequiresLocation, CollectionBuilder attributes
       | net7.0         |                 |         | - ConstantExpected, StringSyntax, RequiredMember, SetsRequiredMembers, UnscopedRef, CompilerFeatureRequired attributes
       | net6.0         |                 |         | - InterpolatedStringHandler, StackTraceHidden, RequiresPreviewFeatures attributes

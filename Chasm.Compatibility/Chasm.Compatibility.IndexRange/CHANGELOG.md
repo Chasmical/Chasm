@@ -1,5 +1,8 @@
 # Chasm.Compatibility.IndexRange Changelog
 
+### v2.2.2
+- 🧩 Removed `net8.0` target. Now targets: `netcoreapp3.0`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.0`, `net47`, `net45`, `net40`, `net35`;
+
 ### v2.2.1
 - 🐛 Fixed usage of `RandomNumberGenerator` for hashing for .NET Framework targets;
 

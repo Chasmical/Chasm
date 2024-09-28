@@ -4,7 +4,6 @@
     <!-- Project Properties -->
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
-      net9.0;
       net8.0;
       net7.0;
       net6.0;
@@ -34,7 +33,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Compatibility</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.6.1</Version>
+    <Version>2.6.2</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>

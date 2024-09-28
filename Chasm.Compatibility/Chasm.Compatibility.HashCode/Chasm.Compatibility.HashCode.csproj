@@ -3,7 +3,6 @@
   <PropertyGroup>
     <!-- Project Properties -->
     <TargetFrameworks>
-      net9.0;
       netcoreapp2.1;
       netcoreapp2.0;
       netcoreapp1.0;
@@ -18,7 +17,7 @@
     <!--
       | Target Framework | - Status
       |==================|======================
-      | net9.0           | - supported
+      | net5.0+          | - supported
       | netcoreapp2.1    | - supported
       | netcoreapp2.0    | - Microsoft.Bcl.HashCode package
       | netcoreapp1.0    | - own implementation
@@ -32,7 +31,6 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net9.0         |                 |         | - latest API, for use in IDE
       | netcoreapp2.1  | netstandard2.1  |         | - System.HashCode introduced
       | netcoreapp2.0  | netstandard2.0  | net461  | - Microsoft.Bcl.HashCode package targets
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
@@ -43,7 +41,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Compatibility.HashCode</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <!-- Project Properties -->
     <TargetFrameworks>
-      net9.0;
       netcoreapp2.0;
       netcoreapp1.0;
       netstandard2.0;
@@ -17,7 +16,7 @@
     <!--
       | Target Framework | - Status
       |==================|======================
-      | net9.0           | - supported
+      | net5.0+          | - supported
       | netcoreapp2.0    | - supported
       | netcoreapp1.0    | - System.ValueTuple package
       | netstandard2.0   | - supported
@@ -31,7 +30,6 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net9.0         |                 |         | - latest API, for use in IDE
       | netcoreapp2.0  | netstandard2.0  | net47   | - System.ValueTuple introduced
       | netcoreapp1.0  | netstandard1.0  | net45   | - System.ValueTuple package lowest targets
       | netcoreapp1.0  | netstandard1.0  | net45   | - MethodImplOptions.AggressiveInlining
@@ -43,7 +41,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Compatibility.ValueTuple</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.2.1</Version>
+    <Version>2.2.2</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
