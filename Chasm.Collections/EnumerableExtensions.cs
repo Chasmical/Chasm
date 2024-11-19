@@ -72,9 +72,6 @@ namespace Chasm.Collections
 
         /// <inheritdoc cref="string.Join{T}(char, IEnumerable{T})"/>
         [Pure] public static string Join<T>([InstantHandle] this IEnumerable<T> values, char separator)
-#if NET9_0_OR_GREATER
-            where T : allows ref struct
-#endif
         {
 #if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return string.Join(separator, values);
@@ -86,9 +83,6 @@ namespace Chasm.Collections
         }
         /// <inheritdoc cref="string.Join{T}(string, IEnumerable{T})"/>
         [Pure] public static string Join<T>([InstantHandle] this IEnumerable<T> values, string? separator)
-#if NET9_0_OR_GREATER
-            where T : allows ref struct
-#endif
         {
 #if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET40_OR_GREATER
             return string.Join(separator, values);
