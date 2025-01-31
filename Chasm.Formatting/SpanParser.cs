@@ -9,7 +9,7 @@ namespace Chasm.Formatting
     /// <summary>
     ///   <para>Represents a parser, that sequentially reads characters from a read-only span of characters.</para>
     /// </summary>
-    [DebuggerDisplay($"{{{nameof(DebuggerDisplay)}}}")]
+    [DebuggerDisplay($"{{{nameof(DebuggerDisplay)},nq}}")]
 #if NET5_0_OR_GREATER
     [SkipLocalsInit]
 #endif
@@ -415,34 +415,72 @@ namespace Chasm.Formatting
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly string DebuggerDisplay
         {
+            // ReSharper disable CommentTypo GrammarMistakeInComment
             get
             {
-                const int distance = 15;
-                const int totalMaxLength = 1 + distance + 1 + 1 + 1 + distance + 1;
+                // Debugger display format:
+                // 
+                //  (15 chars behind) (15  chars ahead)
+                //   vvvvvvvvvvvvvvv   vvvvvvvvvvvvvvv
+                // "…012345678901234⟨5⟩678901234567890…" (pos=25/60)
+                //                  ^^^                  ^^^^^^^^^^^
+                //               (pointer)             (position info)
+                // 
+                // Examples:
+                // 
+                // - "" (pos=0/0, finished)
+                // - "123" (pos=3/3, finished)
+                // - "⟨1⟩23" (pos=1/3)
+                // - "⟨0⟩123456789012345…" (pos=0/60)
+                // - "01234⟨5⟩678901234567890…" (pos=5/60)
+                // - "…901234567890123⟨4⟩56789" (pos=54/60)
+                // 
 
                 int pos = position;
                 ReadOnlySpan<char> src = source;
 
-                int start = pos - distance;
-                if (start < 0) start = 0;
-                int finish = pos + distance;
-                if (finish > src.Length) finish = src.Length;
+                const int peekDistance = 15;
+                // Initial capacity is 64 chars. The StringBuilder can, of course, expand as needed.
+                // (15-char peek distance & 4-digit length - max 63 chars)
+                StringBuilder sb = new(64);
 
-                StringBuilder sb = new(totalMaxLength);
+                sb.Append('"');
+                {
+                    int leftBound = Math.Max(pos - peekDistance, 0);
+                    int rightBound = Math.Min(pos + peekDistance + 1, src.Length);
 
-                if (start > 0) sb.Append('…');
-
+                    // Append the left peeked side
+                    {
+                        if (leftBound > 0) sb.Append('…');
 #if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-                sb.Append(src.Slice(start, pos - start))
-                  .Append('⟨').Append(src[pos]).Append('⟩')
-                  .Append(src.Slice(pos + 1, finish - (pos + 1)));
+                        sb.Append(src.Slice(leftBound, pos - leftBound));
 #else
-                sb.Append(src.Slice(start, pos - start).ToString())
-                  .Append('⟨').Append(src[pos]).Append('⟩')
-                  .Append(src.Slice(pos + 1, finish - (pos + 1)).ToString());
+                        sb.Append(src.Slice(leftBound, pos - leftBound).ToString());
 #endif
+                    }
 
-                if (finish < src.Length) sb.Append('…');
+                    if (pos < src.Length)
+                    {
+                        // Append the current char pointer
+                        sb.Append('⟨').Append(src[pos]).Append('⟩');
+
+                        // Append the right peeked side
+                        {
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+                            sb.Append(src.Slice(pos + 1, rightBound - (pos + 1)));
+#else
+                            sb.Append(src.Slice(pos + 1, rightBound - (pos + 1)).ToString());
+#endif
+                            if (rightBound < src.Length) sb.Append('…');
+                        }
+                    }
+                }
+                sb.Append('"');
+
+                // Append position information
+                sb.Append(" (pos=").Append(pos).Append('/').Append(src.Length);
+                if (pos == src.Length) sb.Append(", finished");
+                sb.Append(')');
 
                 return sb.ToString();
             }
