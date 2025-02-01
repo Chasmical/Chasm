@@ -233,6 +233,21 @@ namespace Chasm.Formatting
             }
             return false;
         }
+        /// <summary>
+        ///   <para>Tries to read the specified <paramref name="sequence"/> of characters, and if successful, moves forward past the read characters.</para>
+        /// </summary>
+        /// <param name="sequence">The sequence of characters to try to read.</param>
+        /// <returns><see langword="true"/>, if the specified <paramref name="sequence"/> of characters was successfully read; otherwise, <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Skip(ReadOnlySpan<char> sequence)
+        {
+            if (position + sequence.Length <= length && source.Slice(position, sequence.Length).SequenceEqual(sequence))
+            {
+                position += sequence.Length;
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>
         ///   <para>Tries to read any of the specified two characters, and if successful, moves forward past the read character.</para>
@@ -279,6 +294,25 @@ namespace Chasm.Formatting
         public bool SkipAny(char a, char b, char c, char d)
         {
             if (position < length && (source[position] == a || source[position] == b || source[position] == c || source[position] == d))
+            {
+                position++;
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        ///   <para>Tries to read any of the specified <paramref name="characters"/>, and if successful, moves forward past the read character.</para>
+        /// </summary>
+        /// <param name="characters">The characters to try to read.</param>
+        /// <returns><see langword="true"/>, if any of the specified <paramref name="characters"/> was read; otherwise, <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool SkipAny(ReadOnlySpan<char> characters)
+        {
+#if NETCOREAPP3_0_OR_GREATER
+            if (position < length && characters.Contains(source[position]))
+#else
+            if (position < length && characters.IndexOf(source[position]) >= 0)
+#endif
             {
                 position++;
                 return true;
