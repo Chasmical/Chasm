@@ -400,6 +400,80 @@ namespace Chasm.Formatting
                 position++;
             return source.Slice(start, position - start);
         }
+        /// <summary>
+        ///   <para>Reads a sequence of characters not equal to any of the specified two characters, and moves past the read sequence.</para>
+        /// </summary>
+        /// <param name="a">The first character to stop reading at.</param>
+        /// <param name="b">The second character to stop reading at.</param>
+        /// <returns>The read sequence of characters.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<char> ReadUntilAny(char a, char b)
+        {
+            int start = position;
+            while (position < length)
+            {
+                char cur = source[position];
+                if (cur == a || cur == b) break;
+                position++;
+            }
+            return source.Slice(start, position - start);
+        }
+        /// <summary>
+        ///   <para>Reads a sequence of characters not equal to any of the specified three characters, and moves past the read sequence.</para>
+        /// </summary>
+        /// <param name="a">The first character to stop reading at.</param>
+        /// <param name="b">The second character to stop reading at.</param>
+        /// <param name="c">The third character to stop reading at.</param>
+        /// <returns>The read sequence of characters.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<char> ReadUntilAny(char a, char b, char c)
+        {
+            int start = position;
+            while (position < length)
+            {
+                char cur = source[position];
+                if (cur == a || cur == b || cur == c) break;
+                position++;
+            }
+            return source.Slice(start, position - start);
+        }
+        /// <summary>
+        ///   <para>Reads a sequence of characters not equal to any of the specified four characters, and moves past the read sequence.</para>
+        /// </summary>
+        /// <param name="a">The first character to stop reading at.</param>
+        /// <param name="b">The second character to stop reading at.</param>
+        /// <param name="c">The third character to stop reading at.</param>
+        /// <param name="d">The fourth character to stop reading at.</param>
+        /// <returns>The read sequence of characters.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<char> ReadUntilAny(char a, char b, char c, char d)
+        {
+            int start = position;
+            while (position < length)
+            {
+                char cur = source[position];
+                if (cur == a || cur == b || cur == c || cur == d) break;
+                position++;
+            }
+            return source.Slice(start, position - start);
+        }
+        /// <summary>
+        ///   <para>Reads a sequence of characters not equal to any of the specified <paramref name="characters"/>, and moves past the read sequence.</para>
+        /// </summary>
+        /// <param name="characters">The characters to stop reading at.</param>
+        /// <returns>The read sequence of characters.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<char> ReadUntilAny(ReadOnlySpan<char> characters)
+        {
+            int start = position;
+#if NETCOREAPP3_0_OR_GREATER
+            while (position < length && !characters.Contains(source[position]))
+#else
+            while (position < length && characters.IndexOf(source[position]) < 0)
+#endif
+                position++;
+            return source.Slice(start, position - start);
+        }
 
         /// <summary>
         ///   <para>Reads a sequence of characters satisfying the specified <paramref name="predicate"/>, and moves past the read sequence.</para>
