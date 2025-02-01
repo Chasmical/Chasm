@@ -258,10 +258,14 @@ namespace Chasm.Formatting
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SkipAny(char a, char b)
         {
-            if (position < length && (source[position] == a || source[position] == b))
+            if (position < length)
             {
-                position++;
-                return true;
+                char cur = source[position];
+                if (cur == a || cur == b)
+                {
+                    position++;
+                    return true;
+                }
             }
             return false;
         }
@@ -275,10 +279,14 @@ namespace Chasm.Formatting
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SkipAny(char a, char b, char c)
         {
-            if (position < length && (source[position] == a || source[position] == b || source[position] == c))
+            if (position < length)
             {
-                position++;
-                return true;
+                char cur = source[position];
+                if (cur == a || cur == b || cur == c)
+                {
+                    position++;
+                    return true;
+                }
             }
             return false;
         }
@@ -293,10 +301,14 @@ namespace Chasm.Formatting
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SkipAny(char a, char b, char c, char d)
         {
-            if (position < length && (source[position] == a || source[position] == b || source[position] == c || source[position] == d))
+            if (position < length)
             {
-                position++;
-                return true;
+                char cur = source[position];
+                if (cur == a || cur == b || cur == c || cur == d)
+                {
+                    position++;
+                    return true;
+                }
             }
             return false;
         }
