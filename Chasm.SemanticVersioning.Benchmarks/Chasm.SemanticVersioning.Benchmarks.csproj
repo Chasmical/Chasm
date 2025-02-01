@@ -21,9 +21,9 @@
     <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="all" />
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageReference Include="McSherry.SemanticVersioning" Version="1.4.1" />
-    <PackageReference Include="NuGet.Versioning" Version="6.11.0" />
-    <PackageReference Include="SemanticVersioning" Version="3.0.0-beta2" />
-    <PackageReference Include="Semver" Version="3.0.0-beta.1" />
+    <PackageReference Include="NuGet.Versioning" Version="6.12.1" />
+    <PackageReference Include="SemanticVersioning" Version="3.0.0" />
+    <PackageReference Include="Semver" Version="3.0.0" />
   </ItemGroup>
   <PropertyGroup>
     <SuppressTfmSupportBuildWarnings>True</SuppressTfmSupportBuildWarnings>
