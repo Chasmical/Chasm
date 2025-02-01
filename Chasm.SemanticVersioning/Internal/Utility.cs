@@ -13,15 +13,24 @@ namespace Chasm.SemanticVersioning
             // Note: IsAsciiDigit and IsAsciiLetter are slightly slower, and also increase the assembly size
             return ((uint)c | ' ') - 'a' <= 'z' - 'a' || (uint)c - '0' <= '9' - '0' || c == '-';
         }
-        [Pure] public static unsafe ReadOnlySpan<char> ReadPartialComponent(ref SpanParser parser)
+
+        [Pure] public static ReadOnlySpan<char> ReadSemverIdentifier(scoped ref SpanParser parser)
         {
-            char next = parser.Peek();
-            if ((uint)next - '0' <= '9' - '0')
+            int start = parser.position;
+            while (IsValidCharacter(parser.Current)) parser.position++;
+            return parser.source.Slice(start, parser.position - start);
+        }
+        [Pure] public static ReadOnlySpan<char> ReadPartialComponent(scoped ref SpanParser parser)
+        {
+            if (parser.OnAsciiDigit)
                 return parser.ReadAsciiDigits();
 
-            return parser.ReadWhile(&IsPartialChar);
+            int start = parser.position;
+            while (IsPartialChar(parser.Current)) parser.position++;
+            return parser.source.Slice(start, parser.position - start);
+
+            static bool IsPartialChar(char c) => ((uint)c | ' ') == 'x' || c == '*';
         }
-        [Pure] private static bool IsPartialChar(char c) => ((uint)c | ' ') == 'x' || c == '*';
 
         [Pure] public static bool IsNumeric(ReadOnlySpan<char> text)
         {

@@ -113,7 +113,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
-                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
+                    read = Utility.ReadSemverIdentifier(ref parser);
                     if (read.IsEmpty)
                     {
                         if (removeEmpty) continue;
@@ -157,7 +157,7 @@ namespace Chasm.SemanticVersioning.Ranges
                 do
                 {
                     if (innerWhite) parser.SkipWhitespaces();
-                    unsafe { read = parser.ReadWhile(&Utility.IsValidCharacter); }
+                    read = Utility.ReadSemverIdentifier(ref parser);
                     if (read.IsEmpty)
                     {
                         if (removeEmpty) continue;
