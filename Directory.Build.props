@@ -40,10 +40,10 @@
     </PackageReference>
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(TargetFramework)'!='net8.0'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(TargetFramework)'!='net9.0'">
     <NoWarn>$(NoWarn),1591</NoWarn> <!-- Suppress the 'Missing XML Documentation' warning -->
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'!='net8.0'">
+  <PropertyGroup Condition="'$(TargetFramework)'!='net9.0'">
     <!-- Suppress the 'XML comment has cref attribute that could not be resolved' warning -->
     <!-- Suppress the 'Incorrect signature in XML comment' warning -->
     <NoWarn>$(NoWarn),1574,1580</NoWarn>

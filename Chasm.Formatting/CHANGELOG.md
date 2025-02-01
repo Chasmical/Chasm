@@ -1,5 +1,16 @@
 # Chasm.Formatting Changelog
 
+### v2.4.0
+- 🧩 Added `netcoreapp3.1` target. Now targets: `net9.0`, `net6.0`, `net5.0`, `netcoreapp3.1`, `netcoreapp2.1`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.1`, `netstandard1.0`, `net45`;
+- ✨ Added `SpanParser.Skip(ReadOnlySpan<char>)`;
+- ✨ Added `SpanParser.SkipAny(ReadOnlySpan<char>)`;
+- ✨ Added `SpanParser.ReadUntilAny(char, char)`;
+- ✨ Added `SpanParser.ReadUntilAny(char, char, char)`;
+- ✨ Added `SpanParser.ReadUntilAny(char, char, char, char)`;
+- ✨ Added `SpanParser.ReadUntilAny(ReadOnlySpan<char>)`;
+- 🧑‍💻 Overhauled and improved `SpanParser`'s debugger display;
+- ⚡️ Slightly improved performance of `SpanParser.SkipAny` methods;
+
 ### v2.3.7
 - 🧩 Replaced `net8.0` target with `net9.0`. Now targets: `net9.0`, `net6.0`, `net5.0`, `netcoreapp2.1`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.1`, `netstandard1.0`, `net45`;
 - ⚡️ Improved performance of the formatting method with specified format span;
