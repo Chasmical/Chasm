@@ -36,7 +36,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.SemanticVersioning</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.8.1</Version>
+    <Version>2.8.2</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
