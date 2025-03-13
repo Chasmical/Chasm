@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -136,7 +137,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="other">The primitive comparator to compare with this primitive comparator.</param>
         /// <returns><see langword="true"/>, if this primitive comparator is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool Equals(PrimitiveComparator? other)
+        [Pure] public bool Equals([NotNullWhen(true)] PrimitiveComparator? other)
         {
             if (ReferenceEquals(this, other)) return true;
             return other is not null && Operator.Normalize() == other.Operator.Normalize() && Operand.Equals(other.Operand);
@@ -146,7 +147,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="obj">The object to compare with this primitive comparator.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="PrimitiveComparator"/> instance equal to this primitive comparator; otherwise, <see langword="false"/>.</returns>
-        [Pure] public override bool Equals(object? obj)
+        [Pure] public override bool Equals([NotNullWhen(true)] object? obj)
             => Equals(obj as PrimitiveComparator);
         /// <summary>
         ///   <para>Returns a hash code for this primitive comparator.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>

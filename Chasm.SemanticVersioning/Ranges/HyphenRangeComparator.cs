@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -112,7 +113,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="other">The hyphen range comparator to compare with this hyphen range comparator.</param>
         /// <returns><see langword="true"/>, if this hyphen range comparator is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool Equals(HyphenRangeComparator? other)
+        [Pure] public bool Equals([NotNullWhen(true)] HyphenRangeComparator? other)
         {
             if (ReferenceEquals(this, other)) return true;
             return other is not null && From.Equals(other.From) && To.Equals(other.To);
@@ -122,7 +123,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="obj">The object to compare with this hyphen range comparator.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="HyphenRangeComparator"/> instance equal to this hyphen range comparator; otherwise, <see langword="false"/>.</returns>
-        [Pure] public override bool Equals(object? obj)
+        [Pure] public override bool Equals([NotNullWhen(true)] object? obj)
             => Equals(obj as HyphenRangeComparator);
         /// <summary>
         ///   <para>Returns a hash code for this hyphen range comparator.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>

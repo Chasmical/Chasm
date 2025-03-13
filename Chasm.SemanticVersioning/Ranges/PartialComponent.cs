@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Serialization;
@@ -154,7 +155,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="obj">The object to compare with this partial version component.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="PartialComponent"/> instance equal to this partial version component; otherwise, <see langword="false"/>.</returns>
-        [Pure] public override bool Equals(object? obj)
+        [Pure] public override bool Equals([NotNullWhen(true)] object? obj)
             => obj is PartialComponent other && Equals(other);
         /// <summary>
         ///   <para>Returns a hash code for this partial version component.<br/>Non-numeric version components are considered equal in this comparison. For character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>

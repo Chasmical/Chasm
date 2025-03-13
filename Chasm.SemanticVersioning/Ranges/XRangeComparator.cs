@@ -246,7 +246,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="other">The X-Range comparator to compare with this X-Range comparator.</param>
         /// <returns><see langword="true"/>, if this X-Range comparator is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool Equals(XRangeComparator? other)
+        [Pure] public bool Equals([NotNullWhen(true)] XRangeComparator? other)
         {
             if (ReferenceEquals(this, other)) return true;
             return other is not null && Operator.Normalize() == other.Operator.Normalize() && Operand.Equals(other.Operand);
@@ -256,7 +256,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="obj">The object to compare with this X-Range comparator.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="XRangeComparator"/> instance equal to this X-Range comparator; otherwise, <see langword="false"/>.</returns>
-        [Pure] public override bool Equals(object? obj)
+        [Pure] public override bool Equals([NotNullWhen(true)] object? obj)
             => Equals(obj as XRangeComparator);
         /// <summary>
         ///   <para>Returns a hash code for this X-Range comparator.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>

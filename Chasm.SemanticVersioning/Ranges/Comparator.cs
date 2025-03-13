@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -35,7 +36,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="version">The semantic version to match.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this comparator; otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool IsSatisfiedBy(SemanticVersion? version)
+        [Pure] public bool IsSatisfiedBy([NotNullWhen(true)] SemanticVersion? version)
             => IsSatisfiedBy(version, false);
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this comparator.</para>
@@ -43,7 +44,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="version">The semantic version to match.</param>
         /// <param name="includePreReleases">Determines whether to treat pre-release versions like regular versions.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this comparator; otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
+        [Pure] public bool IsSatisfiedBy([NotNullWhen(true)] SemanticVersion? version, bool includePreReleases)
         {
             if (version is not null)
             {
@@ -68,7 +69,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="minor">The minor version component of a pre-release version.</param>
         /// <param name="patch">The patch version component of a pre-release version.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> is a pre-release version, and has the specified <paramref name="major"/>, <paramref name="minor"/> and <paramref name="patch"/> version components; otherwise, <see langword="false"/>.</returns>
-        [Pure] protected static bool CanMatchPreRelease(SemanticVersion? version, int major, int minor, int patch)
+        [Pure] protected static bool CanMatchPreRelease([NotNullWhen(true)] SemanticVersion? version, int major, int minor, int patch)
             => version?.IsPreRelease == true && version.Major == major && version.Minor == minor && version.Patch == patch;
 
         // Internal helper method to arrange the primitives properly, for the use of some methods
@@ -95,14 +96,14 @@ namespace Chasm.SemanticVersioning.Ranges
         [Pure] public override string ToString()
             => SpanBuilder.Format(this);
 
-        [Pure] bool IEquatable<Comparator>.Equals(Comparator? other)
+        [Pure] bool IEquatable<Comparator>.Equals([NotNullWhen(true)] Comparator? other)
             => Equals(other);
         /// <summary>
         ///   <para>Determines whether this comparator is equal to the specified <paramref name="obj"/>.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
         /// </summary>
         /// <param name="obj">The object to compare with this comparator.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="Comparator"/> instance equal to this comparator; otherwise, <see langword="false"/>.</returns>
-        [Pure] public abstract override bool Equals(object? obj);
+        [Pure] public abstract override bool Equals([NotNullWhen(true)] object? obj);
         /// <summary>
         ///   <para>Returns a hash code for this comparator.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>
         /// </summary>

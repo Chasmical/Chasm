@@ -149,7 +149,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="version">The semantic version to match.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version range otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool IsSatisfiedBy(SemanticVersion? version)
+        [Pure] public bool IsSatisfiedBy([NotNullWhen(true)] SemanticVersion? version)
             => IsSatisfiedBy(version, false);
         /// <summary>
         ///   <para>Determines whether the specified semantic <paramref name="version"/> satisfies this version range.</para>
@@ -157,7 +157,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// <param name="version">The semantic version to match.</param>
         /// <param name="includePreReleases">Determines whether to treat pre-release versions like regular versions.</param>
         /// <returns><see langword="true"/>, if the specified semantic <paramref name="version"/> satisfies this version range otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool IsSatisfiedBy(SemanticVersion? version, bool includePreReleases)
+        [Pure] public bool IsSatisfiedBy([NotNullWhen(true)] SemanticVersion? version, bool includePreReleases)
         {
             if (version is not null)
             {
@@ -252,7 +252,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="other">The version range to compare with this version range.</param>
         /// <returns><see langword="true"/>, if this version range is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool Equals(VersionRange? other)
+        [Pure] public bool Equals([NotNullWhen(true)] VersionRange? other)
         {
             if (other is null) return false;
             return Utility.SequenceEqual(_comparatorSets, other._comparatorSets);
@@ -262,7 +262,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="obj">The object to compare with this version range.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="VersionRange"/> instance equal to this version range; otherwise, <see langword="false"/>.</returns>
-        [Pure] public override bool Equals(object? obj)
+        [Pure] public override bool Equals([NotNullWhen(true)] object? obj)
             => Equals(obj as VersionRange);
         /// <summary>
         ///   <para>Returns a hash code for this version range.<br/>Build metadata is ignored and non-numeric version components and implicit/explicit equality operators are considered equal in this comparison. See <see cref="SemverComparer"/> for more options.</para>

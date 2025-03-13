@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Serialization;
@@ -107,7 +108,7 @@ namespace Chasm.SemanticVersioning
         /// </summary>
         /// <param name="obj">The object to compare with this pre-release identifier.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="SemverPreRelease"/> instance equal to this pre-release identifier; otherwise, <see langword="false"/>.</returns>
-        [Pure] public override bool Equals(object? obj)
+        [Pure] public override bool Equals([NotNullWhen(true)] object? obj)
             => obj is SemverPreRelease other && Equals(other);
         /// <summary>
         ///   <para>Returns a hash code for this pre-release identifier.</para>

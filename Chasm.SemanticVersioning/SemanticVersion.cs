@@ -183,7 +183,7 @@ namespace Chasm.SemanticVersioning
         /// </summary>
         /// <param name="other">The semantic version to compare with this semantic version.</param>
         /// <returns><see langword="true"/>, if this semantic version is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool Equals(SemanticVersion? other)
+        [Pure] public bool Equals([NotNullWhen(true)] SemanticVersion? other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other is null || Major != other.Major || Minor != other.Minor || Patch != other.Patch) return false;
@@ -194,7 +194,7 @@ namespace Chasm.SemanticVersioning
         /// </summary>
         /// <param name="obj">The object to compare with this semantic version.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="SemanticVersion"/> instance equal to this semantic version; otherwise, <see langword="false"/>.</returns>
-        [Pure] public override bool Equals(object? obj)
+        [Pure] public override bool Equals([NotNullWhen(true)] object? obj)
             => Equals(obj as SemanticVersion);
         /// <summary>
         ///   <para>Returns a hash code for this semantic version.<br/>Build metadata is ignored in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>.</para>

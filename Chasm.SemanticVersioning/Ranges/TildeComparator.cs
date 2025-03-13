@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Chasm.Formatting;
 using JetBrains.Annotations;
 
@@ -80,7 +81,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="other">The tilde comparator to compare with this tilde comparator.</param>
         /// <returns><see langword="true"/>, if this tilde comparator is equal to <paramref name="other"/>; otherwise, <see langword="false"/>.</returns>
-        [Pure] public bool Equals(TildeComparator? other)
+        [Pure] public bool Equals([NotNullWhen(true)] TildeComparator? other)
         {
             if (ReferenceEquals(this, other)) return true;
             return other is not null && Operand.Equals(other.Operand);
@@ -90,7 +91,7 @@ namespace Chasm.SemanticVersioning.Ranges
         /// </summary>
         /// <param name="obj">The object to compare with this tilde comparator.</param>
         /// <returns><see langword="true"/>, if <paramref name="obj"/> is a <see cref="CaretComparator"/> instance equal to this tilde comparator; otherwise, <see langword="false"/>.</returns>
-        [Pure] public override bool Equals(object? obj)
+        [Pure] public override bool Equals([NotNullWhen(true)] object? obj)
             => Equals(obj as TildeComparator);
         /// <summary>
         ///   <para>Returns a hash code for this tilde comparator.<br/>Build metadata is ignored and non-numeric version components are considered equal in this comparison. For build metadata-sensitive comparison, use <see cref="SemverComparer.IncludeBuild"/>, and for version component character-sensitive comparison, use <see cref="SemverComparer.DiffWildcards"/>.</para>
