@@ -1,5 +1,9 @@
 # Chasm.Utilities Changelog
 
+### v2.5.3
+- ⚡️ Replaced `throw new ArgumentNullException()` with `ArgumentNullException.ThrowIfNull` in some places;
+- ⚡️ Improved performance of `ReaderWriterLockSlimExtensions.With[…]Lock()` extensions;
+
 ### v2.5.2
 - 🧩 Replaced `net8.0` target with `net9.0`. Now targets: `net9.0`, `netcoreapp3.0`, `netcoreapp2.1`, `netcoreapp1.0`, `netstandard2.1`, `netstandard1.0`, `net45`, `net35`;
 - ✨ Added `allows ref struct` anti-constraints where needed;
