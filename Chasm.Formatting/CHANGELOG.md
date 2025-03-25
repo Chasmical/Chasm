@@ -1,5 +1,8 @@
 # Chasm.Formatting Changelog
 
+### v2.4.1
+- ⚡️ Replaced `throw new ArgumentNullException()` with `ArgumentNullException.ThrowIfNull` in `FormattingExtensions.ToStringAndClear()` extension;
+
 ### v2.4.0
 - 🧩 Added `netcoreapp3.1` target. Now targets: `net9.0`, `net6.0`, `net5.0`, `netcoreapp3.1`, `netcoreapp2.1`, `netcoreapp2.0`, `netcoreapp1.0`, `netstandard2.1`, `netstandard2.0`, `netstandard1.1`, `netstandard1.0`, `net45`;
 - ✨ Added `SpanParser.Skip(ReadOnlySpan<char>)`;
