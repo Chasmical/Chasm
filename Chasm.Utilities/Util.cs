@@ -142,7 +142,7 @@ namespace Chasm.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is <see langword="null"/>.</exception>
         [Pure] public static TException? Catch<TException>([InstantHandle] Action action) where TException : Exception
         {
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            ANE.ThrowIfNull(action);
             try
             {
                 action();
@@ -174,7 +174,7 @@ namespace Chasm.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="function"/> is <see langword="null"/>.</exception>
         [Pure] public static TException? Catch<TException, TResult>([InstantHandle] Func<TResult> function, out TResult? result) where TException : Exception
         {
-            if (function is null) throw new ArgumentNullException(nameof(function));
+            ANE.ThrowIfNull(function);
             try
             {
                 result = function();

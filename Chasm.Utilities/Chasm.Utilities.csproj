@@ -44,6 +44,7 @@
     <Folder Include="Shims/" />
     <Compile Include="../Chasm.Compatibility/Shared/MethodImplAttribute.cs" Link="Shims/MethodImplAttribute.cs" />
     <Compile Include="../Chasm.Compatibility/Shared/NotNullWhenAttribute.cs" Link="Shims/NotNullWhenAttribute.cs" />
+    <Compile Include="../Chasm.Compatibility/Shared/ArgumentNullException.cs" Link="Shims/ArgumentNullException.cs" />
   </ItemGroup>
 
   <ItemGroup>

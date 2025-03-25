@@ -19,7 +19,7 @@ namespace Chasm.Utilities
         [MustDisposeResource]
         public static DelegateDisposable WithReaderLock(this ReaderWriterLockSlim rwl)
         {
-            if (rwl is null) throw new ArgumentNullException(nameof(rwl));
+            ANE.ThrowIfNull(rwl);
             return DelegateDisposable.Create(rwl.EnterReadLock, rwl.ExitReadLock);
         }
         /// <summary>
@@ -32,7 +32,7 @@ namespace Chasm.Utilities
         [MustDisposeResource]
         public static DelegateDisposable WithUpgradeableReaderLock(this ReaderWriterLockSlim rwl)
         {
-            if (rwl is null) throw new ArgumentNullException(nameof(rwl));
+            ANE.ThrowIfNull(rwl);
             return DelegateDisposable.Create(rwl.EnterUpgradeableReadLock, rwl.ExitUpgradeableReadLock);
         }
         /// <summary>
@@ -45,7 +45,7 @@ namespace Chasm.Utilities
         [MustDisposeResource]
         public static DelegateDisposable WithWriterLock(this ReaderWriterLockSlim rwl)
         {
-            if (rwl is null) throw new ArgumentNullException(nameof(rwl));
+            ANE.ThrowIfNull(rwl);
             return DelegateDisposable.Create(rwl.EnterWriteLock, rwl.ExitWriteLock);
         }
 

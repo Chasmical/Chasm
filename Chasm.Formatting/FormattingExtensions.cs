@@ -57,7 +57,7 @@ namespace Chasm.Formatting
         /// <exception cref="ArgumentNullException"><paramref name="stringBuilder"/> is <see langword="null"/>.</exception>
         [Pure] public static string ToStringAndClear(this StringBuilder stringBuilder)
         {
-            if (stringBuilder is null) throw new ArgumentNullException(nameof(stringBuilder));
+            ANE.ThrowIfNull(stringBuilder);
             string result = stringBuilder.ToString();
             stringBuilder.Clear();
             return result;

@@ -19,7 +19,7 @@ namespace Chasm.Utilities
         /// <param name="dispose">The action to invoke when the <see cref="DelegateDisposable"/> is disposed.</param>
         public DelegateDisposable(Action dispose)
         {
-            if (dispose is null) throw new ArgumentNullException(nameof(dispose));
+            ANE.ThrowIfNull(dispose);
             disposeAction = dispose;
         }
 
@@ -46,8 +46,8 @@ namespace Chasm.Utilities
         [MustDisposeResource, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DelegateDisposable Create([InstantHandle] Action setup, Action dispose)
         {
-            if (setup is null || dispose is null)
-                throw new ArgumentNullException(setup is null ? nameof(setup) : nameof(dispose));
+            ANE.ThrowIfNull(setup);
+            ANE.ThrowIfNull(dispose);
             setup();
             return new DelegateDisposable(dispose);
         }
@@ -61,8 +61,8 @@ namespace Chasm.Utilities
         [MustDisposeResource, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DelegateDisposable Create<TState>([InstantHandle] Func<TState> setup, Action<TState> dispose)
         {
-            if (setup is null || dispose is null)
-                throw new ArgumentNullException(setup is null ? nameof(setup) : nameof(dispose));
+            ANE.ThrowIfNull(setup);
+            ANE.ThrowIfNull(dispose);
             TState arg = setup();
             return new DelegateDisposable(() => dispose(arg));
         }

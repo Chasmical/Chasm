@@ -18,7 +18,7 @@ namespace Chasm.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="weakReference"/> is <see langword="null"/>.</exception>
         [Pure] public static bool TryGetTarget(this WeakReference weakReference, [NotNullWhen(true)] out object? target)
         {
-            if (weakReference is null) throw new ArgumentNullException(nameof(weakReference));
+            ANE.ThrowIfNull(weakReference);
             return (target = weakReference.Target) is not null;
         }
 
@@ -30,7 +30,7 @@ namespace Chasm.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="weakReference"/> is <see langword="null"/>.</exception>
         [Pure] public static object? GetTargetOrDefault(this WeakReference weakReference)
         {
-            if (weakReference is null) throw new ArgumentNullException(nameof(weakReference));
+            ANE.ThrowIfNull(weakReference);
             return weakReference.Target;
         }
 #if NETCOREAPP1_0_OR_GREATER || NETSTANDARD1_0_OR_GREATER || NET45_OR_GREATER
@@ -43,7 +43,7 @@ namespace Chasm.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="weakReference"/> is <see langword="null"/>.</exception>
         [Pure] public static T? GetTargetOrDefault<T>(this WeakReference<T> weakReference) where T : class
         {
-            if (weakReference is null) throw new ArgumentNullException(nameof(weakReference));
+            ANE.ThrowIfNull(weakReference);
             return weakReference.TryGetTarget(out T? target) ? target : null;
         }
 #endif

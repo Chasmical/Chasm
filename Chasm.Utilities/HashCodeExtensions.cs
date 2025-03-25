@@ -50,7 +50,7 @@ namespace Chasm.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
         public static void AddRange<T>(this HashCode hashCode, [InstantHandle] IEnumerable<T> collection)
         {
-            if (collection is null) throw new ArgumentNullException(nameof(collection));
+            ANE.ThrowIfNull(collection);
 
             if (collection is T[] array) // optimized path for arrays
             {
@@ -72,7 +72,7 @@ namespace Chasm.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
         public static void AddRange<T>(this HashCode hashCode, [InstantHandle] IEnumerable<T> collection, IEqualityComparer<T>? comparer)
         {
-            if (collection is null) throw new ArgumentNullException(nameof(collection));
+            ANE.ThrowIfNull(collection);
 
             if (comparer is null) // use AddRange without comparer
             {
