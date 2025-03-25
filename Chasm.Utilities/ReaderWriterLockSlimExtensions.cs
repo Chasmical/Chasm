@@ -20,7 +20,8 @@ namespace Chasm.Utilities
         public static DelegateDisposable WithReaderLock(this ReaderWriterLockSlim rwl)
         {
             ANE.ThrowIfNull(rwl);
-            return DelegateDisposable.Create(rwl.EnterReadLock, rwl.ExitReadLock);
+            rwl.EnterReadLock();
+            return new DelegateDisposable(rwl.ExitReadLock);
         }
         /// <summary>
         ///   <para>Tries to enter the lock in upgradeable mode, and returns a <see cref="DelegateDisposable"/>, that exits upgradeable mode when disposed.</para>
@@ -33,7 +34,8 @@ namespace Chasm.Utilities
         public static DelegateDisposable WithUpgradeableReaderLock(this ReaderWriterLockSlim rwl)
         {
             ANE.ThrowIfNull(rwl);
-            return DelegateDisposable.Create(rwl.EnterUpgradeableReadLock, rwl.ExitUpgradeableReadLock);
+            rwl.EnterUpgradeableReadLock();
+            return new DelegateDisposable(rwl.ExitUpgradeableReadLock);
         }
         /// <summary>
         ///   <para>Tries to enter the lock in write mode, and returns a <see cref="DelegateDisposable"/>, that exits write mode when disposed.</para>
@@ -46,7 +48,8 @@ namespace Chasm.Utilities
         public static DelegateDisposable WithWriterLock(this ReaderWriterLockSlim rwl)
         {
             ANE.ThrowIfNull(rwl);
-            return DelegateDisposable.Create(rwl.EnterWriteLock, rwl.ExitWriteLock);
+            rwl.EnterWriteLock();
+            return new DelegateDisposable(rwl.ExitWriteLock);
         }
 
     }
