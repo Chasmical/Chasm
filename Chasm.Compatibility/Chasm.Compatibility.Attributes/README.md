@@ -53,6 +53,9 @@ Attributes for code analyzers, IDE suggestions, syntax highlighting, and other t
 
 - `[ExcludeFromCodeCoverage]` (Core 2.0+ / Standard 2.0+ / Framework 4.0+);
 - `[UnconditionalSuppressMessage]` (.NET 5+);
+- `[DynamicDependency]` (.NET 5+);
+- `[DynamicallyAccessedMembers]` (.NET 5+);
+- `enum DynamicallyAccessedMemberTypes` (.NET 5+);
 - `[RequiresPreviewFeatures]` (.NET 6+);
 - `[StringSyntax]` (.NET 7+);
 - `[ConstantExpected]` (.NET 7+);
@@ -84,9 +87,6 @@ I'm not sure how the attributes below work, so I'll put it off for now:
 - [ ] `[SuppressGCTransition]`;
 - [ ] `[UnmanagedCallersOnly]`;
 - [ ] `[InlineArray]`;
-- [ ] `[DynamicallyAccessedMembers]`;
-- [ ] `enum DynamicallyAccessedMemberTypes`;
-- [ ] `[DynamicDependency]`;
 - [ ] `[RequiresAssemblyFiles]`;
 - [ ] `[RequiresDynamicCode]`;
 - [ ] `[RequiresUnreferencedCode]`;
