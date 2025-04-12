@@ -26,12 +26,12 @@
     <!-- Header -->
     <AssemblyName>Chasm.Utilities</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.5.3</Version>
+    <Version>3.0.0</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
     <Description>
-      Provides various utility types and methods.
+      Provides various utility types and methods, for code that needs to be written quickly, and not necessarily efficiently.
     </Description>
     <PackageTags>extensions utility</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

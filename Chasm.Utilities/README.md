@@ -3,7 +3,12 @@
 [![Latest NuGet version](https://img.shields.io/nuget/v/Chasm.Utilities)](https://www.nuget.org/packages/Chasm.Utilities/)
 [![MIT License](https://img.shields.io/github/license/Chasmical/Chasm)](../LICENSE)
 
-Provides various utility types and methods.
+Provides various utility types and methods, for code that needs to be written quickly, and not necessarily efficiently.
+
+> [!WARNING]
+> ████ **Don't use this package in performance-critical scenarios!** ████  
+> Many methods don't get inlined properly, and even if they do, there's still some overhead.  
+> As such, appropriate uses of this library would be: writing quick tests, proofs-of-concept and mock-ups.
 
 
 
@@ -37,14 +42,14 @@ var ex = Util.Catch(doSomething, out object? result);
 
 ```cs
 // Commonly written as:
-if (a is string textA) { /* ... */ }
-else if (b is string textB) { /* ... */ }
-else if (c is string textC) { /* ... */ }
+if (a is BigInteger bigInt_1) { /* ... */ }
+else if (b is BigInteger bigInt_2) { /* ... */ }
+else if (c is BigInteger bigInt_3) { /* ... */ }
 
 // Using Util.Is:
-if (a is string text) { /* ... */ }
-else if (Util.Is(b, out text)) { /* ... */ }
-else if (Util.Is(c, out text)) { /* ... */ }
+if (a is BigInteger bigInt) { /* ... */ }
+else if (Util.Is(b, out bigInt)) { /* ... */ }
+else if (Util.Is(c, out bigInt)) { /* ... */ }
 ```
 
 `Util.With` can be used to invoke functions while `using` a `IDisposable`:
@@ -73,7 +78,7 @@ Util.Swap(ref firstVariable, ref secondVariable);
 
 ## `DelegateDisposable`
 
-`DelegateDisposable` is a `IDisposable` interface implementation that invokes an action on disposal.
+`DelegateDisposable` is an `IDisposable` interface implementation that invokes an action on disposal.
 
 ```cs
 store.Subscribe(listenerFunc);
@@ -85,6 +90,8 @@ var listener = DelegateDisposable.Create(
     () => store.Unsubscribe(listenerFunc)
 );
 ```
+
+
 
 ## `ReaderWriterLockSlimExtensions`
 
@@ -108,3 +115,5 @@ finally
 using (rwl.WithReaderLock())
     /* ... */
 ```
+
+
