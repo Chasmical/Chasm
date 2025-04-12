@@ -56,7 +56,10 @@ Attributes for code analyzers, IDE suggestions, syntax highlighting, and other t
 - `[DynamicDependency]` (.NET 5+);
 - `[DynamicallyAccessedMembers]` (.NET 5+);
 - `enum DynamicallyAccessedMemberTypes` (.NET 5+);
+- `[RequiresUnreferencedCode]` (.NET 5+);
 - `[RequiresPreviewFeatures]` (.NET 6+);
+- `[RequiresAssemblyFiles]` (.NET 6+);
+- `[RequiresDynamicCode]` (.NET 7+);
 - `[StringSyntax]` (.NET 7+);
 - `[ConstantExpected]` (.NET 7+);
 - `[SetsRequiredMembers]` (.NET 7+);
@@ -87,9 +90,6 @@ I'm not sure how the attributes below work, so I'll put it off for now:
 - [ ] `[SuppressGCTransition]`;
 - [ ] `[UnmanagedCallersOnly]`;
 - [ ] `[InlineArray]`;
-- [ ] `[RequiresAssemblyFiles]`;
-- [ ] `[RequiresDynamicCode]`;
-- [ ] `[RequiresUnreferencedCode]`;
 
 
 
