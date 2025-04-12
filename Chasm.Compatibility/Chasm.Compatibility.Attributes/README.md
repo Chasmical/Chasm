@@ -58,7 +58,9 @@ Attributes for code analyzers, IDE suggestions, syntax highlighting, and other t
 - `[ConstantExpected]` (.NET 7+);
 - `[SetsRequiredMembers]` (.NET 7+);
 - `[UnscopedRef]` (.NET 7+);
-- `[Experimental]` (.NET 8+).
+- `[Experimental]` (.NET 8+);
+- `[FeatureGuard]` (.NET 9+);
+- `[FeatureSwitchDefinition]` (.NET 9+);
 
 Note: `ExcludeFromCodeCoverageAttribute.Justification` property is not shimmed, since it was added only in .NET 5.
 
@@ -74,8 +76,7 @@ Note: `ExcludeFromCodeCoverageAttribute.Justification` property is not shimmed, 
 
 Future .NET versions:
 
-- [ ] `[FeatureGuard]` (.NET 9+);
-- [ ] `[FeatureSwitchDefinition]` (.NET 9+);
+- [ ] Attributes introduced in .NET 10;
 
 I'm not sure how the attributes below work, so I'll put it off for now:
 
