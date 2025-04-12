@@ -23,7 +23,9 @@ These attributes are interpreted by the compiler, and are generally not used dir
 - `[CompilerFeatureRequired]` (.NET 7+) - allows declaring `required` members and `ref struct` types;
 - `[RequiredMember]` (.NET 7+) - allows declaring `required` members;
 - `[RequiresLocation]` (.NET 8+) - `ref readonly` parameters in function pointers;
-- `[CollectionBuilder]` (.NET 8+) - used for creating custom collections from spans.
+- `[CollectionBuilder]` (.NET 8+) - used for creating custom collections from spans;
+- `[ParamCollection]` (.NET 9+) - used for `params Collection<T> items` parameters;
+- `[OverloadResolutionPriority]` (.NET 9+) - used for method overload resolution;
 
 
 
@@ -74,8 +76,6 @@ Future .NET versions:
 
 - [ ] `[FeatureGuard]` (.NET 9+);
 - [ ] `[FeatureSwitchDefinition]` (.NET 9+);
-- [ ] `[OverloadResolutionPriority]` (.NET 9+);
-- [ ] `[ParamCollection]` (.NET 9+);
 
 I'm not sure how the attributes below work, so I'll put it off for now:
 

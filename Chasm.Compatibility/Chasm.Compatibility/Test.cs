@@ -10,7 +10,7 @@ namespace Chasm.Compatibility
     {
         public required int Number;
 
-        public static unsafe void Run(ref readonly string t)
+        public static unsafe void Run(ref readonly string t, params List<string> names)
         {
             List<int> numbers = [0, 1, 2, 3, 4, 5, t.Length];
 
@@ -32,7 +32,13 @@ namespace Chasm.Compatibility
             int num = numbers[^tuple.A];
 
             _ = HashCode.Combine(int32, tuple, num);
+
+            Print(5);
         }
+
+        private static void Print(int _) { }
+        [OverloadResolutionPriority(999)]
+        private static void Print(double _) { }
     }
 }
 #endif
