@@ -3,6 +3,7 @@
   <PropertyGroup>
     <!-- Project Properties -->
     <TargetFrameworks>
+      net9.0;
       net8.0;
       net7.0;
       net6.0;
@@ -22,6 +23,7 @@
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
+      | net9.0         |                 |         | - ParamCollection, FeatureGuard, FeatureSwitchDefinition attributes
       | net8.0         |                 |         | - Experimental, RequiresLocation, CollectionBuilder attributes
       | net7.0         |                 |         | - ConstantExpected, StringSyntax, RequiredMember, SetsRequiredMembers, UnscopedRef, CompilerFeatureRequired attributes
       | net6.0         |                 |         | - InterpolatedStringHandler, StackTraceHidden, RequiresPreviewFeatures attributes
@@ -39,7 +41,7 @@
     <!-- Header -->
     <AssemblyName>Chasm.Compatibility.Attributes</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
-    <Version>2.1.2</Version>
+    <Version>2.2.0</Version>
 
     <!-- Title, Description, Tags -->
     <Title>$(AssemblyName)</Title>
