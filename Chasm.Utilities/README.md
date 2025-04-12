@@ -86,7 +86,9 @@ var listener = DelegateDisposable.Create(
 );
 ```
 
-`ReaderWriterLockSlimExtensions` makes use of this class.
+## `ReaderWriterLockSlimExtensions`
+
+`ReaderWriterLockSlimExtensions` makes use of specialized variants of `DelegateDisposable` to enter and exit locks.
 
 ```cs
 ReaderWriterLockSlim rwl = new();

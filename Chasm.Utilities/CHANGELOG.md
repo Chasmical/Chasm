@@ -1,5 +1,8 @@
 # Chasm.Utilities Changelog
 
+### v3.0.0 (next)
+- 💥⚡️ Overhauled `ReaderWriterLockSlimExtensions.With[…]Lock()` extensions, now with almost no overhead;
+
 ### v2.5.3
 - ⚡️ Replaced `throw new ArgumentNullException()` with `ArgumentNullException.ThrowIfNull` in some places;
 - ⚡️ Improved performance of `ReaderWriterLockSlimExtensions.With[…]Lock()` extensions;
