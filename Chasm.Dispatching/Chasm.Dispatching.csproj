@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Project Properties -->
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <TargetFrameworks>
+      net9.0;
+      netcoreapp1.0;
+      netstandard1.0;
+      net45;
+    </TargetFrameworks>
+    <!--
+      |       Target Frameworks (-excluded)        | - Justification
+      |================|=================|=========|==============================
+      | net9.0         |                 |         | - allows ref struct
+      | netcoreapp1.0  | netstandard1.0  | net45   | - lowest supported API
+    -->
+
+    <!-- Header -->
+    <AssemblyName>Chasm.Dispatching</AssemblyName>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Version>1.0.0</Version>
+
+    <!-- Title, Description, Tags -->
+    <Title>$(AssemblyName)</Title>
+    <Description>
+      Provides a CompiledDispatch&lt;T&gt; class, that pre-compiles the invocation delegate to use static dispatch instead of dynamic dispatch.
+    </Description>
+    <PackageTags>dispatching event dispatch invoke emitter</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Include the required shims/polyfills -->
+    <Folder Include="Shims/" />
+    <Compile Include="../Chasm.Compatibility/Shared/ArgumentNullException.cs" Link="Shims/ArgumentNullException.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Chasm.Dispatching.csproj.DotSettings" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
+    <InternalsVisibleTo Include="Chasm.Dispatching.Tests" />
+  </ItemGroup>
+
+  <!-- Spans supported since netstandard2.1, netcoreapp2.1 -->
+  <!-- System.Memory targets netstandard1.1, netcoreapp1.0, net45 -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netcoreapp2.0' or
+    '$(TargetFramework)'=='netcoreapp1.0' or
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='netstandard1.1' or
+    '$(TargetFramework)'=='net45'
+  )">
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+  <!-- An older pre-release of System.Memory also targets netstandard1.0 -->
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.0'">
+    <PackageReference Include="System.Memory" Version="4.4.0-preview1-25305-02" />
+  </ItemGroup>
+
+</Project>
