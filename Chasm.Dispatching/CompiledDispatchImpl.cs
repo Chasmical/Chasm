@@ -39,9 +39,9 @@ namespace Chasm.Dispatching
             return newEntries;
         }
 
-        public bool Remove(object? instance, MethodInfo method)
+        public bool Remove(object? instance, MethodInfo? method)
         {
-            Entry entry = new() { Instance = instance, Method = method };
+            Entry entry = new() { Instance = instance, Method = method! };
 
             int index = Array.IndexOf(_entries, entry);
             if (index == -1) return false;

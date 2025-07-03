@@ -26,9 +26,9 @@ This often results in hundreds, or even thousands, of virtual calls. It's fine i
 CompiledDispatch<GameTime> dispatch = new();
 
 // all the ways methods can be added:
-dispatch.Add(clockSystem.Update); // ← preferred
-dispatch.Add(timerSystem, "Update");
-dispatch.Add(npcSystem, npcSystemUpdateMethod);
+dispatch.Add(clockSystem.Update); // ← lambda (fastest)
+dispatch.Add(timerSystem, "Update"); // with method name
+dispatch.Add(npcSystem, updateMethod); // with MethodInfo
 
 // you can even add static methods into the mix!
 dispatch.Add(SomeStaticUpdateMethod);

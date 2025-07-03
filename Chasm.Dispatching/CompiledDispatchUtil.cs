@@ -5,12 +5,12 @@ namespace Chasm.Dispatching
 {
     internal static class CompiledDispatchUtil
     {
-        public static void ValidateMethod(object? element, MethodInfo method, Type argType)
+        public static void ValidateMethod(object? target, MethodInfo method, Type argType)
         {
-            if (!IsCompatible(element, method, argType))
+            if (!IsCompatible(target, method, argType))
                 ThrowNotCompatible(method, nameof(method));
         }
-        private static bool IsCompatible(object? element, MethodInfo method, Type argType)
+        private static bool IsCompatible(object? target, MethodInfo method, Type argType)
         {
             ParameterInfo[] pars = method.GetParameters();
             Type? instancePar = null, argumentPar = null;
@@ -41,7 +41,7 @@ namespace Chasm.Dispatching
                 }
             }
 
-            return (instancePar is null || !instancePar.IsValueType && instancePar.IsInstanceOfType(element)) &&
+            return (instancePar is null || !instancePar.IsValueType && instancePar.IsInstanceOfType(target)) &&
                    (argumentPar is null || argumentPar.IsAssignableFrom(argType));
         }
         private static void ThrowNotCompatible(MethodInfo method, string paramName)
@@ -50,10 +50,10 @@ namespace Chasm.Dispatching
             throw new ArgumentException(msg, paramName);
         }
 
-        public static MethodInfo FindMethod(Type type, object? element, string methodName, Type argType)
+        public static MethodInfo FindMethod(Type type, object? target, string methodName, Type argType)
         {
             foreach (MethodInfo method in type.GetMethods())
-                if (method.Name == methodName && IsCompatible(element, method, argType))
+                if (method.Name == methodName && IsCompatible(target, method, argType))
                     return method;
 
             throw new ArgumentException($"No compatible method {methodName} could be found in {type}.");
