@@ -5,15 +5,18 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net9.0;
-      netcoreapp1.0;
-      netstandard1.0;
+      netcoreapp2.0;
+      netstandard2.0;
       net45;
     </TargetFrameworks>
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
-      | net9.0         |                 |         | - allows ref struct
-      | netcoreapp1.0  | netstandard1.0  | net45   | - lowest supported API
+      | net9.0         |                 |         | - newest API
+      | netcoreapp2.0  | netstandard2.0  |         | - Reflection stuff
+      | netcoreapp2.0  | netstandard2.0  | net45   | - lowest supported API
+
+      TODO: consider lowering target versions
     -->
 
     <!-- Header -->
@@ -43,6 +46,12 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
     <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
     <InternalsVisibleTo Include="Chasm.Dispatching.Tests" />
+  </ItemGroup>
+
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netstandard2.0'
+  )">
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
   </ItemGroup>
 
   <!-- Spans supported since netstandard2.1, netcoreapp2.1 -->
