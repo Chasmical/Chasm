@@ -5,18 +5,24 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworks>
       net9.0;
+      netcoreapp3.0;
       netcoreapp2.0;
+      netstandard2.1;
       netstandard2.0;
+      net461;
       net45;
     </TargetFrameworks>
     <!--
       |       Target Frameworks (-excluded)        | - Justification
       |================|=================|=========|==============================
       | net9.0         |                 |         | - newest API
-      | netcoreapp2.0  | netstandard2.0  |         | - Reflection stuff
+      | netcoreapp1.0- | netstandard2.1  | net20-  | - DynamicMethod introduced
+      |                | netstandard2.0  |         | - DynamicMethod package-provided
+      | netcoreapp3.0  |                 |         | - Unsafe introduced
+      | netcoreapp2.0  | netstandard2.0  | net461  | - Unsafe v6 package-provided
+      | netcoreapp1.0- | netstandard1.0- | net45   | - Unsafe v5 package-provided
+      | netcoreapp2.0  | netstandard2.0  | net11-  | - Delegate.Method property
       | netcoreapp2.0  | netstandard2.0  | net45   | - lowest supported API
-
-      TODO: consider lowering target versions
     -->
 
     <!-- Header -->
@@ -48,26 +54,29 @@
     <InternalsVisibleTo Include="Chasm.Dispatching.Tests" />
   </ItemGroup>
 
+  <!-- DynamicMethod introduced in netcoreapp1.0-, netstandard2.1, net20- -->
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netstandard2.0'
   )">
+    <!-- Emit package targets netcoreapp1.0-, netstandard1.0-, net45 -->
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
   </ItemGroup>
 
-  <!-- Spans supported since netstandard2.1, netcoreapp2.1 -->
-  <!-- System.Memory targets netstandard1.1, netcoreapp1.0, net45 -->
+  <!-- Unsafe introduced in netcoreapp3.0 -->
+  <ItemGroup Condition="(
+    '$(TargetFramework)'=='netstandard2.1' or
+    '$(TargetFramework)'=='netstandard2.0' or
+    '$(TargetFramework)'=='net461'
+  )">
+    <!-- Unsafe package v6 targets netcoreapp3.1-, netstandard2.0, net461 -->
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+  </ItemGroup>
   <ItemGroup Condition="(
     '$(TargetFramework)'=='netcoreapp2.0' or
-    '$(TargetFramework)'=='netcoreapp1.0' or
-    '$(TargetFramework)'=='netstandard2.0' or
-    '$(TargetFramework)'=='netstandard1.1' or
     '$(TargetFramework)'=='net45'
   )">
-    <PackageReference Include="System.Memory" Version="4.5.5" />
-  </ItemGroup>
-  <!-- An older pre-release of System.Memory also targets netstandard1.0 -->
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.0'">
-    <PackageReference Include="System.Memory" Version="4.4.0-preview1-25305-02" />
+    <!-- Unsafe package v5 targets netcoreapp1.0-, netstandard1.0-, net45 -->
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
