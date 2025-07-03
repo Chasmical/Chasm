@@ -61,7 +61,17 @@ namespace Chasm.Dispatching
             ILGenerator il = dispatch.GetILGenerator();
 
             Entry[] entries = _entries;
-            for (int i = 0, count = _count; i < count; i++)
+            int count = _count;
+
+            // Eliminate further bounds-checks by ensuring the array is of correct length
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldlen);
+            il.Emit(OpCodes.Conv_I4);
+            il.Emit(OpCodes.Ldc_I4, count);
+            Label skipToRet = il.DefineLabel();
+            il.Emit(OpCodes.Blt_Un, skipToRet);
+
+            for (int i = 0; i < count; i++)
             {
                 MethodInfo method = entries[i].Method;
                 if (Volatile.Read(ref version) != started) return null;
@@ -84,6 +94,8 @@ namespace Chasm.Dispatching
                 if (method.ReturnType != typeof(void))
                     il.Emit(OpCodes.Pop);
             }
+
+            il.MarkLabel(skipToRet);
             il.Emit(OpCodes.Ret);
 
             if (Volatile.Read(ref version) != started) return null;
