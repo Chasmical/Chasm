@@ -16,6 +16,7 @@ on:
         - Chasm.Collections
         - Chasm.Formatting
         - Chasm.SemanticVersioning
+        - Chasm.Dispatching
 
 jobs:
   publish-package:
