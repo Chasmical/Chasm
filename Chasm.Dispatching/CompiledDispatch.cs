@@ -55,6 +55,7 @@ namespace Chasm.Dispatching
             return res;
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public void Compile()
         {
             if (_dispatch is not null) return;
@@ -63,6 +64,7 @@ namespace Chasm.Dispatching
             _dispatch = Unsafe.As<Delegate, Action<Entry[], TArg>>(ref dispatch);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispatch(TArg arg)
         {
             if (_dispatch is null) Compile();
